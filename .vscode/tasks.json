@@ -17,6 +17,22 @@
                 "kind": "build",
                 "isDefault": true
             }
+        }, 
+        {
+            "label": "Run",
+            "command": "./RawMinecraft",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }
