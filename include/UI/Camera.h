@@ -12,6 +12,8 @@ public:
                     setWide(const float& angle),
                     setNearProjection(const float& near),
                     setFarProjection(const float& far);
+    Vector3f        getHorizontalVector() const,
+                    getCenter() const;
 private:
     Vector3f        pPosition, pCenter;
     float           pAngle, pNear, pFar;

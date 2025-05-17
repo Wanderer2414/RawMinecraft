@@ -52,15 +52,19 @@ int Form::run(RenderWindow& window) {
             window.clear();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glClearColor(0, 0, 0, 0);            
-            draw(window);
             window.popGLStates();
             glBegin(GL_LINES);
-                glColor3f(1, 0, 0);glVertex3f(0, 0,0); glVertex3f(10, 0, 0);
-                glColor3f(0, 1, 0);glVertex3f(0, 0,0); glVertex3f(0, 10, 0);
-                glColor3f(0, 0, 1);glVertex3f(0, 0,0); glVertex3f(0, 0, 10);
+                for (int i = -5; i<5; i++) {
+                    glColor3f(1, 0, 0);
+                    glVertex3f(-10, i,0); glVertex3f(10, i, 0);
+                    glColor3f(0, 1, 0);
+                    glVertex3f(i, -10,0); glVertex3f(i, 10, 0);
+                }
+                glColor3f(0, 0, 1);glVertex3f(0, 0,-10); glVertex3f(0, 0, 10);
             glEnd();
             window.pushGLStates();
             glFlush();
+            draw(window);
             window.display();
         }
         if (return_value!=INT_MIN) return return_value;
