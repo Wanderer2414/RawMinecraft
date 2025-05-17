@@ -20,6 +20,7 @@ GameForm::GameForm(RenderWindow& window, const int& index):Form(index) {
 
     window.setMouseCursorVisible(false);
     Mouse::setPosition(static_cast<Vector2i>(WindowSize)/2, window);
+
 }
 GameForm::~GameForm() {
 

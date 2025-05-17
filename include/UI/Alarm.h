@@ -1,8 +1,8 @@
 #ifndef ALARM_H
 #define ALARM_H
-#include "Controller.h"
+#include "Global.h"
 
-class Alarm: public Controller {
+class Alarm {
 public:
     Alarm();
     ~Alarm();

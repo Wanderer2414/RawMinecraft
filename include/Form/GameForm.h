@@ -1,5 +1,6 @@
 #ifndef GAMEFORM_H
 #define GAMEFORM_H
+#include "Alarm.h"
 #include "Camera.h"
 #include "Cube.h"
 #include "Form.h"

@@ -12,12 +12,14 @@ Camera::Camera() {
     pDelta = {0, 0, 2};
     pVerticalAngle = pHorizontalAngle = 0;
     pAngle = pNear = pFar = 0;
-    pSpeed = 0.005;
+    pSpeed = 0.1;
     pUpward = false;
     pOnGround = true;
     pWindowCenter.x = WindowSize.x/2;
     pWindowCenter.y = WindowSize.y/2;
     pDistance = 2;
+
+    pFrameAlarm.setDuration(1.f/60);
 }
 Camera::~Camera() {
 
@@ -98,56 +100,59 @@ void Camera::setFarProjection(const float& far) {
 }
 _handle_function(Camera, handle) {
     bool is_changed = Controller::handle(window, state);
-    if (Keyboard::isKeyPressed(Keyboard::Scancode::A)) {
-        window.popGLStates();
-            move(pSpeed, 0, 0);
-        window.pushGLStates();
-        is_changed = true;
-    }
-    if (Keyboard::isKeyPressed(Keyboard::Scancode::D)) {
-        window.popGLStates();
-            move(-pSpeed, 0, 0);
-        window.pushGLStates();
-        is_changed = true;
-    }
-    if (Keyboard::isKeyPressed(Keyboard::Scancode::W)) {
-        window.popGLStates();
-            move(0, pSpeed, 0);
-        window.pushGLStates();
-        is_changed = true;
-    }
-    if (Keyboard::isKeyPressed(Keyboard::Scancode::S)) {
-        window.popGLStates();
-            move(0, -pSpeed, 0);
-        window.pushGLStates();
-        is_changed = true;
-    }
+    if (pFrameAlarm.get()) {
+        if (Keyboard::isKeyPressed(Keyboard::Scancode::A)) {
+            window.popGLStates();
+                move(pSpeed, 0, 0);
+            window.pushGLStates();
+            is_changed = true;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Scancode::D)) {
+            window.popGLStates();
+                move(-pSpeed, 0, 0);
+            window.pushGLStates();
+            is_changed = true;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Scancode::W)) {
+            window.popGLStates();
+                move(0, pSpeed, 0);
+            window.pushGLStates();
+            is_changed = true;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Scancode::S)) {
+            window.popGLStates();
+                move(0, -pSpeed, 0);
+            window.pushGLStates();
+            is_changed = true;
+        }
 
-    if (pOnGround && Keyboard::isKeyPressed(Keyboard::Key::Space)) {
-        pJumpHeight = 0;
-        pUpward = true;
-        pOnGround = false;
-    }
-
-    if (!pOnGround) {
-        window.popGLStates();
-        if (pUpward  && pJumpHeight < 1.2) {
-            pJumpHeight += 0.005;
-            move(0, 0, 0.005);
-        }
-        else if (pJumpHeight>0) {
-            pJumpHeight -= 0.001;
-            move(0, 0, -0.001);
-        }
-        if (pJumpHeight >= 1.2) {
-            pUpward = false;
-        }
-        else if (pJumpHeight <= 0) {
-            pOnGround = true;
+        if (pOnGround && Keyboard::isKeyPressed(Keyboard::Key::Space)) {
             pJumpHeight = 0;
+            pUpward = true;
+            pOnGround = false;
         }
-        window.pushGLStates();
-        is_changed = true;
+
+        if (!pOnGround) {
+            window.popGLStates();
+            if (pUpward  && pJumpHeight < 1.4) {
+                pJumpHeight += 0.1;
+                move(0, 0, 0.1);
+            }
+            else if (pJumpHeight>0) {
+                float delta = min(0.1f, pJumpHeight);
+                pJumpHeight -= delta;
+                move(0, 0, -delta);
+            }
+            if (pJumpHeight >= 1.2) {
+                pUpward = false;
+            }
+            else if (pJumpHeight <= 0) {
+                pOnGround = true;
+                pJumpHeight = 0;
+            }
+            window.pushGLStates();
+            is_changed = true;
+        }
     }
 
     Vector2i position = Mouse::getPosition(window);

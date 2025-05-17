@@ -1,5 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
+#include "Alarm.h"
 #include "Controller.h"
 #include "Global.h"
 
@@ -26,6 +27,7 @@ private:
     Vector3f        pPosition, pDelta;
     double          pVerticalAngle, pHorizontalAngle;
     float           pAngle, pNear, pFar, pSpeed, pJumpHeight, pDistance;
+    Alarm           pFrameAlarm;
 
     Vector2f        transfer(const Vector3f& vector) const;
 };
