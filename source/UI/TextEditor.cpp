@@ -1,5 +1,6 @@
 #include "TextEditor.h"
 #include "BaseShape.h"
+#include "Rectangle.h"
 #include "SFML/Graphics/Sprite.hpp"
 
 TextEditor::TextEditor(const ButtonSetting& button_setting, const TextSetting& text_setting) {
@@ -21,7 +22,7 @@ void TextEditor::setList(const vector<string>& list, const vector<size_t>& value
     shared_selection_index = list.size();
 }
 void TextEditor::update() {
-    BaseShape::update();
+    Rectangle::update();
     Text::setPosition(0, 0);
 }
 void TextEditor::setString(const string& text) {

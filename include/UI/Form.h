@@ -12,6 +12,7 @@ public:
     virtual int     run(RenderWindow& window);
 protected:
     virtual         catch_function(CatchEvent) override;
+    virtual void    draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
     int             form_index, 
                     return_value;
 };

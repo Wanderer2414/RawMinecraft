@@ -12,7 +12,7 @@ RoundedRectangle::RoundedRectangle() {
 
 
 bool RoundedRectangle::contains(const sf::Vector2f& point) const {
-    sf::FloatRect rect = BaseShape::getGlobalBounds();
+    sf::FloatRect rect = Shape::getGlobalBounds();
     rect.left+=m_radius;
     rect.width-=2*m_radius;
     if (rect.contains(point)) return true;
@@ -70,12 +70,15 @@ void RoundedRectangle::setSize(const float& x, const float& y) {
     m_size = {x, y};
     update();
 }
+void RoundedRectangle::update() {
+    Shape::update();
+}
 void RoundedRectangle::setRoundness(const float& radius) {
     m_radius = radius;
     update();
 }
 Vector2f RoundedRectangle::getCenter() const {
-    return BaseShape::getPosition()+m_size/2.f;
+    return Shape::getPosition()+m_size/2.f;
 }
 Vector2f RoundedRectangle::getSize() const {
     return m_size;

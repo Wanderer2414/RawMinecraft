@@ -2,7 +2,7 @@
 #define ROUNDEDRECTANGLE_H
 #include "BaseShape.h"
 
-class RoundedRectangle:public BaseShape {
+class RoundedRectangle:public BaseShape, public Shape {
 public:
     RoundedRectangle();
 
@@ -19,6 +19,7 @@ public:
     virtual void setSize(const float& x, const float& y),
                 setRoundness(const float& radius),
                 setPointCount(const size_t& count);
+    virtual void update() override;
 protected:
 private:
     Vector2f    m_size;

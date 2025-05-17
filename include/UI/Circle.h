@@ -1,7 +1,7 @@
 #ifndef CIRCLE_H
 #define CIRCLE_H
 #include "BaseShape.h"
-class Circle: public BaseShape {
+class Circle: public BaseShape, public Shape {
 public:
     Circle();
     ~Circle();
@@ -15,6 +15,7 @@ public:
     virtual Vector2f getPoint(size_t index) const override,
                     getCenter()             const override,
                     getSize()               const override;
+    virtual void    update()                override;
 protected:
     float           m_radius;
 private:

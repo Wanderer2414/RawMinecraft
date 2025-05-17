@@ -13,7 +13,7 @@ public:
     Button(ButtonSetting& button_setting = ButtonSetting::Default, const TextSetting& text_setting = TextSetting::Default);
     ~Button();
 
-    virtual bool setHover(const bool& hover) override;
+    virtual bool    setHover(const bool& hover) override;
     virtual void    setTextPackage(const TextSetting& setting),
                     setButtonPackage(ButtonSetting& setting),
                     setPosition(const float& x, const float& y) override,

@@ -46,7 +46,7 @@ FloatRect Button<T>::getGlobalBounds() const {
 }
 template<class T>
 void Button<T>::draw(RenderTarget& target, RenderStates state) const {
-    Shape::draw(target, state);
+    T::draw(target, state);
     Text::draw(target, state);
 }
 template <class T>
@@ -73,7 +73,7 @@ void Button<T>::setButtonPackage(ButtonSetting& setting) {
 
 template<class T>
 void Button<T>::update() {
-    BaseShape::update();
+    T::update();
     Vector2f pos = T::getSize()/2.f;
     pos.y -= getCharacterSize()/2;
     pos.x -= Text::getLocalBounds().width/2;

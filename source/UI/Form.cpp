@@ -53,6 +53,13 @@ int Form::run(RenderWindow& window) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glClearColor(0, 0, 0, 0);            
             draw(window);
+            window.popGLStates();
+            glBegin(GL_LINES);
+                glColor3f(1, 0, 0);glVertex3f(0, 0,0); glVertex3f(10, 0, 0);
+                glColor3f(0, 1, 0);glVertex3f(0, 0,0); glVertex3f(0, 10, 0);
+                glColor3f(0, 0, 1);glVertex3f(0, 0,0); glVertex3f(0, 0, 10);
+            glEnd();
+            window.pushGLStates();
             glFlush();
             window.display();
         }
@@ -60,4 +67,9 @@ int Form::run(RenderWindow& window) {
         is_changed = 0;
     }
     return form_index;
+}
+void Form::draw(RenderTarget& target, RenderStates state) const {
+    for (const auto& [child, layer]:children) 
+        if (focus_control == -1 || child != children[focus_control].first) target.draw(*child, state);
+    if (focus_control != -1) target.draw(*children[focus_control].first, state);
 }

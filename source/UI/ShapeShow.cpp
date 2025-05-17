@@ -21,7 +21,7 @@ void ShapeShow<T>::setPosition(const float& x, const float& y) {
 
 template <typename T>
 void ShapeShow<T>::setPosition(const Vector2f& position) {
-    T::setPosition(position);
+    setPosition(position.x, position.y);
 }
 
 template <typename T>

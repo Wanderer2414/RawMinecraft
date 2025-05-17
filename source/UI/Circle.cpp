@@ -26,7 +26,9 @@ void Circle::setRadius(const float& radius) {
     m_radius = radius;
     update();
 }
-
+void Circle::update() {
+    Shape::update();
+}
 Vector2f Circle::getPoint(size_t index) const {
     float angle = 2.0f*M_PI*index/m_point_count;
     return m_radius*Vector2f(cos(angle), sin(angle));

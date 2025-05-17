@@ -26,9 +26,13 @@ void Rectangle::setSize(const float& x, const float& y) {
     m_size = {x, y};
     update();
 }
-Vector2f Rectangle::getCenter() const {
-    return BaseShape::getPosition()+m_size/2.f;
+void Rectangle::update() {
+    Shape::update();
 }
+Vector2f Rectangle::getCenter() const {
+    return Shape::getPosition()+m_size/2.f;
+}
+
 Vector2f Rectangle::getSize() const {
     return m_size;
 }
