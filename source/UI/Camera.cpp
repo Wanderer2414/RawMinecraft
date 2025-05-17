@@ -2,17 +2,22 @@
 #include "Controller.h"
 #include "General.h"
 #include "Global.h"
+#include "SFML/Graphics/VertexArray.hpp"
 #include "SFML/Window/Keyboard.hpp"
+#include <cmath>
 
 extern Vector2f WindowSize;
 Camera::Camera() {
-    pPosition = pCenter = pDelta = {0, 0, 0};
+    pPosition = {0, 0, 0};
+    pDelta = {0, 0, 2};
+    pVerticalAngle = pHorizontalAngle = 0;
     pAngle = pNear = pFar = 0;
     pSpeed = 0.005;
     pUpward = false;
     pOnGround = true;
     pWindowCenter.x = WindowSize.x/2;
     pWindowCenter.y = WindowSize.y/2;
+    pDistance = 2;
 }
 Camera::~Camera() {
 
@@ -20,48 +25,57 @@ Camera::~Camera() {
 
 Vector3f Camera::getHorizontalVector() const {
     Vector3f ans = {-pDelta.y, pDelta.x, 0};
-    ans /= abs(pDelta);
+    ans /= abs(ans);
     return ans;
 }
 Vector3f Camera::getCenter() const {
-    return pCenter;
+    return pPosition + pDelta;
 }
 void Camera::setPosition(const float& x, const float& y, const float& z) {
     pPosition = {x, y, z};
-    pDelta = pCenter - pPosition;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
 }
 void Camera::rotate(const float& vertical_angle, const float& horizontal_angle) {
-    float current_vertical_angle = atan(pDelta.z/sqrt(pDelta.x*pDelta.x + pDelta.y*pDelta.y));
-    float current_horizontal_angle = atan(pDelta.y/pDelta.x);
-    if (pDelta.x<0) current_horizontal_angle += M_PI;
-    current_horizontal_angle -= horizontal_angle;
-    Vector3f center = pCenter;
-    float distance = abs(pDelta);
-    center.z = pPosition.z + distance*sin(current_vertical_angle);
-    center.x = pPosition.x + distance*cos(current_vertical_angle)*cos(current_horizontal_angle);
-    center.y = pPosition.y + distance*cos(current_vertical_angle)*sin(current_horizontal_angle);
-    setCenter(center.x, center.y, center.z);
+    pVerticalAngle -= vertical_angle;
+    if (pVerticalAngle < -M_PI_2*0.99) pVerticalAngle = -M_PI_2*0.99;
+    if (pVerticalAngle > M_PI_2*0.99) pVerticalAngle = M_PI_2*0.99;
+    pHorizontalAngle -= horizontal_angle;
+    pDelta.z = pDistance*sin(pVerticalAngle);
+    pDelta.x = pDistance*cos(pVerticalAngle)*cos(pHorizontalAngle);
+    pDelta.y = pDistance*cos(pVerticalAngle)*sin(pHorizontalAngle);
+    
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
 }
 void Camera::move(const float& x, const float& y, const float& z) {
-    Vector3f delta = x*getHorizontalVector();
-    delta += y*pDelta/abs(pCenter-pPosition);
-    delta.z += z;
-    pPosition += delta;
-    pCenter += delta;
-    pDelta = pCenter - pPosition;
+    pPosition += x*getHorizontalVector();
+    
+    pPosition.x += y*cos(pHorizontalAngle);
+    pPosition.y += y*sin(pHorizontalAngle);
+    
+    pPosition.z += z;
+    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(pPosition.x, pPosition.y, pPosition.z, pCenter.x, pCenter.y, pCenter.z, 0, 0, 1);
+    gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
 }
 void Camera::setCenter(const float& x, const float& y, const float& z) {
-    pCenter = {x, y, z};
-    pDelta = pCenter - pPosition;
+    pDelta = Vector3f(x, y, z) - pPosition;
+    
+    pVerticalAngle = atan(pDelta.z/sqrt(pDelta.x*pDelta.x + pDelta.y*pDelta.y));
+    pHorizontalAngle = atan(pDelta.y/pDelta.x);
+    if (pDelta.x<0) pHorizontalAngle += M_PI;
+
+    pDelta.z = pDistance*sin(pVerticalAngle);
+    pDelta.x = pDistance*cos(pVerticalAngle)*cos(pHorizontalAngle);
+    pDelta.y = pDistance*cos(pVerticalAngle)*sin(pHorizontalAngle);
+    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(pPosition.x, pPosition.y, pPosition.z, pCenter.x, pCenter.y, pCenter.z, 0, 0, 1);
+    gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
     
 }
 void Camera::setWide(const float& angle) {
@@ -144,9 +158,48 @@ _handle_function(Camera, handle) {
     if (delta.x != 0 || delta.y != 0) {
         Mouse::setPosition(pWindowCenter, window);
         window.popGLStates();
-        rotate(delta.y/1000/M_PI, delta.x/1000/M_PI);
+        rotate(delta.y/1000, delta.x/1000);
         window.pushGLStates();
         is_changed = true;
     }
     return is_changed;
+}
+void Camera::draw(RenderTarget& target, RenderStates state) const {
+    Controller::draw(target, state);
+    target.popGLStates();
+    VertexArray array(sf::Lines, 6);
+    for (int i =0 ;i<6; i++) {
+        array[i].color = Color::White;
+        array[i] = WindowSize/2.f;
+    }
+    Vector3f center = pPosition + pDelta;
+    center.x += 1;
+    Vector2f axis = transfer(center) - WindowSize/2.f;
+    array[0].color = array[1].color = Color::Red;
+    array[1].position += axis/abs(axis)*10.f;
+    center.x -= 1;
+
+    center.y += 1;
+    axis = transfer(center) - WindowSize/2.f;
+    array[2].color = array[3].color = Color::Green;
+    array[3].position += axis/abs(axis)*10.f;
+    center.y -= 1;
+
+    array[4].color = array[5].color = Color::Blue;
+    array[5].position.y -= 10*cos(pVerticalAngle);
+    target.pushGLStates();
+    target.draw(array);
+}
+Vector2f Camera::transfer(const Vector3f& vector) const {
+    int viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    double projectionView[16], modelView[16];
+    glGetDoublev(GL_PROJECTION_MATRIX, projectionView);
+    glGetDoublev(GL_MODELVIEW_MATRIX, modelView);
+    double winX, winY, winZ;
+    gluProject(vector.x, vector.y, vector.z, modelView, projectionView, viewport, &winX, &winY, &winZ);
+    Vector2f ans;
+    ans.x = winX;
+    ans.y = WindowSize.y - winY;
+    return ans;
 }

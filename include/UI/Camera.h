@@ -19,10 +19,14 @@ public:
                     getCenter() const;
 protected:
     virtual         handle_function(handle) override;
+    virtual void    draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
 private:
     bool            pOnGround, pUpward;
     Vector2i        pWindowCenter;
-    Vector3f        pPosition, pCenter, pDelta;
-    float           pAngle, pNear, pFar, pSpeed, pJumpHeight;
+    Vector3f        pPosition, pDelta;
+    double          pVerticalAngle, pHorizontalAngle;
+    float           pAngle, pNear, pFar, pSpeed, pJumpHeight, pDistance;
+
+    Vector2f        transfer(const Vector3f& vector) const;
 };
 #endif

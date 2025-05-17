@@ -7,7 +7,7 @@
 #include "ShapeShow.h"
 class GameForm: public Form {
 public:
-    GameForm(const int& index);
+    GameForm(RenderWindow& window, const int& index);
     ~GameForm();
     virtual bool setHover(const Vector2f& position) override;
 protected:

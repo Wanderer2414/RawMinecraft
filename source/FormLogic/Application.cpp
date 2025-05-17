@@ -16,7 +16,7 @@ void Application::run() {
     while (window.isOpen()) {
         switch (form_index) {
             case 0: {
-                GameForm gameForm(0);
+                GameForm gameForm(window, 0);
                 form_index = gameForm.run(window);
             };
             break;

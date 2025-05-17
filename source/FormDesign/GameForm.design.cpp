@@ -1,7 +1,9 @@
 #include "GameForm.h"
 #include "Global.h"
 
-GameForm::GameForm(const int& index):Form(index) {
+extern Vector2f WindowSize;
+
+GameForm::GameForm(RenderWindow& window, const int& index):Form(index) {
     
     insert(&cubes);
     insert(&camera);
@@ -15,6 +17,9 @@ GameForm::GameForm(const int& index):Form(index) {
     camera.setFarProjection(40);
     camera.setNearProjection(1);
     camera.setWide(60);
+
+    window.setMouseCursorVisible(false);
+    Mouse::setPosition(static_cast<Vector2i>(WindowSize)/2, window);
 }
 GameForm::~GameForm() {
 
