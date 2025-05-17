@@ -7,6 +7,7 @@ Vector2f WindowSize;
 Application::Application(const Vector2f& window_size, const string& title) {
     WindowSize = window_size ;
     window.create(VideoMode(window_size.x, window_size.y), title);
+    Mouse::setPosition(static_cast<Vector2i>(window.getPosition() + static_cast<Vector2i>(WindowSize)/2), window);
     window.display();
 
 }
