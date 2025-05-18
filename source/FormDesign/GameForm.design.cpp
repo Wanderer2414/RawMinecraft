@@ -43,11 +43,4 @@ _handle_function(GameForm, handle) {
 }
 void GameForm::draw(RenderTarget& target, RenderStates state) const {
     Form::draw(target, state);
-    target.popGLStates();
-    glBegin(GL_LINES);
-        glVertex3f(0, 0,0);
-        auto vector = camera.getHorizontalVector();
-        glVertex3f(vector.x, vector.y, vector.z);
-    glEnd();
-    target.pushGLStates();
 }

@@ -1,8 +1,11 @@
 #ifndef CUBE_H
 #define CUBE_H
 #include "BaseShape.h"
+#include "Camera.h"
+#include "Ray.h"
+#include "Rect3D.h"
 
-class Cube: public BaseShape {
+class Cube: public Drawable {
 public:
     Cube();
     ~Cube();
@@ -17,16 +20,14 @@ public:
                         setOutlineThickness(const float& thickness),
                         setOutlineColor(const Color& color);
                         
-    virtual bool        contains(const Vector2f& point)     const override;
-    virtual Vector2f    getPosition()                       const,
-                        getCenter()                         const override,
-                        getSize()                           const override;
-    virtual void        update()                                  override;
+    virtual bool        contains(const Ray3f& point)       const;
+    virtual Vector2f    getPosition()                       const;
 protected:
-    virtual void        draw(RenderTarget& target, RenderStates state = RenderStates::Default) const;
+    virtual void        draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
 private:
-    float               pSide, pOutlineThickness;
+    float               pOutlineThickness;
     Vector3f            pPosition;
     Color               pFillColor, pOutlineColor;
+    Rect3f              pPlane[6];
 };
 #endif
