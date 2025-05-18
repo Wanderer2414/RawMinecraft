@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "Controller.h"
+#include "Controller3D.h"
 #include "General.h"
 #include "Global.h"
 #include "SFML/Graphics/VertexArray.hpp"
@@ -100,7 +101,7 @@ void Camera::setFarProjection(const float& far) {
     gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
 }
 _handle_function(Camera, handle) {
-    bool is_changed = Controller::handle(window, state);
+    bool is_changed = Controller3D::handle(window, state);
     if (pFrameAlarm.get()) {
         if (Keyboard::isKeyPressed(Keyboard::Scancode::A)) {
             window.popGLStates();
@@ -171,8 +172,8 @@ _handle_function(Camera, handle) {
     return is_changed;
 }
 void Camera::draw(RenderTarget& target, RenderStates state) const {
-    Controller::draw(target, state);
     target.popGLStates();
+    Controller3D::draw(target, state);
     VertexArray array(sf::Lines, 6);
     for (int i =0 ;i<6; i++) {
         array[i].color = Color::White;

@@ -5,18 +5,18 @@ extern Vector2f WindowSize;
 
 GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index) {
     
+    insert(&coordinate);
     insert(&cubes);
-    insert(&camera);
     
     cubes.setOutlineThickness(1);
     cubes.setSize(1);
     cubes.Cube::setPosition(0, 0, 0);
 
-    camera.setPosition(4, 4, 2);
-    camera.setCenter(1, 1, 2);
-    camera.setFarProjection(40);
-    camera.setNearProjection(1);
-    camera.setWide(60);
+    sCamera.setPosition(4, 4, 2);
+    sCamera.setCenter(1, 1, 2);
+    sCamera.setFarProjection(40);
+    sCamera.setNearProjection(1);
+    sCamera.setWide(60);
 
     window.setMouseCursorVisible(false);
     Mouse::setPosition(static_cast<Vector2i>(WindowSize)/2, window);

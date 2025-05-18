@@ -1,9 +1,5 @@
 #include "Cube.h"
 #include "General.h"
-#include "Plane.h"
-#include "SFML/System/Vector2.hpp"
-#include "SFML/System/Vector3.hpp"
-#include <GL/gl.h>
 
 Cube::Cube() {
     pPosition = {0,0,0};

@@ -2,6 +2,7 @@
 #define GAMEFORM_H
 #include "Alarm.h"
 #include "Camera.h"
+#include "Coordinate.h"
 #include "Cube.h"
 #include "Form3D.h"
 #include "Global.h"
@@ -17,8 +18,8 @@ private:
     catch_function(AfterCatch) override;
     handle_function(handle)     override;
 
-    ShapeShow<Cube> cubes;
+    Cube            cubes;
 
-    Camera          camera;
+    Coordinate      coordinate;
 };
 #endif

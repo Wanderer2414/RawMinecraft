@@ -24,6 +24,7 @@ _catch_function(Form3D, CatchEvent) {
     }
     ans = Container::CatchEvent(window, event, state) || ans;
     ans = Container3D::CatchEvent(window, event, state) || ans;
+    ans = sCamera.CatchEvent(window, event, state);
     return ans;
 }
 bool Form3D::contains(const Vector2f& position) const {
@@ -41,6 +42,7 @@ int Form3D::run(RenderWindow& window) {
                 is_changed = BeforeCatch(window, event) || is_changed;
                 is_changed = Container::setHover(static_cast<Vector2f>(Mouse::getPosition(window))) || is_changed;
                 is_changed = Container3D::setHover(sCamera.getSight()) || is_changed;
+                is_changed = sCamera.setHover(sCamera.getSight()) || is_changed;
             }
             is_changed = CatchEvent(window, event) || is_changed;
             if (event.type == Event::Closed) window.close();
@@ -53,20 +55,9 @@ int Form3D::run(RenderWindow& window) {
         if (is_changed) {
             window.clear();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glClearColor(0, 0, 0, 0);            
-            window.popGLStates();
-            glBegin(GL_LINES);
-                for (int i = -5; i<5; i++) {
-                    glColor3f(1, 0, 0);
-                    glVertex3f(-10, i,0); glVertex3f(10, i, 0);
-                    glColor3f(0, 1, 0);
-                    glVertex3f(i, -10,0); glVertex3f(i, 10, 0);
-                }
-                glColor3f(0, 0, 1);glVertex3f(0, 0,-10); glVertex3f(0, 0, 10);
-            glEnd();
-            window.pushGLStates();
-            glFlush();
+            glClearColor(0, 0, 0, 0);
             draw(window);
+            glFlush();
             window.display();
         }
         if (return_value!=INT_MIN) return return_value;
@@ -78,16 +69,19 @@ int Form3D::run(RenderWindow& window) {
 _catch_function(Form3D, BeforeCatch) {
     bool is_changed = Container::BeforeCatch(window, event);
     is_changed = Container3D::BeforeCatch(window, event) || is_changed;
+    is_changed = sCamera.BeforeCatch(window, event) || is_changed;
     return is_changed;
 }
 _catch_function(Form3D, AfterCatch) {
     bool is_changed = Container::AfterCatch(window, event);
     is_changed = Container3D::AfterCatch(window, event) || is_changed;
+    is_changed = sCamera.AfterCatch(window, event) || is_changed;
     return is_changed;
 }
 _handle_function(Form3D, handle) {
     bool is_changed = Container::handle(window, state);
     is_changed = Container3D::handle(window, state) || is_changed;
+    is_changed = sCamera.handle(window, state) || is_changed;
     return is_changed;
 }
 void Form3D::insert(Controller* controller, const int& layer) {
@@ -103,8 +97,7 @@ void Form3D::erase(Controller3D* controller) {
     Container3D::insert(controller);
 }
 void Form3D::draw(RenderTarget& target, RenderStates state) const {
-    Container::draw(target, state);
-    target.popGLStates();
     Container3D::draw(target, state);
-    target.pushGLStates();
+    sCamera.draw(target, state);
+    Container::draw(target, state);
 }

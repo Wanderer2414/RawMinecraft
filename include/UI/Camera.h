@@ -1,11 +1,11 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 #include "Alarm.h"
-#include "Controller.h"
+#include "Controller3D.h"
 #include "Global.h"
 #include "Ray.h"
-
-class Camera: public Controller {
+class Form3D;
+class Camera: public Controller3D {
 public:
     Camera();
     ~Camera();
@@ -21,6 +21,7 @@ public:
                     getCenter() const;
 
     Ray3f           getSight() const;
+    friend Form3D;
 protected:
     virtual         handle_function(handle) override;
     virtual void    draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;

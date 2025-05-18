@@ -2,10 +2,11 @@
 #define CUBE_H
 #include "BaseShape.h"
 #include "Camera.h"
+#include "Controller3D.h"
 #include "Ray.h"
 #include "Rect3D.h"
 
-class Cube: public Drawable {
+class Cube: public Controller3D {
 public:
     Cube();
     ~Cube();

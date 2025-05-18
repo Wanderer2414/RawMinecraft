@@ -19,7 +19,6 @@ protected:
     virtual void draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
 private:
 };
-template class ShapeShow<Cube>;
 template class ShapeShow<RoundedRectangle>;
 template class ShapeShow<Rectangle>;
 template class ShapeShow<Circle>;
