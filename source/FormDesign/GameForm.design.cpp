@@ -3,7 +3,7 @@
 
 extern Vector2f WindowSize;
 
-GameForm::GameForm(RenderWindow& window, const int& index):Form(index) {
+GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index) {
     
     insert(&cubes);
     insert(&camera);
@@ -25,22 +25,18 @@ GameForm::GameForm(RenderWindow& window, const int& index):Form(index) {
 GameForm::~GameForm() {
 
 }
-bool GameForm::setHover(const Vector2f& position) {
-    bool is_changed = Form::setHover(position);
-    return is_changed;
-}
 _catch_function(GameForm, CatchEvent) {
-    bool is_changed = Form::CatchEvent(window, event, state);
+    bool is_changed = Form3D::CatchEvent(window, event, state);
     return is_changed;
 }
 _catch_function(GameForm, AfterCatch) {
-    bool is_changed = Form::AfterCatch(window, event, state);
+    bool is_changed = Form3D::AfterCatch(window, event, state);
     return is_changed;
 }
 _handle_function(GameForm, handle) {
-    bool is_changed = Form::handle(window);
+    bool is_changed = Form3D::handle(window);
     return is_changed;
 }
 void GameForm::draw(RenderTarget& target, RenderStates state) const {
-    Form::draw(target, state);
+    Form3D::draw(target, state);
 }

@@ -33,6 +33,7 @@ Vector3f Camera::getHorizontalVector() const {
 Vector3f Camera::getCenter() const {
     return pPosition + pDelta;
 }
+
 void Camera::setPosition(const float& x, const float& y, const float& z) {
     pPosition = {x, y, z};
     glMatrixMode(GL_PROJECTION);
@@ -207,4 +208,7 @@ Vector2f Camera::transfer(const Vector3f& vector) const {
     ans.x = winX;
     ans.y = WindowSize.y - winY;
     return ans;
+}
+Ray3f Camera::getSight() const {
+    return Ray3f(pPosition, pPosition + pDelta);
 }

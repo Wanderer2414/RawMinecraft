@@ -3,6 +3,7 @@
 #include "Alarm.h"
 #include "Controller.h"
 #include "Global.h"
+#include "Ray.h"
 
 class Camera: public Controller {
 public:
@@ -18,6 +19,8 @@ public:
                     setFarProjection(const float& far);
     Vector3f        getHorizontalVector() const,
                     getCenter() const;
+
+    Ray3f           getSight() const;
 protected:
     virtual         handle_function(handle) override;
     virtual void    draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
