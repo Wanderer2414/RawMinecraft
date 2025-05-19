@@ -27,7 +27,7 @@ _catch_function(Form3D, CatchEvent) {
     ans = sCamera.CatchEvent(window, event, state);
     return ans;
 }
-bool Form3D::contains(const Vector2f& position) const {
+bool Form3D::contains(const Ray3f& position) const {
     return true;
 }
 int Form3D::run(RenderWindow& window) {

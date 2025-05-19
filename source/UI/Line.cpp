@@ -16,5 +16,5 @@ bool Line::contains(const Vector3f& position) const {
     return delta == sDelta || -delta == sDelta;
 }
 float Line::distance(const Vector3f& position) const {
-    return abs(det(sDelta, position-sOrigin))/abs(sDelta);
-}
+    return abs(det(position-sOrigin, sDelta))/abs(sDelta);
+} 

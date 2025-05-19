@@ -17,14 +17,17 @@ bool Rect3f::isIntersect(const Ray3f& ray) const {
     Vector3f normal = det(pB-pA, pC-pB);
     if (ray*normal == 0) return false;
     float normalSide = ray*normal/abs(normal);
-    float times = distance(ray.getOrigin())/normalSide;
+    float times = abs(distance(ray.getOrigin())/normalSide);
     Vector3f pos = ray.getOrigin() + times*(Vector3f)ray;
     return contains(pos);
 }
 bool Rect3f::contains(const Vector3f& position) const {
-    Segment AB(pA, pB-pA);
-    Segment BC(pB, pC-pB);
-    if (AB.distance(position)<=BC.length() && BC.distance(position)<=AB.length() && !distance(position)) return true;
+    Segment AB(pA, pB);
+    Segment BC(pB, pC);
+    Segment CD(pC, operator[](3));
+    Segment DA(operator[](3), pA);
+    if (abs(AB.distance(position)+CD.distance(position) - BC.length())<0.01 && abs(BC.distance(position) + DA.distance(position) - AB.length())<0.01)
+        return true;
     return false;
 }
 float Rect3f::distance(const Vector3f& position) const {
@@ -50,4 +53,11 @@ Vector3f Rect3f::getCenter() const {
 }
 Vector3f Rect3f::getNormal() const {
     return det(pB-pA, pC-pB);
+}
+Vector3f Rect3f::getIntersect(const Ray3f& ray) const {
+    Vector3f normal = det(pB-pA, pC-pB);
+    float normalSide = ray*normal/abs(normal);
+    float times = abs(distance(ray.getOrigin())/normalSide);
+    Vector3f pos = ray.getOrigin() + times*(Vector3f)ray;
+    return pos;
 }

@@ -7,7 +7,7 @@ class Form: public Container {
 public:
     Form(const int& index);
     ~Form();
-    virtual bool contains(const Vector2f& position) const override;
+    virtual bool    contains(const Vector2f& position) const override;
     virtual Vector2f getSize() const override;
     virtual int     run(RenderWindow& window);
 protected:

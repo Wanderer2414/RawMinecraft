@@ -13,7 +13,7 @@ public:
                     erase(Controller* controller)                           override,
                     insert(Controller3D* controller, const int& layer = 0)  override,
                     erase(Controller3D* controller)                         override;
-    virtual bool contains(const Vector2f& position) const override;
+    virtual bool    contains(const Ray3f& sight) const override;
     virtual Vector2f getSize() const override;
     virtual int     run(RenderWindow& window);
 protected:

@@ -16,6 +16,7 @@ public:
     void        move(const Vector3f& offset);
     Vector3f    getCenter()                     const,
                 getNormal()                     const,
+                getIntersect(const Ray3f& sight) const,
                 operator[](const uint& index)   const;
 private:
     Vector3f    pA, pB, pC;

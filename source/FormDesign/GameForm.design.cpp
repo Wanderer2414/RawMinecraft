@@ -7,10 +7,13 @@ GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index) {
     
     insert(&coordinate);
     insert(&cubes);
+    insert(&track_rect);
     
     cubes.setOutlineThickness(1);
     cubes.setSize(1);
     cubes.Cube::setPosition(0, 0, 0);
+
+    track_rect.setPosition(Vector3f(2, 0, 0), Vector3f(2, 0, 3), Vector3f(2, 4, 3));
 
     sCamera.setPosition(4, 4, 2);
     sCamera.setCenter(1, 1, 2);

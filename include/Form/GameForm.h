@@ -7,6 +7,7 @@
 #include "Form3D.h"
 #include "Global.h"
 #include "ShapeShow.h"
+#include "TrackRect.h"
 class GameForm: public Form3D {
 public:
     GameForm(RenderWindow& window, const int& index);
@@ -19,6 +20,7 @@ private:
     handle_function(handle)     override;
 
     Cube            cubes;
+    TrackRect       track_rect;
 
     Coordinate      coordinate;
 };

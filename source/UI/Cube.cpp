@@ -1,5 +1,6 @@
 #include "Cube.h"
 #include "General.h"
+#include <GL/gl.h>
 
 Cube::Cube() {
     pPosition = {0,0,0};
@@ -9,6 +10,14 @@ Cube::Cube() {
 }
 Cube::~Cube() {
 
+}
+bool Cube::setHover(const Ray3f& sight) {
+    bool hover = false;
+    for (int i = 0; i<6; i++) 
+        if (pPlane[i].isIntersect(sight)) {
+            return Controller3D::setHover(true);
+        }
+    return Controller3D::setHover(false);
 }
 void Cube::setPosition(const float& x, const float& y, const float& z) {
     pPosition = {x, y, z};
@@ -34,12 +43,6 @@ void Cube::setOutlineThickness(const float& thickness) {
 bool Cube::contains(const Ray3f& point) const  {
     return false;
 }
-Vector2f Cube::getPosition() const {
-    return {0, 0};
-}
-void Cube::setPosition(const float& x, const float& y) {
-
-}
 void Cube::setFillColor(const Color& color) {
     pFillColor = color;
 }
@@ -50,6 +53,8 @@ void Cube::draw(RenderTarget& target, RenderStates state) const {
     target.popGLStates();
     glLineWidth(pOutlineThickness);
     glColor3f(pOutlineColor.r, pOutlineColor.g, pOutlineColor.b);
+    if (isHovered()) glColor3f(1, 0, 0);
+    else glColor3f(1, 1, 1);
     for (int i = 0; i<6; i++) {
         glBegin(GL_LINE_STRIP);
             for (int j = -1; j<4; j++) glVertex3f(pPlane[i][j]);
