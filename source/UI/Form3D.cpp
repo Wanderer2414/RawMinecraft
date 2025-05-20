@@ -60,11 +60,11 @@ int Form3D::run(RenderWindow& window) {
             window.clear();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glClearColor(0, 0, 0, 0);
+            Container3D::glDraw();
+            glFlush();
             window.pushGLStates();
             draw(window);
             window.popGLStates();
-            Container3D::glDraw();
-            glFlush();
             window.display();
         }
         if (return_value!=INT_MIN) return return_value;

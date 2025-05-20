@@ -20,6 +20,15 @@ Camera::Camera() {
     pWindowCenter.y = WindowSize.y/2;
     pDistance = 2;
 
+    pDirection.setPrimitiveType(Lines);
+    pDirection.resize(6);
+    pDirection[0].position = pDirection[1].position = WindowSize/2.f;
+    pDirection[2].position = pDirection[3].position = WindowSize/2.f;
+    pDirection[4].position = pDirection[5].position = WindowSize/2.f;
+    pDirection[0].color = pDirection[1].color = Color::Red;
+    pDirection[2].color = pDirection[3].color = Color::Green;
+    pDirection[4].color = pDirection[5].color = Color::Blue;
+
     pFrameAlarm.setDuration(1.f/60);
 }
 Camera::~Camera() {
@@ -53,6 +62,7 @@ void Camera::rotate(const float& vertical_angle, const float& horizontal_angle) 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
+    update();
 }
 void Camera::move(const float& x, const float& y, const float& z) {
     pPosition += x*getHorizontalVector();
@@ -80,7 +90,7 @@ void Camera::setCenter(const float& x, const float& y, const float& z) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
-    
+    update();
 }
 void Camera::setWide(const float& angle) {
     pAngle = angle;
@@ -161,27 +171,21 @@ _handle_function(Camera, handle) {
 }
 void Camera::draw(RenderTarget& target, RenderStates state) const {
     Controller3D::draw(target, state);
-    VertexArray array(sf::Lines, 6);
-    for (int i =0 ;i<6; i++) {
-        array[i].color = Color::White;
-        array[i] = WindowSize/2.f;
-    }
+    target.draw(pDirection);
+}
+void Camera::update() {
     Vector3f center = pPosition + pDelta;
     center.x += 1;
     Vector2f axis = transfer(center) - WindowSize/2.f;
-    array[0].color = array[1].color = Color::Red;
-    array[1].position += axis/abs(axis)*10.f;
+    pDirection[1].position = WindowSize/2.f + axis/abs(axis)*10.f;
     center.x -= 1;
 
     center.y += 1;
     axis = transfer(center) - WindowSize/2.f;
-    array[2].color = array[3].color = Color::Green;
-    array[3].position += axis/abs(axis)*10.f;
+    pDirection[3].position = WindowSize/2.f + axis/abs(axis)*10.f;
     center.y -= 1;
 
-    array[4].color = array[5].color = Color::Blue;
-    array[5].position.y -= 10*cos(pVerticalAngle);
-    target.draw(array);
+    pDirection[5].position.y = WindowSize.y/2.f - 10*cos(pVerticalAngle);
 }
 Vector2f Camera::transfer(const Vector3f& vector) const {
     int viewport[4];

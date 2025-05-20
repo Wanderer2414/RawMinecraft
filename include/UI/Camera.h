@@ -25,6 +25,7 @@ public:
 protected:
     virtual         handle_function(handle) override;
     virtual void    draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
+    virtual void    update() override;
 private:
     bool            pOnGround, pUpward;
     Vector2i        pWindowCenter;
@@ -32,6 +33,7 @@ private:
     double          pVerticalAngle, pHorizontalAngle;
     float           pAngle, pNear, pFar, pSpeed, pJumpHeight, pDistance;
     Alarm           pFrameAlarm;
+    VertexArray     pDirection;
 
     Vector2f        transfer(const Vector3f& vector) const;
 };
