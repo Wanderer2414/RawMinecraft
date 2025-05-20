@@ -2,12 +2,18 @@
 #include "Container3D.h"
 #include "Controller.h"
 #include "Global.h"
+#include <GL/gl.h>
 
 extern Vector2f WindowSize;
 
 Form3D::Form3D(const int& index) {
     form_index = index;
     return_value = INT_MIN;
+
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LESS);
 }
 Form3D::~Form3D() {
 

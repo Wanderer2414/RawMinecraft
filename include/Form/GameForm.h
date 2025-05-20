@@ -1,12 +1,10 @@
 #ifndef GAMEFORM_H
 #define GAMEFORM_H
-#include "Alarm.h"
 #include "Camera.h"
 #include "Coordinate.h"
 #include "Cube.h"
 #include "Form3D.h"
 #include "Global.h"
-#include "ShapeShow.h"
 #include "TrackRect.h"
 class GameForm: public Form3D {
 public:
@@ -17,11 +15,10 @@ protected:
 private:
     catch_function(CatchEvent) override;
     catch_function(AfterCatch) override;
-    handle_function(handle)     override;
+    handle_function(handle)    override;
 
     Cube            cubes;
-    TrackRect       track_rect;
 
-    Coordinate      coordinate;
+    Coordinate      coordinate; 
 };
 #endif

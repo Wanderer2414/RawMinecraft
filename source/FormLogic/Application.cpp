@@ -9,7 +9,6 @@ Application::Application(const Vector2f& window_size, const string& title) {
     window.create(VideoMode(window_size.x, window_size.y), title);
     Mouse::setPosition(static_cast<Vector2i>(window.getPosition() + static_cast<Vector2i>(WindowSize)/2), window);
     window.display();
-
 }
 void Application::run() {
     int form_index = 0;

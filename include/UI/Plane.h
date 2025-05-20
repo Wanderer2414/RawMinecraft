@@ -1,6 +1,5 @@
 #ifndef PLANE_H
 #define PLANE_H
-#include "Global.h"
 #include "Ray.h"
 class Plane {
 public:

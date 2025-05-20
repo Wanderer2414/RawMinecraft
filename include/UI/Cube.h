@@ -24,6 +24,8 @@ public:
 protected:
     virtual void        draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
 private:
+    Image               pImage;
+    GLuint              pTextureId;
     float               pOutlineThickness;
     Vector3f            pPosition;
     Color               pFillColor, pOutlineColor;
