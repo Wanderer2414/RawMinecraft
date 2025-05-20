@@ -61,7 +61,8 @@ void Cube::setOutlineColor(const Color& color) {
     pOutlineColor = color;
 }
 void Cube::draw(RenderTarget& target, RenderStates state) const {
-    target.popGLStates();
+}
+void Cube::glDraw() const {
     glLineWidth(pOutlineThickness);
     glColor3f(pOutlineColor.r, pOutlineColor.g, pOutlineColor.b);
     if (isHovered()) glColor3f(1, 0, 0);
@@ -80,5 +81,4 @@ void Cube::draw(RenderTarget& target, RenderStates state) const {
             glVertex3f(pPlane[i][3]);
         glEnd();
     }
-    target.pushGLStates();
 }

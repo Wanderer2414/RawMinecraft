@@ -8,5 +8,6 @@ public:
 
 protected:
     void draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
+    void glDraw() const override;
 };
 #endif

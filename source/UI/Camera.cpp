@@ -104,27 +104,19 @@ _handle_function(Camera, handle) {
     bool is_changed = Controller3D::handle(window, state);
     if (pFrameAlarm.get()) {
         if (Keyboard::isKeyPressed(Keyboard::Scancode::A)) {
-            window.popGLStates();
                 move(pSpeed, 0, 0);
-            window.pushGLStates();
             is_changed = true;
         }
         if (Keyboard::isKeyPressed(Keyboard::Scancode::D)) {
-            window.popGLStates();
                 move(-pSpeed, 0, 0);
-            window.pushGLStates();
             is_changed = true;
         }
         if (Keyboard::isKeyPressed(Keyboard::Scancode::W)) {
-            window.popGLStates();
                 move(0, pSpeed, 0);
-            window.pushGLStates();
             is_changed = true;
         }
         if (Keyboard::isKeyPressed(Keyboard::Scancode::S)) {
-            window.popGLStates();
                 move(0, -pSpeed, 0);
-            window.pushGLStates();
             is_changed = true;
         }
 
@@ -135,7 +127,6 @@ _handle_function(Camera, handle) {
         }
 
         if (!pOnGround) {
-            window.popGLStates();
             if (pUpward  && pJumpHeight < 1.4) {
                 pJumpHeight += 0.1;
                 move(0, 0, 0.1);
@@ -152,7 +143,6 @@ _handle_function(Camera, handle) {
                 pOnGround = true;
                 pJumpHeight = 0;
             }
-            window.pushGLStates();
             is_changed = true;
         }
     }
@@ -164,15 +154,12 @@ _handle_function(Camera, handle) {
 
     if (delta.x != 0 || delta.y != 0) {
         Mouse::setPosition(pWindowCenter, window);
-        window.popGLStates();
         rotate(delta.y/1000, delta.x/1000);
-        window.pushGLStates();
         is_changed = true;
     }
     return is_changed;
 }
 void Camera::draw(RenderTarget& target, RenderStates state) const {
-    target.popGLStates();
     Controller3D::draw(target, state);
     VertexArray array(sf::Lines, 6);
     for (int i =0 ;i<6; i++) {
@@ -194,7 +181,6 @@ void Camera::draw(RenderTarget& target, RenderStates state) const {
 
     array[4].color = array[5].color = Color::Blue;
     array[5].position.y -= 10*cos(pVerticalAngle);
-    target.pushGLStates();
     target.draw(array);
 }
 Vector2f Camera::transfer(const Vector3f& vector) const {

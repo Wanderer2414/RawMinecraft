@@ -12,8 +12,6 @@ Form3D::Form3D(const int& index) {
 
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);
-    glDepthFunc(GL_LESS);
 }
 Form3D::~Form3D() {
 
@@ -62,7 +60,10 @@ int Form3D::run(RenderWindow& window) {
             window.clear();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glClearColor(0, 0, 0, 0);
+            window.pushGLStates();
             draw(window);
+            window.popGLStates();
+            Container3D::glDraw();
             glFlush();
             window.display();
         }

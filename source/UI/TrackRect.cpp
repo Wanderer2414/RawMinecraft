@@ -18,7 +18,6 @@ void TrackRect::setPosition(const Vector3f& a, const Vector3f& b, const Vector3f
 }
 
 void TrackRect::draw(RenderTarget& target, RenderStates state) const {
-    target.popGLStates();
     
     Vector3f AB = (pRect[1]-pRect[0])/10.f, BC = (pRect[2]-pRect[1])/10.f;
     if (pRect.contains(position)) glColor3f(0, 0, 1);
@@ -46,5 +45,4 @@ void TrackRect::draw(RenderTarget& target, RenderStates state) const {
         glVertex3f(position-BC);
         glVertex3f(position+BC);
     glEnd();
-    target.pushGLStates();
 }

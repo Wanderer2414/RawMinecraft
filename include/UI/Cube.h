@@ -23,6 +23,7 @@ public:
     virtual bool        contains(const Ray3f& point)       const override;
 protected:
     virtual void        draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
+    virtual void        glDraw() const override;
 private:
     Image               pImage;
     GLuint              pTextureId;

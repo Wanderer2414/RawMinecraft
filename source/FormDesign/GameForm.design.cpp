@@ -6,8 +6,8 @@ extern Vector2f WindowSize;
 
 GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index) {
     
-    insert(&coordinate);
     insert(&cubes);
+    insert(&coordinate);
     
     cubes.setOutlineThickness(1);
     cubes.setSize(1);

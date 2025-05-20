@@ -29,6 +29,7 @@ protected:
     virtual         handle_function(handle);
     virtual bool    contains(const Ray3f& position) const;
     virtual void    draw(RenderTarget& target, RenderStates state) const override;
+    virtual void    glDraw() const;
 
 private:
     unsigned int    double_click_count;

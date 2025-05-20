@@ -72,3 +72,5 @@ void Controller3D::draw(RenderTarget& target, RenderStates state) const {
 void Controller3D::update() {
     
 }
+void Controller3D::glDraw() const {
+}

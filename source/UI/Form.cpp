@@ -51,7 +51,6 @@ int Form::run(RenderWindow& window) {
         if (is_changed) {
             window.clear();
             draw(window);
-            // window.pushGLStates();
             window.display();
         }
         if (return_value!=INT_MIN) return return_value;

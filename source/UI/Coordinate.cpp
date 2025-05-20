@@ -9,7 +9,8 @@ Coordinate::~Coordinate() {
 }
 
 void Coordinate::draw(RenderTarget& target, RenderStates state) const {
-    target.popGLStates();
+}
+void Coordinate::glDraw() const {
     glBegin(GL_LINES);
         for (int i = -5; i<5; i++) {
             glColor3f(1, 0, 0);
@@ -19,5 +20,4 @@ void Coordinate::draw(RenderTarget& target, RenderStates state) const {
         }
         glColor3f(0, 0, 1);glVertex3f(0, 0,-10); glVertex3f(0, 0, 10);
     glEnd();
-    target.pushGLStates();
 }
