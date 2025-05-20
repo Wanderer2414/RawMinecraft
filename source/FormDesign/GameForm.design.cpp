@@ -9,14 +9,12 @@ GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index) {
     insert(&cubes);
     insert(&coordinate);
     
-    cubes.setOutlineThickness(1);
-    cubes.setSize(1);
-    cubes.Cube::setPosition(0, 0, 0);
+    cubes.setPosition(0, 0, 0);
 
     sCamera.setPosition(4, 4, 2);
     sCamera.setCenter(1, 1, 2);
     sCamera.setFarProjection(40);
-    sCamera.setNearProjection(1);
+    sCamera.setNearProjection(0.1);
     sCamera.setWide(60);
 
     window.setMouseCursorVisible(false);

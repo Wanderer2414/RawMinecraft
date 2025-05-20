@@ -12,13 +12,7 @@ public:
     ~Cube();
     virtual bool        setHover(const Ray3f& hover) override;
     virtual void        setPosition(const float& x, const float& y, const float& z),
-                        setPosition(const Vector3f& position),
-                        setSize(const float& side),
-
-                        setFillColor(const Color& color),
-                        
-                        setOutlineThickness(const float& thickness),
-                        setOutlineColor(const Color& color);
+                        setPosition(const Vector3f& position);
                         
     virtual bool        contains(const Ray3f& point)       const override;
 protected:
@@ -27,9 +21,7 @@ protected:
 private:
     Image               pImage;
     GLuint              pTextureId;
-    float               pOutlineThickness;
     Vector3f            pPosition;
-    Color               pFillColor, pOutlineColor;
     Rect3f              pPlane[6];
 };
 #endif

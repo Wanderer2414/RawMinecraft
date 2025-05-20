@@ -105,8 +105,7 @@ void Container3D::draw(RenderTarget& target, RenderStates state) const {
 };
 void Container3D::glDraw() const {
     for (const auto& [child, layer]:children) 
-        if (focus_control == -1 || child != children[focus_control].first) child->glDraw();
-    if (focus_control != -1) children[focus_control].first->glDraw();
+        child->glDraw();
 }
 void Container3D::update() {
     for (auto& [child, layer]:children) child->update();

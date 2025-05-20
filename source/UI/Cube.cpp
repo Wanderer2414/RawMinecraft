@@ -4,15 +4,22 @@
 
 Cube::Cube() {
     pPosition = {0,0,0};
-    pOutlineThickness = 1;
-    pFillColor = Color::Transparent;
-    pOutlineColor = Color::White;
     pImage.loadFromFile("assets/images/Dirt.png");
     glGenTextures(1, &pTextureId);
     glBindTexture(GL_TEXTURE_2D, pTextureId);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImage.getSize().x,pImage.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, pImage.getPixelsPtr());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+    pPlane[0] = {pPosition, pPosition+Vector3f(0, 1, 0), pPosition+Vector3f(1, 1, 0)};
+    pPlane[5] = {pPosition+Vector3f(1, 1, 1), pPosition+Vector3f(0, 1, 1), pPosition+Vector3f(0, 0, 1)};
+
+    pPlane[1] = {pPosition+Vector3f(0, 0, 1),pPosition,  pPosition+Vector3f(1, 0, 0)};
+    pPlane[4] = { pPosition+Vector3f(1, 1, 1), pPosition+Vector3f(1, 1, 0), pPosition+Vector3f(0,1 ,0 )};
+
+    pPlane[2] = {pPosition+Vector3f(0, 1, 1), pPosition + Vector3f(0, 1, 0), pPosition};
+    pPlane[3] = {  pPosition+Vector3f(1, 0, 1), pPosition+Vector3f(1, 0, 0), pPosition+Vector3f(1, 1, 0)};
 }
 Cube::~Cube() {
     glDeleteTextures(1, &pTextureId);
@@ -38,36 +45,15 @@ void Cube::setPosition(const Vector3f& position) {
     for (int i = 0; i<6; i++) pPlane[i].move(delta);
     setPosition(position.x, position.y, position.z);
 }
-void Cube::setSize(const float& side) {
-    pPlane[0] = {pPosition, pPosition+Vector3f(0, side, 0), pPosition+Vector3f(side, side, 0)};
-    pPlane[5] = {pPosition+Vector3f(side, side, side), pPosition+Vector3f(0, side, side), pPosition+Vector3f(0, 0, side)};
-
-    pPlane[1] = {pPosition+Vector3f(0, 0, side),pPosition,  pPosition+Vector3f(side, 0, 0)};
-    pPlane[4] = { pPosition+Vector3f(side, side, side), pPosition+Vector3f(side, side, 0), pPosition+Vector3f(0,side ,0 )};
-
-    pPlane[2] = {pPosition+Vector3f(0, side, side), pPosition + Vector3f(0, side, 0), pPosition};
-    pPlane[3] = {  pPosition+Vector3f(side, 0, side), pPosition+Vector3f(side, 0, 0), pPosition+Vector3f(side, side, 0)};
-}
-void Cube::setOutlineThickness(const float& thickness) {
-    pOutlineThickness = thickness;
-}
 bool Cube::contains(const Ray3f& point) const  {
     return false;
-}
-void Cube::setFillColor(const Color& color) {
-    pFillColor = color;
-}
-void Cube::setOutlineColor(const Color& color) {
-    pOutlineColor = color;
 }
 void Cube::draw(RenderTarget& target, RenderStates state) const {
 }
 void Cube::glDraw() const {
-    glLineWidth(pOutlineThickness);
-    glColor3f(pOutlineColor.r, pOutlineColor.g, pOutlineColor.b);
-    if (isHovered()) glColor3f(1, 0, 0);
+    if (isFocus()) glColor3f(1, 0, 0);
     else glColor3f(1, 1, 1);
-
+    glColor3f(1, 1, 1);
     glBindTexture(GL_TEXTURE_2D, pTextureId);
     for (int i = 0; i<6; i++) {
         glBegin(GL_QUADS);
@@ -80,5 +66,18 @@ void Cube::glDraw() const {
             glTexCoord2f(1, 0);
             glVertex3f(pPlane[i][3]);
         glEnd();
+    }
+    if (isHovered()) {
+        glColor3f(0.1,0.1,0.1);
+        glLineWidth(2);
+        for (int i = 0; i<6; i++) {
+            glBegin(GL_LINE_STRIP);
+                glVertex3f(pPlane[i][0]);
+                glVertex3f(pPlane[i][1]);
+                glVertex3f(pPlane[i][2]);
+                glVertex3f(pPlane[i][3]);
+                glVertex3f(pPlane[i][0]);
+            glEnd();
+        }
     }
 }
