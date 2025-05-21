@@ -1,8 +1,9 @@
 #ifndef GAMEFORM_H
 #define GAMEFORM_H
 #include "Camera.h"
+#include "Chunk.h"
 #include "Coordinate.h"
-#include "Cube.h"
+#include "Block.h"
 #include "Form3D.h"
 #include "Global.h"
 #include "TrackRect.h"
@@ -17,8 +18,9 @@ private:
     catch_function(AfterCatch) override;
     handle_function(handle)    override;
 
-    Cube            cubes;
+    Block            cubes;
+    BlockCatogary   pBlockCatogary;
 
-    Coordinate      coordinate; 
+    Chunk           chunks[3][3][3];
 };
 #endif

@@ -2,7 +2,7 @@
 #define SHAPESHOE_H
 #include "Circle.h"
 #include "Controller.h"
-#include "Cube.h"
+#include "Block.h"
 #include "Rectangle.h"
 #include "RoundedRectangle.h"
 #include "SettingPackage.h"

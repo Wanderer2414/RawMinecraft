@@ -106,6 +106,7 @@ void Container3D::draw(RenderTarget& target, RenderStates state) const {
 void Container3D::glDraw() const {
     for (const auto& [child, layer]:children) 
         child->glDraw();
+    
 }
 void Container3D::update() {
     for (auto& [child, layer]:children) child->update();
