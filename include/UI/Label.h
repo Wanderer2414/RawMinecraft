@@ -29,6 +29,6 @@ protected:
     int         m_align;
 private:
 };
-template class Label<Rectangle>;
+template class Label<MC::Rectangle>;
 template class Label<RoundedRectangle>;
 #endif

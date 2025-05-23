@@ -3,7 +3,7 @@
 #include "Container.h"
 #include "Global.h"
 #include "Rectangle.h"
-class VerticalBox: public Container, public Rectangle {
+class VerticalBox: public Container, public MC::Rectangle {
 public:
     VerticalBox();
     ~VerticalBox();

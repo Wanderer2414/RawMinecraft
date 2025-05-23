@@ -3,13 +3,14 @@
 #include "Rectangle.h"
 #include "SettingPackage.h"
 #include "Textbox.h"
+#include "Global.h"
 
-class TextEditor: public Textbox<Rectangle> {
+class TextEditor: public Textbox<MC::Rectangle> {
 public:
     TextEditor(const ButtonSetting& button_setting = ButtonSetting::Default, const TextSetting& text_setting = TextSetting::Default);
     ~TextEditor();
     uint            getSelectionValue() const;
-    virtual void    setList(const vector<string>& list, const vector<size_t>& values),
+    virtual void    setList(const vector<string>& list, const vector<std::size_t>& values),
                     setString(const string& text) override,
                     update() override;
     string          getPreviousString() const;
@@ -19,6 +20,6 @@ protected:
     virtual void draw(RenderTarget &target, RenderStates state) const override;
 
     vector<string> shared_list;
-    vector<size_t> shared_values;
+    vector<std::size_t> shared_values;
 };
 #endif

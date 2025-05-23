@@ -3,9 +3,6 @@
 #include "Controller3D.h"
 #include "General.h"
 #include "Global.h"
-#include "SFML/Graphics/VertexArray.hpp"
-#include "SFML/Window/Keyboard.hpp"
-#include <cmath>
 
 extern Vector2f WindowSize;
 Camera::Camera() {
@@ -98,14 +95,14 @@ void Camera::setWide(const float& angle) {
     glLoadIdentity();
     gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
 }
-void Camera::setNearProjection(const float& near) {
-    pNear = near;
+void Camera::setNearProjection(const float& bnear) {
+    pNear = bnear;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
 }
-void Camera::setFarProjection(const float& far) {
-    pFar = far;
+void Camera::setFarProjection(const float& bfar) {
+    pFar = bfar;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);

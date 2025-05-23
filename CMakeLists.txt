@@ -13,12 +13,12 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/SFML-2.6.2/include
     )
 file(GLOB SOURCES 
-    ${CMAKE_SOURCE_DIR}/source/*cpp
-    ${CMAKE_SOURCE_DIR}/source/UI/*cpp
-    ${CMAKE_SOURCE_DIR}/source/Logic/*cpp
-    ${CMAKE_SOURCE_DIR}/source/Extended/*cpp
-    ${CMAKE_SOURCE_DIR}/source/FormLogic/*cpp
-    ${CMAKE_SOURCE_DIR}/source/FormDesign/*cpp
+    ${CMAKE_SOURCE_DIR}/source/*
+    ${CMAKE_SOURCE_DIR}/source/UI/*
+    ${CMAKE_SOURCE_DIR}/source/Logic/*
+    ${CMAKE_SOURCE_DIR}/source/Extended/*
+    ${CMAKE_SOURCE_DIR}/source/FormLogic/*
+    ${CMAKE_SOURCE_DIR}/source/FormDesign/*
 )
 set(CMAKE_BUILD_TYPE Debug)
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -28,4 +28,5 @@ ${CMAKE_SOURCE_DIR}/assets ${CMAKE_BINARY_DIR}/assets
 )
 
 target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/SFML-2.6.2/lib)
-target_link_libraries(${PROJECT_NAME} -lsfml-window -lsfml-graphics -lsfml-system -lGL -lGLU)
+target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/SFML-2.6.2/bin)
+target_link_libraries(${PROJECT_NAME} -lsfml-window -lsfml-graphics -lsfml-system -lOpenGl32 -lglu32 -lfreeglut)

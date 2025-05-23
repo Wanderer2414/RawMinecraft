@@ -16,7 +16,7 @@ uint TextEditor::getSelectionValue() const {
 string TextEditor::getPreviousString() const {
     return m_content.substr(0, m_cursor_index);
 }
-void TextEditor::setList(const vector<string>& list, const vector<size_t>& values) {
+void TextEditor::setList(const vector<string>& list, const vector<std::size_t>& values) {
     shared_list = list;
     shared_values = values;
     shared_selection_index = list.size();

@@ -40,6 +40,6 @@ protected:
     Alarm               alarm;
 private:
 };
-template class Textbox<Rectangle>;
+template class Textbox<MC::Rectangle>;
 template class Textbox<RoundedRectangle>;
 #endif

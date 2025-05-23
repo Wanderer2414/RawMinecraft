@@ -8,7 +8,7 @@ public:
     ~Container();
     virtual bool    setHover(const Vector2f& position)          override,
                     setHover(const bool& hover)                 override;
-    size_t          size()                                      const;
+    std::size_t     size()                                      const;
     virtual void    insert(Controller* controller, const int& layer = 0),
                     erase(Controller* controller),
                     update()                                    override;
@@ -17,7 +17,7 @@ public:
                     getSize() const                             override;
     virtual void    setPosition(const float& x, const float& y) override;
     virtual void    clear();
-    Controller* operator[](const size_t& index);
+    Controller* operator[](const std::size_t& index);
 protected:
     virtual         catch_function(CatchEvent)                  override;
     virtual         catch_function(AfterCatch)                  override;

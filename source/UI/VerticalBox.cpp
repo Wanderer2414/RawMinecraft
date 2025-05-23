@@ -10,13 +10,13 @@ VerticalBox::~VerticalBox() {
 
 }
 bool VerticalBox::contains(const Vector2f& position) const {
-    return Rectangle::contains(position);
+    return MC::Rectangle::contains(position);
 }
 Vector2f VerticalBox::getPosition() const {
-    return Rectangle::getPosition();
+    return MC::Rectangle::getPosition();
 }
 Vector2f VerticalBox::getSize() const {
-    return Rectangle::getSize();
+    return MC::Rectangle::getSize();
 }
 bool VerticalBox::setHover(const Vector2f& position) {
     bool is_changed = Controller::setHover(position);

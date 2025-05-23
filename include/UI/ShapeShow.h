@@ -20,6 +20,6 @@ protected:
 private:
 };
 template class ShapeShow<RoundedRectangle>;
-template class ShapeShow<Rectangle>;
+template class ShapeShow<MC::Rectangle>;
 template class ShapeShow<Circle>;
 #endif

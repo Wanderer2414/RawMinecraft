@@ -30,6 +30,6 @@ protected:
     int             m_hover_index;
 private:
 };
-template class Suggestionlist<Rectangle>;
+template class Suggestionlist<MC::Rectangle>;
 template class Suggestionlist<RoundedRectangle>;
 #endif

@@ -32,6 +32,6 @@ protected:
 private:
 };
 template class Button<RoundedRectangle>;
-template class Button<Rectangle>;
+template class Button<MC::Rectangle>;
 template class Button<Circle>;
 #endif

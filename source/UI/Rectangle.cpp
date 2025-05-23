@@ -1,19 +1,19 @@
 #include "Rectangle.h"
 #include "BaseShape.h"
 #include "Global.h"
-
+using namespace MC;
 Rectangle::Rectangle() {
     m_size = {100, 50};
     update();
 };
-bool Rectangle::contains(const sf::Vector2f& point) const {
+bool Rectangle::contains(const Vector2f& point) const {
     return getGlobalBounds().contains(point);
 }
 
-size_t Rectangle::getPointCount() const {
+std::size_t Rectangle::getPointCount() const {
     return 4;
 }
-sf::Vector2f Rectangle::getPoint(size_t index) const {
+Vector2f Rectangle::getPoint(std::size_t index) const {
     switch (index) {
         case 0: return {0, 0}; break;
         case 1: return {m_size.x, 0}; break;

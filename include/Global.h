@@ -1,6 +1,11 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+#ifdef _WIN32
+typedef unsigned int uint;
+typedef unsigned char uchar;
+#endif
+
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
