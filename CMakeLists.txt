@@ -6,11 +6,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/glm-master
-    ${CMAKE_SOURCE_DIR}/glad-c/include
+    ${CMAKE_SOURCE_DIR}/glad/include
     ${CMAKE_SOURCE_DIR}/SFML-2.6.2/include
     )
 file(GLOB SOURCES 
-    ${CMAKE_SOURCE_DIR}/glad-c/src/glad.c
+    ${CMAKE_SOURCE_DIR}/glad/src/*.c
     ${CMAKE_SOURCE_DIR}/source/*cpp
 )
 add_subdirectory(${CMAKE_SOURCE_DIR}/glm-master)
