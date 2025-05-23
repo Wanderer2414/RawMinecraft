@@ -2,11 +2,10 @@
 #define GAMEFORM_H
 #include "Camera.h"
 #include "Chunk.h"
-#include "Coordinate.h"
 #include "Block.h"
 #include "Form3D.h"
 #include "Global.h"
-#include "TrackRect.h"
+
 class GameForm: public Form3D {
 public:
     GameForm(RenderWindow& window, const int& index);

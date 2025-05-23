@@ -1,4 +1,5 @@
 #include "Chunk.h"
+#include "Block.h"
 #include <GL/gl.h>
 
 Chunk::Chunk() {
@@ -17,6 +18,7 @@ void Chunk::setPosition(const Vector3i& position) {
 
 void Chunk::glDraw() const {
     glColor3f(1, 0, 0);
+    glLineWidth(3.0);
     glBegin(GL_LINE_STRIP);
         glVertex3i(pPosition.x, pPosition.y, pPosition.z);
         glVertex3i(pPosition.x, pPosition.y+16, pPosition.z);
@@ -46,4 +48,8 @@ void Chunk::glDraw() const {
         glVertex3i(pPosition.x, pPosition.y, pPosition.z+16);
     glEnd();
         
+}
+
+BlockCatogary::Catogary& Chunk::getBlocks(const int& x, const int& y, const int& z) {
+    return pBlocks[x][y][z];
 }

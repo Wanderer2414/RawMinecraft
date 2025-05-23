@@ -76,13 +76,13 @@ void Block::glDraw() const {
     glBindTexture(GL_TEXTURE_2D, (*pBlockCatogary)[type]);
     for (int i = 0; i<6; i++) {
         glBegin(GL_QUADS);
-            glTexCoord2f(0, 0);
+            glTexCoord2f(1.f/3, 0);
             glVertex3f(pPlane[i][0]);
-            glTexCoord2f(0, 1);
+            glTexCoord2f(1.f/3, 1.f/3);
             glVertex3f(pPlane[i][1]);
-            glTexCoord2f(1, 1);
+            glTexCoord2f(2.f/3, 1.f/3);
             glVertex3f(pPlane[i][2]);
-            glTexCoord2f(1, 0);
+            glTexCoord2f(2.f/3, 0);
             glVertex3f(pPlane[i][3]);
         glEnd();
     }
