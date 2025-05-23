@@ -1,6 +1,5 @@
 #include "Chunk.h"
 #include "Block.h"
-#include <GL/gl.h>
 
 Chunk::Chunk() {
 

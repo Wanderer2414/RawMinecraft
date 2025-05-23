@@ -3,8 +3,6 @@
 #include "Controller3D.h"
 #include "General.h"
 #include "Global.h"
-#include "SFML/Graphics/VertexArray.hpp"
-#include "SFML/Window/Keyboard.hpp"
 #include <cmath>
 
 extern Vector2f WindowSize;
@@ -48,7 +46,7 @@ void Camera::setPosition(const float& x, const float& y, const float& z) {
     pPosition = {x, y, z};
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
+    // gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
 }
 void Camera::rotate(const float& vertical_angle, const float& horizontal_angle) {
     pVerticalAngle -= vertical_angle;
@@ -61,7 +59,7 @@ void Camera::rotate(const float& vertical_angle, const float& horizontal_angle) 
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
+    // gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
     update();
 }
 void Camera::move(const float& x, const float& y, const float& z) {
@@ -74,7 +72,7 @@ void Camera::move(const float& x, const float& y, const float& z) {
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
+    // gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
 }
 void Camera::setCenter(const float& x, const float& y, const float& z) {
     pDelta = Vector3f(x, y, z) - pPosition;
@@ -89,26 +87,26 @@ void Camera::setCenter(const float& x, const float& y, const float& z) {
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
+    // gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
     update();
 }
 void Camera::setWide(const float& angle) {
     pAngle = angle;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
+    // gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
 }
 void Camera::setNearProjection(const float& near) {
     pNear = near;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
+    // gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
 }
 void Camera::setFarProjection(const float& far) {
     pFar = far;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
+    // gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
 }
 _handle_function(Camera, handle) {
     bool is_changed = Controller3D::handle(window, state);
@@ -194,7 +192,7 @@ Vector2f Camera::transfer(const Vector3f& vector) const {
     glGetDoublev(GL_PROJECTION_MATRIX, projectionView);
     glGetDoublev(GL_MODELVIEW_MATRIX, modelView);
     double winX, winY, winZ;
-    gluProject(vector.x, vector.y, vector.z, modelView, projectionView, viewport, &winX, &winY, &winZ);
+    // gluProject(vector.x, vector.y, vector.z, modelView, projectionView, viewport, &winX, &winY, &winZ);
     Vector2f ans;
     ans.x = winX;
     ans.y = WindowSize.y - winY;

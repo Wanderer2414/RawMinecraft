@@ -2,7 +2,6 @@
 #include "Container.h"
 #include "Controller.h"
 #include "Global.h"
-#include <GL/gl.h>
 
 extern Vector2f WindowSize;
 

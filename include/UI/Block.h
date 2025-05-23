@@ -21,6 +21,10 @@ private:
 
 class Block: public Controller3D {
 public:
+    struct Vertex {
+        float x, y, z;
+        float s, t;
+    };
     Block(BlockCatogary* block_catorgary);
     ~Block();
     BlockCatogary::Catogary type;
@@ -34,6 +38,8 @@ protected:
     virtual void        glDraw() const override;
 private:
     BlockCatogary       *pBlockCatogary;
+    Vertex              pVertex[24];
+    GLuint              pVAO;
     Vector3f            pPosition;
     Rect3f              pPlane[6];
 };

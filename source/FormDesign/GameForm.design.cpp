@@ -1,24 +1,26 @@
 #include "GameForm.h"
 #include "Block.h"
 #include "Global.h"
-#include <GL/gl.h>
 
 extern Vector2f WindowSize;
 
-GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index), cubes(&pBlockCatogary) {
+GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index)
+// , cubes(&pBlockCatogary) 
+{
     
-    insert(&cubes);
-    cubes.type = BlockCatogary::Dirt;
-    for (int i = 0; i<3; i++) {
-        for (int j = 0; j<3; j++) {
-            for (int k = 0; k<3; k++) {
-                insert(&chunks[i][j][k]);
-                chunks[i][j][k].setPosition((i-1)*16,(j-1)*16,(k-1)*16);
-            }
-        }
-    }
-    cubes.setPosition(0, 0, 0);
-
+    // insert(&cubes);
+    // cubes.type = BlockCatogary::Dirt;
+    // for (int i = 0; i<3; i++) {
+    //     for (int j = 0; j<3; j++) {
+    //         for (int k = 0; k<3; k++) {
+    //             insert(&chunks[i][j][k]);
+    //             chunks[i][j][k].setPosition((i-1)*16,(j-1)*16,(k-1)*16);
+    //         }
+    //     }
+    // }
+    // cubes.setPosition(0, 0, 0);
+    insert(&pCoordinate);
+    
     sCamera.setPosition(4, 4, 2);
     sCamera.setCenter(1, 1, 2);
     sCamera.setFarProjection(100);

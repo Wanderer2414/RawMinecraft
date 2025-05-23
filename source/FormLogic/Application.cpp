@@ -1,7 +1,6 @@
 #include "Application.h"
 #include "GameForm.h"
 #include "SFML/Window/WindowStyle.hpp"
-#include <GL/gl.h>
 
 Vector2f WindowSize;
 
@@ -17,6 +16,11 @@ Application::Application(const Vector2f& window_size, const string& title) {
     window.create(VideoMode(window_size.x, window_size.y), title, Style::Default, settings);
     Mouse::setPosition(static_cast<Vector2i>(window.getPosition() + static_cast<Vector2i>(WindowSize)/2), window);
     window.display();
+    if (!gladLoadGL()) {
+        cout << "Failed to load OpenGL" << endl;
+        exit(0);
+    }
+    cout << "OpenGL version: " << glGetString(GL_VERSION) << endl;
 }
 void Application::run() {
     int form_index = 0;

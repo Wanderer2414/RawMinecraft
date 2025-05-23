@@ -1,5 +1,4 @@
 #include "Coordinate.h"
-#include <GL/gl.h>
 
 Coordinate::Coordinate() {
 

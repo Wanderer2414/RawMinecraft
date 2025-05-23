@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Chunk.h"
 #include "Block.h"
+#include "Coordinate.h"
 #include "Form3D.h"
 #include "Global.h"
 
@@ -16,10 +17,10 @@ private:
     catch_function(CatchEvent) override;
     catch_function(AfterCatch) override;
     handle_function(handle)    override;
+    Coordinate          pCoordinate;
+    // Block            cubes;
+    // BlockCatogary   pBlockCatogary;
 
-    Block            cubes;
-    BlockCatogary   pBlockCatogary;
-
-    Chunk           chunks[3][3][3];
+    // Chunk           chunks[3][3][3];
 };
 #endif

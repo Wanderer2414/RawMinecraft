@@ -13,5 +13,5 @@ float operator*(const Vector3f& a, const Vector3f& b);
 
 Vector3f det(const Vector3f& a, const Vector3f& b);
 
-void glVertex3f(const Vector3f& position);
+
 #endif

@@ -16,6 +16,3 @@ float operator*(const Vector3f& a, const Vector3f& b) {
 Vector3f det(const Vector3f& a, const Vector3f& b) {
     return {a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x};
 }
-void glVertex3f(const Vector3f& position) {
-    glVertex3f(position.x, position.y, position.z);
-}
