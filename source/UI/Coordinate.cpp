@@ -18,7 +18,7 @@ void Coordinate::glDraw() const {
     glGenBuffers(1, &BAO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, BAO);
-    Vector3f vertices[12] {
+    glm::vec3 vertices[12] {
         {0, 0, -10}, {0,0, 1}, {0, 0, 10}, {0, 0, 1},
         {0, -10, 0}, {0, 1, 0}, {0, 10, 0}, {0, 1, 0},
         {-10, 0, 0}, {1,0,0}, {10, 0, 0}, {1, 0, 0}

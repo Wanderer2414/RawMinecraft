@@ -7,18 +7,18 @@
 class Rect3f {
 public:
     Rect3f();
-    Rect3f(const Vector3f& a, const Vector3f& b, const Vector3f& c);
+    Rect3f(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c);
     ~Rect3f();
 
     bool        isIntersect(const Ray3f& ray)       const,
-                contains(const Vector3f& position)  const;
-    float       distance(const Vector3f& position)  const;
-    void        move(const Vector3f& offset);
-    Vector3f    getCenter()                     const,
+                contains(const glm::vec3& position)  const;
+    float       distance(const glm::vec3& position)  const;
+    void        move(const glm::vec3& offset);
+    glm::vec3    getCenter()                     const,
                 getNormal()                     const,
                 getIntersect(const Ray3f& sight) const,
                 operator[](const uint& index)   const;
 private:
-    Vector3f    pA, pB, pC;
+    glm::vec3    pA, pB, pC;
 };
 #endif

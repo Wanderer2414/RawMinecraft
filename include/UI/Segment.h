@@ -3,10 +3,10 @@
 #include "Line.h"
 class Segment: public Line {
 public:
-    Segment(const Vector3f& source, const Vector3f& destination);
+    Segment(const glm::vec3& source, const glm::vec3& destination);
     ~Segment();
 
-    virtual bool    contains(const Vector3f& position) const override;
+    virtual bool    contains(const glm::vec3& position) const override;
     virtual float   length() const;
 private:
     

@@ -3,14 +3,14 @@
 #include "Ray.h"
 class Plane {
 public:
-    Plane(const Vector3f& origin, const Vector3f& normal);
+    Plane(const glm::vec3& origin, const glm::vec3& normal);
     ~Plane();
 
-    operator Vector3f() const;
-    float       distance(const Vector3f& position) const;
-    Vector3f    isIntersect(const Ray3f& ray) const;
-    Vector3f    getOrigin() const;  
+    operator glm::vec3() const;
+    float       distance(const glm::vec3& position) const;
+    glm::vec3    isIntersect(const Ray3f& ray) const;
+    glm::vec3    getOrigin() const;  
 private:
-    Vector3f    pOrigin, pNormal;
+    glm::vec3    pOrigin, pNormal;
 };
 #endif

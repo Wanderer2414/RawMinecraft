@@ -5,7 +5,7 @@
 #include "Global.h"
 
 extern Vector2f WindowSize;
-Camera::Camera() {
+Camera::Camera(GLuint& camera): pCamera(camera) {
     pPosition = {0, 0, 0};
     pDelta = {0, 0, 2};
     pVerticalAngle = pHorizontalAngle = 0;
@@ -32,80 +32,70 @@ Camera::~Camera() {
 
 }
 
-Vector3f Camera::getHorizontalVector() const {
-    Vector3f ans = {-pDelta.y, pDelta.x, 0};
+glm::vec3 Camera::getHorizontalVector() const {
+    glm::vec3 ans = {-pDelta.y, pDelta.x, 0};
     ans /= abs(ans);
     return ans;
 }
-Vector3f Camera::getCenter() const {
+glm::vec3 Camera::getCenter() const {
     return pPosition + pDelta;
 }
 
 void Camera::setPosition(const float& x, const float& y, const float& z) {
-    // pPosition = {x, y, z};
-    // glMatrixMode(GL_PROJECTION);
-    // glLoadIdentity();
-    // gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
+    pPosition = {x, y, z};
+    pView = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
+    glBindBuffer(GL_UNIFORM_BUFFER, pCamera);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &pView[0][0]);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 void Camera::rotate(const float& vertical_angle, const float& horizontal_angle) {
-    pVerticalAngle -= vertical_angle;
-    if (pVerticalAngle < -M_PI_2*0.99) pVerticalAngle = -M_PI_2*0.99;
-    if (pVerticalAngle > M_PI_2*0.99) pVerticalAngle = M_PI_2*0.99;
-    pHorizontalAngle -= horizontal_angle;
-    pDelta.z = pDistance*sin(pVerticalAngle);
-    pDelta.x = pDistance*cos(pVerticalAngle)*cos(pHorizontalAngle);
-    pDelta.y = pDistance*cos(pVerticalAngle)*sin(pHorizontalAngle);
+    // pView = glm::rotate(pView, vertical_angle, getHorizontalVector());
+    pView = glm::rotate(pView, horizontal_angle, glm::vec3(0, 0, 1));
     
-    // glMatrixMode(GL_MODELVIEW);
-    // glLoadIdentity();
-    // gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
-    // update();
+    glBindBuffer(GL_UNIFORM_BUFFER, pCamera);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &pView[0][0]);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 void Camera::move(const float& x, const float& y, const float& z) {
-    pPosition += x*getHorizontalVector();
-    
-    pPosition.x += y*cos(pHorizontalAngle);
-    pPosition.y += y*sin(pHorizontalAngle);
-    
-    pPosition.z += z;
-    
-    // glMatrixMode(GL_MODELVIEW);
-    // glLoadIdentity();
-    // gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
+    glm::vec3 delta = {0, 0, 0};
+    delta -= x*getHorizontalVector();
+    delta.x -= y*pDelta.x;
+    delta.y -= y*pDelta.y;
+    delta.z -= z;
+    pView = glm::translate(pView, delta);
+    glBindBuffer(GL_UNIFORM_BUFFER, pCamera);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &pView[0][0]);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 void Camera::setCenter(const float& x, const float& y, const float& z) {
-    pDelta = Vector3f(x, y, z) - pPosition;
-    
-    pVerticalAngle = atan(pDelta.z/sqrt(pDelta.x*pDelta.x + pDelta.y*pDelta.y));
-    pHorizontalAngle = atan(pDelta.y/pDelta.x);
-    if (pDelta.x<0) pHorizontalAngle += M_PI;
-
-    pDelta.z = pDistance*sin(pVerticalAngle);
-    pDelta.x = pDistance*cos(pVerticalAngle)*cos(pHorizontalAngle);
-    pDelta.y = pDistance*cos(pVerticalAngle)*sin(pHorizontalAngle);
-    
-    // glMatrixMode(GL_MODELVIEW);
-    // glLoadIdentity();
-    // gluLookAt(pPosition.x, pPosition.y, pPosition.z, pPosition.x + pDelta.x, pPosition.y+pDelta.y, pPosition.z + pDelta.z, 0, 0, 1);
+    pDelta = glm::vec3(x, y, z) - pPosition;
+    pPosition = {x, y, z};
+    pView = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
+    glBindBuffer(GL_UNIFORM_BUFFER, pCamera);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &pView[0][0]);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
     update();
 }
 void Camera::setWide(const float& angle) {
     pAngle = angle;
-    // glMatrixMode(GL_PROJECTION);
-    // glLoadIdentity();
-    // gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
+    glm::mat4 proj = glm::perspective(glm::radians(angle), WindowSize.x/WindowSize.y, pNear, pFar);
+    glBindBuffer(GL_UNIFORM_BUFFER, pCamera);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, sizeof(glm::mat4), &proj[0][0]);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 void Camera::setNearProjection(const float& bnear) {
     pNear = bnear;
-    // glMatrixMode(GL_PROJECTION);
-    // glLoadIdentity();
-    // gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
+    glm::mat4 proj = glm::perspective(glm::radians(pAngle), WindowSize.x/WindowSize.y, pNear, pFar);
+    glBindBuffer(GL_UNIFORM_BUFFER, pCamera);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, sizeof(glm::mat4), &proj[0][0]);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 void Camera::setFarProjection(const float& bfar) {
     pFar = bfar;
-    // glMatrixMode(GL_PROJECTION);
-    // glLoadIdentity();
-    // gluPerspective(pAngle, WindowSize.x/WindowSize.y , pNear, pFar);
+    glm::mat4 proj = glm::perspective(glm::radians(pAngle), WindowSize.x/WindowSize.y, pNear, pFar);
+    glBindBuffer(GL_UNIFORM_BUFFER, pCamera);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, sizeof(glm::mat4), &proj[0][0]);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 _handle_function(Camera, handle) {
     bool is_changed = Controller3D::handle(window, state);
@@ -171,7 +161,7 @@ void Camera::draw(RenderTarget& target, RenderStates state) const {
     target.draw(pDirection);
 }
 void Camera::update() {
-    Vector3f center = pPosition + pDelta;
+    glm::vec3 center = pPosition + pDelta;
     center.x += 1;
     Vector2f axis = transfer(center) - WindowSize/2.f;
     pDirection[1].position = WindowSize/2.f + axis/abs(axis)*10.f;
@@ -184,7 +174,7 @@ void Camera::update() {
 
     pDirection[5].position.y = WindowSize.y/2.f - 10*cos(pVerticalAngle);
 }
-Vector2f Camera::transfer(const Vector3f& vector) const {
+Vector2f Camera::transfer(const glm::vec3& vector) const {
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     double projectionView[16], modelView[16];

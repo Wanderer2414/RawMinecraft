@@ -1,7 +1,7 @@
 #include "Ray.h"
 #include "General.h"
 
-Ray3f::Ray3f(const Vector3f& origin, const Vector3f& des) {
+Ray3f::Ray3f(const glm::vec3& origin, const glm::vec3& des) {
     pOrigin = origin;
     pDelta = des - origin;
     pDelta /= abs(pDelta);
@@ -10,10 +10,10 @@ Ray3f::Ray3f(const Vector3f& origin, const Vector3f& des) {
 Ray3f::~Ray3f() {
 
 }
-Vector3f Ray3f::getOrigin() const {
+glm::vec3 Ray3f::getOrigin() const {
     return pOrigin;
 }
 
-Ray3f::operator Vector3f() const {
+Ray3f::operator glm::vec3() const {
     return pDelta;
 }

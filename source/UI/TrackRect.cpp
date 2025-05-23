@@ -13,13 +13,13 @@ bool TrackRect::setHover(const Ray3f& sight) {
     position = pRect.getIntersect(sight);
     return Controller3D::setHover(hover);
 }
-void TrackRect::setPosition(const Vector3f& a, const Vector3f& b, const Vector3f& c) {
+void TrackRect::setPosition(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c) {
     pRect = {a,b,c};
 }
 
 void TrackRect::draw(RenderTarget& target, RenderStates state) const {
     
-    // Vector3f AB = (pRect[1]-pRect[0])/10.f, BC = (pRect[2]-pRect[1])/10.f;
+    // glm::vec3 AB = (pRect[1]-pRect[0])/10.f, BC = (pRect[2]-pRect[1])/10.f;
     // if (pRect.contains(position)) glColor3f(0, 0, 1);
     // else glColor3f(1, 1, 1);
 

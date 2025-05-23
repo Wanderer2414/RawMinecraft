@@ -6,7 +6,7 @@
 
 extern Vector2f WindowSize;
 
-Form3D::Form3D(const int& index) {
+Form3D::Form3D(const int& index): pCamera(0), sCamera(pCamera) {
     form_index = index;
     return_value = INT_MIN;
 
@@ -24,6 +24,7 @@ Form3D::Form3D(const int& index) {
 
 
     glm::mat4 model(1);
+    
     glm::mat4 view = glm::lookAt(glm::vec3(1, 1, 3), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
     glm::mat4 proj = glm::perspective(glm::radians(60.0f), WindowSize.x/WindowSize.y, 0.1f, 100.0f);
 

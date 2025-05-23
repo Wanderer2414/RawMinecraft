@@ -26,7 +26,7 @@ public:
     BlockCatogary::Catogary type;
     virtual bool        setHover(const Ray3f& hover) override;
     virtual void        setPosition(const float& x, const float& y, const float& z),
-                        setPosition(const Vector3f& position);
+                        setPosition(const glm::vec3& position);
                         
     virtual bool        contains(const Ray3f& point)       const override;
 protected:
@@ -34,7 +34,7 @@ protected:
     virtual void        glDraw() const override;
 private:
     BlockCatogary       *pBlockCatogary;
-    Vector3f            pPosition;
+    glm::vec3            pPosition;
     Rect3f              pPlane[6];
 };
 #endif

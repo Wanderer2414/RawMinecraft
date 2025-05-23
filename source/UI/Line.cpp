@@ -1,7 +1,7 @@
 #include "Line.h"
 #include "General.h"
 
-Line::Line(const Vector3f& origin,  const Vector3f& delta) {
+Line::Line(const glm::vec3& origin,  const glm::vec3& delta) {
     sOrigin = origin;
     sDelta = delta;
 }
@@ -9,12 +9,12 @@ Line::~Line() {
 
 }
 
-bool Line::contains(const Vector3f& position) const {
+bool Line::contains(const glm::vec3& position) const {
     if (position == sOrigin) return true;
-    Vector3f delta = position-sOrigin;
+    glm::vec3 delta = position-sOrigin;
     delta = delta/abs(delta)*abs(sDelta);
     return delta == sDelta || -delta == sDelta;
 }
-float Line::distance(const Vector3f& position) const {
+float Line::distance(const glm::vec3& position) const {
     return abs(det(position-sOrigin, sDelta))/abs(sDelta);
 } 

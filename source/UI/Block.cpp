@@ -32,20 +32,20 @@ Block::Block(BlockCatogary* block_catorgary): pBlockCatogary(block_catorgary) {
     pPosition = {0,0,0};
 
 
-    pPlane[0] = {pPosition, pPosition+Vector3f(0, 1, 0), pPosition+Vector3f(1, 1, 0)};
-    pPlane[5] = {pPosition+Vector3f(1, 1, 1), pPosition+Vector3f(0, 1, 1), pPosition+Vector3f(0, 0, 1)};
+    pPlane[0] = {pPosition, pPosition+glm::vec3(0, 1, 0), pPosition+glm::vec3(1, 1, 0)};
+    pPlane[5] = {pPosition+glm::vec3(1, 1, 1), pPosition+glm::vec3(0, 1, 1), pPosition+glm::vec3(0, 0, 1)};
 
-    pPlane[1] = {pPosition+Vector3f(0, 0, 1),pPosition,  pPosition+Vector3f(1, 0, 0)};
-    pPlane[4] = { pPosition+Vector3f(1, 1, 1), pPosition+Vector3f(1, 1, 0), pPosition+Vector3f(0,1 ,0 )};
+    pPlane[1] = {pPosition+glm::vec3(0, 0, 1),pPosition,  pPosition+glm::vec3(1, 0, 0)};
+    pPlane[4] = { pPosition+glm::vec3(1, 1, 1), pPosition+glm::vec3(1, 1, 0), pPosition+glm::vec3(0,1 ,0 )};
 
-    pPlane[2] = {pPosition+Vector3f(0, 1, 1), pPosition + Vector3f(0, 1, 0), pPosition};
-    pPlane[3] = {  pPosition+Vector3f(1, 0, 1), pPosition+Vector3f(1, 0, 0), pPosition+Vector3f(1, 1, 0)};
+    pPlane[2] = {pPosition+glm::vec3(0, 1, 1), pPosition + glm::vec3(0, 1, 0), pPosition};
+    pPlane[3] = {  pPosition+glm::vec3(1, 0, 1), pPosition+glm::vec3(1, 0, 0), pPosition+glm::vec3(1, 1, 0)};
 }
 Block::~Block() {
 }
 bool Block::setHover(const Ray3f& sight) {
     bool hover = false;
-    Vector3f ray = sight;
+    glm::vec3 ray = sight;
     if (ray.z > 0) hover = pPlane[0].isIntersect(sight) || hover;
     else if (ray.z < 0) hover = pPlane[5].isIntersect(sight) || hover;
 
@@ -59,8 +59,8 @@ bool Block::setHover(const Ray3f& sight) {
 void Block::setPosition(const float& x, const float& y, const float& z) {
     pPosition = {x, y, z};
 }
-void Block::setPosition(const Vector3f& position) {
-    Vector3f delta = position - pPosition;
+void Block::setPosition(const glm::vec3& position) {
+    glm::vec3 delta = position - pPosition;
     for (int i = 0; i<6; i++) pPlane[i].move(delta);
     setPosition(position.x, position.y, position.z);
 }

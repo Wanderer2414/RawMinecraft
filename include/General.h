@@ -7,10 +7,10 @@
 bool isIntersect(const Ray3f& ray, const Rect3f& rectangle);
 
 float abs(const Vector2f& vector);
-float abs(const Vector3f& vector);
+float abs(const glm::vec3& vector);
 
-float operator*(const Vector3f& a, const Vector3f& b);
+float operator*(const glm::vec3& a, const glm::vec3& b);
 
-Vector3f det(const Vector3f& a, const Vector3f& b);
+glm::vec3 det(const glm::vec3& a, const glm::vec3& b);
 
 #endif

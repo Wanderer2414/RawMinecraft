@@ -7,7 +7,7 @@
 class Form3D;
 class Camera: public Controller3D {
 public:
-    Camera();
+    Camera(GLuint& pCamera);
     ~Camera();
 
     virtual void    setPosition(const float& x, const float& y, const float& z),
@@ -17,7 +17,7 @@ public:
                     setWide(const float& angle),
                     setNearProjection(const float& near),
                     setFarProjection(const float& far);
-    Vector3f        getHorizontalVector() const,
+    glm::vec3        getHorizontalVector() const,
                     getCenter() const;
 
     Ray3f           getSight() const;
@@ -29,12 +29,14 @@ protected:
 private:
     bool            pOnGround, pUpward;
     Vector2i        pWindowCenter;
-    Vector3f        pPosition, pDelta;
+    glm::vec3        pPosition, pDelta;
     double          pVerticalAngle, pHorizontalAngle;
     float           pAngle, pNear, pFar, pSpeed, pJumpHeight, pDistance;
     Alarm           pFrameAlarm;
     VertexArray     pDirection;
+    glm::mat4       pView;
 
-    Vector2f        transfer(const Vector3f& vector) const;
+    GLuint          &pCamera;
+    Vector2f        transfer(const glm::vec3& vector) const;
 };
 #endif

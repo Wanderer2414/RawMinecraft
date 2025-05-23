@@ -3,13 +3,13 @@
 #include "Global.h"
 class Line {
 public:
-    Line(const Vector3f& origin,  const Vector3f& delta);
+    Line(const glm::vec3& origin,  const glm::vec3& delta);
     ~Line();
 
-    virtual bool    contains(const Vector3f& position) const;
-    virtual float   distance(const Vector3f& position) const;
+    virtual bool    contains(const glm::vec3& position) const;
+    virtual float   distance(const glm::vec3& position) const;
 
 protected:
-    Vector3f    sOrigin, sDelta;
+    glm::vec3    sOrigin, sDelta;
 };
 #endif

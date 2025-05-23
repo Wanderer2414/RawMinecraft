@@ -10,11 +10,11 @@ public:
 
     virtual bool setHover(const Ray3f& sight) override;
 
-    virtual void setPosition(const Vector3f& a, const Vector3f& b, const Vector3f& c);
+    virtual void setPosition(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c);
 protected:
     virtual void draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
 private:
     Rect3f pRect;
-    Vector3f position;
+    glm::vec3 position;
 };
 #endif
