@@ -18,8 +18,8 @@ private:
     catch_function(AfterCatch) override;
     handle_function(handle)    override;
 
-    // Block            cubes;
-    // BlockCatogary   pBlockCatogary;
+    Block            cubes;
+    BlockCatogary   pBlockCatogary;
     Coordinate      pCoordinate;
     // Chunk           chunks[3][3][3];
 };

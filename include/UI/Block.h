@@ -15,8 +15,9 @@ public:
     uint operator[](const Catogary& type) const;
 
 private:
-    vector<GLuint>    pPtr;
-    vector<Image*>  pStorage;
+    vector<GLuint>      pPtr;
+    vector<Image*>      pStorage;
+    GLuint              pBlock;
 };
 
 class Block: public Controller3D {
@@ -34,7 +35,6 @@ protected:
     virtual void        glDraw() const override;
 private:
     BlockCatogary       *pBlockCatogary;
-    glm::vec3            pPosition;
-    Rect3f              pPlane[6];
+    glm::vec3           pPosition;
 };
 #endif

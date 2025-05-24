@@ -5,7 +5,7 @@
 
 extern Vector2f WindowSize;
 
-GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index) {
+GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index), cubes(&pBlockCatogary) {
     insert(&pCoordinate);
     // insert(&cubes);
     // cubes.type = BlockCatogary::Dirt;
@@ -17,7 +17,7 @@ GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index) {
     //         }
     //     }
     // }
-    // cubes.setPosition(0, 0, 0);
+    cubes.setPosition(0, 0, 0);
 
     window.setMouseCursorVisible(false);
     Mouse::setPosition(static_cast<Vector2i>(WindowSize)/2, window);
