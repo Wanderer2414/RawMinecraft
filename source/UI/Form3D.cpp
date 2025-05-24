@@ -6,11 +6,10 @@
 
 extern Vector2f WindowSize;
 
-Form3D::Form3D(const int& index): pCamera(0), sCamera(pCamera) {
+Form3D::Form3D(const int& index) {
     form_index = index;
     return_value = INT_MIN;
 
-    gladLoadGL();
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
     pShader = glCreateProgram();
@@ -23,24 +22,10 @@ Form3D::Form3D(const int& index): pCamera(0), sCamera(pCamera) {
     glDeleteShader(fshader);
 
 
-    glm::mat4 model(1);
-    
-    glm::mat4 view = glm::lookAt(glm::vec3(1, 1, 3), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
-    glm::mat4 proj = glm::perspective(glm::radians(60.0f), WindowSize.x/WindowSize.y, 0.1f, 100.0f);
 
-    glGenBuffers(1, &pCamera);
-    glBindBuffer(GL_UNIFORM_BUFFER, pCamera);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 3, nullptr, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, pCamera);
-
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &model);
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &view);
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, sizeof(glm::mat4), &proj);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 Form3D::~Form3D() {
     glDeleteProgram(pShader);
-    glDeleteBuffers(sizeof(glm::mat4)*3, &pCamera);
 }
 Vector2f Form3D::getSize() const {
     return WindowSize;
@@ -87,13 +72,11 @@ int Form3D::run(RenderWindow& window) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glClearColor(0, 0, 0, 0);
             glUseProgram(pShader);
-            glBindBuffer(GL_UNIFORM_BUFFER, pCamera);
             Container3D::glDraw();
-            glBindBuffer(GL_UNIFORM_BUFFER, 0);
-            // glFlush();
-            // window.pushGLStates();
-            // draw(window);
-            // window.popGLStates();
+            glFlush();
+            window.pushGLStates();
+            draw(window);
+            window.popGLStates();
             window.display();
         }
         if (return_value!=INT_MIN) return return_value;

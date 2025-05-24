@@ -7,7 +7,7 @@
 class Form3D;
 class Camera: public Controller3D {
 public:
-    Camera(GLuint& pCamera);
+    Camera();
     ~Camera();
 
     virtual void    setPosition(const float& x, const float& y, const float& z),
@@ -21,7 +21,8 @@ public:
                     getCenter() const;
 
     Ray3f           getSight() const;
-    friend Form3D;
+    operator GLuint();
+    friend class    Form3D;
 protected:
     virtual         handle_function(handle) override;
     virtual void    draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
@@ -36,7 +37,7 @@ private:
     VertexArray     pDirection;
     glm::mat4       pView;
 
-    GLuint          &pCamera;
+    GLuint          pCamera;
     Vector2f        transfer(const glm::vec3& vector) const;
 };
 #endif

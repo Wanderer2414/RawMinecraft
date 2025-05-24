@@ -28,4 +28,4 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/glm-master)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/SFML-2.6.2/lib)
-target_link_libraries(${PROJECT_NAME} -lsfml-window -lsfml-graphics -lsfml-system -ldl -lGLU)
+target_link_libraries(${PROJECT_NAME} -lsfml-window -lsfml-graphics -lsfml-system -ldl)
