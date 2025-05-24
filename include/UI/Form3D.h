@@ -25,7 +25,6 @@ protected:
     int             form_index, 
                     return_value;
     Camera          sCamera;
-    GLuint          pShader;
 };
 
 #endif

@@ -9,11 +9,8 @@ extern Vector2f WindowSize;
 Form3D::Form3D(const int& index) {
     form_index = index;
     return_value = INT_MIN;
-
-    pShader = createProgram("assets/shaders/shader.vert.spv", "assets/shaders/shader.frag.spv");
 }
 Form3D::~Form3D() {
-    glDeleteProgram(pShader);
 }
 Vector2f Form3D::getSize() const {
     return WindowSize;
@@ -59,7 +56,6 @@ int Form3D::run(RenderWindow& window) {
             // window.clear();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glClearColor(0, 0, 0, 0);
-            glUseProgram(pShader);
             Container3D::glDraw();
             glFlush();
             window.pushGLStates();

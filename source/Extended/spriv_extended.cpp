@@ -3,6 +3,10 @@
 
 vector<char> loadSPIRV(const string& src) {
     ifstream file(src, ios::binary | ios::ate);
+    if (!file.is_open()) {
+        throw std::runtime_error("Failed to open SPIR-V binary");
+        exit(0);
+    }
     std::size_t size = file.tellg();
     file.seekg(0, std::ios::beg);
 

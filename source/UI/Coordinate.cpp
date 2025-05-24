@@ -1,4 +1,5 @@
 #include "Coordinate.h"
+#include "ShaderStorage.h"
 #include <GL/gl.h>
 #include <GL/glext.h>
 
@@ -44,6 +45,7 @@ void Coordinate::glDraw() const {
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(sizeof(GLfloat)*3));
     glEnableVertexAttribArray(1);
 
+    glUseProgram(ShaderStorage::Default->DefaultShader);
     glBindVertexArray(VAO);
     glDrawArrays(GL_LINES, 0, 42);
     glBindVertexArray(0);

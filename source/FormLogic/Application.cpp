@@ -1,9 +1,10 @@
 #include "Application.h"
 #include "GameForm.h"
-#include "SFML/Window/WindowStyle.hpp"
+#include "ShaderStorage.h"
 #include <GL/gl.h>
 
 Vector2f WindowSize;
+ShaderStorage* ShaderStorage::Default = 0;
 
 Application::Application(const Vector2f& window_size, const string& title) {
     ContextSettings settings;
@@ -23,6 +24,12 @@ Application::Application(const Vector2f& window_size, const string& title) {
     
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
+
+    ShaderStorage::Default = new ShaderStorage();
+}
+Application::~Application() {
+    delete ShaderStorage::Default;
+    ShaderStorage::Default = 0;
 }
 void Application::run() {
     int form_index = 0;
@@ -35,7 +42,4 @@ void Application::run() {
             break;
         }
     }
-}
-Application::~Application() {
-
 }
