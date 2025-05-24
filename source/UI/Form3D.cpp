@@ -10,19 +10,7 @@ Form3D::Form3D(const int& index) {
     form_index = index;
     return_value = INT_MIN;
 
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_DEPTH_TEST);
-    pShader = glCreateProgram();
-    GLuint vshader = createShaderFromSPIRV(GL_VERTEX_SHADER, "assets/shaders/shader.vert.spv");
-    GLuint fshader = createShaderFromSPIRV(GL_FRAGMENT_SHADER, "assets/shaders/shader.frag.spv");
-    glAttachShader(pShader,vshader);
-    glAttachShader(pShader,fshader);
-    glLinkProgram(pShader);
-    glDeleteShader(vshader);
-    glDeleteShader(fshader);
-
-
-
+    pShader = createProgram("assets/shaders/shader.vert.spv", "assets/shaders/shader.frag.spv");
 }
 Form3D::~Form3D() {
     glDeleteProgram(pShader);

@@ -32,3 +32,16 @@ GLuint createShaderFromSPIRV(GLenum shaderType, const std::string& src) {
     return shader;
 }
 
+GLuint createProgram(const string& vertexPath, const string& fragmentPath) {
+    GLuint vertexShader = createShaderFromSPIRV(GL_VERTEX_SHADER, vertexPath);
+    GLuint fragmentShader = createShaderFromSPIRV(GL_FRAGMENT_SHADER, fragmentPath);
+    if (vertexShader == 0 || fragmentShader == 0) {
+        cerr << "Failed to create shaders." << endl;
+        exit(0);
+    }
+    GLuint program = glCreateProgram();
+    glAttachShader(program, vertexShader);
+    glAttachShader(program, fragmentShader);
+    glLinkProgram(program);
+    return program;
+}

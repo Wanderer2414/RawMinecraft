@@ -10,9 +10,9 @@ Application::Application(const Vector2f& window_size, const string& title) {
     settings.depthBits = 24; 
     settings.stencilBits = 8;
     settings.antialiasingLevel = 4;
-    settings.majorVersion = 4;
-    settings.minorVersion = 6;
-    settings.attributeFlags = ContextSettings::Core;
+    settings.majorVersion = 3;
+    settings.minorVersion = 3;
+    settings.attributeFlags = ContextSettings::Default;
     WindowSize = window_size ;
 
     window.create(VideoMode(window_size.x, window_size.y), title, Style::Default, settings);
@@ -20,6 +20,9 @@ Application::Application(const Vector2f& window_size, const string& title) {
     window.display();
 
     gladLoadGL();
+    
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_DEPTH_TEST);
 }
 void Application::run() {
     int form_index = 0;

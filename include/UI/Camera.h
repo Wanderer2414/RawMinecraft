@@ -10,13 +10,10 @@ public:
     Camera();
     ~Camera();
 
-    virtual void    setPosition(const float& x, const float& y, const float& z),
-                    move(const float& x, const float& y, const float& z),
+    virtual void    move(const float& x, const float& y, const float& z),
                     rotate(const float& vertical_angle, const float& horizontal_angle),
-                    setCenter(const float& x, const float& y, const float& z),
-                    setWide(const float& angle),
-                    setNearProjection(const float& near),
-                    setFarProjection(const float& far);
+                    setCameraDirection(const glm::vec3& position, const glm::vec3& center),
+                    setPerpective(const float& angle, const float& aspect, const float& near, const float& far);
     glm::vec3        getHorizontalVector() const,
                     getCenter() const;
 
@@ -35,7 +32,7 @@ private:
     float           pAngle, pNear, pFar, pSpeed, pJumpHeight, pDistance;
     Alarm           pFrameAlarm;
     VertexArray     pDirection;
-    glm::mat4       pView;
+    glm::mat4       pView, pProjection;
 
     GLuint          pCamera;
     Vector2f        transfer(const glm::vec3& vector) const;

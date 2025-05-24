@@ -3,6 +3,8 @@
 #include "Controller3D.h"
 #include "General.h"
 #include "Global.h"
+#include "SFML/Graphics/RectangleShape.hpp"
+#include "glm/ext/matrix_projection.hpp"
 
 extern Vector2f WindowSize;
 Camera::Camera() {
@@ -16,7 +18,7 @@ Camera::Camera() {
     pOnGround = true;
     pWindowCenter.x = WindowSize.x/2;
     pWindowCenter.y = WindowSize.y/2;
-    pDistance = abs(pDelta);
+    pDistance = 3;
 
     pDirection.setPrimitiveType(Lines);
     pDirection.resize(6);
@@ -35,12 +37,12 @@ Camera::Camera() {
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, pCamera);
 
     glm::mat4 model(1);
-    glm::mat4 view = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
-    glm::mat4 proj = glm::perspective(glm::radians(pAngle), WindowSize.x/WindowSize.y, pNear, pFar);
+    pView = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
+    pProjection = glm::perspective(glm::radians(pAngle), WindowSize.x/WindowSize.y, pNear, pFar);
 
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &model);
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &view);
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, sizeof(glm::mat4), &proj);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &pView);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, sizeof(glm::mat4), &pProjection);
 }
 Camera::~Camera() {
     glDeleteBuffers(1, &pCamera);
@@ -57,19 +59,28 @@ glm::vec3 Camera::getCenter() const {
     return pPosition + pDelta;
 }
 
-void Camera::setPosition(const float& x, const float& y, const float& z) {
-    pPosition = {x, y, z};
-    pView = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
+void Camera::setCameraDirection(const glm::vec3& position, const glm::vec3& center) {
+    pDelta = center-position;
+    pDelta = pDelta/abs(pDelta)*pDistance;
+    pPosition = position;
+    pView = glm::lookAt(pPosition, center, glm::vec3(0, 0, 1));
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &pView[0][0]);
 }
+
+void Camera::setPerpective(const float& angle, const float& aspect, const float& near, const float& far) {
+    pProjection = glm::perspective(glm::radians(angle), aspect, near, far);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, sizeof(glm::mat4), &pProjection[0][0]);
+}
 void Camera::rotate(const float& vertical_angle, const float& horizontal_angle) {
+    pVerticalAngle += vertical_angle;
+    pHorizontalAngle += horizontal_angle;
     glm::mat4 mat =  glm::rotate(glm::mat4(1), -horizontal_angle, glm::vec3(0, 0, 1));
     mat = glm::rotate(mat, vertical_angle, getHorizontalVector());
-    
     pDelta = mat*glm::vec4(pDelta, 1);
     pView = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
     
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &pView[0][0]);
+    update();
 }
 void Camera::move(const float& x, const float& y, const float& z) {
     glm::vec3 delta = {0, 0, 0};
@@ -80,28 +91,7 @@ void Camera::move(const float& x, const float& y, const float& z) {
     pPosition -= delta;
     pView = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &pView[0][0]);
-}
-void Camera::setCenter(const float& x, const float& y, const float& z) {
-    pDelta = glm::vec3(x, y, z) - pPosition;
-    pPosition = {x, y, z};
-    pView = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &pView[0][0]);
     update();
-}
-void Camera::setWide(const float& angle) {
-    pAngle = angle;
-    glm::mat4 proj = glm::perspective(glm::radians(angle), WindowSize.x/WindowSize.y, pNear, pFar);
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, sizeof(glm::mat4), &proj[0][0]);
-}
-void Camera::setNearProjection(const float& bnear) {
-    pNear = bnear;
-    glm::mat4 proj = glm::perspective(glm::radians(pAngle), WindowSize.x/WindowSize.y, pNear, pFar);
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, sizeof(glm::mat4), &proj[0][0]);
-}
-void Camera::setFarProjection(const float& bfar) {
-    pFar = bfar;
-    glm::mat4 proj = glm::perspective(glm::radians(pAngle), WindowSize.x/WindowSize.y, pNear, pFar);
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, sizeof(glm::mat4), &proj[0][0]);
 }
 _handle_function(Camera, handle) {
     bool is_changed = Controller3D::handle(window, state);
@@ -168,30 +158,20 @@ void Camera::draw(RenderTarget& target, RenderStates state) const {
 }
 void Camera::update() {
     glm::vec3 center = pPosition + pDelta;
-    // center.x += 1;
-    // Vector2f axis = transfer(center) - WindowSize/2.f;
-    // pDirection[1].position = WindowSize/2.f + axis/abs(axis)*10.f;
-    // center.x -= 1;
+    center.x += 0.05;
+    pDirection[1].position = transfer(center);
+    center.x -= 0.05;
 
-    // center.y += 1;
-    // axis = transfer(center) - WindowSize/2.f;
-    // pDirection[3].position = WindowSize/2.f + axis/abs(axis)*10.f;
-    // center.y -= 1;
+    center.y += 0.05;
+    pDirection[3].position = transfer(center);
+    center.y -= 0.05;
 
-    pDirection[5].position.y = WindowSize.y/2.f - 10*cos(pVerticalAngle);
+    pDirection[5].position.y = WindowSize.y/2.f - 15*cos(pVerticalAngle);
 }
 Vector2f Camera::transfer(const glm::vec3& vector) const {
-    int viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    double projectionView[16], modelView[16];
-    // glGetDoublev(GL_PROJECTION_MATRIX, projectionView);
-    // glGetDoublev(GL_MODELVIEW_MATRIX, modelView);
-    double winX, winY, winZ;
-    // gluProject(vector.x, vector.y, vector.z, modelView, projectionView, viewport, &winX, &winY, &winZ);
-    Vector2f ans;
-    ans.x = winX;
-    ans.y = WindowSize.y - winY;
-    return ans;
+    glm::vec3 pos = glm::project(vector, pView*glm::mat4(1), pProjection, glm::vec4(0, 0, WindowSize.x, WindowSize.y));
+    pos.y = WindowSize.y - pos.y;
+    return {pos.x, pos.y};
 }
 Ray3f Camera::getSight() const {
     return Ray3f(pPosition, pPosition + pDelta);
