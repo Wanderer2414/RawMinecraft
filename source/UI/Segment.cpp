@@ -11,10 +11,10 @@ Segment::~Segment() {
 bool Segment::contains(const glm::vec3& position) const {
     if (position == sOrigin) return true;
     glm::vec3 delta = position-sOrigin;
-    float length_delta = abs(delta), length_sDelta = abs(sDelta);
+    float length_delta = glm::length(delta), length_sDelta = glm::length(sDelta);
     delta = delta/length_delta*length_sDelta;
     return delta == sDelta && length_delta <= length_sDelta;
 }
 float Segment::length() const {
-    return abs(sDelta);
+    return glm::length(sDelta);
 }

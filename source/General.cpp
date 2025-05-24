@@ -5,10 +5,6 @@ float abs(const Vector2f& v) {
     return sqrt(v.x*v.x + v.y*v.y);
 }
 
-float abs(const glm::vec3& v) {
-    return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
-}
-
 float operator*(const glm::vec3& a, const glm::vec3& b) {
     return a.x*b.x + a.y*b.y + a.z*b.z;
 }

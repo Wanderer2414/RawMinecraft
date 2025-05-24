@@ -1,9 +1,8 @@
 #include "Rect3D.h"
 #include "General.h"
-#include "Line.h"
 #include "Ray.h"
-#include "SFML/System/Vector3.hpp"
 #include "Segment.h"
+#include "glm/geometric.hpp"
 Rect3f::Rect3f() {
     pA = pB = pC = {0, 0, 0};
 }
@@ -16,7 +15,7 @@ Rect3f::~Rect3f() {
 bool Rect3f::isIntersect(const Ray3f& ray) const {
     glm::vec3 normal = det(pB-pA, pC-pB);
     if (ray*normal == 0) return false;
-    float normalSide = ray*normal/abs(normal);
+    float normalSide = ray*normal/glm::length(normal);
     float times = abs(distance(ray.getOrigin())/normalSide);
     glm::vec3 pos = ray.getOrigin() + times*(glm::vec3)ray;
     return contains(pos);
@@ -33,7 +32,7 @@ bool Rect3f::contains(const glm::vec3& position) const {
 float Rect3f::distance(const glm::vec3& position) const {
     glm::vec3 delta = position-pA;
     glm::vec3 normal = det(pB-pA, pC-pB);
-    return delta*normal/abs(normal);
+    return delta*normal/glm::length(normal);
 }
 glm::vec3 Rect3f::operator[](const uint& index) const {
     switch (index) {
@@ -56,7 +55,7 @@ glm::vec3 Rect3f::getNormal() const {
 }
 glm::vec3 Rect3f::getIntersect(const Ray3f& ray) const {
     glm::vec3 normal = det(pB-pA, pC-pB);
-    float normalSide = ray*normal/abs(normal);
+    float normalSide = ray*normal/glm::length(normal);
     float times = abs(distance(ray.getOrigin())/normalSide);
     glm::vec3 pos = ray.getOrigin() + times*(glm::vec3)ray;
     return pos;

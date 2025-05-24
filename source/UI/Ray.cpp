@@ -4,7 +4,7 @@
 Ray3f::Ray3f(const glm::vec3& origin, const glm::vec3& des) {
     pOrigin = origin;
     pDelta = des - origin;
-    pDelta /= abs(pDelta);
+    pDelta /= glm::length(pDelta);
 }
 
 Ray3f::~Ray3f() {

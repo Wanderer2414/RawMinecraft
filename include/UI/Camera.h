@@ -28,11 +28,11 @@ private:
     bool            pOnGround, pUpward;
     Vector2i        pWindowCenter;
     glm::vec3        pPosition, pDelta;
-    double          pVerticalAngle, pHorizontalAngle;
-    float           pAngle, pNear, pFar, pSpeed, pJumpHeight, pDistance;
+    double          pVerticalAngle;
+    float           pSpeed, pJumpHeight, pDistance;
     Alarm           pFrameAlarm;
     VertexArray     pDirection;
-    glm::mat4       pView, pProjection;
+    glm::mat4       pView, pProjection, pClipPlane;
 
     GLuint          pCamera;
     Vector2f        transfer(const glm::vec3& vector) const;
