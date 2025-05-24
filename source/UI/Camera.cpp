@@ -147,6 +147,7 @@ void Camera::draw(RenderTarget& target, RenderStates state) const {
     target.draw(pDirection);
 }
 void Camera::update() {
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, pCamera);
     pClipPlane = pProjection*pView*glm::mat4(1);
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &pClipPlane[0][0]);
 

@@ -53,7 +53,7 @@ int Form3D::run(RenderWindow& window) {
         }
         is_changed = handle(window) || is_changed;
         if (is_changed) {
-            // window.clear();
+            window.clear();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glClearColor(0, 0, 0, 0);
             Container3D::glDraw();

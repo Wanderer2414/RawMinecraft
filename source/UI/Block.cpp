@@ -1,20 +1,18 @@
 #include "Block.h"
 #include "General.h"
+#include "Global.h"
+#include "ShaderStorage.h"
 #include "glm/fwd.hpp"
 #include <GL/gl.h>
 
 BlockCatogary::BlockCatogary() {
     pPtr.resize(2, 0);
-    pStorage.resize(2, 0);
-    for (int i = 0; i<2; i++) {
-        pStorage[i] = new Image();
-    }
     pPtr[0] = 0;
-    pStorage[0] = 0;
-    pStorage[1]->loadFromFile("assets/images/Dirt.png");
+    Image image;
+    image.loadFromFile("assets/images/Dirt.png");
     glGenTextures(1, &pPtr[1]);
     glBindTexture(GL_TEXTURE_2D, pPtr[1]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pStorage[1]->getSize().x,pStorage[1]->getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, pStorage[1]->getPixelsPtr());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x,image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -48,6 +46,12 @@ BlockCatogary::BlockCatogary() {
     vertices[21] = {0, 1, 1};
     vertices[22] = {0, 1, 0};
     vertices[23] = {0, 0, 0};
+
+    glGenBuffers(1, &BlockDesign);
+    glBindBuffer(GL_ARRAY_BUFFER, BlockDesign);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*24*3, &vertices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     glm::vec2 tex_coord[24];
     tex_coord[0] = {1.0/3, 0};
     tex_coord[1] = {2.0/3, 0};
@@ -79,19 +83,22 @@ BlockCatogary::BlockCatogary() {
     tex_coord[22] = {0, 2.0/4};
     tex_coord[23] = {0, 1.0/4};
 
+    glGenBuffers(1, &BlockTexture);
+    glBindBuffer(GL_ARRAY_BUFFER, BlockTexture);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*24*2, &tex_coord[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 BlockCatogary::~BlockCatogary() {
-    for (int i =0; i<pStorage.size(); i++) {
-        if (pStorage[i]) glDeleteTextures(1, &pPtr[i]);
-    }
     glDeleteTextures(1, &pPtr[1]);
+    glDeleteBuffers(1, &BlockDesign);
+    glDeleteBuffers(1, &BlockTexture);
 }
 
-uint BlockCatogary::operator[](const Catogary& type) const {
-    return pPtr[type];
+GLuint BlockCatogary::getBlock(const int& index) const {
+    return pPtr[index];
 }
 
-Block::Block(BlockCatogary* block_catorgary): pBlockCatogary(block_catorgary) {
+Block::Block() {
     pPosition = {0,0,0};
 
 }
@@ -113,6 +120,33 @@ bool Block::contains(const Ray3f& point) const  {
 void Block::draw(RenderTarget& target, RenderStates state) const {
 }
 void Block::glDraw() const {
+    glUseProgram(ShaderStorage::Default->CubeShader);
+
+    GLuint VAO;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, BlockCatogary::Default->BlockDesign);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
+    glEnableVertexAttribArray(0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, BlockCatogary::Default->BlockTexture);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0);
+    glEnableVertexAttribArray(1);
+
+    GLuint originPoint;
+    
+    glGenBuffers(1, &originPoint);
+    glBindBuffer(GL_UNIFORM_BUFFER, originPoint);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*3, &pPosition[0], GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, originPoint);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, BlockCatogary::Default->getBlock(1));
+
+    glDrawArrays(GL_QUADS, 0, 24);
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &originPoint);
+    
     // if (isFocus()) glColor3f(1, 0, 0);
     // else glColor3f(1, 1, 1);
     // glColor3f(1, 1, 1);

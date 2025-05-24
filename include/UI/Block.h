@@ -12,17 +12,17 @@ public:
     BlockCatogary();
     ~BlockCatogary();
 
-    uint operator[](const Catogary& type) const;
-
+    GLuint getBlock(const int& index) const;
+    GLuint BlockDesign;
+    GLuint BlockTexture;
+    static BlockCatogary* Default;
 private:
     vector<GLuint>      pPtr;
-    vector<Image*>      pStorage;
-    GLuint              pBlock;
 };
 
 class Block: public Controller3D {
 public:
-    Block(BlockCatogary* block_catorgary);
+    Block();
     ~Block();
     BlockCatogary::Catogary type;
     virtual bool        setHover(const Ray3f& hover) override;
@@ -34,7 +34,6 @@ protected:
     virtual void        draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
     virtual void        glDraw() const override;
 private:
-    BlockCatogary       *pBlockCatogary;
     glm::vec3           pPosition;
 };
 #endif
