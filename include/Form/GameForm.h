@@ -19,7 +19,6 @@ private:
     handle_function(handle)    override;
 
     Block            cubes;
-    Coordinate      pCoordinate;
-    // Chunk           chunks[3][3][3];
+    Chunk           chunks[3][3][3];
 };
 #endif

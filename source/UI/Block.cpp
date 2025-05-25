@@ -1,6 +1,7 @@
 #include "Block.h"
 #include "General.h"
 #include "Global.h"
+#include "PointSet.h"
 #include "ShaderStorage.h"
 #include "glm/fwd.hpp"
 #include <GL/gl.h>
@@ -16,41 +17,6 @@ BlockCatogary::BlockCatogary() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glm::vec3 vertices[24];
-    vertices[0] = {0, 0, 0};
-    vertices[1] = {1, 0, 0};
-    vertices[2] = {1, 0, 1};
-    vertices[3] = {0, 0, 1};
-
-    vertices[4] = {0, 0, 1};
-    vertices[5] = {1, 0, 1};
-    vertices[6] = {1, 1, 1};
-    vertices[7] = {0, 1, 1};
-
-    vertices[8] = {0, 1, 1};
-    vertices[9] = {1, 1, 1};
-    vertices[10] = {1, 1, 0};
-    vertices[11] = {0, 1, 0};
-
-    vertices[12] = {0, 1, 0};
-    vertices[13] = {1, 1, 0};
-    vertices[14] = {1, 0, 0};
-    vertices[15] = {0, 0, 0};
-
-    vertices[16] = {1, 1, 1};
-    vertices[17] = {1, 0, 1};
-    vertices[18] = {1, 0, 0};
-    vertices[19] = {1, 1, 0};
-
-    vertices[20] = {0, 0, 1};
-    vertices[21] = {0, 1, 1};
-    vertices[22] = {0, 1, 0};
-    vertices[23] = {0, 0, 0};
-
-    glGenBuffers(1, &BlockDesign);
-    glBindBuffer(GL_ARRAY_BUFFER, BlockDesign);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*24*3, &vertices[0], GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glm::vec2 tex_coord[24];
     tex_coord[0] = {1.0/3, 0};
@@ -90,7 +56,6 @@ BlockCatogary::BlockCatogary() {
 }
 BlockCatogary::~BlockCatogary() {
     glDeleteTextures(1, &pPtr[1]);
-    glDeleteBuffers(1, &BlockDesign);
     glDeleteBuffers(1, &BlockTexture);
 }
 
@@ -125,7 +90,7 @@ void Block::glDraw() const {
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, BlockCatogary::Default->BlockDesign);
+    glBindBuffer(GL_ARRAY_BUFFER, PointSet::Default->BlockSet);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
     glEnableVertexAttribArray(0);
     
@@ -141,7 +106,7 @@ void Block::glDraw() const {
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, originPoint);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, BlockCatogary::Default->getBlock(1));
+    glBindTexture(GL_TEXTURE_2D, BlockCatogary::Default->getBlock(type));
 
     glDrawArrays(GL_QUADS, 0, 24);
     glDeleteVertexArrays(1, &VAO);

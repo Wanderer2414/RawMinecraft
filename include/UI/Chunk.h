@@ -8,12 +8,12 @@ public:
     ~Chunk();
 
     virtual void    setPosition(const int& x, const int& y, const int& z),
-                    setPosition(const Vector3i& position);
+                    setPosition(const glm::vec3& position);
     
     BlockCatogary::Catogary& getBlocks(const int& x, const int& y, const int& z);
 protected:
     virtual void    glDraw() const override;
 private:
-    Vector3i                    pPosition;
+    glm::vec3                    pPosition;
 };
 #endif

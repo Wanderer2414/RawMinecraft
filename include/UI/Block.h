@@ -13,7 +13,6 @@ public:
     ~BlockCatogary();
 
     GLuint getBlock(const int& index) const;
-    GLuint BlockDesign;
     GLuint BlockTexture;
     static BlockCatogary* Default;
 private:

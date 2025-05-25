@@ -1,12 +1,14 @@
 #include "Application.h"
 #include "Block.h"
 #include "GameForm.h"
+#include "PointSet.h"
 #include "ShaderStorage.h"
 #include <GL/gl.h>
 
 Vector2f WindowSize;
 ShaderStorage* ShaderStorage::Default = 0;
 BlockCatogary* BlockCatogary::Default = 0;
+PointSet* PointSet::Default = 0;
 
 Application::Application(const Vector2f& window_size, const string& title) {
     ContextSettings settings;
@@ -29,6 +31,7 @@ Application::Application(const Vector2f& window_size, const string& title) {
 
     ShaderStorage::Default = new ShaderStorage();
     BlockCatogary::Default = new BlockCatogary();
+    PointSet::Default = new PointSet();
 }
 Application::~Application() {
     delete ShaderStorage::Default;

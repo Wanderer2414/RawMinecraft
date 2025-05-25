@@ -10,6 +10,7 @@ public:
 
     GLuint DefaultShader;
     GLuint CubeShader;
+    GLuint ChunkShader;
 private:
 };
 #endif

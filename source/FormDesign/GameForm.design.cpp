@@ -6,17 +6,16 @@
 extern Vector2f WindowSize;
 
 GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index) {
-    insert(&pCoordinate);
     insert(&cubes);
-    // cubes.type = BlockCatogary::Dirt;
-    // for (int i = 0; i<3; i++) {
-    //     for (int j = 0; j<3; j++) {
-    //         for (int k = 0; k<3; k++) {
-    //             insert(&chunks[i][j][k]);
-    //             chunks[i][j][k].setPosition((i-1)*16,(j-1)*16,(k-1)*16);
-    //         }
-    //     }
-    // }
+    cubes.type = BlockCatogary::Dirt;
+    for (int i = 0; i<3; i++) {
+        for (int j = 0; j<3; j++) {
+            for (int k = 0; k<3; k++) {
+                insert(&chunks[i][j][k]);
+                chunks[i][j][k].setPosition((i-1)*16,(j-1)*16,(k-1)*16);
+            }
+        }
+    }
     cubes.setPosition(2, 2, 0);
 
     window.setMouseCursorVisible(false);
