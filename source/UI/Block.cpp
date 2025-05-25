@@ -4,7 +4,6 @@
 #include "PointSet.h"
 #include "ShaderStorage.h"
 #include "glm/fwd.hpp"
-#include <GL/gl.h>
 
 BlockCatogary::BlockCatogary() {
     pPtr.resize(2, 0);
@@ -69,10 +68,6 @@ Block::Block() {
 }
 Block::~Block() {
 }
-bool Block::setHover(const Ray3f& sight) {
-    bool hover = false;
-    return Controller3D::setHover(hover);
-}
 void Block::setPosition(const float& x, const float& y, const float& z) {
     pPosition = {x, y, z};
 }
@@ -81,8 +76,6 @@ void Block::setPosition(const glm::vec3& position) {
 }
 bool Block::contains(const Ray3f& point) const  {
     return false;
-}
-void Block::draw(RenderTarget& target, RenderStates state) const {
 }
 void Block::glDraw() const {
     glUseProgram(ShaderStorage::Default->CubeShader);

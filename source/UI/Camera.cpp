@@ -8,12 +8,10 @@ Camera::Camera() {
     pPosition = {4, 4, 2};
     pDelta = {-2, -2, 0};
     pVerticalAngle = 0;
-    pSpeed = 0.1;
-    pUpward = false;
-    pOnGround = true;
     pWindowCenter.x = WindowSize.x/2;
     pWindowCenter.y = WindowSize.y/2;
     pDistance = 3;
+    pDelta = pDelta/glm::length(pDelta)*pDistance;
 
     pDirection.setPrimitiveType(Lines);
     pDirection.resize(6);
@@ -23,8 +21,6 @@ Camera::Camera() {
     pDirection[0].color = pDirection[1].color = Color::Red;
     pDirection[2].color = pDirection[3].color = Color::Green;
     pDirection[4].color = pDirection[5].color = Color::Blue;
-
-    pFrameAlarm.setDuration(1.f/60);
 
     glGenBuffers(1, &pCamera);
     glBindBuffer(GL_UNIFORM_BUFFER, pCamera);
@@ -50,7 +46,17 @@ glm::vec3 Camera::getHorizontalVector() const {
 glm::vec3 Camera::getCenter() const {
     return pPosition + pDelta;
 }
-
+glm::vec3 Camera::getPosition() const {
+    return pPosition;
+}
+glm::vec3 Camera::getDirection() const {
+    return pDelta;
+}
+void Camera::setPosition(const glm::vec3& position) {
+    pPosition = position;
+    pView = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
+    update();
+}
 void Camera::setCameraDirection(const glm::vec3& position, const glm::vec3& center) {
     pDelta = center-position;
     pDelta = pDelta/glm::length(pDelta)*pDistance;
@@ -74,72 +80,12 @@ void Camera::rotate(const float& vertical_angle, const float& horizontal_angle) 
     }
 }
 void Camera::move(const float& x, const float& y, const float& z) {
-    glm::vec3 delta = {0, 0, 0};
-    delta -= x*getHorizontalVector();
-    delta.x -= y*pDelta.x;
-    delta.y -= y*pDelta.y;
-    delta.z -= z;
-    pPosition -= delta;
+    pPosition += glm::vec3(x, y, z);
     pView = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
     update();
 }
 _handle_function(Camera, handle) {
     bool is_changed = Controller3D::handle(window, state);
-    if (pFrameAlarm.get()) {
-        if (Keyboard::isKeyPressed(Keyboard::Scancode::A)) {
-                move(pSpeed, 0, 0);
-            is_changed = true;
-        }
-        if (Keyboard::isKeyPressed(Keyboard::Scancode::D)) {
-                move(-pSpeed, 0, 0);
-            is_changed = true;
-        }
-        if (Keyboard::isKeyPressed(Keyboard::Scancode::W)) {
-                move(0, pSpeed, 0);
-            is_changed = true;
-        }
-        if (Keyboard::isKeyPressed(Keyboard::Scancode::S)) {
-                move(0, -pSpeed, 0);
-            is_changed = true;
-        }
-
-        if (pOnGround && Keyboard::isKeyPressed(Keyboard::Key::Space)) {
-            pJumpHeight = 0;
-            pUpward = true;
-            pOnGround = false;
-        }
-
-        if (!pOnGround) {
-            if (pUpward  && pJumpHeight < 1.4) {
-                pJumpHeight += 0.1;
-                move(0, 0, 0.1);
-            }
-            else if (pJumpHeight>0) {
-                float delta = min(0.1f, pJumpHeight);
-                pJumpHeight -= delta;
-                move(0, 0, -delta);
-            }
-            if (pJumpHeight >= 1.2) {
-                pUpward = false;
-            }
-            else if (pJumpHeight <= 0) {
-                pOnGround = true;
-                pJumpHeight = 0;
-            }
-            is_changed = true;
-        }
-    }
-
-    Vector2i position = Mouse::getPosition(window);
-    Vector2f delta;
-    delta.x = position.x - pWindowCenter.x;
-    delta.y = position.y - pWindowCenter.y;
-
-    if (delta.x != 0 || delta.y != 0) {
-        Mouse::setPosition(pWindowCenter, window);
-        rotate(delta.y/1000, delta.x/1000);
-        is_changed = true;
-    }
     return is_changed;
 }
 void Camera::draw(RenderTarget& target, RenderStates state) const {

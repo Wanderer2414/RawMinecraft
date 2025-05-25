@@ -19,19 +19,17 @@ private:
     vector<GLuint>      pPtr;
 };
 
-class Block: public Controller3D {
+class Block {
 public:
     Block();
     ~Block();
     BlockCatogary::Catogary type;
-    virtual bool        setHover(const Ray3f& hover) override;
     virtual void        setPosition(const float& x, const float& y, const float& z),
                         setPosition(const glm::vec3& position);
                         
-    virtual bool        contains(const Ray3f& point)       const override;
+    virtual bool        contains(const Ray3f& point)       const;
 protected:
-    virtual void        draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
-    virtual void        glDraw() const override;
+    virtual void        glDraw() const;
 private:
     glm::vec3           pPosition;
 };
