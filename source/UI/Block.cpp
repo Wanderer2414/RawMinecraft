@@ -62,11 +62,13 @@ GLuint BlockCatogary::getBlock(const int& index) const {
     return pPtr[index];
 }
 
-Block::Block() {
-    pPosition = {0,0,0};
+Block::Block():pHoverPlane(-1), pPosition(0, 0, 0) {
 
 }
 Block::~Block() {
+}
+char Block::getHoverPlane() const {
+    return pHoverPlane;
 }
 void Block::setPosition(const float& x, const float& y, const float& z) {
     pPosition = {x, y, z};
@@ -74,8 +76,8 @@ void Block::setPosition(const float& x, const float& y, const float& z) {
 void Block::setPosition(const glm::vec3& position) {
     pPosition = position;
 }
-bool Block::contains(const Ray3f& point) const  {
-    return false;
+void Block::setHoverPlane(const char& index) {
+    pHoverPlane = index;
 }
 void Block::glDraw() const {
     glUseProgram(ShaderStorage::Default->CubeShader);
@@ -102,36 +104,32 @@ void Block::glDraw() const {
     glBindTexture(GL_TEXTURE_2D, BlockCatogary::Default->getBlock(type));
 
     glDrawArrays(GL_QUADS, 0, 24);
+    if (pHoverPlane!=-1) {
+        glUseProgram(ShaderStorage::Default->MarginShader);
+        glLineWidth(3);
+        GLuint VAO;
+        glGenVertexArrays(1, &VAO);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, PointSet::Default->MarginSet);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
+        glEnableVertexAttribArray(0);
+
+        glBindBufferBase(GL_UNIFORM_BUFFER, 1, originPoint);
+        float buffer[8] = {
+            1, 1, 1, 0,
+            0, 0, 0, 1
+        };
+        GLuint margin;
+        glGenBuffers(1, &margin);
+        glBindBuffer(GL_UNIFORM_BUFFER, margin);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*8, buffer, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, margin);
+
+        glDrawArrays(GL_LINE_STRIP, 0, 16);
+
+        glDeleteVertexArrays(1, &VAO);
+        glDeleteBuffers(1, &margin);
+    }
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &originPoint);
-    
-    // if (isFocus()) glColor3f(1, 0, 0);
-    // else glColor3f(1, 1, 1);
-    // glColor3f(1, 1, 1);
-    // glBindTexture(GL_TEXTURE_2D, (*pBlockCatogary)[type]);
-    // for (int i = 0; i<6; i++) {
-    //     glBegin(GL_QUADS);
-    //         glTexCoord2f(1.f/3, 0);
-    //         glVertex3f(pPlane[i][0]);
-    //         glTexCoord2f(1.f/3, 1.f/3);
-    //         glVertex3f(pPlane[i][1]);
-    //         glTexCoord2f(2.f/3, 1.f/3);
-    //         glVertex3f(pPlane[i][2]);
-    //         glTexCoord2f(2.f/3, 0);
-    //         glVertex3f(pPlane[i][3]);
-    //     glEnd();
-    // }
-    // if (isHovered()) {
-    //     glColor3f(0.1,0.1,0.1);
-    //     glLineWidth(2);
-    //     for (int i = 0; i<6; i++) {
-    //         glBegin(GL_LINE_STRIP);
-    //             glVertex3f(pPlane[i][0]);
-    //             glVertex3f(pPlane[i][1]);
-    //             glVertex3f(pPlane[i][2]);
-    //             glVertex3f(pPlane[i][3]);
-    //             glVertex3f(pPlane[i][0]);
-    //         glEnd();
-    //     }
-    // }
 }

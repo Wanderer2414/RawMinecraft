@@ -8,7 +8,8 @@ Chunk::Chunk() {
     for (int i = 0; i<16; i++) {
         for (int j = 0; j<16; j++) {
             for (int k = 0; k<16; k++) {
-                type_store[i][j][k] = BlockCatogary::Air;
+                blocks[i][j][k].type = BlockCatogary::Air;
+                blocks[i][j][k].setPosition(pPosition.x+i, pPosition.y+j, pPosition.z+k);
             }
         }
     }
@@ -36,15 +37,22 @@ bool Chunk::setHover(const Ray3f& ray) {
     return hover;
 }
 
-char& Chunk::at(const int& x, const int& y, const int& z) {
-    return type_store[x][y][z];
+Block& Chunk::at(const int& x, const int& y, const int& z) {
+    return blocks[x][y][z];
 }
 
 void Chunk::setPosition(const int& x, const int& y, const int& z) {
     pPosition = {x, y, z};
+    for (int i = 0; i<16; i++) {
+        for (int j = 0; j<16; j++) {
+            for (int k = 0; k<16; k++) {
+                blocks[i][j][k].setPosition(pPosition.x+i, pPosition.y+j, pPosition.z+k);
+            }
+        }
+    }
 }
 void Chunk::setPosition(const glm::vec3& position) {
-    pPosition = position;
+    setPosition(position.x, position.y, position.z);
 }
 
 void Chunk::glDraw() const {
@@ -77,38 +85,10 @@ void Chunk::glDraw() const {
     for (int i = 0; i<16; i++) {
         for (int j = 0; j<16; j++) {
             for (int k = 0; k<16; k++) {
-                if (type_store[i][j][k] != BlockCatogary::Air) {
-                    drawBlock(i, j, k);
+                if (blocks[i][j][k].type != BlockCatogary::Air) {
+                    blocks[i][j][k].glDraw();
                 }
             }
         }
     }
-}
-void Chunk::drawBlock(const int& x, const int& y, const int& z) const {
-    glUseProgram(ShaderStorage::Default->CubeShader);
-    glm::vec3 position = glm::vec3(x, y, z) + pPosition;
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, PointSet::Default->BlockSet);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
-    glEnableVertexAttribArray(0);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, BlockCatogary::Default->BlockTexture);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0);
-    glEnableVertexAttribArray(1);
-
-    GLuint originPoint;
-    
-    glGenBuffers(1, &originPoint);
-    glBindBuffer(GL_UNIFORM_BUFFER, originPoint);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*3, &position[0], GL_STATIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, originPoint);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, BlockCatogary::Default->getBlock(type_store[x][y][z]));
-
-    glDrawArrays(GL_QUADS, 0, 24);
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &originPoint);
 }

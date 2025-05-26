@@ -10,12 +10,11 @@ public:
     virtual bool    setHover(const Ray3f& ray);
     virtual void    setPosition(const int& x, const int& y, const int& z),
                     setPosition(const glm::vec3& position);
-    char            &at(const int& x, const int& y, const int& z);
+    Block           &at(const int& x, const int& y, const int& z);
     BlockCatogary::Catogary& getBlocks(const int& x, const int& y, const int& z);
     virtual void    glDraw() const;
 private:
     glm::vec3                    pPosition;
-    char                         type_store[16][16][16];
-    virtual void   drawBlock(const int& x, const int& y, const int& z) const;
+    Block                        blocks[16][16][16];
 };
 #endif

@@ -11,6 +11,7 @@ public:
     GLuint DefaultShader;
     GLuint CubeShader;
     GLuint ChunkShader;
+    GLuint MarginShader;
 private:
 };
 #endif

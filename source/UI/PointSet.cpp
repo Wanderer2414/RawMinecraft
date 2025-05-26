@@ -1,4 +1,5 @@
 #include "PointSet.h"
+#include "Global.h"
     
 PointSet::PointSet() {
 
@@ -63,8 +64,36 @@ PointSet::PointSet() {
     glBindBuffer(GL_ARRAY_BUFFER, ChunkSet);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*16*3, &vertices[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+    vertices[0] = {0, 0, 0};
+    vertices[1] = {1, 0, 0};
+    vertices[2] = {1, 1, 0};
+    vertices[3] = {0, 1, 0};
+    vertices[4] = {0, 0, 0};
+
+    vertices[5] = {0, 0, 1};
+    vertices[6] = {1, 0, 1};
+    vertices[7] = {1, 1, 1};
+    vertices[8] = {0, 1, 1};
+    vertices[9] = {0, 0, 1};
+
+    vertices[10] = {1, 0, 1};
+    vertices[11] = {1, 0, 0};
+
+    vertices[12] = {1, 1, 0};
+    vertices[13] = {1, 1, 1};
+
+    vertices[14] = {0, 1, 1};
+    vertices[15] = {0, 1, 0};
+
+    glGenBuffers(1, &MarginSet);
+    glBindBuffer(GL_ARRAY_BUFFER, MarginSet);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*16*3, &vertices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 PointSet::~PointSet() {
     glDeleteBuffers(1, &BlockSet);
     glDeleteBuffers(1, &ChunkSet);
+    glDeleteBuffers(1, &MarginSet);
 }

@@ -9,21 +9,21 @@ GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index), pWorl
     insert(&pWorld);
     for (int i = 0; i<16; i++) {
         for (int j = 0; j<16; j++) {
-            pWorld.at(i, j, -1) = BlockCatogary::Dirt;
+            pWorld.at(i, j, -1).type = BlockCatogary::Dirt;
         }
     }
-    pWorld.at(5, 5, 0) = BlockCatogary::Dirt;
-    pWorld.at(0, 0, 0) = BlockCatogary::Dirt;
+    pWorld.at(5, 5, 0).type = BlockCatogary::Dirt;
+    pWorld.at(0, 0, 0).type = BlockCatogary::Dirt;
 
-    pWorld.at(0, 0, 1) = BlockCatogary::Dirt;
-    pWorld.at(0, 0, 2) = BlockCatogary::Dirt;
+    pWorld.at(0, 0, 1).type = BlockCatogary::Dirt;
+    pWorld.at(0, 0, 2).type = BlockCatogary::Dirt;
 
-    pWorld.at(1, 1, 1) = BlockCatogary::Dirt;
-    pWorld.at(1, 1, 2) = BlockCatogary::Dirt;
+    pWorld.at(1, 1, 1).type = BlockCatogary::Dirt;
+    pWorld.at(1, 1, 2).type = BlockCatogary::Dirt;
 
-    pWorld.at(-2, 0, 0) = BlockCatogary::Dirt;
-    pWorld.at(-2, 0, 1) = BlockCatogary::Dirt;
-    pWorld.at(-2, 0, 2) = BlockCatogary::Dirt;
+    pWorld.at(-2, 0, 0).type = BlockCatogary::Dirt;
+    pWorld.at(-2, 0, 1).type = BlockCatogary::Dirt;
+    pWorld.at(-2, 0, 2).type = BlockCatogary::Dirt;
 
     window.setMouseCursorVisible(false);
     Mouse::setPosition(static_cast<Vector2i>(WindowSize)/2, window);
@@ -32,7 +32,7 @@ GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index), pWorl
     pZVelocity = 0;
     pWindowCenter = static_cast<Vector2i>(WindowSize/2.f);
     pSpeed = 0.1;
-    pFrameAlarm.setDuration(1.f/60);
+    pFrameAlarm.setDuration(1.f/60);\
 }
 GameForm::~GameForm() {
 
@@ -50,7 +50,7 @@ bool GameForm::move(const float& x, const float& y, const float& z) {
         float cX = pos.x+delta.x;
         int fX = floor(pos.x), fY = floor(pos.y);
         float cY = pos.y+delta.y;
-        int fZ = floor(pos.z);
+        int fZ = floor(pos.z-0.7);
         if (delta.x>0) cX += 0.3;
         if (delta.x<0) cX -= 0.3;
         if (delta.y>0) cY += 0.3;
@@ -58,12 +58,12 @@ bool GameForm::move(const float& x, const float& y, const float& z) {
         cX = floor(cX);
         cY = floor(cY);
         if (cX != fX || cY!=fY) {
-            bool above_x = pWorld.at(cX, fY, fZ) == BlockCatogary::Air;
-            bool above_y = pWorld.at(fX, cY, fZ) == BlockCatogary::Air;
-            bool below_x = pWorld.at(cX, fY, fZ-1) == BlockCatogary::Air;
-            bool below_y = pWorld.at(fX, cY, fZ - 1) == BlockCatogary::Air;
-            bool above_xy = pWorld.at(cX, cY,fZ) == BlockCatogary::Air;
-            bool below_xy = pWorld.at(cX, cY, fZ-1) == BlockCatogary::Air;
+            bool above_x = pWorld.at(cX, fY, fZ).type == BlockCatogary::Air;
+            bool above_y = pWorld.at(fX, cY, fZ).type == BlockCatogary::Air;
+            bool below_x = pWorld.at(cX, fY, fZ-1).type == BlockCatogary::Air;
+            bool below_y = pWorld.at(fX, cY, fZ - 1).type == BlockCatogary::Air;
+            bool above_xy = pWorld.at(cX, cY,fZ).type == BlockCatogary::Air;
+            bool below_xy = pWorld.at(cX, cY, fZ-1).type == BlockCatogary::Air;
             if (!above_x || !below_x) {
                 if (delta.x<0) delta.x = fX+0.3-pos.x;
                 else if (delta.x>0) delta.x = cX-0.3-pos.x;
@@ -79,9 +79,9 @@ bool GameForm::move(const float& x, const float& y, const float& z) {
                 else if (delta.y>0) delta.y = cY-0.3-pos.y;
             }
             if ((above_x && !below_x) || (above_y && !below_y) || (above_xy && !below_xy)) {
-                if (    pWorld.at(cX, cY, fZ-2)!=BlockCatogary::Air && 
-                        pWorld.at(fX, fY, fZ-2)!=BlockCatogary::Air &&
-                        pWorld.at(cX, cY, fZ+1) == BlockCatogary::Air) {
+                if (    pWorld.at(cX, cY, fZ-2).type!=BlockCatogary::Air && 
+                        pWorld.at(fX, fY, fZ-2).type!=BlockCatogary::Air &&
+                        pWorld.at(cX, cY, fZ+1).type == BlockCatogary::Air) {
                     if (delta.x>0) delta.x+=0.1;
                     else if (delta.x<0) delta.x-=0.1;
                     if (delta.y>0) delta.y+=0.1;
@@ -94,10 +94,9 @@ bool GameForm::move(const float& x, const float& y, const float& z) {
         return true;
     }
     else {
-        if (pWorld.at(floor(pos.x), floor(pos.y), floor(pos.z+delta.z-1.7)) == BlockCatogary::Air) {
+        if (pWorld.at(floor(pos.x), floor(pos.y), floor(pos.z+delta.z-1.7)).type == BlockCatogary::Air) {
             sCamera.setPosition(delta+pos);
             return true;
-
         }
         return false;
     };
@@ -135,10 +134,10 @@ _handle_function(GameForm, handle) {
                 is_changed = true;
             }
         }
-        if (pZVelocity>-50 &&   pWorld.at(floor(sCamera.getPosition().x-0.25), floor(sCamera.getPosition().y-0.25), floor(sCamera.getPosition().z-2)) == BlockCatogary::Air &&
-                                pWorld.at(floor(sCamera.getPosition().x-0.25), floor(sCamera.getPosition().y+0.25), floor(sCamera.getPosition().z-2)) == BlockCatogary::Air &&
-                                pWorld.at(floor(sCamera.getPosition().x+0.25), floor(sCamera.getPosition().y+0.25), floor(sCamera.getPosition().z-2)) == BlockCatogary::Air &&
-                                pWorld.at(floor(sCamera.getPosition().x+0.25), floor(sCamera.getPosition().y-0.25), floor(sCamera.getPosition().z-2)) == BlockCatogary::Air) {
+        if (pZVelocity>-50 &&   pWorld.at(floor(sCamera.getPosition().x-0.25), floor(sCamera.getPosition().y-0.25), floor(sCamera.getPosition().z-2)).type == BlockCatogary::Air &&
+                                pWorld.at(floor(sCamera.getPosition().x-0.25), floor(sCamera.getPosition().y+0.25), floor(sCamera.getPosition().z-2)).type == BlockCatogary::Air &&
+                                pWorld.at(floor(sCamera.getPosition().x+0.25), floor(sCamera.getPosition().y+0.25), floor(sCamera.getPosition().z-2)).type == BlockCatogary::Air &&
+                                pWorld.at(floor(sCamera.getPosition().x+0.25), floor(sCamera.getPosition().y-0.25), floor(sCamera.getPosition().z-2)).type == BlockCatogary::Air) {
             pZVelocity -= 3;
         }
         else if (!pZVelocity && Keyboard::isKeyPressed(Keyboard::Key::Space)) {

@@ -18,19 +18,21 @@ public:
 private:
     vector<GLuint>      pPtr;
 };
-
+class Chunk;
 class Block {
 public:
     Block();
     ~Block();
     BlockCatogary::Catogary type;
+    char                getHoverPlane() const;
     virtual void        setPosition(const float& x, const float& y, const float& z),
                         setPosition(const glm::vec3& position);
-                        
-    virtual bool        contains(const Ray3f& point)       const;
+    virtual void        setHoverPlane(const char& index);
+    friend class Chunk;
 protected:
     virtual void        glDraw() const;
 private:
+    char                pHoverPlane;
     glm::vec3           pPosition;
 };
 #endif

@@ -11,6 +11,7 @@ public:
 
     GLuint BlockSet;
     GLuint ChunkSet;
+    GLuint MarginSet;
 private:
 };
 #endif

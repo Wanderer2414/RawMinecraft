@@ -10,7 +10,7 @@ Camera::Camera() {
     pVerticalAngle = 0;
     pWindowCenter.x = WindowSize.x/2;
     pWindowCenter.y = WindowSize.y/2;
-    pDistance = 3;
+    pDistance = 4;
     pDelta = pDelta/glm::length(pDelta)*pDistance;
 
     pDirection.setPrimitiveType(Lines);
