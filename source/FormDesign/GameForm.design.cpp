@@ -14,8 +14,12 @@ GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index), pWorl
     }
     pWorld.at(5, 5, 0) = BlockCatogary::Dirt;
     pWorld.at(0, 0, 0) = BlockCatogary::Dirt;
+
     pWorld.at(0, 0, 1) = BlockCatogary::Dirt;
     pWorld.at(0, 0, 2) = BlockCatogary::Dirt;
+
+    pWorld.at(1, 1, 1) = BlockCatogary::Dirt;
+    pWorld.at(1, 1, 2) = BlockCatogary::Dirt;
 
     pWorld.at(-2, 0, 0) = BlockCatogary::Dirt;
     pWorld.at(-2, 0, 1) = BlockCatogary::Dirt;
@@ -42,25 +46,61 @@ bool GameForm::move(const float& x, const float& y, const float& z) {
     delta.x += y*tmp.x;
     delta.y += y*tmp.y;
     delta.z += z;
-    float cX = pos.x+delta.x;
-    float cY = pos.y+delta.y;
-    if (delta.x>0) cX += 0.2;
-    if (delta.x<0) cX -= 0.2;
-    if (delta.y>0) cY += 0.2;
-    if (delta.y<0) cY -= 0.2;
-    bool above = pWorld.at(floor(cX), floor(cY), floor(pos.z+delta.z)) == BlockCatogary::Air;
-    bool below = pWorld.at(floor(cX), floor(cY), floor(pos.z+delta.z-1.7)) == BlockCatogary::Air;
-    if (above && below) {
+    if (!z) {
+        float cX = pos.x+delta.x;
+        int fX = floor(pos.x), fY = floor(pos.y);
+        float cY = pos.y+delta.y;
+        int fZ = floor(pos.z);
+        if (delta.x>0) cX += 0.3;
+        if (delta.x<0) cX -= 0.3;
+        if (delta.y>0) cY += 0.3;
+        if (delta.y<0) cY -= 0.3;
+        cX = floor(cX);
+        cY = floor(cY);
+        if (cX != fX || cY!=fY) {
+            bool above_x = pWorld.at(cX, fY, fZ) == BlockCatogary::Air;
+            bool above_y = pWorld.at(fX, cY, fZ) == BlockCatogary::Air;
+            bool below_x = pWorld.at(cX, fY, fZ-1) == BlockCatogary::Air;
+            bool below_y = pWorld.at(fX, cY, fZ - 1) == BlockCatogary::Air;
+            bool above_xy = pWorld.at(cX, cY,fZ) == BlockCatogary::Air;
+            bool below_xy = pWorld.at(cX, cY, fZ-1) == BlockCatogary::Air;
+            if (!above_x || !below_x) {
+                if (delta.x<0) delta.x = fX+0.3-pos.x;
+                else if (delta.x>0) delta.x = cX-0.3-pos.x;
+            }
+            if (!above_y || !below_y) {
+                if (delta.y<0) delta.y = fY+0.3-pos.y;
+                else if (delta.y>0) delta.y = cY-0.3-pos.y;
+            }
+            if (above_x && above_y && !above_xy) {
+                if (delta.x<0) delta.x = fX+0.3-pos.x;
+                else if (delta.x>0) delta.x = cX-0.3-pos.x;
+                if (delta.y<0) delta.y = fY+0.3-pos.y;
+                else if (delta.y>0) delta.y = cY-0.3-pos.y;
+            }
+            if ((above_x && !below_x) || (above_y && !below_y) || (above_xy && !below_xy)) {
+                if (    pWorld.at(cX, cY, fZ-2)!=BlockCatogary::Air && 
+                        pWorld.at(fX, fY, fZ-2)!=BlockCatogary::Air &&
+                        pWorld.at(cX, cY, fZ+1) == BlockCatogary::Air) {
+                    if (delta.x>0) delta.x+=0.1;
+                    else if (delta.x<0) delta.x-=0.1;
+                    if (delta.y>0) delta.y+=0.1;
+                    else if (delta.y<0) delta.y-=0.1;
+                    delta.z = 1;
+                }
+            }
+        }
         sCamera.setPosition(delta+pos);
         return true;
     }
-    else if (above && !below) {
-        if (!pZVelocity && pWorld.at(floor(cX), floor(cY), floor(pos.z+delta.z+1)) == BlockCatogary::Air) {
-            sCamera.setPosition(delta+pos+glm::vec3(0, 0, 1));
+    else {
+        if (pWorld.at(floor(pos.x), floor(pos.y), floor(pos.z+delta.z-1.7)) == BlockCatogary::Air) {
+            sCamera.setPosition(delta+pos);
             return true;
+
         }
-    }
-    return false;
+        return false;
+    };
 }
 _catch_function(GameForm, CatchEvent) {
     bool is_changed = Form3D::CatchEvent(window, event, state);
@@ -95,11 +135,10 @@ _handle_function(GameForm, handle) {
                 is_changed = true;
             }
         }
-
-        if (pZVelocity>-50 && pWorld.at(floor(sCamera.getPosition().x-0.3), floor(sCamera.getPosition().y-0.3), floor(sCamera.getPosition().z-2)) == BlockCatogary::Air &&
-            pWorld.at(floor(sCamera.getPosition().x-0.3), floor(sCamera.getPosition().y+0.3), floor(sCamera.getPosition().z-2)) == BlockCatogary::Air &&
-            pWorld.at(floor(sCamera.getPosition().x+0.3), floor(sCamera.getPosition().y+0.3), floor(sCamera.getPosition().z-2)) == BlockCatogary::Air &&
-            pWorld.at(floor(sCamera.getPosition().x+0.3), floor(sCamera.getPosition().y-0.3), floor(sCamera.getPosition().z-2)) == BlockCatogary::Air) {
+        if (pZVelocity>-50 &&   pWorld.at(floor(sCamera.getPosition().x-0.25), floor(sCamera.getPosition().y-0.25), floor(sCamera.getPosition().z-2)) == BlockCatogary::Air &&
+                                pWorld.at(floor(sCamera.getPosition().x-0.25), floor(sCamera.getPosition().y+0.25), floor(sCamera.getPosition().z-2)) == BlockCatogary::Air &&
+                                pWorld.at(floor(sCamera.getPosition().x+0.25), floor(sCamera.getPosition().y+0.25), floor(sCamera.getPosition().z-2)) == BlockCatogary::Air &&
+                                pWorld.at(floor(sCamera.getPosition().x+0.25), floor(sCamera.getPosition().y-0.25), floor(sCamera.getPosition().z-2)) == BlockCatogary::Air) {
             pZVelocity -= 3;
         }
         else if (!pZVelocity && Keyboard::isKeyPressed(Keyboard::Key::Space)) {

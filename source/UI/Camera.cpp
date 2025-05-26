@@ -40,7 +40,7 @@ Camera::operator GLuint() {
 }
 glm::vec3 Camera::getHorizontalVector() const {
     glm::vec3 ans = {-pDelta.y, pDelta.x, 0};
-    ans /= ans.length();
+    ans /= glm::length(ans);
     return ans;
 }
 glm::vec3 Camera::getCenter() const {
