@@ -1,6 +1,7 @@
 #include "Ray.h"
 #include "General.h"
 #include <cmath>
+namespace MyBase3D {
 
 Ray3f::Ray3f(const glm::vec3& origin, const glm::vec3& des) {
     pOrigin = origin;
@@ -46,4 +47,5 @@ glm::vec3 Ray3f::getOrigin() const {
 
 Ray3f::operator glm::vec3() const {
     return pDelta;
+}
 }

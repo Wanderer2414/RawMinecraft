@@ -1,7 +1,7 @@
 #include "Application.h"
 
 int main() {
-    Application application({1366, 748}, "Data center");
+    MyBase::Application application({1366, 748}, "Data center");
     application.run();
     return 0;
 }

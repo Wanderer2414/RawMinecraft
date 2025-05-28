@@ -4,7 +4,7 @@
 #include "Ray.h"
 #include "Rect3D.h"
 
-bool isIntersect(const Ray3f& ray, const Rect3f& rectangle);
+bool isIntersect(const MyBase3D::Ray3f& ray, const MyBase3D::Rect3f& rectangle);
 
 float abs(const Vector2f& vector);
 

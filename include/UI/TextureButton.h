@@ -2,6 +2,7 @@
 #define TEXTURE_BUTTON_H
 #include "Button.h"
 #include "Controller.h"
+namespace MyBase {
 
 template <>
 class Button<Texture>: public Controller, public Sprite {
@@ -27,4 +28,5 @@ protected:
     vector<tuple<Texture*, Texture*, Texture*>> shared_storage;
 private:
 };
+}
 #endif

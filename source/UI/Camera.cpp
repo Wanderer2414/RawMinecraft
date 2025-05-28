@@ -4,6 +4,8 @@
 #include "Global.h"
 
 extern Vector2f WindowSize;
+namespace MyBase3D {
+
 Camera::Camera() {
     pPosition = {4, 4, 2};
     pDelta = {-2, -2, 0};
@@ -117,4 +119,5 @@ Vector2f Camera::transfer(const glm::vec3& vector) const {
 }
 Ray3f Camera::getSight() const {
     return Ray3f(pPosition, pPosition + pDelta);
+}
 }

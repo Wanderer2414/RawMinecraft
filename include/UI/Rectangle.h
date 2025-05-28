@@ -1,7 +1,7 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 #include "BaseShape.h"
-namespace MC {
+namespace MyBase {
     class Rectangle:public BaseShape, public Shape {
     public:
         Rectangle();

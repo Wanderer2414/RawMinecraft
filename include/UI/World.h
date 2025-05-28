@@ -5,20 +5,22 @@
 #include "Chunk.h"
 #include "Controller3D.h"
 #include "Global.h"
-class World: public Controller3D {
-public:
+namespace MyCraft {
+class World: public MyBase3D::Controller3D {
     #define world_side 1
-    virtual bool setHover(const Ray3f& hover) override;
-    World(const int& x, const int& y, const int& z);
-    ~World();
-    Block&   at(const int& x, const int& y, const int& z);
-protected:
-    handle_function(handle) override;
-    virtual void glDraw() const override;
-private:
-    float       hX, hY, hZ;
-    Chunk       pChunks[world_side*2 + 1][world_side*2 + 1][world_side*2 + 1];
-    glm::vec3   pPosition;
-    Alarm       pFrameAlarm;
-};
+    public:
+        World(const int& x, const int& y, const int& z);
+        ~World();
+        virtual bool            setHover(const MyBase3D::Ray3f& hover) override;
+        MyCraft::Block&         at(const int& x, const int& y, const int& z);
+    protected:
+        handle_function(handle) override;
+        virtual void glDraw() const override;
+    private:
+        float                   hX, hY, hZ;
+        MyCraft::Chunk          pChunks[world_side*2 + 1][world_side*2 + 1][world_side*2 + 1];
+        glm::vec3               pPosition;
+        MyBase::Alarm           pFrameAlarm;
+    };
+}
 #endif

@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="2042px" preserveAspectRatio="none" style="width:2240px;height:2042px;background:#FFFFFA;" version="1.1" viewBox="0 0 2240 2042" width="2240px" zoomAndPan="magnify"><defs><filter height="300%" id="f1qcjp3avfc9os" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[e4ce9f84219798b6f3c8b677cfffb914]
+class C_0004943235355700621518--><rect codeLine="3" fill="#FEFECE" filter="url(#f1qcjp3avfc9os)" height="160.8732" id="C_0004943235355700621518" style="stroke:#A80036;stroke-width:1.5;" width="364" x="432.5" y="1867.37"/><ellipse cx="558.25" cy="1883.37" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M557.7188,1890.2919 Q555.9688,1890.2919 554.8281,1889.5575 Q553.7031,1888.8075 553.1406,1887.4638 Q552.5938,1886.1044 552.5938,1884.3075 Q552.5938,1882.2763 553.25,1880.8231 Q553.9063,1879.37 555.1875,1878.5888 Q556.4688,1877.8075 558.3438,1877.8075 Q559.2344,1877.8075 559.9063,1877.995 Q560.5781,1878.1669 561.2656,1878.5106 L560.4531,1880.5263 Q559.8281,1880.2138 559.2813,1880.0888 Q558.75,1879.9638 558.2656,1879.9638 Q557.0938,1879.9638 556.3906,1880.495 Q555.6875,1881.0263 555.3906,1881.9794 Q555.0938,1882.9325 555.0938,1884.1981 Q555.0938,1886.2138 555.8125,1887.1825 Q556.5313,1888.1356 558.125,1888.1356 Q558.7188,1888.1356 559.3438,1887.9794 Q559.9688,1887.8231 560.7969,1887.4481 L560.7969,1889.6669 Q560.0625,1889.9794 559.2656,1890.1356 Q558.4844,1890.2919 557.7188,1890.2919 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="104" x="578.75" y="1888.026">::MyBase3D::Ray3f</text><line style="stroke:#A80036;stroke-width:1.5;" x1="433.5" x2="795.5" y1="1899.37" y2="1899.37"/><ellipse cx="443.5" cy="1910.37" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="311" x="452.5" y="1915.1289">Ray3f(const glm::vec3 &amp; origin, const glm::vec3 &amp; des) : void</text><ellipse cx="443.5" cy="1925.3519" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="73" x="452.5" y="1930.1108">~Ray3f() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="433.5" x2="795.5" y1="1937.3338" y2="1937.3338"/><ellipse cx="443.5" cy="1948.3338" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="338" x="452.5" y="1953.0927">distance(const char &amp; plane, const float &amp; value) const : glm::vec3</text><ellipse cx="443.5" cy="1963.3157" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="146" x="452.5" y="1968.0746">getOrigin() const : glm::vec3</text><ellipse cx="443.5" cy="1978.2976" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="162" x="452.5" y="1983.0565">operator vec() const : glm::vec3</text><line style="stroke:#A80036;stroke-width:1.5;" x1="433.5" x2="795.5" y1="1990.2794" y2="1990.2794"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="440.5" y="1998.2794"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="92" x="452.5" y="2006.0384">pDelta : glm::vec3</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="440.5" y="2013.2613"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="99" x="452.5" y="2021.0202">pOrigin : glm::vec3</text><!--MD5=[017a7775a896022f98c1ec01b7f518b8]
+class C_0010983644189126901764--><rect codeLine="15" fill="#FEFECE" filter="url(#f1qcjp3avfc9os)" height="175.8551" id="C_0010983644189126901764" style="stroke:#A80036;stroke-width:1.5;" width="357" x="7" y="1488.18"/><ellipse cx="129.25" cy="1504.18" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M128.7188,1511.1019 Q126.9688,1511.1019 125.8281,1510.3675 Q124.7031,1509.6175 124.1406,1508.2738 Q123.5938,1506.9144 123.5938,1505.1175 Q123.5938,1503.0863 124.25,1501.6331 Q124.9063,1500.18 126.1875,1499.3988 Q127.4688,1498.6175 129.3438,1498.6175 Q130.2344,1498.6175 130.9063,1498.805 Q131.5781,1498.9769 132.2656,1499.3206 L131.4531,1501.3363 Q130.8281,1501.0238 130.2813,1500.8988 Q129.75,1500.7738 129.2656,1500.7738 Q128.0938,1500.7738 127.3906,1501.305 Q126.6875,1501.8363 126.3906,1502.7894 Q126.0938,1503.7425 126.0938,1505.0081 Q126.0938,1507.0238 126.8125,1507.9925 Q127.5313,1508.9456 129.125,1508.9456 Q129.7188,1508.9456 130.3438,1508.7894 Q130.9688,1508.6331 131.7969,1508.2581 L131.7969,1510.4769 Q131.0625,1510.7894 130.2656,1510.9456 Q129.4844,1511.1019 128.7188,1511.1019 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="104" x="149.75" y="1508.836">::MyBase3D::Plane</text><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="363" y1="1520.18" y2="1520.18"/><ellipse cx="18" cy="1531.18" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="331" x="27" y="1535.9389">Plane(const glm::vec3 &amp; origin, const glm::vec3 &amp; normal) : void</text><ellipse cx="18" cy="1546.1619" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="73" x="27" y="1550.9208">~Plane() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="8" x2="363" y1="1558.1438" y2="1558.1438"/><ellipse cx="18" cy="1569.1438" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="250" x="27" y="1573.9027">distance(const glm::vec3 &amp; position) const : float</text><ellipse cx="18" cy="1584.1257" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="146" x="27" y="1588.8846">getOrigin() const : glm::vec3</text><ellipse cx="18" cy="1599.1076" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="240" x="27" y="1603.8665">isIntersect(const Ray3f &amp; ray) const : glm::vec3</text><ellipse cx="18" cy="1614.0894" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="162" x="27" y="1618.8484">operator vec() const : glm::vec3</text><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="363" y1="1626.0713" y2="1626.0713"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="15" y="1634.0713"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="104" x="27" y="1641.8302">pNormal : glm::vec3</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="15" y="1649.0532"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="99" x="27" y="1656.8121">pOrigin : glm::vec3</text><!--MD5=[a87163a277298048c6f8170b0558eb97]
+class C_0000504874819916776058--><rect codeLine="28" fill="#FEFECE" filter="url(#f1qcjp3avfc9os)" height="273.7464" id="C_0000504874819916776058" style="stroke:#A80036;stroke-width:1.5;" width="408" x="1301.5" y="1439.24"/><ellipse cx="1447.25" cy="1455.24" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M1446.7188,1462.1619 Q1444.9688,1462.1619 1443.8281,1461.4275 Q1442.7031,1460.6775 1442.1406,1459.3338 Q1441.5938,1457.9744 1441.5938,1456.1775 Q1441.5938,1454.1463 1442.25,1452.6931 Q1442.9063,1451.24 1444.1875,1450.4588 Q1445.4688,1449.6775 1447.3438,1449.6775 Q1448.2344,1449.6775 1448.9063,1449.865 Q1449.5781,1450.0369 1450.2656,1450.3806 L1449.4531,1452.3963 Q1448.8281,1452.0838 1448.2813,1451.9588 Q1447.75,1451.8338 1447.2656,1451.8338 Q1446.0938,1451.8338 1445.3906,1452.365 Q1444.6875,1452.8963 1444.3906,1453.8494 Q1444.0938,1454.8025 1444.0938,1456.0681 Q1444.0938,1458.0838 1444.8125,1459.0525 Q1445.5313,1460.0056 1447.125,1460.0056 Q1447.7188,1460.0056 1448.3438,1459.8494 Q1448.9688,1459.6931 1449.7969,1459.3181 L1449.7969,1461.5369 Q1449.0625,1461.8494 1448.2656,1462.0056 Q1447.4844,1462.1619 1446.7188,1462.1619 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="108" x="1467.75" y="1459.896">::MyBase3D::Rect3f</text><line style="stroke:#A80036;stroke-width:1.5;" x1="1302.5" x2="1708.5" y1="1471.24" y2="1471.24"/><ellipse cx="1312.5" cy="1482.24" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="70" x="1321.5" y="1486.9989">Rect3f() : void</text><ellipse cx="1312.5" cy="1497.2219" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="382" x="1321.5" y="1501.9808">Rect3f(const glm::vec3 &amp; a, const glm::vec3 &amp; b, const glm::vec3 &amp; c) : void</text><ellipse cx="1312.5" cy="1512.2038" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="76" x="1321.5" y="1516.9627">~Rect3f() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="1302.5" x2="1708.5" y1="1524.1857" y2="1524.1857"/><ellipse cx="1312.5" cy="1535.1857" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="245" x="1321.5" y="1539.9446">operator[](const uint &amp; index) const : glm::vec3</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="1302.5" x2="1708.5" y1="1547.1676" y2="1547.1676"/><ellipse cx="1312.5" cy="1558.1676" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="251" x="1321.5" y="1562.9265">contains(const glm::vec3 &amp; position) const : bool</text><ellipse cx="1312.5" cy="1573.1494" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="250" x="1321.5" y="1577.9084">distance(const glm::vec3 &amp; position) const : float</text><ellipse cx="1312.5" cy="1588.1313" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="147" x="1321.5" y="1592.8902">getCenter() const : glm::vec3</text><ellipse cx="1312.5" cy="1603.1132" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="258" x="1321.5" y="1607.8721">getIntersect(const Ray3f &amp; sight) const : glm::vec3</text><ellipse cx="1312.5" cy="1618.0951" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="151" x="1321.5" y="1622.854">getNormal() const : glm::vec3</text><ellipse cx="1312.5" cy="1633.077" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="215" x="1321.5" y="1637.8359">isIntersect(const Ray3f &amp; ray) const : bool</text><ellipse cx="1312.5" cy="1648.0589" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="191" x="1321.5" y="1652.8178">move(const glm::vec3 &amp; offset) : void</text><line style="stroke:#A80036;stroke-width:1.5;" x1="1302.5" x2="1708.5" y1="1660.0408" y2="1660.0408"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="1309.5" y="1668.0408"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="72" x="1321.5" y="1675.7997">pA : glm::vec3</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="1309.5" y="1683.0227"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="72" x="1321.5" y="1690.7816">pB : glm::vec3</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="1309.5" y="1698.0045"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="72" x="1321.5" y="1705.7635">pC : glm::vec3</text><!--MD5=[a3f30f22a1338b67687cc92c8e3a8297]
+class C_0009126998444463587745--><rect codeLine="48" fill="#FEFECE" filter="url(#f1qcjp3avfc9os)" height="430.5472" id="C_0009126998444463587745" style="stroke:#A80036;stroke-width:1.5;" width="614" x="629.5" y="7"/><ellipse cx="859.75" cy="23" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M859.2188,29.9219 Q857.4688,29.9219 856.3281,29.1875 Q855.2031,28.4375 854.6406,27.0938 Q854.0938,25.7344 854.0938,23.9375 Q854.0938,21.9063 854.75,20.4531 Q855.4063,19 856.6875,18.2188 Q857.9688,17.4375 859.8438,17.4375 Q860.7344,17.4375 861.4063,17.625 Q862.0781,17.7969 862.7656,18.1406 L861.9531,20.1563 Q861.3281,19.8438 860.7813,19.7188 Q860.25,19.5938 859.7656,19.5938 Q858.5938,19.5938 857.8906,20.125 Q857.1875,20.6563 856.8906,21.6094 Q856.5938,22.5625 856.5938,23.8281 Q856.5938,25.8438 857.3125,26.8125 Q858.0313,27.7656 859.625,27.7656 Q860.2188,27.7656 860.8438,27.6094 Q861.4688,27.4531 862.2969,27.0781 L862.2969,29.2969 Q861.5625,29.6094 860.7656,29.7656 Q859.9844,29.9219 859.2188,29.9219 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="145" x="880.25" y="27.656">::MyBase3D::Controller3D</text><line style="stroke:#A80036;stroke-width:1.5;" x1="630.5" x2="1242.5" y1="39" y2="39"/><ellipse cx="640.5" cy="50" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="106" x="649.5" y="54.7589">Controller3D() : void</text><ellipse cx="640.5" cy="64.9819" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="112" x="649.5" y="69.7408">~Controller3D() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="630.5" x2="1242.5" y1="76.9638" y2="76.9638"/><polygon fill="#FFFF44" points="640.5,82.9638,644.5,86.9638,640.5,90.9638,636.5,86.9638" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="579" x="649.5" y="92.7227">AfterCatch(RenderWindow &amp; window, Event &amp; event, const RenderStates &amp; state = RenderStates::Default) : bool</text><polygon fill="#FFFF44" points="640.5,97.9457,644.5,101.9457,640.5,105.9457,636.5,101.9457" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="588" x="649.5" y="107.7046">BeforeCatch(RenderWindow &amp; window, Event &amp; event, const RenderStates &amp; state = RenderStates::Default) : bool</text><polygon fill="#FFFF44" points="640.5,112.9276,644.5,116.9276,640.5,120.9276,636.5,116.9276" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="582" x="649.5" y="122.6865">CatchEvent(RenderWindow &amp; window, Event &amp; event, const RenderStates &amp; state = RenderStates::Default) : bool</text><polygon fill="#FFFF44" points="640.5,127.9094,644.5,131.9094,640.5,135.9094,636.5,131.9094" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="231" x="649.5" y="137.6684">contains(const Ray3f &amp; position) const : bool</text><polygon fill="#FFFF44" points="640.5,142.8913,644.5,146.8913,640.5,150.8913,636.5,146.8913" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="317" x="649.5" y="152.6502">draw(RenderTarget &amp; target, RenderStates state) const : void</text><polygon fill="#FFFF44" points="640.5,157.8732,644.5,161.8732,640.5,165.8732,636.5,161.8732" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="107" x="649.5" y="167.6321">glDraw() const : void</text><polygon fill="#FFFF44" points="640.5,172.8551,644.5,176.8551,640.5,180.8551,636.5,176.8551" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="482" x="649.5" y="182.614">handle(RenderWindow &amp; window, const RenderStates &amp; state = RenderStates::Default) : bool</text><ellipse cx="640.5" cy="192.837" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="140" x="649.5" y="197.5959">isDoubleClick() const : bool</text><ellipse cx="640.5" cy="207.8189" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="108" x="649.5" y="212.5778">isFocus() const : bool</text><ellipse cx="640.5" cy="222.8008" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="123" x="649.5" y="227.5597">isHovered() const : bool</text><ellipse cx="640.5" cy="237.7827" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="119" x="649.5" y="242.5416">isPressed() const : bool</text><ellipse cx="640.5" cy="252.7645" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="124" x="649.5" y="257.5235">isReleased() const : bool</text><ellipse cx="640.5" cy="267.7464" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="64" x="649.5" y="272.5053">reset() : void</text><ellipse cx="640.5" cy="282.7283" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="180" x="649.5" y="287.4872">setFocus(const bool &amp; focus) : void</text><ellipse cx="640.5" cy="297.7102" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="186" x="649.5" y="302.4691">setHover(const Ray3f &amp; sight) : bool</text><ellipse cx="640.5" cy="312.6921" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="186" x="649.5" y="317.451">setHover(const bool &amp; hover) : bool</text><ellipse cx="640.5" cy="327.674" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="75" x="649.5" y="332.4329">update() : void</text><line style="stroke:#A80036;stroke-width:1.5;" x1="630.5" x2="1242.5" y1="339.6559" y2="339.6559"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="637.5" y="347.6559"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="174" x="649.5" y="355.4148">double_click_count : unsigned int</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="637.5" y="362.6378"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="111" x="649.5" y="370.3967">pIsDoubleClick : bool</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="637.5" y="377.6196"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="79" x="649.5" y="385.3786">pIsFocus : bool</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="637.5" y="392.6015"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="94" x="649.5" y="400.3604">pIsHovered : bool</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="637.5" y="407.5834"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="90" x="649.5" y="415.3423">pIsPressed : bool</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="637.5" y="422.5653"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="95" x="649.5" y="430.3242">pIsReleased : bool</text><!--MD5=[2436e985f3b07963c4d58568c50fc8c1]
+class C_0005232309663968889129--><rect codeLine="78" fill="#FEFECE" filter="url(#f1qcjp3avfc9os)" height="378.6196" id="C_0005232309663968889129" style="stroke:#A80036;stroke-width:1.5;" width="608" x="472.5" y="516.54"/><ellipse cx="700.25" cy="532.54" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M699.7188,539.4619 Q697.9688,539.4619 696.8281,538.7275 Q695.7031,537.9775 695.1406,536.6338 Q694.5938,535.2744 694.5938,533.4775 Q694.5938,531.4463 695.25,529.9931 Q695.9063,528.54 697.1875,527.7588 Q698.4688,526.9775 700.3438,526.9775 Q701.2344,526.9775 701.9063,527.165 Q702.5781,527.3369 703.2656,527.6806 L702.4531,529.6963 Q701.8281,529.3838 701.2813,529.2588 Q700.75,529.1338 700.2656,529.1338 Q699.0938,529.1338 698.3906,529.665 Q697.6875,530.1963 697.3906,531.1494 Q697.0938,532.1025 697.0938,533.3681 Q697.0938,535.3838 697.8125,536.3525 Q698.5313,537.3056 700.125,537.3056 Q700.7188,537.3056 701.3438,537.1494 Q701.9688,536.9931 702.7969,536.6181 L702.7969,538.8369 Q702.0625,539.1494 701.2656,539.3056 Q700.4844,539.4619 699.7188,539.4619 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="144" x="720.75" y="537.196">::MyBase3D::Container3D</text><line style="stroke:#A80036;stroke-width:1.5;" x1="473.5" x2="1079.5" y1="548.54" y2="548.54"/><ellipse cx="483.5" cy="559.54" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="104" x="492.5" y="564.2989">Container3D() : void</text><ellipse cx="483.5" cy="574.5219" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="110" x="492.5" y="579.2808">~Container3D() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="473.5" x2="1079.5" y1="586.5038" y2="586.5038"/><ellipse cx="483.5" cy="597.5038" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="249" x="492.5" y="602.2627">operator[](const size_t &amp; index) : Controller3D *</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="473.5" x2="1079.5" y1="609.4857" y2="609.4857"/><polygon fill="#FFFF44" points="483.5,615.4857,487.5,619.4857,483.5,623.4857,479.5,619.4857" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="579" x="492.5" y="625.2446">AfterCatch(RenderWindow &amp; window, Event &amp; event, const RenderStates &amp; state = RenderStates::Default) : bool</text><polygon fill="#FFFF44" points="483.5,630.4676,487.5,634.4676,483.5,638.4676,479.5,634.4676" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="582" x="492.5" y="640.2265">CatchEvent(RenderWindow &amp; window, Event &amp; event, const RenderStates &amp; state = RenderStates::Default) : bool</text><ellipse cx="483.5" cy="650.4494" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="63" x="492.5" y="655.2084">clear() : void</text><polygon fill="#FFFF44" points="483.5,660.4313,487.5,664.4313,483.5,668.4313,479.5,664.4313" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="451" x="492.5" y="670.1902">draw(RenderTarget &amp; target, RenderStates state = = RenderStates::Default) const : void</text><ellipse cx="483.5" cy="680.4132" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="198" x="492.5" y="685.1721">erase(Controller3D * controller) : void</text><polygon fill="#FFFF44" points="483.5,690.3951,487.5,694.3951,483.5,698.3951,479.5,694.3951" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="107" x="492.5" y="700.154">glDraw() const : void</text><polygon fill="#FFFF44" points="483.5,705.377,487.5,709.377,483.5,713.377,479.5,709.377" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="482" x="492.5" y="715.1359">handle(RenderWindow &amp; window, const RenderStates &amp; state = RenderStates::Default) : bool</text><ellipse cx="483.5" cy="725.3589" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="309" x="492.5" y="730.1178">insert(Controller3D * controller, const int &amp; layer = 0) : void</text><polygon fill="#FFFF44" points="483.5,735.3408,487.5,739.3408,483.5,743.3408,479.5,739.3408" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="64" x="492.5" y="745.0997">reset() : void</text><ellipse cx="483.5" cy="755.3227" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="180" x="492.5" y="760.0816">setFocus(const bool &amp; focus) : void</text><ellipse cx="483.5" cy="770.3045" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="203" x="492.5" y="775.0635">setHover(const Ray3f &amp; position) : bool</text><ellipse cx="483.5" cy="785.2864" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="186" x="492.5" y="790.0453">setHover(const bool &amp; hover) : bool</text><ellipse cx="483.5" cy="800.2683" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="93" x="492.5" y="805.0272">size() const : size_t</text><ellipse cx="483.5" cy="815.2502" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="75" x="492.5" y="820.0091">update() : void</text><line style="stroke:#A80036;stroke-width:1.5;" x1="473.5" x2="1079.5" y1="827.2321" y2="827.2321"/><polygon fill="none" points="483.5,833.2321,487.5,837.2321,483.5,841.2321,479.5,837.2321" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="224" x="492.5" y="842.991">children : vector&lt;pair&lt;Controller3D *,int&gt;&gt;</text><polygon fill="none" points="483.5,848.214,487.5,852.214,483.5,856.214,479.5,852.214" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="94" x="492.5" y="857.9729">focus_control : int</text><polygon fill="none" points="483.5,863.1959,487.5,867.1959,483.5,871.1959,479.5,867.1959" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="124" x="492.5" y="872.9548">hovered_controller : int</text><polygon fill="none" points="483.5,878.1778,487.5,882.1778,483.5,886.1778,479.5,882.1778" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="73" x="492.5" y="887.9367">old_focus : int</text><!--MD5=[42dc81221a2e1d14054862e6e289a3e7]
+class C_0006947278924382378289--><rect codeLine="105" fill="#FEFECE" filter="url(#f1qcjp3avfc9os)" height="137.8913" id="C_0006947278924382378289" style="stroke:#A80036;stroke-width:1.5;" width="151" x="1279" y="153.32"/><ellipse cx="1294" cy="169.32" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M1293.4688,176.2419 Q1291.7188,176.2419 1290.5781,175.5075 Q1289.4531,174.7575 1288.8906,173.4137 Q1288.3438,172.0544 1288.3438,170.2575 Q1288.3438,168.2262 1289,166.7731 Q1289.6563,165.32 1290.9375,164.5387 Q1292.2188,163.7575 1294.0938,163.7575 Q1294.9844,163.7575 1295.6563,163.945 Q1296.3281,164.1169 1297.0156,164.4606 L1296.2031,166.4762 Q1295.5781,166.1637 1295.0313,166.0387 Q1294.5,165.9137 1294.0156,165.9137 Q1292.8438,165.9137 1292.1406,166.445 Q1291.4375,166.9762 1291.1406,167.9294 Q1290.8438,168.8825 1290.8438,170.1481 Q1290.8438,172.1637 1291.5625,173.1325 Q1292.2813,174.0856 1293.875,174.0856 Q1294.4688,174.0856 1295.0938,173.9294 Q1295.7188,173.7731 1296.5469,173.3981 L1296.5469,175.6169 Q1295.8125,175.9294 1295.0156,176.0856 Q1294.2344,176.2419 1293.4688,176.2419 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="119" x="1308" y="173.976">::MyBase3D::PointSet</text><line style="stroke:#A80036;stroke-width:1.5;" x1="1280" x2="1429" y1="185.32" y2="185.32"/><ellipse cx="1290" cy="196.32" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="82" x="1299" y="201.0789">PointSet() : void</text><ellipse cx="1290" cy="211.3019" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="88" x="1299" y="216.0608">~PointSet() : void</text><line style="stroke:#A80036;stroke-width:1.5;" x1="1280" x2="1429" y1="223.2838" y2="223.2838"/><ellipse cx="1290" cy="234.2838" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="88" x="1299" y="239.0427">BlockSet : GLuint</text><ellipse cx="1290" cy="249.2657" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="94" x="1299" y="254.0246">ChunkSet : GLuint</text><ellipse cx="1290" cy="264.2476" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" text-decoration="underline" textLength="100" x="1299" y="269.0065">Default : PointSet *</text><ellipse cx="1290" cy="279.2294" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="98" x="1299" y="283.9884">MarginSet : GLuint</text><!--MD5=[9199d77a82fffbfe5279b23541776023]
+class C_0017439970373421130707--><rect codeLine="115" fill="#FEFECE" filter="url(#f1qcjp3avfc9os)" height="152.8732" id="C_0017439970373421130707" style="stroke:#A80036;stroke-width:1.5;" width="189" x="1550" y="145.83"/><ellipse cx="1565" cy="161.83" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M1564.4688,168.7519 Q1562.7188,168.7519 1561.5781,168.0175 Q1560.4531,167.2675 1559.8906,165.9237 Q1559.3438,164.5644 1559.3438,162.7675 Q1559.3438,160.7362 1560,159.2831 Q1560.6563,157.83 1561.9375,157.0487 Q1563.2188,156.2675 1565.0938,156.2675 Q1565.9844,156.2675 1566.6563,156.455 Q1567.3281,156.6269 1568.0156,156.9706 L1567.2031,158.9862 Q1566.5781,158.6737 1566.0313,158.5487 Q1565.5,158.4237 1565.0156,158.4237 Q1563.8438,158.4237 1563.1406,158.955 Q1562.4375,159.4862 1562.1406,160.4394 Q1561.8438,161.3925 1561.8438,162.6581 Q1561.8438,164.6737 1562.5625,165.6425 Q1563.2813,166.5956 1564.875,166.5956 Q1565.4688,166.5956 1566.0938,166.4394 Q1566.7188,166.2831 1567.5469,165.9081 L1567.5469,168.1269 Q1566.8125,168.4394 1566.0156,168.5956 Q1565.2344,168.7519 1564.4688,168.7519 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="157" x="1579" y="166.486">::MyBase3D::ShaderStorage</text><line style="stroke:#A80036;stroke-width:1.5;" x1="1551" x2="1738" y1="177.83" y2="177.83"/><ellipse cx="1561" cy="188.83" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="116" x="1570" y="193.5889">ShaderStorage() : void</text><ellipse cx="1561" cy="203.8119" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="122" x="1570" y="208.5708">~ShaderStorage() : void</text><line style="stroke:#A80036;stroke-width:1.5;" x1="1551" x2="1738" y1="215.7938" y2="215.7938"/><ellipse cx="1561" cy="226.7938" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="115" x="1570" y="231.5527">ChunkShader : GLuint</text><ellipse cx="1561" cy="241.7757" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="108" x="1570" y="246.5346">CubeShader : GLuint</text><ellipse cx="1561" cy="256.7576" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" text-decoration="underline" textLength="134" x="1570" y="261.5165">Default : ShaderStorage *</text><ellipse cx="1561" cy="271.7394" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="119" x="1570" y="276.4984">DefaultShader : GLuint</text><ellipse cx="1561" cy="286.7213" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="119" x="1570" y="291.4802">MarginShader : GLuint</text><!--MD5=[7472e147db2d41990ab3576cb6fef448]
+class C_0001662821347968641378--><rect codeLine="126" fill="#FEFECE" filter="url(#f1qcjp3avfc9os)" height="145.8913" id="C_0001662821347968641378" style="stroke:#A80036;stroke-width:1.5;" width="338" x="1858.5" y="149.32"/><ellipse cx="1975.25" cy="165.32" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M1974.7188,172.2419 Q1972.9688,172.2419 1971.8281,171.5075 Q1970.7031,170.7575 1970.1406,169.4137 Q1969.5938,168.0544 1969.5938,166.2575 Q1969.5938,164.2262 1970.25,162.7731 Q1970.9063,161.32 1972.1875,160.5387 Q1973.4688,159.7575 1975.3438,159.7575 Q1976.2344,159.7575 1976.9063,159.945 Q1977.5781,160.1169 1978.2656,160.4606 L1977.4531,162.4762 Q1976.8281,162.1637 1976.2813,162.0387 Q1975.75,161.9137 1975.2656,161.9137 Q1974.0938,161.9137 1973.3906,162.445 Q1972.6875,162.9762 1972.3906,163.9294 Q1972.0938,164.8825 1972.0938,166.1481 Q1972.0938,168.1637 1972.8125,169.1325 Q1973.5313,170.0856 1975.125,170.0856 Q1975.7188,170.0856 1976.3438,169.9294 Q1976.9688,169.7731 1977.7969,169.3981 L1977.7969,171.6169 Q1977.0625,171.9294 1976.2656,172.0856 Q1975.4844,172.2419 1974.7188,172.2419 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="96" x="1995.75" y="169.976">::MyBase3D::Line</text><line style="stroke:#A80036;stroke-width:1.5;" x1="1859.5" x2="2195.5" y1="181.32" y2="181.32"/><ellipse cx="1869.5" cy="192.32" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="312" x="1878.5" y="197.0789">Line(const glm::vec3 &amp; origin, const glm::vec3 &amp; delta) : void</text><ellipse cx="1869.5" cy="207.3019" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="66" x="1878.5" y="212.0608">~Line() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="1859.5" x2="2195.5" y1="219.2838" y2="219.2838"/><ellipse cx="1869.5" cy="230.2838" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="251" x="1878.5" y="235.0427">contains(const glm::vec3 &amp; position) const : bool</text><ellipse cx="1869.5" cy="245.2657" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="250" x="1878.5" y="250.0246">distance(const glm::vec3 &amp; position) const : float</text><line style="stroke:#A80036;stroke-width:1.5;" x1="1859.5" x2="2195.5" y1="257.2476" y2="257.2476"/><polygon fill="none" points="1869.5,263.2476,1873.5,267.2476,1869.5,271.2476,1865.5,267.2476" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="90" x="1878.5" y="273.0065">sDelta : glm::vec3</text><polygon fill="none" points="1869.5,278.2294,1873.5,282.2294,1869.5,286.2294,1865.5,282.2294" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="97" x="1878.5" y="287.9884">sOrigin : glm::vec3</text><!--MD5=[69a2d6a77c0774c276cc6fcc1cdb550c]
+class C_0014905482582044557028--><rect codeLine="137" fill="#FEFECE" filter="url(#f1qcjp3avfc9os)" height="115.9276" id="C_0014905482582044557028" style="stroke:#A80036;stroke-width:1.5;" width="398" x="1828.5" y="647.89"/><ellipse cx="1961.75" cy="663.89" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M1961.2188,670.8119 Q1959.4688,670.8119 1958.3281,670.0775 Q1957.2031,669.3275 1956.6406,667.9838 Q1956.0938,666.6244 1956.0938,664.8275 Q1956.0938,662.7963 1956.75,661.3431 Q1957.4063,659.89 1958.6875,659.1088 Q1959.9688,658.3275 1961.8438,658.3275 Q1962.7344,658.3275 1963.4063,658.515 Q1964.0781,658.6869 1964.7656,659.0306 L1963.9531,661.0463 Q1963.3281,660.7338 1962.7813,660.6088 Q1962.25,660.4838 1961.7656,660.4838 Q1960.5938,660.4838 1959.8906,661.015 Q1959.1875,661.5463 1958.8906,662.4994 Q1958.5938,663.4525 1958.5938,664.7181 Q1958.5938,666.7338 1959.3125,667.7025 Q1960.0313,668.6556 1961.625,668.6556 Q1962.2188,668.6556 1962.8438,668.4994 Q1963.4688,668.3431 1964.2969,667.9681 L1964.2969,670.1869 Q1963.5625,670.4994 1962.7656,670.6556 Q1961.9844,670.8119 1961.2188,670.8119 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="123" x="1982.25" y="668.546">::MyBase3D::Segment</text><line style="stroke:#A80036;stroke-width:1.5;" x1="1829.5" x2="2225.5" y1="679.89" y2="679.89"/><ellipse cx="1839.5" cy="690.89" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="372" x="1848.5" y="695.6489">Segment(const glm::vec3 &amp; source, const glm::vec3 &amp; destination) : void</text><ellipse cx="1839.5" cy="705.8719" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="90" x="1848.5" y="710.6308">~Segment() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="1829.5" x2="2225.5" y1="717.8538" y2="717.8538"/><ellipse cx="1839.5" cy="728.8538" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="251" x="1848.5" y="733.6127">contains(const glm::vec3 &amp; position) const : bool</text><ellipse cx="1839.5" cy="743.8357" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="104" x="1848.5" y="748.5946">length() const : float</text><line style="stroke:#A80036;stroke-width:1.5;" x1="1829.5" x2="2225.5" y1="755.8176" y2="755.8176"/><!--MD5=[8f77ae9d130710a2e89d1d93794920a8]
+class C_0004652308331122377135--><rect codeLine="146" fill="#FEFECE" filter="url(#f1qcjp3avfc9os)" height="460.511" id="C_0004652308331122377135" style="stroke:#A80036;stroke-width:1.5;" width="529" x="667" y="1345.86"/><ellipse cx="868.25" cy="1361.86" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M867.7188,1368.7819 Q865.9688,1368.7819 864.8281,1368.0475 Q863.7031,1367.2975 863.1406,1365.9538 Q862.5938,1364.5944 862.5938,1362.7975 Q862.5938,1360.7663 863.25,1359.3131 Q863.9063,1357.86 865.1875,1357.0788 Q866.4688,1356.2975 868.3438,1356.2975 Q869.2344,1356.2975 869.9063,1356.485 Q870.5781,1356.6569 871.2656,1357.0006 L870.4531,1359.0163 Q869.8281,1358.7038 869.2813,1358.5788 Q868.75,1358.4538 868.2656,1358.4538 Q867.0938,1358.4538 866.3906,1358.985 Q865.6875,1359.5163 865.3906,1360.4694 Q865.0938,1361.4225 865.0938,1362.6881 Q865.0938,1364.7038 865.8125,1365.6725 Q866.5313,1366.6256 868.125,1366.6256 Q868.7188,1366.6256 869.3438,1366.4694 Q869.9688,1366.3131 870.7969,1365.9381 L870.7969,1368.1569 Q870.0625,1368.4694 869.2656,1368.6256 Q868.4844,1368.7819 867.7188,1368.7819 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="118" x="888.75" y="1366.516">::MyBase3D::Camera</text><line style="stroke:#A80036;stroke-width:1.5;" x1="668" x2="1195" y1="1377.86" y2="1377.86"/><ellipse cx="678" cy="1388.86" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="78" x="687" y="1393.6189">Camera() : void</text><ellipse cx="678" cy="1403.8419" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="84" x="687" y="1408.6008">~Camera() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="668" x2="1195" y1="1415.8238" y2="1415.8238"/><polygon fill="#FFFF44" points="678,1421.8238,682,1425.8238,678,1429.8238,674,1425.8238" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="451" x="687" y="1431.5827">draw(RenderTarget &amp; target, RenderStates state = = RenderStates::Default) const : void</text><ellipse cx="678" cy="1441.8057" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="147" x="687" y="1446.5646">getCenter() const : glm::vec3</text><ellipse cx="678" cy="1456.7876" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="160" x="687" y="1461.5465">getDirection() const : glm::vec3</text><ellipse cx="678" cy="1471.7694" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="201" x="687" y="1476.5284">getHorizontalVector() const : glm::vec3</text><ellipse cx="678" cy="1486.7513" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="155" x="687" y="1491.5102">getPosition() const : glm::vec3</text><ellipse cx="678" cy="1501.7332" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="119" x="687" y="1506.4921">getSight() const : Ray3f</text><polygon fill="#FFFF44" points="678,1511.7151,682,1515.7151,678,1519.7151,674,1515.7151" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="482" x="687" y="1521.474">handle(RenderWindow &amp; window, const RenderStates &amp; state = RenderStates::Default) : bool</text><ellipse cx="678" cy="1531.697" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="303" x="687" y="1536.4559">move(const float &amp; x, const float &amp; y, const float &amp; z) : void</text><ellipse cx="678" cy="1546.6789" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="166" x="687" y="1551.4378">operator unsigned int() : GLuint</text><ellipse cx="678" cy="1561.6608" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="374" x="687" y="1566.4197">rotate(const float &amp; vertical_angle, const float &amp; horizontal_angle) : void</text><ellipse cx="678" cy="1576.6427" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="411" x="687" y="1581.4016">setCameraDirection(const glm::vec3 &amp; position, const glm::vec3 &amp; center) : void</text><ellipse cx="678" cy="1591.6245" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="503" x="687" y="1596.3835">setPerpective(const float &amp; angle, const float &amp; aspect, const float &amp; near, const float &amp; far) : void</text><ellipse cx="678" cy="1606.6064" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="233" x="687" y="1611.3653">setPosition(const glm::vec3 &amp; position) : void</text><rect fill="#F24D5C" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="675" y="1618.5883"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="259" x="687" y="1626.3472">transfer(const glm::vec3 &amp; vector) const : Vector2f</text><polygon fill="#FFFF44" points="678,1631.5702,682,1635.5702,678,1639.5702,674,1635.5702" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="75" x="687" y="1641.3291">update() : void</text><line style="stroke:#A80036;stroke-width:1.5;" x1="668" x2="1195" y1="1648.5521" y2="1648.5521"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="675" y="1656.5521"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="91" x="687" y="1664.311">pCamera : GLuint</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="675" y="1671.534"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="117" x="687" y="1679.2929">pClipPlane : glm::mat4</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="675" y="1686.5159"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="92" x="687" y="1694.2748">pDelta : glm::vec3</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="675" y="1701.4978"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="127" x="687" y="1709.2567">pDirection : VertexArray</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="675" y="1716.4796"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="84" x="687" y="1724.2386">pDistance : float</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="675" y="1731.4615"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="108" x="687" y="1739.2204">pPosition : glm::vec3</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="675" y="1746.4434"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="122" x="687" y="1754.2023">pProjection : glm::mat4</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="675" y="1761.4253"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="122" x="687" y="1769.1842">pVerticalAngle : double</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="675" y="1776.4072"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="93" x="687" y="1784.1661">pView : glm::mat4</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="675" y="1791.3891"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="137" x="687" y="1799.148">pWindowCenter : Vector2i</text><!--MD5=[34c71cac501ed901cfd95c52f91b6678]
+class C_0016563941016709174499--><rect codeLine="178" fill="#FEFECE" filter="url(#f1qcjp3avfc9os)" height="310.6921" id="C_0016563941016709174499" style="stroke:#A80036;stroke-width:1.5;" width="614" x="540.5" y="956.16"/><ellipse cx="784.25" cy="972.16" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M783.7188,979.0819 Q781.9688,979.0819 780.8281,978.3475 Q779.7031,977.5975 779.1406,976.2538 Q778.5938,974.8944 778.5938,973.0975 Q778.5938,971.0663 779.25,969.6131 Q779.9063,968.16 781.1875,967.3788 Q782.4688,966.5975 784.3438,966.5975 Q785.2344,966.5975 785.9063,966.785 Q786.5781,966.9569 787.2656,967.3006 L786.4531,969.3163 Q785.8281,969.0038 785.2813,968.8788 Q784.75,968.7538 784.2656,968.7538 Q783.0938,968.7538 782.3906,969.285 Q781.6875,969.8163 781.3906,970.7694 Q781.0938,971.7225 781.0938,972.9881 Q781.0938,975.0038 781.8125,975.9725 Q782.5313,976.9256 784.125,976.9256 Q784.7188,976.9256 785.3438,976.7694 Q785.9688,976.6131 786.7969,976.2381 L786.7969,978.4569 Q786.0625,978.7694 785.2656,978.9256 Q784.4844,979.0819 783.7188,979.0819 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="118" x="804.75" y="976.816">::MyBase3D::Form3D</text><line style="stroke:#A80036;stroke-width:1.5;" x1="541.5" x2="1153.5" y1="988.16" y2="988.16"/><ellipse cx="551.5" cy="999.16" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="168" x="560.5" y="1003.9189">Form3D(const int &amp; index) : void</text><ellipse cx="551.5" cy="1014.1419" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="86" x="560.5" y="1018.9008">~Form3D() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="541.5" x2="1153.5" y1="1026.1238" y2="1026.1238"/><polygon fill="#FFFF44" points="551.5,1032.1238,555.5,1036.1238,551.5,1040.1238,547.5,1036.1238" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="579" x="560.5" y="1041.8827">AfterCatch(RenderWindow &amp; window, Event &amp; event, const RenderStates &amp; state = RenderStates::Default) : bool</text><polygon fill="#FFFF44" points="551.5,1047.1057,555.5,1051.1057,551.5,1055.1057,547.5,1051.1057" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="588" x="560.5" y="1056.8646">BeforeCatch(RenderWindow &amp; window, Event &amp; event, const RenderStates &amp; state = RenderStates::Default) : bool</text><polygon fill="#FFFF44" points="551.5,1062.0876,555.5,1066.0876,551.5,1070.0876,547.5,1066.0876" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="582" x="560.5" y="1071.8465">CatchEvent(RenderWindow &amp; window, Event &amp; event, const RenderStates &amp; state = RenderStates::Default) : bool</text><ellipse cx="551.5" cy="1082.0694" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="214" x="560.5" y="1086.8284">contains(const Ray3f &amp; sight) const : bool</text><polygon fill="#FFFF44" points="551.5,1092.0513,555.5,1096.0513,551.5,1100.0513,547.5,1096.0513" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="451" x="560.5" y="1101.8102">draw(RenderTarget &amp; target, RenderStates state = = RenderStates::Default) const : void</text><ellipse cx="551.5" cy="1112.0332" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="184" x="560.5" y="1116.7921">erase(Controller * controller) : void</text><ellipse cx="551.5" cy="1127.0151" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="198" x="560.5" y="1131.774">erase(Controller3D * controller) : void</text><ellipse cx="551.5" cy="1141.997" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="127" x="560.5" y="1146.7559">getSize() const : Vector2f</text><polygon fill="#FFFF44" points="551.5,1151.9789,555.5,1155.9789,551.5,1159.9789,547.5,1155.9789" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="482" x="560.5" y="1161.7378">handle(RenderWindow &amp; window, const RenderStates &amp; state = RenderStates::Default) : bool</text><ellipse cx="551.5" cy="1171.9608" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="295" x="560.5" y="1176.7197">insert(Controller * controller, const int &amp; layer = 0) : void</text><ellipse cx="551.5" cy="1186.9427" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="309" x="560.5" y="1191.7016">insert(Controller3D * controller, const int &amp; layer = 0) : void</text><ellipse cx="551.5" cy="1201.9245" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="185" x="560.5" y="1206.6835">run(RenderWindow &amp; window) : int</text><line style="stroke:#A80036;stroke-width:1.5;" x1="541.5" x2="1153.5" y1="1213.9064" y2="1213.9064"/><polygon fill="none" points="551.5,1219.9064,555.5,1223.9064,551.5,1227.9064,547.5,1223.9064" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="83" x="560.5" y="1229.6653">form_index : int</text><polygon fill="none" points="551.5,1234.8883,555.5,1238.8883,551.5,1242.8883,547.5,1238.8883" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="90" x="560.5" y="1244.6472">return_value : int</text><polygon fill="none" points="551.5,1249.8702,555.5,1253.8702,551.5,1257.8702,547.5,1253.8702" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="94" x="560.5" y="1259.6291">sCamera : Camera</text><!--MD5=[e0966b24f8c9b4582a3e00bb3a9fb061]
+class C_0013690605502759596026--><rect codeLine="200" fill="#FEFECE" filter="url(#f1qcjp3avfc9os)" height="160.8732" id="C_0013690605502759596026" style="stroke:#A80036;stroke-width:1.5;" width="477" x="1261" y="1031.07"/><ellipse cx="1431.25" cy="1047.07" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M1430.7188,1053.9919 Q1428.9688,1053.9919 1427.8281,1053.2575 Q1426.7031,1052.5075 1426.1406,1051.1638 Q1425.5938,1049.8044 1425.5938,1048.0075 Q1425.5938,1045.9763 1426.25,1044.5231 Q1426.9063,1043.07 1428.1875,1042.2888 Q1429.4688,1041.5075 1431.3438,1041.5075 Q1432.2344,1041.5075 1432.9063,1041.695 Q1433.5781,1041.8669 1434.2656,1042.2106 L1433.4531,1044.2263 Q1432.8281,1043.9138 1432.2813,1043.7888 Q1431.75,1043.6638 1431.2656,1043.6638 Q1430.0938,1043.6638 1429.3906,1044.195 Q1428.6875,1044.7263 1428.3906,1045.6794 Q1428.0938,1046.6325 1428.0938,1047.8981 Q1428.0938,1049.9138 1428.8125,1050.8825 Q1429.5313,1051.8356 1431.125,1051.8356 Q1431.7188,1051.8356 1432.3438,1051.6794 Q1432.9688,1051.5231 1433.7969,1051.1481 L1433.7969,1053.3669 Q1433.0625,1053.6794 1432.2656,1053.8356 Q1431.4844,1053.9919 1430.7188,1053.9919 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="128" x="1451.75" y="1051.726">::MyBase3D::TrackRect</text><line style="stroke:#A80036;stroke-width:1.5;" x1="1262" x2="1737" y1="1063.07" y2="1063.07"/><ellipse cx="1272" cy="1074.07" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="88" x="1281" y="1078.8289">TrackRect() : void</text><ellipse cx="1272" cy="1089.0519" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="94" x="1281" y="1093.8108">~TrackRect() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="1262" x2="1737" y1="1101.0338" y2="1101.0338"/><polygon fill="#FFFF44" points="1272,1107.0338,1276,1111.0338,1272,1115.0338,1268,1111.0338" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="451" x="1281" y="1116.7927">draw(RenderTarget &amp; target, RenderStates state = = RenderStates::Default) const : void</text><ellipse cx="1272" cy="1127.0157" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="186" x="1281" y="1131.7746">setHover(const Ray3f &amp; sight) : bool</text><ellipse cx="1272" cy="1141.9976" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="408" x="1281" y="1146.7565">setPosition(const glm::vec3 &amp; a, const glm::vec3 &amp; b, const glm::vec3 &amp; c) : void</text><line style="stroke:#A80036;stroke-width:1.5;" x1="1262" x2="1737" y1="1153.9794" y2="1153.9794"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="1269" y="1161.9794"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="70" x="1281" y="1169.7384">pRect : Rect3f</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="1269" y="1176.9613"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="101" x="1281" y="1184.7202">position : glm::vec3</text><!--MD5=[1838e96e554357d4acd8d58b88b036ff]
+link C_0010983644189126901764 to C_0004943235355700621518--><path codeLine="211" d="M239.52,1664.5 C276.77,1719.41 330.3,1788.78 390.5,1837.37 C401.92,1846.58 414.24,1855.28 427.03,1863.43 " fill="none" id="C_0010983644189126901764-to-C_0004943235355700621518" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="431.26,1866.08,425.7752,1857.8997,427.0288,1863.4159,421.5127,1864.6696,431.26,1866.08" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[ea79749db646c03e9abe6685eb2a5dbf]
+link C_0000504874819916776058 to C_0004943235355700621518--><path codeLine="212" d="M1414.41,1713.32 C1376.54,1759.74 1328.71,1807.43 1274.5,1837.37 C1195.45,1881.03 968.92,1912.02 803.24,1929.63 " fill="none" id="C_0000504874819916776058-to-C_0004943235355700621518" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="798.38,1930.15,807.7525,1933.176,803.352,1929.6214,806.9067,1925.2209,798.38,1930.15" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[d2309c69fc6e53a5c27ae331c3099a37]
+link C_0009126998444463587745 to C_0004943235355700621518--><path codeLine="213" d="M629.09,359.01 C563.24,400.94 500.14,453.18 455.5,516.54 C406.28,586.42 416.5,619.38 416.5,704.85 C416.5,704.85 416.5,704.85 416.5,1577.11 C416.5,1680.7 407.97,1715.94 458.5,1806.37 C469.89,1826.75 485.35,1845.73 502.13,1862.72 " fill="none" id="C_0009126998444463587745-to-C_0004943235355700621518" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="505.35,1865.93,501.7959,1856.7448,501.8073,1862.4016,496.1505,1862.413,505.35,1865.93" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[5b47ecaec1c26c8f180d5a686f8ea224]
+reverse link C_0009126998444463587745 to C_0005232309663968889129--><path codeLine="214" d="M909.82,444.07 C906.22,458.58 902.14,472.85 897.5,486.54 C894.16,496.39 890.39,506.32 886.29,516.21 " fill="none" id="C_0009126998444463587745-backto-C_0005232309663968889129" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="910.98,439.3,904.9597,447.0946,909.7942,444.1574,912.7315,448.9919,910.98,439.3" style="stroke:#A80036;stroke-width:1.0;"/><ellipse cx="907.88" cy="477.893" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="49" x="914.88" y="482.437">«friend»</text><!--MD5=[3832862004bb7e5dc4868849b2b35320]
+link C_0005232309663968889129 to C_0009126998444463587745--><path codeLine="216" d="M813.31,516.06 C817.67,499.54 822.4,483.17 827.5,467.54 C830.06,459.72 832.78,451.8 835.64,443.85 " fill="none" id="C_0005232309663968889129-to-C_0009126998444463587745" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="837.33,439.18,830.5073,446.2828,835.6293,443.8819,838.0303,449.0039,837.33,439.18" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="none" points="833.5,472.893,837.5,476.893,833.5,480.893,829.5,476.893" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="48" x="840.5" y="482.437">children</text><!--MD5=[5b47ecaec1c26c8f180d5a686f8ea224]
+reverse link C_0009126998444463587745 to C_0005232309663968889129--><path codeLine="217" d="M816.72,457.84 C815.61,461.08 814.54,464.32 813.5,467.54 C808.5,483.13 804.16,499.51 800.4,516.08 " fill="none" id="C_0009126998444463587745-backto-C_0005232309663968889129-1" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="none" points="810.04,455.71,823.43,439.28,823.21,460.47,810.04,455.71" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[bfce633f878a8a01bc6e13241baa8b60]
+link C_0005232309663968889129 to C_0004943235355700621518--><path codeLine="215" d="M556.58,895.38 C543.1,914.61 531.41,934.94 522.5,956.16 C391.31,1268.76 515.36,1684.33 580.39,1861.24 " fill="none" id="C_0005232309663968889129-to-C_0004943235355700621518" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="582.06,1865.75,582.6715,1855.9201,580.3169,1861.0637,575.1734,1858.7091,582.06,1865.75" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[2191493419875100b7cc69b23112aa2e]
+link C_0006947278924382378289 to C_0006947278924382378289--><path codeLine="218" d="M1430.42,174.99 C1450.13,177.9 1465,193.66 1465,222.27 C1465,247.75 1453.21,263.04 1436.7,268.13 " fill="none" id="C_0006947278924382378289-to-C_0006947278924382378289" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="1431.9,269.22,1441.56,271.1394,1436.7772,268.1187,1439.7979,263.3359,1431.9,269.22" style="stroke:#A80036;stroke-width:1.0;"/><ellipse cx="1476" cy="223.123" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="43" x="1483" y="227.667">Default</text><!--MD5=[786aa098bcfb204a7604c260f1d0c38a]
+link C_0017439970373421130707 to C_0017439970373421130707--><path codeLine="219" d="M1739.36,176.04 C1759.48,180.74 1774,196.15 1774,222.27 C1774,245.74 1762.28,260.56 1745.31,266.74 " fill="none" id="C_0017439970373421130707-to-C_0017439970373421130707" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="1740.82,268.07,1750.5871,269.3365,1745.6123,266.6437,1748.3051,261.6689,1740.82,268.07" style="stroke:#A80036;stroke-width:1.0;"/><ellipse cx="1785" cy="223.123" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="43" x="1792" y="227.667">Default</text><!--MD5=[051cfcf3f1eb7e653cbdd0efa15af987]
+reverse link C_0001662821347968641378 to C_0014905482582044557028--><path codeLine="220" d="M2027.5,316.91 C2027.5,414.94 2027.5,565.73 2027.5,647.45 " fill="none" id="C_0001662821347968641378-backto-C_0014905482582044557028" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="none" points="2020.5,317.14,2027.5,297.14,2034.5,317.14,2020.5,317.14" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[7df24e2685e9c515c6d5c7d0881773ae]
+link C_0004652308331122377135 to C_0004943235355700621518--><path codeLine="221" d="M734.57,1806.78 C717.86,1826.27 701.75,1845.05 687.06,1862.19 " fill="none" id="C_0004652308331122377135-to-C_0004943235355700621518" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="683.94,1865.82,692.8341,1861.5899,687.194,1862.0237,686.7601,1856.3835,683.94,1865.82" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[39a467a52a1059aa2953d14c599db805]
+reverse link C_0004652308331122377135 to C_0016563941016709174499--><path codeLine="222" d="M839.38,1339.49 C837.55,1331.57 835.91,1323.68 834.5,1315.86 C833,1307.55 834.2,1305.3 834.5,1296.86 C834.84,1287.08 835.29,1277.01 835.81,1266.86 " fill="none" id="C_0004652308331122377135-backto-C_0016563941016709174499" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="840.46,1344.08,842.2923,1334.4031,839.3148,1339.2129,834.505,1336.2354,840.46,1344.08" style="stroke:#A80036;stroke-width:1.0;"/><ellipse cx="840.5" cy="1307.213" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="49" x="847.5" y="1311.757">«friend»</text><!--MD5=[06be601523a25444865ae3ba4232fba3]
+reverse link C_0016563941016709174499 to C_0004652308331122377135--><path codeLine="226" d="M898.19,1281.18 C899.37,1286.45 900.47,1291.69 901.5,1296.86 C904.65,1312.7 907.49,1329.13 910.04,1345.71 " fill="none" id="C_0016563941016709174499-backto-C_0004652308331122377135" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#FFFFFA" points="895.29,1268.64,892.7438,1275.3866,897.9922,1280.3318,900.5384,1273.5852,895.29,1268.64" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="none" points="910.32,1302.213,914.32,1306.213,910.32,1310.213,906.32,1306.213" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="52" x="917.32" y="1311.757">sCamera</text><!--MD5=[5b5220af3ff5615e0e34a494b90c09c4]
+reverse link C_0009126998444463587745 to C_0004652308331122377135--><path codeLine="223" d="M1118.3,456.36 C1128.48,476.05 1137.42,496.22 1144.5,516.54 C1254.24,831.69 1281.2,951.35 1172.5,1266.86 C1163.21,1293.83 1150.48,1320.25 1135.69,1345.57 " fill="none" id="C_0009126998444463587745-backto-C_0004652308331122377135" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="none" points="1112.25,459.89,1108.9,438.97,1124.57,453.24,1112.25,459.89" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[a2cefb5280c74f9be387b1a34de8f51a]
+link C_0016563941016709174499 to C_0009126998444463587745--><path codeLine="224" d="M1059.05,955.82 C1074.33,937.04 1087.59,916.77 1097.5,895.16 C1167.63,742.2 1139.3,679.55 1097.5,516.54 C1091.22,492.06 1082.43,467.43 1072.15,443.41 " fill="none" id="C_0016563941016709174499-to-C_0009126998444463587745" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="1070.26,439.03,1070.1657,448.8784,1072.2468,443.6183,1077.5069,445.6995,1070.26,439.03" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[2c84cbe98c010e69f8efe2de5594c342]
+link C_0016563941016709174499 to C_0004943235355700621518--><path codeLine="225" d="M693.56,1267.33 C675.98,1292.01 660.46,1318.48 649.5,1345.86 C580.51,1518.13 590.39,1740.55 602.92,1860.66 " fill="none" id="C_0016563941016709174499-to-C_0004943235355700621518" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="603.43,1865.51,606.456,1856.1375,602.9014,1860.538,598.5009,1856.9833,603.43,1865.51" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[01cd95d7aa7f70a8ab5d6404a2be0de0]
+reverse link C_0005232309663968889129 to C_0016563941016709174499--><path codeLine="227" d="M813.34,916.28 C815.67,929.57 818,942.82 820.29,955.79 " fill="none" id="C_0005232309663968889129-backto-C_0016563941016709174499" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="none" points="806.49,917.79,809.92,896.88,820.28,915.36,806.49,917.79" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[c2d318e660ff3ad7d07feaf7e54593a6]
+link C_0013690605502759596026 to C_0004943235355700621518--><path codeLine="228" d="M1402.96,1192.19 C1359.46,1233.46 1311.65,1287.42 1283.5,1345.86 C1193.67,1532.37 1353.96,1654.28 1213.5,1806.37 C1158.37,1866.06 957.21,1904.4 803.05,1925.69 " fill="none" id="C_0013690605502759596026-to-C_0004943235355700621518" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="798.17,1926.36,807.6254,1929.1158,803.1248,1925.6889,806.5517,1921.1882,798.17,1926.36" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[4659b9c63e07740a7827c8115346494a]
+reverse link C_0013690605502759596026 to C_0000504874819916776058--><path codeLine="229" d="M1500.72,1206.6 C1501.59,1273.42 1502.76,1364.15 1503.73,1438.87 " fill="none" id="C_0013690605502759596026-backto-C_0000504874819916776058" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#FFFFFA" points="1500.55,1193.81,1496.6295,1199.8622,1500.7082,1205.809,1504.6288,1199.7567,1500.55,1193.81" style="stroke:#A80036;stroke-width:1.0;"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="1504.96" y="1304.213"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="34" x="1514.96" y="1311.757">pRect</text><!--MD5=[b5f56a7a738d1043fbcd2e257a810667]
+reverse link C_0009126998444463587745 to C_0013690605502759596026--><path codeLine="230" d="M1223.44,454.44 C1226.89,458.77 1230.24,463.14 1233.5,467.54 C1366.4,647.03 1446.08,902.6 1480.09,1030.76 " fill="none" id="C_0009126998444463587745-backto-C_0013690605502759596026" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="none" points="1218.07,458.92,1210.72,439.05,1228.86,450,1218.07,458.92" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[c555f2bcaeabb5e826d2294a70eec89c]
+@startuml MyBase3D
+skinparam backgroundColor #FFFFFA
+class "::MyBase3D::Ray3f" as C_0004943235355700621518
+class C_0004943235355700621518 {
++Ray3f(const glm::vec3 & origin, const glm::vec3 & des) : void
++~Ray3f() : void
+..
++distance(const char & plane, const float & value) const : glm::vec3
++getOrigin() const : glm::vec3
++operator vec() const : glm::vec3
+__
+-pDelta : glm::vec3
+-pOrigin : glm::vec3
+}
+class "::MyBase3D::Plane" as C_0010983644189126901764
+class C_0010983644189126901764 {
++Plane(const glm::vec3 & origin, const glm::vec3 & normal) : void
++~Plane() : void
+..
++distance(const glm::vec3 & position) const : float
++getOrigin() const : glm::vec3
++isIntersect(const Ray3f & ray) const : glm::vec3
++operator vec() const : glm::vec3
+__
+-pNormal : glm::vec3
+-pOrigin : glm::vec3
+}
+class "::MyBase3D::Rect3f" as C_0000504874819916776058
+class C_0000504874819916776058 {
++Rect3f() : void
++Rect3f(const glm::vec3 & a, const glm::vec3 & b, const glm::vec3 & c) : void
++~Rect3f() : void
+..
++operator[](const uint & index) const : glm::vec3
+..
++contains(const glm::vec3 & position) const : bool
++distance(const glm::vec3 & position) const : float
++getCenter() const : glm::vec3
++getIntersect(const Ray3f & sight) const : glm::vec3
++getNormal() const : glm::vec3
++isIntersect(const Ray3f & ray) const : bool
++move(const glm::vec3 & offset) : void
+__
+-pA : glm::vec3
+-pB : glm::vec3
+-pC : glm::vec3
+}
+class "::MyBase3D::Controller3D" as C_0009126998444463587745
+class C_0009126998444463587745 {
++Controller3D() : void
++~Controller3D() : void
+..
+#AfterCatch(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#BeforeCatch(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#CatchEvent(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#contains(const Ray3f & position) const : bool
+#draw(RenderTarget & target, RenderStates state) const : void
+#glDraw() const : void
+#handle(RenderWindow & window, const RenderStates & state = RenderStates::Default) : bool
++isDoubleClick() const : bool
++isFocus() const : bool
++isHovered() const : bool
++isPressed() const : bool
++isReleased() const : bool
++reset() : void
++setFocus(const bool & focus) : void
++setHover(const Ray3f & sight) : bool
++setHover(const bool & hover) : bool
++update() : void
+__
+-double_click_count : unsigned int
+-pIsDoubleClick : bool
+-pIsFocus : bool
+-pIsHovered : bool
+-pIsPressed : bool
+-pIsReleased : bool
+}
+class "::MyBase3D::Container3D" as C_0005232309663968889129
+class C_0005232309663968889129 {
++Container3D() : void
++~Container3D() : void
+..
++operator[](const size_t & index) : Controller3D *
+..
+#AfterCatch(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#CatchEvent(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
++clear() : void
+#draw(RenderTarget & target, RenderStates state = = RenderStates::Default) const : void
++erase(Controller3D * controller) : void
+#glDraw() const : void
+#handle(RenderWindow & window, const RenderStates & state = RenderStates::Default) : bool
++insert(Controller3D * controller, const int & layer = 0) : void
+#reset() : void
++setFocus(const bool & focus) : void
++setHover(const Ray3f & position) : bool
++setHover(const bool & hover) : bool
++size() const : size_t
++update() : void
+__
+#children : vector<pair<Controller3D *,int>>
+#focus_control : int
+#hovered_controller : int
+#old_focus : int
+}
+class "::MyBase3D::PointSet" as C_0006947278924382378289
+class C_0006947278924382378289 {
++PointSet() : void
++~PointSet() : void
+__
++BlockSet : GLuint
++ChunkSet : GLuint
+{static} +Default : PointSet *
++MarginSet : GLuint
+}
+class "::MyBase3D::ShaderStorage" as C_0017439970373421130707
+class C_0017439970373421130707 {
++ShaderStorage() : void
++~ShaderStorage() : void
+__
++ChunkShader : GLuint
++CubeShader : GLuint
+{static} +Default : ShaderStorage *
++DefaultShader : GLuint
++MarginShader : GLuint
+}
+class "::MyBase3D::Line" as C_0001662821347968641378
+class C_0001662821347968641378 {
++Line(const glm::vec3 & origin, const glm::vec3 & delta) : void
++~Line() : void
+..
++contains(const glm::vec3 & position) const : bool
++distance(const glm::vec3 & position) const : float
+__
+#sDelta : glm::vec3
+#sOrigin : glm::vec3
+}
+class "::MyBase3D::Segment" as C_0014905482582044557028
+class C_0014905482582044557028 {
++Segment(const glm::vec3 & source, const glm::vec3 & destination) : void
++~Segment() : void
+..
++contains(const glm::vec3 & position) const : bool
++length() const : float
+__
+}
+class "::MyBase3D::Camera" as C_0004652308331122377135
+class C_0004652308331122377135 {
++Camera() : void
++~Camera() : void
+..
+#draw(RenderTarget & target, RenderStates state = = RenderStates::Default) const : void
++getCenter() const : glm::vec3
++getDirection() const : glm::vec3
++getHorizontalVector() const : glm::vec3
++getPosition() const : glm::vec3
++getSight() const : Ray3f
+#handle(RenderWindow & window, const RenderStates & state = RenderStates::Default) : bool
++move(const float & x, const float & y, const float & z) : void
++operator unsigned int() : GLuint
++rotate(const float & vertical_angle, const float & horizontal_angle) : void
++setCameraDirection(const glm::vec3 & position, const glm::vec3 & center) : void
++setPerpective(const float & angle, const float & aspect, const float & near, const float & far) : void
++setPosition(const glm::vec3 & position) : void
+-transfer(const glm::vec3 & vector) const : Vector2f
+#update() : void
+__
+-pCamera : GLuint
+-pClipPlane : glm::mat4
+-pDelta : glm::vec3
+-pDirection : VertexArray
+-pDistance : float
+-pPosition : glm::vec3
+-pProjection : glm::mat4
+-pVerticalAngle : double
+-pView : glm::mat4
+-pWindowCenter : Vector2i
+}
+class "::MyBase3D::Form3D" as C_0016563941016709174499
+class C_0016563941016709174499 {
++Form3D(const int & index) : void
++~Form3D() : void
+..
+#AfterCatch(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#BeforeCatch(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#CatchEvent(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
++contains(const Ray3f & sight) const : bool
+#draw(RenderTarget & target, RenderStates state = = RenderStates::Default) const : void
++erase(Controller * controller) : void
++erase(Controller3D * controller) : void
++getSize() const : Vector2f
+#handle(RenderWindow & window, const RenderStates & state = RenderStates::Default) : bool
++insert(Controller * controller, const int & layer = 0) : void
++insert(Controller3D * controller, const int & layer = 0) : void
++run(RenderWindow & window) : int
+__
+#form_index : int
+#return_value : int
+#sCamera : Camera
+}
+class "::MyBase3D::TrackRect" as C_0013690605502759596026
+class C_0013690605502759596026 {
++TrackRect() : void
++~TrackRect() : void
+..
+#draw(RenderTarget & target, RenderStates state = = RenderStates::Default) const : void
++setHover(const Ray3f & sight) : bool
++setPosition(const glm::vec3 & a, const glm::vec3 & b, const glm::vec3 & c) : void
+__
+-pRect : Rect3f
+-position : glm::vec3
+}
+C_0010983644189126901764 ..> C_0004943235355700621518
+C_0000504874819916776058 ..> C_0004943235355700621518
+C_0009126998444463587745 ..> C_0004943235355700621518
+C_0009126998444463587745 <.. C_0005232309663968889129 : +<<friend>>
+C_0005232309663968889129 ..> C_0004943235355700621518
+C_0005232309663968889129 - -> C_0009126998444463587745 : #children
+C_0009126998444463587745 <|- - C_0005232309663968889129
+C_0006947278924382378289 - -> C_0006947278924382378289 : +Default
+C_0017439970373421130707 - -> C_0017439970373421130707 : +Default
+C_0001662821347968641378 <|- - C_0014905482582044557028
+C_0004652308331122377135 ..> C_0004943235355700621518
+C_0004652308331122377135 <.. C_0016563941016709174499 : +<<friend>>
+C_0009126998444463587745 <|- - C_0004652308331122377135
+C_0016563941016709174499 ..> C_0009126998444463587745
+C_0016563941016709174499 ..> C_0004943235355700621518
+C_0016563941016709174499 o- - C_0004652308331122377135 : #sCamera
+C_0005232309663968889129 <|- - C_0016563941016709174499
+C_0013690605502759596026 ..> C_0004943235355700621518
+C_0013690605502759596026 o- - C_0000504874819916776058 : -pRect
+C_0009126998444463587745 <|- - C_0013690605502759596026
+
+'Generated with clang-uml, version 0.6.1
+'LLVM version clang version 19.1.7
+@enduml
+
+@startuml MyBase3D
+skinparam backgroundColor #FFFFFA
+class "::MyBase3D::Ray3f" as C_0004943235355700621518
+class C_0004943235355700621518 {
++Ray3f(const glm::vec3 & origin, const glm::vec3 & des) : void
++~Ray3f() : void
+..
++distance(const char & plane, const float & value) const : glm::vec3
++getOrigin() const : glm::vec3
++operator vec() const : glm::vec3
+__
+-pDelta : glm::vec3
+-pOrigin : glm::vec3
+}
+class "::MyBase3D::Plane" as C_0010983644189126901764
+class C_0010983644189126901764 {
++Plane(const glm::vec3 & origin, const glm::vec3 & normal) : void
++~Plane() : void
+..
++distance(const glm::vec3 & position) const : float
++getOrigin() const : glm::vec3
++isIntersect(const Ray3f & ray) const : glm::vec3
++operator vec() const : glm::vec3
+__
+-pNormal : glm::vec3
+-pOrigin : glm::vec3
+}
+class "::MyBase3D::Rect3f" as C_0000504874819916776058
+class C_0000504874819916776058 {
++Rect3f() : void
++Rect3f(const glm::vec3 & a, const glm::vec3 & b, const glm::vec3 & c) : void
++~Rect3f() : void
+..
++operator[](const uint & index) const : glm::vec3
+..
++contains(const glm::vec3 & position) const : bool
++distance(const glm::vec3 & position) const : float
++getCenter() const : glm::vec3
++getIntersect(const Ray3f & sight) const : glm::vec3
++getNormal() const : glm::vec3
++isIntersect(const Ray3f & ray) const : bool
++move(const glm::vec3 & offset) : void
+__
+-pA : glm::vec3
+-pB : glm::vec3
+-pC : glm::vec3
+}
+class "::MyBase3D::Controller3D" as C_0009126998444463587745
+class C_0009126998444463587745 {
++Controller3D() : void
++~Controller3D() : void
+..
+#AfterCatch(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#BeforeCatch(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#CatchEvent(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#contains(const Ray3f & position) const : bool
+#draw(RenderTarget & target, RenderStates state) const : void
+#glDraw() const : void
+#handle(RenderWindow & window, const RenderStates & state = RenderStates::Default) : bool
++isDoubleClick() const : bool
++isFocus() const : bool
++isHovered() const : bool
++isPressed() const : bool
++isReleased() const : bool
++reset() : void
++setFocus(const bool & focus) : void
++setHover(const Ray3f & sight) : bool
++setHover(const bool & hover) : bool
++update() : void
+__
+-double_click_count : unsigned int
+-pIsDoubleClick : bool
+-pIsFocus : bool
+-pIsHovered : bool
+-pIsPressed : bool
+-pIsReleased : bool
+}
+class "::MyBase3D::Container3D" as C_0005232309663968889129
+class C_0005232309663968889129 {
++Container3D() : void
++~Container3D() : void
+..
++operator[](const size_t & index) : Controller3D *
+..
+#AfterCatch(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#CatchEvent(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
++clear() : void
+#draw(RenderTarget & target, RenderStates state = = RenderStates::Default) const : void
++erase(Controller3D * controller) : void
+#glDraw() const : void
+#handle(RenderWindow & window, const RenderStates & state = RenderStates::Default) : bool
++insert(Controller3D * controller, const int & layer = 0) : void
+#reset() : void
++setFocus(const bool & focus) : void
++setHover(const Ray3f & position) : bool
++setHover(const bool & hover) : bool
++size() const : size_t
++update() : void
+__
+#children : vector<pair<Controller3D *,int>>
+#focus_control : int
+#hovered_controller : int
+#old_focus : int
+}
+class "::MyBase3D::PointSet" as C_0006947278924382378289
+class C_0006947278924382378289 {
++PointSet() : void
++~PointSet() : void
+__
++BlockSet : GLuint
++ChunkSet : GLuint
+{static} +Default : PointSet *
++MarginSet : GLuint
+}
+class "::MyBase3D::ShaderStorage" as C_0017439970373421130707
+class C_0017439970373421130707 {
++ShaderStorage() : void
++~ShaderStorage() : void
+__
++ChunkShader : GLuint
++CubeShader : GLuint
+{static} +Default : ShaderStorage *
++DefaultShader : GLuint
++MarginShader : GLuint
+}
+class "::MyBase3D::Line" as C_0001662821347968641378
+class C_0001662821347968641378 {
++Line(const glm::vec3 & origin, const glm::vec3 & delta) : void
++~Line() : void
+..
++contains(const glm::vec3 & position) const : bool
++distance(const glm::vec3 & position) const : float
+__
+#sDelta : glm::vec3
+#sOrigin : glm::vec3
+}
+class "::MyBase3D::Segment" as C_0014905482582044557028
+class C_0014905482582044557028 {
++Segment(const glm::vec3 & source, const glm::vec3 & destination) : void
++~Segment() : void
+..
++contains(const glm::vec3 & position) const : bool
++length() const : float
+__
+}
+class "::MyBase3D::Camera" as C_0004652308331122377135
+class C_0004652308331122377135 {
++Camera() : void
++~Camera() : void
+..
+#draw(RenderTarget & target, RenderStates state = = RenderStates::Default) const : void
++getCenter() const : glm::vec3
++getDirection() const : glm::vec3
++getHorizontalVector() const : glm::vec3
++getPosition() const : glm::vec3
++getSight() const : Ray3f
+#handle(RenderWindow & window, const RenderStates & state = RenderStates::Default) : bool
++move(const float & x, const float & y, const float & z) : void
++operator unsigned int() : GLuint
++rotate(const float & vertical_angle, const float & horizontal_angle) : void
++setCameraDirection(const glm::vec3 & position, const glm::vec3 & center) : void
++setPerpective(const float & angle, const float & aspect, const float & near, const float & far) : void
++setPosition(const glm::vec3 & position) : void
+-transfer(const glm::vec3 & vector) const : Vector2f
+#update() : void
+__
+-pCamera : GLuint
+-pClipPlane : glm::mat4
+-pDelta : glm::vec3
+-pDirection : VertexArray
+-pDistance : float
+-pPosition : glm::vec3
+-pProjection : glm::mat4
+-pVerticalAngle : double
+-pView : glm::mat4
+-pWindowCenter : Vector2i
+}
+class "::MyBase3D::Form3D" as C_0016563941016709174499
+class C_0016563941016709174499 {
++Form3D(const int & index) : void
++~Form3D() : void
+..
+#AfterCatch(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#BeforeCatch(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#CatchEvent(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
++contains(const Ray3f & sight) const : bool
+#draw(RenderTarget & target, RenderStates state = = RenderStates::Default) const : void
++erase(Controller * controller) : void
++erase(Controller3D * controller) : void
++getSize() const : Vector2f
+#handle(RenderWindow & window, const RenderStates & state = RenderStates::Default) : bool
++insert(Controller * controller, const int & layer = 0) : void
++insert(Controller3D * controller, const int & layer = 0) : void
++run(RenderWindow & window) : int
+__
+#form_index : int
+#return_value : int
+#sCamera : Camera
+}
+class "::MyBase3D::TrackRect" as C_0013690605502759596026
+class C_0013690605502759596026 {
++TrackRect() : void
++~TrackRect() : void
+..
+#draw(RenderTarget & target, RenderStates state = = RenderStates::Default) const : void
++setHover(const Ray3f & sight) : bool
++setPosition(const glm::vec3 & a, const glm::vec3 & b, const glm::vec3 & c) : void
+__
+-pRect : Rect3f
+-position : glm::vec3
+}
+C_0010983644189126901764 ..> C_0004943235355700621518
+C_0000504874819916776058 ..> C_0004943235355700621518
+C_0009126998444463587745 ..> C_0004943235355700621518
+C_0009126998444463587745 <.. C_0005232309663968889129 : +<<friend>>
+C_0005232309663968889129 ..> C_0004943235355700621518
+C_0005232309663968889129 - -> C_0009126998444463587745 : #children
+C_0009126998444463587745 <|- - C_0005232309663968889129
+C_0006947278924382378289 - -> C_0006947278924382378289 : +Default
+C_0017439970373421130707 - -> C_0017439970373421130707 : +Default
+C_0001662821347968641378 <|- - C_0014905482582044557028
+C_0004652308331122377135 ..> C_0004943235355700621518
+C_0004652308331122377135 <.. C_0016563941016709174499 : +<<friend>>
+C_0009126998444463587745 <|- - C_0004652308331122377135
+C_0016563941016709174499 ..> C_0009126998444463587745
+C_0016563941016709174499 ..> C_0004943235355700621518
+C_0016563941016709174499 o- - C_0004652308331122377135 : #sCamera
+C_0005232309663968889129 <|- - C_0016563941016709174499
+C_0013690605502759596026 ..> C_0004943235355700621518
+C_0013690605502759596026 o- - C_0000504874819916776058 : -pRect
+C_0009126998444463587745 <|- - C_0013690605502759596026
+
+@enduml
+
+PlantUML version 1.2021.00(Sun Jan 10 17:25:05 GMT+07:00 2021)
+(MIT source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>

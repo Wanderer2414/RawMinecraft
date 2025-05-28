@@ -1,16 +1,16 @@
 #include "Alarm.h"
 
-Alarm::Alarm() {
+MyBase::Alarm::Alarm() {
     m_duration = 0;
 }
-Alarm::~Alarm() {
+MyBase::Alarm::~Alarm() {
 
 }
-bool Alarm::get() {
+bool MyBase::Alarm::get() {
     bool ans = clock.getElapsedTime().asSeconds()>=m_duration;
     if (ans) clock.restart();
     return ans;
 }
-void Alarm::setDuration(const float& duration) {
+void MyBase::Alarm::setDuration(const float& duration) {
     m_duration = duration;
 }

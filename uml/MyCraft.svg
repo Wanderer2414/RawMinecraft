@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="1562px" preserveAspectRatio="none" style="width:1166px;height:1562px;background:#FFFFFA;" version="1.1" viewBox="0 0 1166 1562" width="1166px" zoomAndPan="magnify"><defs><filter height="300%" id="f8xokqtqeb1i1" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[e7d25c9dc39ec627c4d12ac483ca2357]
+class C_0009617396256429424282--><rect codeLine="3" fill="#FEFECE" filter="url(#f8xokqtqeb1i1)" height="145.8913" id="C_0009617396256429424282" style="stroke:#A80036;stroke-width:1.5;" width="240" x="7" y="1402.53"/><ellipse cx="53.75" cy="1418.53" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M53.2188,1425.4519 Q51.4688,1425.4519 50.3281,1424.7175 Q49.2031,1423.9675 48.6406,1422.6238 Q48.0938,1421.2644 48.0938,1419.4675 Q48.0938,1417.4363 48.75,1415.9831 Q49.4063,1414.53 50.6875,1413.7488 Q51.9688,1412.9675 53.8438,1412.9675 Q54.7344,1412.9675 55.4063,1413.155 Q56.0781,1413.3269 56.7656,1413.6706 L55.9531,1415.6863 Q55.3281,1415.3738 54.7813,1415.2488 Q54.25,1415.1238 53.7656,1415.1238 Q52.5938,1415.1238 51.8906,1415.655 Q51.1875,1416.1863 50.8906,1417.1394 Q50.5938,1418.0925 50.5938,1419.3581 Q50.5938,1421.3738 51.3125,1422.3425 Q52.0313,1423.2956 53.625,1423.2956 Q54.2188,1423.2956 54.8438,1423.1394 Q55.4688,1422.9831 56.2969,1422.6081 L56.2969,1424.8269 Q55.5625,1425.1394 54.7656,1425.2956 Q53.9844,1425.4519 53.2188,1425.4519 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="138" x="74.25" y="1423.186">::MyCraft::BlockCatogary</text><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="246" y1="1434.53" y2="1434.53"/><ellipse cx="18" cy="1445.53" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="114" x="27" y="1450.2889">BlockCatogary() : void</text><ellipse cx="18" cy="1460.5119" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="120" x="27" y="1465.2708">~BlockCatogary() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="8" x2="246" y1="1472.4938" y2="1472.4938"/><ellipse cx="18" cy="1483.4938" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="214" x="27" y="1488.2527">getBlock(const int &amp; index) const : GLuint</text><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="246" y1="1495.4757" y2="1495.4757"/><ellipse cx="18" cy="1506.4757" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="112" x="27" y="1511.2346">BlockTexture : GLuint</text><ellipse cx="18" cy="1521.4576" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" text-decoration="underline" textLength="132" x="27" y="1526.2165">Default : BlockCatogary *</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="15" y="1533.4394"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="112" x="27" y="1541.1984">pPtr : vector&lt;GLuint&gt;</text><!--MD5=[1b1bec884148fcff86be9fa1ab641ccc]
+class C_0017142404441902118391--><rect codeLine="14" fill="#FEFECE" filter="url(#f8xokqtqeb1i1)" height="77.9638" id="C_0017142404441902118391" style="stroke:#A80036;stroke-width:1.5;" width="227" x="13.5" y="1263.56"/><ellipse cx="28.5" cy="1279.56" fill="#EB937F" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M24.8594,1286.06 L24.8594,1273.9194 L32.5156,1273.9194 L32.5156,1276.0444 L27.2344,1276.0444 L27.2344,1278.7006 L32.25,1278.7006 L32.25,1280.8256 L27.2344,1280.8256 L27.2344,1283.935 L32.5156,1283.935 L32.5156,1286.06 L24.8594,1286.06 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="195" x="42.5" y="1284.216">::MyCraft::BlockCatogary::Catogary</text><line style="stroke:#A80036;stroke-width:1.5;" x1="14.5" x2="239.5" y1="1295.56" y2="1295.56"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="15" x="19.5" y="1311.3189">Air</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="20" x="19.5" y="1326.3008">Dirt</text><line style="stroke:#A80036;stroke-width:1.5;" x1="14.5" x2="239.5" y1="1333.5238" y2="1333.5238"/><!--MD5=[670bff74d936de5b430137d2f40132c7]
+class C_0016291758929191873705--><rect codeLine="19" fill="#FEFECE" filter="url(#f8xokqtqeb1i1)" height="205.8189" id="C_0016291758929191873705" style="stroke:#A80036;stroke-width:1.5;" width="358" x="22" y="638.56"/><ellipse cx="153.25" cy="654.56" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M152.7188,661.4819 Q150.9688,661.4819 149.8281,660.7475 Q148.7031,659.9975 148.1406,658.6538 Q147.5938,657.2944 147.5938,655.4975 Q147.5938,653.4663 148.25,652.0131 Q148.9063,650.56 150.1875,649.7788 Q151.4688,648.9975 153.3438,648.9975 Q154.2344,648.9975 154.9063,649.185 Q155.5781,649.3569 156.2656,649.7006 L155.4531,651.7163 Q154.8281,651.4038 154.2813,651.2788 Q153.75,651.1538 153.2656,651.1538 Q152.0938,651.1538 151.3906,651.685 Q150.6875,652.2163 150.3906,653.1694 Q150.0938,654.1225 150.0938,655.3881 Q150.0938,657.4038 150.8125,658.3725 Q151.5313,659.3256 153.125,659.3256 Q153.7188,659.3256 154.3438,659.1694 Q154.9688,659.0131 155.7969,658.6381 L155.7969,660.8569 Q155.0625,661.1694 154.2656,661.3256 Q153.4844,661.4819 152.7188,661.4819 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="87" x="173.75" y="659.216">::MyCraft::Block</text><line style="stroke:#A80036;stroke-width:1.5;" x1="23" x2="379" y1="670.56" y2="670.56"/><ellipse cx="33" cy="681.56" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="66" x="42" y="686.3189">Block() : void</text><ellipse cx="33" cy="696.5419" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="72" x="42" y="701.3008">~Block() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="23" x2="379" y1="708.5238" y2="708.5238"/><ellipse cx="33" cy="719.5238" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="147" x="42" y="724.2827">getHoverPlane() const : char</text><polygon fill="#FFFF44" points="33,729.5057,37,733.5057,33,737.5057,29,733.5057" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="107" x="42" y="739.2646">glDraw() const : void</text><ellipse cx="33" cy="749.4876" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="211" x="42" y="754.2465">setHoverPlane(const char &amp; index) : void</text><ellipse cx="33" cy="764.4694" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="332" x="42" y="769.2284">setPosition(const float &amp; x, const float &amp; y, const float &amp; z) : void</text><ellipse cx="33" cy="779.4513" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="233" x="42" y="784.2102">setPosition(const glm::vec3 &amp; position) : void</text><line style="stroke:#A80036;stroke-width:1.5;" x1="23" x2="379" y1="791.4332" y2="791.4332"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="30" y="799.4332"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="100" x="42" y="807.1921">pHoverPlane : char</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="30" y="814.4151"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="108" x="42" y="822.174">pPosition : glm::vec3</text><ellipse cx="33" cy="832.397" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="162" x="42" y="837.1559">type : BlockCatogary::Catogary</text><!--MD5=[9c145bdc900accab937aa6c4cd719e89]
+class C_0001531427901889754508--><rect codeLine="34" fill="#FEFECE" filter="url(#f8xokqtqeb1i1)" height="220.8008" id="C_0001531427901889754508" style="stroke:#A80036;stroke-width:1.5;" width="438" x="207" y="962.56"/><ellipse cx="375.75" cy="978.56" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M375.2188,985.4819 Q373.4688,985.4819 372.3281,984.7475 Q371.2031,983.9975 370.6406,982.6538 Q370.0938,981.2944 370.0938,979.4975 Q370.0938,977.4663 370.75,976.0131 Q371.4063,974.56 372.6875,973.7788 Q373.9688,972.9975 375.8438,972.9975 Q376.7344,972.9975 377.4063,973.185 Q378.0781,973.3569 378.7656,973.7006 L377.9531,975.7163 Q377.3281,975.4038 376.7813,975.2788 Q376.25,975.1538 375.7656,975.1538 Q374.5938,975.1538 373.8906,975.685 Q373.1875,976.2163 372.8906,977.1694 Q372.5938,978.1225 372.5938,979.3881 Q372.5938,981.4038 373.3125,982.3725 Q374.0313,983.3256 375.625,983.3256 Q376.2188,983.3256 376.8438,983.1694 Q377.4688,983.0131 378.2969,982.6381 L378.2969,984.8569 Q377.5625,985.1694 376.7656,985.3256 Q375.9844,985.4819 375.2188,985.4819 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="92" x="396.25" y="983.216">::MyCraft::Chunk</text><line style="stroke:#A80036;stroke-width:1.5;" x1="208" x2="644" y1="994.56" y2="994.56"/><ellipse cx="218" cy="1005.56" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="72" x="227" y="1010.3189">Chunk() : void</text><ellipse cx="218" cy="1020.5419" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="78" x="227" y="1025.3008">~Chunk() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="208" x2="644" y1="1032.5238" y2="1032.5238"/><ellipse cx="218" cy="1043.5238" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="270" x="227" y="1048.2827">at(const int &amp; x, const int &amp; y, const int &amp; z) : Block &amp;</text><ellipse cx="218" cy="1058.5057" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="236" x="227" y="1063.2646">contains(const glm::vec3 &amp; point) const : bool</text><ellipse cx="218" cy="1073.4876" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="412" x="227" y="1078.2465">getBlocks(const int &amp; x, const int &amp; y, const int &amp; z) : BlockCatogary::Catogary &amp;</text><ellipse cx="218" cy="1088.4694" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="107" x="227" y="1093.2284">glDraw() const : void</text><ellipse cx="218" cy="1103.4513" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="237" x="227" y="1108.2102">setHover(const MyBase3D::Ray3f &amp; ray) : bool</text><ellipse cx="218" cy="1118.4332" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="302" x="227" y="1123.1921">setPosition(const int &amp; x, const int &amp; y, const int &amp; z) : void</text><ellipse cx="218" cy="1133.4151" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="233" x="227" y="1138.174">setPosition(const glm::vec3 &amp; position) : void</text><line style="stroke:#A80036;stroke-width:1.5;" x1="208" x2="644" y1="1145.397" y2="1145.397"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="215" y="1153.397"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="130" x="227" y="1161.1559">blocks : Block[16][16][16]</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="215" y="1168.3789"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="108" x="227" y="1176.1378">pPosition : glm::vec3</text><!--MD5=[a032b8a7cc45747530963d286729af37]
+class C_0011386574597552260978--><rect codeLine="50" fill="#FEFECE" filter="url(#f8xokqtqeb1i1)" height="235.7827" id="C_0011386574597552260978" style="stroke:#A80036;stroke-width:1.5;" width="508" x="83" y="321.78"/><ellipse cx="287.75" cy="337.78" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M287.2188,344.7019 Q285.4688,344.7019 284.3281,343.9675 Q283.2031,343.2175 282.6406,341.8738 Q282.0938,340.5144 282.0938,338.7175 Q282.0938,336.6863 282.75,335.2331 Q283.4063,333.78 284.6875,332.9988 Q285.9688,332.2175 287.8438,332.2175 Q288.7344,332.2175 289.4063,332.405 Q290.0781,332.5769 290.7656,332.9206 L289.9531,334.9363 Q289.3281,334.6238 288.7813,334.4988 Q288.25,334.3738 287.7656,334.3738 Q286.5938,334.3738 285.8906,334.905 Q285.1875,335.4363 284.8906,336.3894 Q284.5938,337.3425 284.5938,338.6081 Q284.5938,340.6238 285.3125,341.5925 Q286.0313,342.5456 287.625,342.5456 Q288.2188,342.5456 288.8438,342.3894 Q289.4688,342.2331 290.2969,341.8581 L290.2969,344.0769 Q289.5625,344.3894 288.7656,344.5456 Q287.9844,344.7019 287.2188,344.7019 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="90" x="308.25" y="342.436">::MyCraft::World</text><line style="stroke:#A80036;stroke-width:1.5;" x1="84" x2="590" y1="353.78" y2="353.78"/><ellipse cx="94" cy="364.78" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="276" x="103" y="369.5389">World(const int &amp; x, const int &amp; y, const int &amp; z) : void</text><ellipse cx="94" cy="379.7619" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="76" x="103" y="384.5208">~World() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="84" x2="590" y1="391.7438" y2="391.7438"/><ellipse cx="94" cy="402.7438" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="318" x="103" y="407.5027">at(const int &amp; x, const int &amp; y, const int &amp; z) : MyCraft::Block &amp;</text><polygon fill="#FFFF44" points="94,412.7257,98,416.7257,94,420.7257,90,416.7257" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="107" x="103" y="422.4846">glDraw() const : void</text><polygon fill="#FFFF44" points="94,427.7076,98,431.7076,94,435.7076,90,431.7076" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="482" x="103" y="437.4665">handle(RenderWindow &amp; window, const RenderStates &amp; state = RenderStates::Default) : bool</text><ellipse cx="94" cy="447.6894" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="251" x="103" y="452.4484">setHover(const MyBase3D::Ray3f &amp; hover) : bool</text><line style="stroke:#A80036;stroke-width:1.5;" x1="84" x2="590" y1="459.6713" y2="459.6713"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="91" y="467.6713"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="46" x="103" y="475.4302">hX : float</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="91" y="482.6532"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="46" x="103" y="490.4121">hY : float</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="91" y="497.6351"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="46" x="103" y="505.394">hZ : float</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="91" y="512.617"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="179" x="103" y="520.3759">pChunks : MyCraft::Chunk[3][3][3]</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="91" y="527.5989"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="157" x="103" y="535.3578">pFrameAlarm : MyBase::Alarm</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="91" y="542.5808"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="108" x="103" y="550.3397">pPosition : glm::vec3</text><!--MD5=[9fadbdd988303b64e871b3a9f1449597]
+class C_0002492648447122705079--><rect codeLine="67" fill="#FEFECE" filter="url(#f8xokqtqeb1i1)" height="115.9276" id="C_0002492648447122705079" style="stroke:#A80036;stroke-width:1.5;" width="477" x="675.5" y="66.93"/><ellipse cx="850.25" cy="82.93" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M849.7188,89.8519 Q847.9688,89.8519 846.8281,89.1175 Q845.7031,88.3675 845.1406,87.0238 Q844.5938,85.6644 844.5938,83.8675 Q844.5938,81.8363 845.25,80.3831 Q845.9063,78.93 847.1875,78.1488 Q848.4688,77.3675 850.3438,77.3675 Q851.2344,77.3675 851.9063,77.555 Q852.5781,77.7269 853.2656,78.0706 L852.4531,80.0863 Q851.8281,79.7738 851.2813,79.6488 Q850.75,79.5238 850.2656,79.5238 Q849.0938,79.5238 848.3906,80.055 Q847.6875,80.5863 847.3906,81.5394 Q847.0938,82.4925 847.0938,83.7581 Q847.0938,85.7738 847.8125,86.7425 Q848.5313,87.6956 850.125,87.6956 Q850.7188,87.6956 851.3438,87.5394 Q851.9688,87.3831 852.7969,87.0081 L852.7969,89.2269 Q852.0625,89.5394 851.2656,89.6956 Q850.4844,89.8519 849.7188,89.8519 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="119" x="870.75" y="87.586">::MyCraft::Coordinate</text><line style="stroke:#A80036;stroke-width:1.5;" x1="676.5" x2="1151.5" y1="98.93" y2="98.93"/><ellipse cx="686.5" cy="109.93" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="97" x="695.5" y="114.6889">Coordinate() : void</text><ellipse cx="686.5" cy="124.9119" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="103" x="695.5" y="129.6708">~Coordinate() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="676.5" x2="1151.5" y1="136.8938" y2="136.8938"/><polygon fill="#FFFF44" points="686.5,142.8938,690.5,146.8938,686.5,150.8938,682.5,146.8938" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="451" x="695.5" y="152.6527">draw(RenderTarget &amp; target, RenderStates state = = RenderStates::Default) const : void</text><polygon fill="#FFFF44" points="686.5,157.8757,690.5,161.8757,686.5,165.8757,682.5,161.8757" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="107" x="695.5" y="167.6346">glDraw() const : void</text><line style="stroke:#A80036;stroke-width:1.5;" x1="676.5" x2="1151.5" y1="174.8576" y2="174.8576"/><!--MD5=[f46d66e2584f8d11dd3a5470d782c77c]
+class C_0012287643417462611281--><rect codeLine="76" fill="#FEFECE" filter="url(#f8xokqtqeb1i1)" height="235.7827" id="C_0012287643417462611281" style="stroke:#A80036;stroke-width:1.5;" width="608" x="33" y="7"/><ellipse cx="272.75" cy="23" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M272.2188,29.9219 Q270.4688,29.9219 269.3281,29.1875 Q268.2031,28.4375 267.6406,27.0938 Q267.0938,25.7344 267.0938,23.9375 Q267.0938,21.9063 267.75,20.4531 Q268.4063,19 269.6875,18.2188 Q270.9688,17.4375 272.8438,17.4375 Q273.7344,17.4375 274.4063,17.625 Q275.0781,17.7969 275.7656,18.1406 L274.9531,20.1563 Q274.3281,19.8438 273.7813,19.7188 Q273.25,19.5938 272.7656,19.5938 Q271.5938,19.5938 270.8906,20.125 Q270.1875,20.6563 269.8906,21.6094 Q269.5938,22.5625 269.5938,23.8281 Q269.5938,25.8438 270.3125,26.8125 Q271.0313,27.7656 272.625,27.7656 Q273.2188,27.7656 273.8438,27.6094 Q274.4688,27.4531 275.2969,27.0781 L275.2969,29.2969 Q274.5625,29.6094 273.7656,29.7656 Q272.9844,29.9219 272.2188,29.9219 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="120" x="293.25" y="27.656">::MyCraft::GameForm</text><line style="stroke:#A80036;stroke-width:1.5;" x1="34" x2="640" y1="39" y2="39"/><ellipse cx="44" cy="50" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="327" x="53" y="54.7589">GameForm(RenderWindow &amp; window, const int &amp; index) : void</text><ellipse cx="44" cy="64.9819" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="102" x="53" y="69.7408">~GameForm() : void</text><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:1.0,2.0;" x1="34" x2="640" y1="76.9638" y2="76.9638"/><rect fill="#F24D5C" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="41" y="84.9638"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="579" x="53" y="92.7227">AfterCatch(RenderWindow &amp; window, Event &amp; event, const RenderStates &amp; state = RenderStates::Default) : bool</text><rect fill="#F24D5C" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="41" y="99.9457"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="582" x="53" y="107.7046">CatchEvent(RenderWindow &amp; window, Event &amp; event, const RenderStates &amp; state = RenderStates::Default) : bool</text><polygon fill="#FFFF44" points="44,112.9276,48,116.9276,44,120.9276,40,116.9276" style="stroke:#B38D22;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="451" x="53" y="122.6865">draw(RenderTarget &amp; target, RenderStates state = = RenderStates::Default) const : void</text><rect fill="#F24D5C" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="41" y="129.9094"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="482" x="53" y="137.6684">handle(RenderWindow &amp; window, const RenderStates &amp; state = RenderStates::Default) : bool</text><ellipse cx="44" cy="147.8913" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="304" x="53" y="152.6502">move(const float &amp; x, const float &amp; y, const float &amp; z) : bool</text><line style="stroke:#A80036;stroke-width:1.5;" x1="34" x2="640" y1="159.8732" y2="159.8732"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="41" y="167.8732"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="157" x="53" y="175.6321">pFrameAlarm : MyBase::Alarm</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="41" y="182.8551"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="72" x="53" y="190.614">pSpeed : float</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="41" y="197.837"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="137" x="53" y="205.5959">pWindowCenter : Vector2i</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="41" y="212.8189"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="80" x="53" y="220.5778">pWorld : World</text><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="41" y="227.8008"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="87" x="53" y="235.5597">pZVelocity : float</text><!--MD5=[9c0b160279b2c738ec9036da58193fbe]
+link C_0009617396256429424282 to C_0009617396256429424282--><path codeLine="92" d="M247.23,1457.37 C267.77,1459.84 282,1465.88 282,1475.47 C282,1484.1 270.51,1489.84 253.29,1492.72 " fill="none" id="C_0009617396256429424282-to-C_0009617396256429424282" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="248.73,1493.37,258.2096,1496.0417,253.6786,1492.6549,257.0654,1488.1239,248.73,1493.37" style="stroke:#A80036;stroke-width:1.0;"/><ellipse cx="293" cy="1476.323" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="43" x="300" y="1480.867">Default</text><!--MD5=[6e7516a7bdfebcccf6bdf7a0a111a607]
+link C_0017142404441902118391 to C_0009617396256429424282--><path codeLine="93" d="M127,1341.91 C127,1355.13 127,1370.54 127,1386.08 " fill="none" id="C_0017142404441902118391-to-C_0009617396256429424282" style="stroke:#A80036;stroke-width:1.0;"/><ellipse cx="127" cy="1392.72" fill="#FFFFFF" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.0;"/><line style="stroke:#A80036;stroke-width:1.0;" x1="127" x2="127" y1="1384.72" y2="1400.72"/><line style="stroke:#A80036;stroke-width:1.0;" x1="135" x2="119" y1="1392.72" y2="1392.72"/><!--MD5=[de1c5bc609a7ed21a17f0629223c19db]
+reverse link C_0016291758929191873705 to C_0017142404441902118391--><path codeLine="94" d="M148.69,856.83 C138.47,884.36 129.29,914.05 124,942.56 C102.67,1057.62 114.24,1197 121.93,1263.14 " fill="none" id="C_0016291758929191873705-backto-C_0017142404441902118391" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#FFFFFA" points="153.24,844.92,147.361,849.0958,148.9544,856.1286,154.8334,851.9529,153.24,844.92" style="stroke:#A80036;stroke-width:1.0;"/><ellipse cx="130" cy="1073.413" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="27" x="137" y="1077.957">type</text><!--MD5=[ab9c73f412934c491e5eb325863c260c]
+reverse link C_0016291758929191873705 to C_0001531427901889754508--><path codeLine="95" d="M238.44,849.34 C247.98,871.04 259.22,893.14 272,912.56 C283.3,929.74 296.61,946.68 310.58,962.73 " fill="none" id="C_0016291758929191873705-backto-C_0001531427901889754508" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="236.52,844.92,236.4257,854.7684,238.5068,849.5083,243.7669,851.5895,236.52,844.92" style="stroke:#A80036;stroke-width:1.0;"/><ellipse cx="278" cy="903.913" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="49" x="285" y="908.457">«friend»</text><!--MD5=[cb83796108ef340ce07d1a5e5f80c98a]
+reverse link C_0001531427901889754508 to C_0016291758929191873705--><path codeLine="97" d="M372.45,950.16 C362.24,930.7 350.97,911.19 339,893.56 C327.5,876.64 314.21,859.68 300.51,843.55 " fill="none" id="C_0001531427901889754508-backto-C_0016291758929191873705" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#FFFFFA" points="378.31,961.57,379.1271,954.4053,372.8278,950.8955,372.0107,958.0601,378.31,961.57" style="stroke:#A80036;stroke-width:1.0;"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="353.63" y="900.913"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="38" x="363.63" y="908.457">blocks</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="28" x="295.4908" y="865.6917">4096</text><!--MD5=[f87f90e3f02ad113c83e37e152b0b732]
+link C_0001531427901889754508 to C_0017142404441902118391--><path codeLine="96" d="M283.07,1182.55 C247.16,1209.93 210.74,1237.69 182.13,1259.51 " fill="none" id="C_0001531427901889754508-to-C_0017142404441902118391" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="178.45,1262.32,188.0321,1260.0432,182.4258,1259.2881,183.181,1253.6818,178.45,1262.32" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[d1ea562af2c929099c51d005f9bc353a]
+link C_0011386574597552260978 to C_0016291758929191873705--><path codeLine="98" d="M283.83,557.71 C272.59,582.46 260.78,608.46 249.71,632.83 " fill="none" id="C_0011386574597552260978-to-C_0016291758929191873705" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="247.69,637.28,255.0634,630.7506,249.7644,632.7306,247.7844,627.4316,247.69,637.28" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[2b2a71df85c817f5c3bd05307cbd5dc3]
+reverse link C_0011386574597552260978 to C_0001531427901889754508--><path codeLine="99" d="M406.96,570.79 C413.07,586.53 418.32,602.67 422,618.56 C448.67,733.89 445.37,870.18 438.11,962.93 " fill="none" id="C_0011386574597552260978-backto-C_0001531427901889754508" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#FFFFFA" points="402.2,559.07,400.7461,566.133,406.7066,570.1916,408.1605,563.1286,402.2,559.07" style="stroke:#A80036;stroke-width:1.0;"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="446.26" y="738.913"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="53" x="456.26" y="746.457">pChunks</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="14" x="424.5012" y="950.7791">27</text><!--MD5=[b68371b921fa353c9d8682129de1b03a]
+reverse link C_0012287643417462611281 to C_0011386574597552260978--><path codeLine="100" d="M337,257.46 C337,278.7 337,300.57 337,321.44 " fill="none" id="C_0012287643417462611281-backto-C_0011386574597552260978" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#FFFFFA" points="337,244.76,333,250.76,337,256.76,341,250.76,337,244.76" style="stroke:#A80036;stroke-width:1.0;"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="340" y="280.133"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="44" x="350" y="287.677">pWorld</text><!--MD5=[cf3f6a08492dcb24a1b261ab494ffced]
+@startuml MyCraft
+skinparam backgroundColor #FFFFFA
+class "::MyCraft::BlockCatogary" as C_0009617396256429424282
+class C_0009617396256429424282 {
++BlockCatogary() : void
++~BlockCatogary() : void
+..
++getBlock(const int & index) const : GLuint
+__
++BlockTexture : GLuint
+{static} +Default : BlockCatogary *
+-pPtr : vector<GLuint>
+}
+enum "::MyCraft::BlockCatogary::Catogary" as C_0017142404441902118391
+enum C_0017142404441902118391 {
+Air
+Dirt
+}
+class "::MyCraft::Block" as C_0016291758929191873705
+class C_0016291758929191873705 {
++Block() : void
++~Block() : void
+..
++getHoverPlane() const : char
+#glDraw() const : void
++setHoverPlane(const char & index) : void
++setPosition(const float & x, const float & y, const float & z) : void
++setPosition(const glm::vec3 & position) : void
+__
+-pHoverPlane : char
+-pPosition : glm::vec3
++type : BlockCatogary::Catogary
+}
+class "::MyCraft::Chunk" as C_0001531427901889754508
+class C_0001531427901889754508 {
++Chunk() : void
++~Chunk() : void
+..
++at(const int & x, const int & y, const int & z) : Block &
++contains(const glm::vec3 & point) const : bool
++getBlocks(const int & x, const int & y, const int & z) : BlockCatogary::Catogary &
++glDraw() const : void
++setHover(const MyBase3D::Ray3f & ray) : bool
++setPosition(const int & x, const int & y, const int & z) : void
++setPosition(const glm::vec3 & position) : void
+__
+-blocks : Block[16][16][16]
+-pPosition : glm::vec3
+}
+class "::MyCraft::World" as C_0011386574597552260978
+class C_0011386574597552260978 {
++World(const int & x, const int & y, const int & z) : void
++~World() : void
+..
++at(const int & x, const int & y, const int & z) : MyCraft::Block &
+#glDraw() const : void
+#handle(RenderWindow & window, const RenderStates & state = RenderStates::Default) : bool
++setHover(const MyBase3D::Ray3f & hover) : bool
+__
+-hX : float
+-hY : float
+-hZ : float
+-pChunks : MyCraft::Chunk[3][3][3]
+-pFrameAlarm : MyBase::Alarm
+-pPosition : glm::vec3
+}
+class "::MyCraft::Coordinate" as C_0002492648447122705079
+class C_0002492648447122705079 {
++Coordinate() : void
++~Coordinate() : void
+..
+#draw(RenderTarget & target, RenderStates state = = RenderStates::Default) const : void
+#glDraw() const : void
+__
+}
+class "::MyCraft::GameForm" as C_0012287643417462611281
+class C_0012287643417462611281 {
++GameForm(RenderWindow & window, const int & index) : void
++~GameForm() : void
+..
+-AfterCatch(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+-CatchEvent(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#draw(RenderTarget & target, RenderStates state = = RenderStates::Default) const : void
+-handle(RenderWindow & window, const RenderStates & state = RenderStates::Default) : bool
++move(const float & x, const float & y, const float & z) : bool
+__
+-pFrameAlarm : MyBase::Alarm
+-pSpeed : float
+-pWindowCenter : Vector2i
+-pWorld : World
+-pZVelocity : float
+}
+C_0009617396256429424282 - -> C_0009617396256429424282 : +Default
+C_0017142404441902118391 - -+ C_0009617396256429424282
+C_0016291758929191873705 o- - C_0017142404441902118391 : +type
+C_0016291758929191873705 <.. C_0001531427901889754508 : +<<friend>>
+C_0001531427901889754508 ..> C_0017142404441902118391
+C_0001531427901889754508 o- - "4096" C_0016291758929191873705 : -blocks
+C_0011386574597552260978 ..> C_0016291758929191873705
+C_0011386574597552260978 o- - "27" C_0001531427901889754508 : -pChunks
+C_0012287643417462611281 o- - C_0011386574597552260978 : -pWorld
+
+'Generated with clang-uml, version 0.6.1
+'LLVM version clang version 19.1.7
+@enduml
+
+@startuml MyCraft
+skinparam backgroundColor #FFFFFA
+class "::MyCraft::BlockCatogary" as C_0009617396256429424282
+class C_0009617396256429424282 {
++BlockCatogary() : void
++~BlockCatogary() : void
+..
++getBlock(const int & index) const : GLuint
+__
++BlockTexture : GLuint
+{static} +Default : BlockCatogary *
+-pPtr : vector<GLuint>
+}
+enum "::MyCraft::BlockCatogary::Catogary" as C_0017142404441902118391
+enum C_0017142404441902118391 {
+Air
+Dirt
+}
+class "::MyCraft::Block" as C_0016291758929191873705
+class C_0016291758929191873705 {
++Block() : void
++~Block() : void
+..
++getHoverPlane() const : char
+#glDraw() const : void
++setHoverPlane(const char & index) : void
++setPosition(const float & x, const float & y, const float & z) : void
++setPosition(const glm::vec3 & position) : void
+__
+-pHoverPlane : char
+-pPosition : glm::vec3
++type : BlockCatogary::Catogary
+}
+class "::MyCraft::Chunk" as C_0001531427901889754508
+class C_0001531427901889754508 {
++Chunk() : void
++~Chunk() : void
+..
++at(const int & x, const int & y, const int & z) : Block &
++contains(const glm::vec3 & point) const : bool
++getBlocks(const int & x, const int & y, const int & z) : BlockCatogary::Catogary &
++glDraw() const : void
++setHover(const MyBase3D::Ray3f & ray) : bool
++setPosition(const int & x, const int & y, const int & z) : void
++setPosition(const glm::vec3 & position) : void
+__
+-blocks : Block[16][16][16]
+-pPosition : glm::vec3
+}
+class "::MyCraft::World" as C_0011386574597552260978
+class C_0011386574597552260978 {
++World(const int & x, const int & y, const int & z) : void
++~World() : void
+..
++at(const int & x, const int & y, const int & z) : MyCraft::Block &
+#glDraw() const : void
+#handle(RenderWindow & window, const RenderStates & state = RenderStates::Default) : bool
++setHover(const MyBase3D::Ray3f & hover) : bool
+__
+-hX : float
+-hY : float
+-hZ : float
+-pChunks : MyCraft::Chunk[3][3][3]
+-pFrameAlarm : MyBase::Alarm
+-pPosition : glm::vec3
+}
+class "::MyCraft::Coordinate" as C_0002492648447122705079
+class C_0002492648447122705079 {
++Coordinate() : void
++~Coordinate() : void
+..
+#draw(RenderTarget & target, RenderStates state = = RenderStates::Default) const : void
+#glDraw() const : void
+__
+}
+class "::MyCraft::GameForm" as C_0012287643417462611281
+class C_0012287643417462611281 {
++GameForm(RenderWindow & window, const int & index) : void
++~GameForm() : void
+..
+-AfterCatch(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+-CatchEvent(RenderWindow & window, Event & event, const RenderStates & state = RenderStates::Default) : bool
+#draw(RenderTarget & target, RenderStates state = = RenderStates::Default) const : void
+-handle(RenderWindow & window, const RenderStates & state = RenderStates::Default) : bool
++move(const float & x, const float & y, const float & z) : bool
+__
+-pFrameAlarm : MyBase::Alarm
+-pSpeed : float
+-pWindowCenter : Vector2i
+-pWorld : World
+-pZVelocity : float
+}
+C_0009617396256429424282 - -> C_0009617396256429424282 : +Default
+C_0017142404441902118391 - -+ C_0009617396256429424282
+C_0016291758929191873705 o- - C_0017142404441902118391 : +type
+C_0016291758929191873705 <.. C_0001531427901889754508 : +<<friend>>
+C_0001531427901889754508 ..> C_0017142404441902118391
+C_0001531427901889754508 o- - "4096" C_0016291758929191873705 : -blocks
+C_0011386574597552260978 ..> C_0016291758929191873705
+C_0011386574597552260978 o- - "27" C_0001531427901889754508 : -pChunks
+C_0012287643417462611281 o- - C_0011386574597552260978 : -pWorld
+
+@enduml
+
+PlantUML version 1.2021.00(Sun Jan 10 17:25:05 GMT+07:00 2021)
+(MIT source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>

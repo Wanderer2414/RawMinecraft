@@ -3,6 +3,7 @@
 #include "Global.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
+namespace MyCraft {
 
 Chunk::Chunk() {
     for (int i = 0; i<16; i++) {
@@ -23,7 +24,7 @@ bool Chunk::contains(const glm::vec3& center) const {
             center.z >= pPosition.z && center.z <= pPosition.z+16) ;
 }
 
-bool Chunk::setHover(const Ray3f& ray) {
+bool Chunk::setHover(const MyBase3D::Ray3f& ray) {
     bool hover = false;
     glm::vec3 delta = ray;
     float rX = ceil(ray.getOrigin().x) - ray.getOrigin().x;
@@ -61,7 +62,7 @@ void Chunk::glDraw() const {
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, PointSet::Default->ChunkSet);
+    glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->ChunkSet);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
     glEnableVertexAttribArray(0);
 
@@ -76,7 +77,7 @@ void Chunk::glDraw() const {
     glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*8, buffer, GL_STATIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, Origin);
 
-    glUseProgram(ShaderStorage::Default->ChunkShader);
+    glUseProgram(MyBase3D::ShaderStorage::Default->ChunkShader);
     glDrawArrays(GL_LINE_STRIP, 0, 16);
     
     glDeleteBuffers(1, &Origin);
@@ -91,4 +92,5 @@ void Chunk::glDraw() const {
             }
         }
     }
+}
 }

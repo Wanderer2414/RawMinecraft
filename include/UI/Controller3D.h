@@ -2,6 +2,7 @@
 #define Controller_3D_H
 #include "Global.h"
 #include "Ray.h"
+namespace MyBase3D {
 
 class Container3D;
 
@@ -39,4 +40,5 @@ private:
                     pIsReleased,
                     pIsFocus;
 };
+}
 #endif

@@ -4,6 +4,7 @@
 #include "Rectangle.h"
 #include "RoundedRectangle.h"
 #include "SettingPackage.h"
+namespace MyBase {
 
 enum Align {
     Right = 1, Middle = 2, Left = 4,
@@ -29,6 +30,7 @@ protected:
     int         m_align;
 private:
 };
-template class Label<MC::Rectangle>;
+template class Label<Rectangle>;
 template class Label<RoundedRectangle>;
+}
 #endif
