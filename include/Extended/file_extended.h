@@ -2,7 +2,7 @@
 #define FILE_EXTENDED_H
 #include "Global.h"
 
-void connect(fstream& stream, const string& file);
-void close(fstream& stream, const string& file);
+void connect(std::fstream& stream, const std::string& file);
+void close(std::fstream& stream, const std::string& file);
 
 #endif

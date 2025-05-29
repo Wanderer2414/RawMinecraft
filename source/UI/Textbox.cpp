@@ -8,39 +8,39 @@ namespace MyBase {
     Textbox<T>::Textbox(const ButtonSetting& setting, const TextSetting& text_setting) {
         Button<T>::setTextPackage(text_setting);
         T::setFillColor(setting.normal_color);
-        m_cursor_index = 0;
-        m_is_enter = m_show_cusor = m_is_text_changed = false;
-        cursor.setSize({2, text_setting.font_size});
-        m_is_multiline = false;
-        alarm.setDuration(0.5);
+        _cursorIndex = 0;
+        _isEnter = _showCCursor = _isTextChanged = false;
+        _cursor.setSize({2, text_setting.font_size});
+        _isMultiLine = false;
+        _alarm.setDuration(0.5);
     }
     
     template<typename T>
     bool Textbox<T>::isEnter() const {
-        return m_is_enter;
+        return _isEnter;
     }
     template<typename T>
     bool Textbox<T>::isTextChanged() const {
-        return m_is_text_changed;
+        return _isTextChanged;
     }
     template <typename T> 
     void Textbox<T>::reset() {
         Controller::reset();
-        m_is_text_changed = m_is_enter  = false;
+        _isTextChanged = _isEnter  = false;
     }
     template<typename T>
     _catch_function(Textbox<T>, CatchEvent) {
-        using KCode = Keyboard::Scancode;
-        #define isPress(X) Keyboard::isKeyPressed(Keyboard::X)
+        using KCode = sf::Keyboard::Scancode;
+        #define isPress(X) sf::Keyboard::isKeyPressed(sf::Keyboard::X)
     
         bool is_changed = Button<T>::CatchEvent(window, event, state);
         if (Button<T>::isPressed()) {
-            m_cursor_index = getString().size();
-            cursor.setPosition(Button<T>::findCharacterPos(m_cursor_index));
+            _cursorIndex = getString().size();
+            _cursor.setPosition(Button<T>::findCharacterPos(_cursorIndex));
             is_changed = true;
         }
         else if (Button<T>::isFocus()) {
-            if (event.type == Event::KeyPressed) {
+            if (event.type == sf::Event::KeyPressed) {
                 char insert = 0;
                 if (KCode::A <= event.key.scancode && event.key.scancode <= KCode::Z) {
                     if (isPress(LShift) || isPress(RShift))
@@ -72,8 +72,8 @@ namespace MyBase {
                 }
                 else switch (event.key.scancode) {
                     case KCode::Enter: {
-                        if (!m_is_multiline) {
-                            m_is_enter = true;
+                        if (!_isMultiLine) {
+                            _isEnter = true;
                             Button<T>::setFocus(false);
                             is_changed = true;
                         }
@@ -85,9 +85,9 @@ namespace MyBase {
                     }
                         break;
                     case KCode::Backspace: {
-                        if (m_cursor_index) {
-                            m_content.erase(m_content.begin()+m_cursor_index - 1);
-                            m_cursor_index--;
+                        if (_cursorIndex) {
+                            _content.erase(_content.begin()+_cursorIndex - 1);
+                            _cursorIndex--;
                             is_changed = true;
                         } else return false;
                     }
@@ -150,8 +150,8 @@ namespace MyBase {
                     }
                         break;
                     case KCode::Delete: {
-                        if (m_cursor_index < m_content.size()) {
-                            m_content.erase(m_content.begin() + m_cursor_index);
+                        if (_cursorIndex < _content.size()) {
+                            _content.erase(_content.begin() + _cursorIndex);
                             is_changed = true;
                         }
                     }
@@ -185,15 +185,15 @@ namespace MyBase {
                     }
                         break;
                     case KCode::Left: {
-                        if (m_cursor_index) {
-                            m_cursor_index--;
+                        if (_cursorIndex) {
+                            _cursorIndex--;
                             is_changed = true;
                         }
                     }
                         break;
                     case KCode::Right: {
-                        if (m_cursor_index<m_content.size()) {
-                            m_cursor_index++;
+                        if (_cursorIndex<_content.size()) {
+                            _cursorIndex++;
                             is_changed = true;
                         }
                     }
@@ -201,8 +201,8 @@ namespace MyBase {
                     default: break;
                 }
                 if (insert) {
-                    m_content.insert(m_content.begin() + m_cursor_index, insert);
-                    m_cursor_index++;
+                    _content.insert(_content.begin() + _cursorIndex, insert);
+                    _cursorIndex++;
                 }
             }
         }
@@ -211,37 +211,37 @@ namespace MyBase {
     template <typename T>
     _catch_function(Textbox<T>, AfterCatch) {
         bool is_changed = Button<T>::AfterCatch(window, event, state);
-        if (Text::getString() != m_content && Button<T>::isFocus()) {
-            if (m_content.size()) m_is_text_changed = true;
-            setString(m_content);
+        if (sf::Text::getString() != _content && Button<T>::isFocus()) {
+            if (_content.size()) _isTextChanged = true;
+            setString(_content);
             is_changed = true;
         }
-        if (m_content.empty() && Text::getString() != hide_string && !Button<T>::isFocus()) {
+        if (_content.empty() && sf::Text::getString() != _hideString && !Button<T>::isFocus()) {
             setString("");
             is_changed = true;
         }
-        m_show_cusor = true;
+        _showCCursor = true;
         if (is_changed) update();
-        cursor.setPosition(Button<T>::findCharacterPos(m_cursor_index));
+        _cursor.setPosition(Button<T>::findCharacterPos(_cursorIndex));
         return is_changed;
     }
     template<typename T>
     _handle_function(Textbox<T>, handle) {
         bool is_changed = false;
-        if (Button<T>::isFocus() && alarm.get()) {
-            m_show_cusor = !m_show_cusor;
+        if (Button<T>::isFocus() && _alarm.get()) {
+            _showCCursor = !_showCCursor;
             is_changed = true;
         }
         return is_changed;
     }
     
     template<typename T>
-    string Textbox<T>::getString() const {
-        return m_content;
+    std::string Textbox<T>::getString() const {
+        return _content;
     }
     
     template<typename T>
-    Vector2f Textbox<T>::getPosition() const {
+    sf::Vector2f Textbox<T>::getPosition() const {
         return Button<T>::getPosition();
     }
     template<typename T>
@@ -257,35 +257,35 @@ namespace MyBase {
         Button<T>::update();
     }
     template <typename T> 
-    void Textbox<T>::setHideString(const string& value) {
+    void Textbox<T>::setHideString(const std::string& value) {
         Button<T>::setString(value);
-        hide_string = value;
+        _hideString = value;
         update();
     }
     template <typename T>
-    void Textbox<T>::setString(const string& value) {
-        m_content = value;
-        if (value=="" && !Button<T>::isFocus()) Button<T>::setString(hide_string);
+    void Textbox<T>::setString(const std::string& value) {
+        _content = value;
+        if (value=="" && !Button<T>::isFocus()) Button<T>::setString(_hideString);
         else Button<T>::setString(value);
-        if (m_cursor_index > value.size()) m_cursor_index = value.size();
-        if (m_cursor_index < 0) m_cursor_index = 0;
+        if (_cursorIndex > value.size()) _cursorIndex = value.size();
+        if (_cursorIndex < 0) _cursorIndex = 0;
         update();
     }
     template <typename T>
-    void Textbox<T>::draw(RenderTarget& target, RenderStates state) const {
+    void Textbox<T>::draw(sf::RenderTarget& target, sf::RenderStates state) const {
         T::draw(target, state);
         
-        RenderTexture texture;
+        sf::RenderTexture texture;
         texture.create(T::getSize().x, T::getSize().y);
-        texture.clear(Color::Transparent);
-        if (cursor.getPosition().x > T::getSize().x) 
-            texture.setView((View)FloatRect(cursor.getPosition().x - T::getSize().x + 5, 0, T::getSize().x, T::getSize().y));
-        else texture.setView((View)FloatRect(0, 0, T::getSize().x, T::getSize().y));
+        texture.clear(sf::Color::Transparent);
+        if (_cursor.getPosition().x > T::getSize().x) 
+            texture.setView((sf::View)sf::FloatRect(_cursor.getPosition().x - T::getSize().x + 5, 0, T::getSize().x, T::getSize().y));
+        else texture.setView((sf::View)sf::FloatRect(0, 0, T::getSize().x, T::getSize().y));
     
-        Text::draw(texture, state);
-        if (Button<T>::isFocus() && m_show_cusor) texture.draw(cursor, state);
+        sf::Text::draw(texture, state);
+        if (Button<T>::isFocus() &&_showCCursor) texture.draw(_cursor, state);
         texture.display();
-        Sprite sprite(texture.getTexture());
+        sf::Sprite sprite(texture.getTexture());
         sprite.setPosition(getPosition());
         target.draw(sprite, state);
     }

@@ -11,7 +11,7 @@ namespace MyBase3D {
             virtual float   distance(const glm::vec3& position) const;
         
         protected:
-            glm::vec3    sOrigin, sDelta;
+            glm::vec3    _origin, _delta;
         };
 }
 #endif

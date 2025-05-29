@@ -1,4 +1,4 @@
 #include "Global.h"
 
 GLuint createShaderFromSPIRV(GLenum shaderType, const std::string& spvPath);
-GLuint createProgram(const string& vertexPath, const string& fragmentPath);
+GLuint createProgram(const std::string& vertexPath, const std::string& fragmentPath);

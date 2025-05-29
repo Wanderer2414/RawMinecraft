@@ -1,17 +1,15 @@
 #include "Block.h"
-#include "General.h"
 #include "Global.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
-#include "glm/fwd.hpp"
 
 MyCraft::BlockCatogary::BlockCatogary() {
-    pPtr.resize(2, 0);
-    pPtr[0] = 0;
-    Image image;
+    __ptr.resize(2, 0);
+    __ptr[0] = 0;
+    sf::Image image;
     image.loadFromFile("assets/images/Dirt.png");
-    glGenTextures(1, &pPtr[1]);
-    glBindTexture(GL_TEXTURE_2D, pPtr[1]);
+    glGenTextures(1, &__ptr[1]);
+    glBindTexture(GL_TEXTURE_2D, __ptr[1]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x,image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -48,48 +46,60 @@ MyCraft::BlockCatogary::BlockCatogary() {
     tex_coord[22] = {0, 2.0/4};
     tex_coord[23] = {0, 1.0/4};
 
-    glGenBuffers(1, &BlockTexture);
-    glBindBuffer(GL_ARRAY_BUFFER, BlockTexture);
+    glGenBuffers(1, &__blockTexture);
+    glBindBuffer(GL_ARRAY_BUFFER, __blockTexture);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*24*2, &tex_coord[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 MyCraft::BlockCatogary::~BlockCatogary() {
-    glDeleteTextures(1, &pPtr[1]);
-    glDeleteBuffers(1, &BlockTexture);
+    glDeleteTextures(1, &__ptr[1]);
+    glDeleteBuffers(1, &__blockTexture);
 }
 
 GLuint MyCraft::BlockCatogary::getBlock(const int& index) const {
-    return pPtr[index];
+    return __ptr[index];
 }
 
-MyCraft::Block::Block():pHoverPlane(-1), pPosition(0, 0, 0) {
+GLuint MyCraft::BlockCatogary::getTexCoord() const {
+    return __blockTexture;
+}
+
+MyCraft::Block::Block():__hoverPlane(-1), __position(0, 0, 0) {
 
 }
 MyCraft::Block::~Block() {
 }
+
+MyCraft::BlockCatogary::Catogary MyCraft::Block::getType() const {
+    return __type;
+}
+
 char MyCraft::Block::getHoverPlane() const {
-    return pHoverPlane;
+    return __hoverPlane;
 }
 void MyCraft::Block::setPosition(const float& x, const float& y, const float& z) {
-    pPosition = {x, y, z};
+    __position = {x, y, z};
 }
 void MyCraft::Block::setPosition(const glm::vec3& position) {
-    pPosition = position;
+    __position = position;
 }
 void MyCraft::Block::setHoverPlane(const char& index) {
-    pHoverPlane = index;
+    __hoverPlane = index;
+}
+void MyCraft::Block::setType(const BlockCatogary::Catogary& type) {
+    __type = type;
 }
 void MyCraft::Block::glDraw() const {
-    glUseProgram(MyBase3D::ShaderStorage::Default->CubeShader);
+    glUseProgram(MyBase3D::ShaderStorage::Default->GetCubeShader());
 
     GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->BlockSet);
+    glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getBlockSet());
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
     glEnableVertexAttribArray(0);
     
-    glBindBuffer(GL_ARRAY_BUFFER, MyCraft::BlockCatogary::Default->BlockTexture);
+    glBindBuffer(GL_ARRAY_BUFFER, MyCraft::BlockCatogary::Default->getTexCoord());
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0);
     glEnableVertexAttribArray(1);
 
@@ -97,20 +107,20 @@ void MyCraft::Block::glDraw() const {
     
     glGenBuffers(1, &originPoint);
     glBindBuffer(GL_UNIFORM_BUFFER, originPoint);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*3, &pPosition[0], GL_STATIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*3, &__position[0], GL_STATIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, originPoint);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, MyCraft::BlockCatogary::Default->getBlock(type));
+    glBindTexture(GL_TEXTURE_2D, MyCraft::BlockCatogary::Default->getBlock(__type));
 
     glDrawArrays(GL_QUADS, 0, 24);
-    if (pHoverPlane!=-1) {
-        glUseProgram(MyBase3D::ShaderStorage::Default->MarginShader);
+    if (__hoverPlane!=-1) {
+        glUseProgram(MyBase3D::ShaderStorage::Default->GetMarginShader());
         glLineWidth(3);
         GLuint VAO;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->MarginSet);
+        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getMarginSet());
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
         glEnableVertexAttribArray(0);
 

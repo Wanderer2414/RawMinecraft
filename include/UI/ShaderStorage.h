@@ -10,11 +10,15 @@ class ShaderStorage {
     
         static ShaderStorage* Default;
     
-        GLuint DefaultShader;
-        GLuint CubeShader;
-        GLuint ChunkShader;
-        GLuint MarginShader;
+        GLuint  GetDefaultShader() const,
+                GetCubeShader() const,
+                GetChunkShader() const,
+                GetMarginShader() const;
     private:
+        GLuint  __defaultShader,
+                __cubeShader,
+                __chunkShader,
+                __marginShader;
     };
 }
 #endif

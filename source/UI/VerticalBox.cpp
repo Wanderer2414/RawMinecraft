@@ -3,38 +3,36 @@
 #include "Rectangle.h"
 namespace MyBase {
 
-    VerticalBox::VerticalBox() {
-        delta = 0;
-        height = 0;
+    VerticalBox::VerticalBox(): _delta(0), __height(0) {
     }
     VerticalBox::~VerticalBox() {
     
     }
-    bool VerticalBox::contains(const Vector2f& position) const {
+    bool VerticalBox::contains(const sf::Vector2f& position) const {
         return Rectangle::contains(position);
     }
-    Vector2f VerticalBox::getPosition() const {
+    sf::Vector2f VerticalBox::getPosition() const {
         return Rectangle::getPosition();
     }
-    Vector2f VerticalBox::getSize() const {
+    sf::Vector2f VerticalBox::getSize() const {
         return Rectangle::getSize();
     }
-    bool VerticalBox::setHover(const Vector2f& position) {
+    bool VerticalBox::setHover(const sf::Vector2f& position) {
         bool is_changed = Controller::setHover(position);
-        hovered_controller = -1;
+        _currentHover = -1;
         if (isHovered()) {
-            Vector2f pos = position - getPosition();
-            pos.y -= delta;
-            if (focus_control != -1) {
-                is_changed = children[focus_control].first->setHover(pos) || is_changed;
-                if (children[focus_control].first->isHovered()) hovered_controller = focus_control;
+            sf::Vector2f pos = position - getPosition();
+            pos.y -= _delta;
+            if (_currentFocus != -1) {
+                is_changed = children[_currentFocus].first->setHover(pos) || is_changed;
+                if (children[_currentFocus].first->isHovered()) _currentHover = _currentFocus;
             }
             for (int i = 0; i<children.size(); i++) {
-                if (hovered_controller==-1 && focus_control != i) {
+                if (_currentHover==-1 && _currentFocus != i) {
                     is_changed = children[i].first->setHover(pos) || is_changed;
-                    if (children[i].first->isHovered()) hovered_controller = i;
+                    if (children[i].first->isHovered()) _currentHover = i;
                 }
-                else if (i!=hovered_controller) is_changed = children[i].first->setHover(false) || is_changed;
+                else if (i!=_currentHover) is_changed = children[i].first->setHover(false) || is_changed;
             }
         }
         else {
@@ -51,11 +49,11 @@ namespace MyBase {
     void VerticalBox::update() {
         Container::update();
         Rectangle::update();
-        height = 0;
+        __height = 0;
         for (auto& [controller, layer]: children)
-            if (float tmp = controller->getPosition().y + controller->getSize().y; tmp>height) height = tmp;
-        if (height < getSize().y) delta = 0;
-        else delta = clamp(delta, getSize().y -height, 0.f);
+            if (float tmp = controller->getPosition().y + controller->getSize().y; tmp>__height) __height = tmp;
+        if (__height < getSize().y) _delta = 0;
+        else _delta = std::clamp(_delta, getSize().y -__height, 0.f);
     }
     void VerticalBox::setPosition(const float& x, const float& y) {
         Container::setPosition(x, y);
@@ -63,24 +61,24 @@ namespace MyBase {
     }
     _catch_function(VerticalBox, CatchEvent) {
         bool is_changed = Container::CatchEvent(window, event, state);
-        if (isHovered() && event.type == Event::MouseWheelScrolled) {
-            delta -= event.mouseWheelScroll.delta*10;
-            if (height < getSize().y) delta = 0;
-            delta = clamp(delta, getSize().y -height, 0.f);
+        if (isHovered() && event.type == sf::Event::MouseWheelScrolled) {
+            _delta -= event.mouseWheelScroll.delta*10;
+            if (__height < getSize().y) _delta = 0;
+            _delta = std::clamp(_delta, getSize().y -__height, 0.f);
             is_changed = true;
         }
         return is_changed;
     }
-    void VerticalBox::draw(RenderTarget& target, RenderStates state) const {
-        RenderTexture texture;
+    void VerticalBox::draw(sf::RenderTarget& target, sf::RenderStates state) const {
+        sf::RenderTexture texture;
         texture.create(getSize().x, getSize(). y);
-        texture.clear(Color::Transparent);
-        texture.setView((View)FloatRect(0, -delta, getSize().x, getSize().y));
+        texture.clear(sf::Color::Transparent);
+        texture.setView((sf::View)sf::FloatRect(0, -_delta, getSize().x, getSize().y));
         for (const auto& [child, layer]:children) 
-            if (focus_control == -1 || child != children[focus_control].first) texture.draw(*child, state);
-        if (focus_control != -1) texture.draw(*children[focus_control].first, state);
+            if (_currentFocus == -1 || child != children[_currentFocus].first) texture.draw(*child, state);
+        if (_currentFocus != -1) texture.draw(*children[_currentFocus].first, state);
         texture.display();
-        Sprite sprite(texture.getTexture());
+        sf::Sprite sprite(texture.getTexture());
         sprite.setPosition(getPosition());
         target.draw(sprite);
     }

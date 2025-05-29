@@ -28,14 +28,11 @@ typedef unsigned char uchar;
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/quaternion_transform.hpp"
 
-using namespace std;
-using namespace sf;
+#define catch_function(function) bool function(sf::RenderWindow& window, sf::Event& event, const sf::RenderStates& state = sf::RenderStates::Default)
+#define _catch_function(class_name,function) bool class_name::function(sf::RenderWindow& window, sf::Event& event, const sf::RenderStates& state)
 
-#define catch_function(function) bool function(RenderWindow& window, Event& event, const RenderStates& state = RenderStates::Default)
-#define _catch_function(class_name,function) bool class_name::function(RenderWindow& window, Event& event, const RenderStates& state)
-
-#define handle_function(function) bool function(RenderWindow& window, const RenderStates& state = RenderStates::Default)
-#define _handle_function(class_name,function) bool class_name::function(RenderWindow& window, const RenderStates& state)
+#define handle_function(function) bool function(sf::RenderWindow& window, const sf::RenderStates& state = sf::RenderStates::Default)
+#define _handle_function(class_name,function) bool class_name::function(sf::RenderWindow& window, const sf::RenderStates& state)
 
 #define HASHCODE "#C#D"
 #endif

@@ -1,123 +1,124 @@
 #include "Camera.h"
 #include "Controller3D.h"
-#include "General.h"
 #include "Global.h"
 
-extern Vector2f WindowSize;
+extern sf::Vector2f WindowSize;
 namespace MyBase3D {
 
-Camera::Camera() {
-    pPosition = {4, 4, 2};
-    pDelta = {-2, -2, 0};
-    pVerticalAngle = 0;
-    pWindowCenter.x = WindowSize.x/2;
-    pWindowCenter.y = WindowSize.y/2;
-    pDistance = 4;
-    pDelta = pDelta/glm::length(pDelta)*pDistance;
+Camera::Camera():
+    __position(4, 4, 2),
+    __delta(-2, -2, 0),
+    __verticalAngle(0),
+    __windowCenter(WindowSize.x/2, WindowSize.y/2) {
 
-    pDirection.setPrimitiveType(Lines);
-    pDirection.resize(6);
-    pDirection[0].position = pDirection[1].position = WindowSize/2.f;
-    pDirection[2].position = pDirection[3].position = WindowSize/2.f;
-    pDirection[4].position = pDirection[5].position = WindowSize/2.f;
-    pDirection[0].color = pDirection[1].color = Color::Red;
-    pDirection[2].color = pDirection[3].color = Color::Green;
-    pDirection[4].color = pDirection[5].color = Color::Blue;
+    __delta = __delta/glm::length(__delta)*CAMERA_DISTANCE;
 
-    glGenBuffers(1, &pCamera);
-    glBindBuffer(GL_UNIFORM_BUFFER, pCamera);
+    __direction.setPrimitiveType(sf::Lines);
+    __direction.resize(6);
+    __direction[0].position = __direction[1].position = WindowSize/2.f;
+    __direction[2].position = __direction[3].position = WindowSize/2.f;
+    __direction[4].position = __direction[5].position = WindowSize/2.f;
+    __direction[0].color = __direction[1].color = sf::Color::Red;
+    __direction[2].color = __direction[3].color = sf::Color::Green;
+    __direction[4].color = __direction[5].color = sf::Color::Blue;
+
+    glGenBuffers(1, &__camera);
+    glBindBuffer(GL_UNIFORM_BUFFER, __camera);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), nullptr, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, pCamera);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, __camera);
 
-    pView = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
-    pProjection = glm::perspective(glm::radians(60.f), WindowSize.x/WindowSize.y, 0.1f, 100.f);
+    __view = glm::lookAt(__position, __position + __delta, glm::vec3(0, 0, 1));
+    __projection = glm::perspective(glm::radians(60.f), WindowSize.x/WindowSize.y, 0.1f, 100.f);
 
     update();
 }
 Camera::~Camera() {
-    glDeleteBuffers(1, &pCamera);
+    glDeleteBuffers(1, &__camera);
 }
 Camera::operator GLuint() {
-    return pCamera;
+    return __camera;
 }
 glm::vec3 Camera::getHorizontalVector() const {
-    glm::vec3 ans = {-pDelta.y, pDelta.x, 0};
+    glm::vec3 ans = {-__delta.y, __delta.x, 0};
     ans /= glm::length(ans);
     return ans;
 }
 glm::vec3 Camera::getCenter() const {
-    return pPosition + pDelta;
+    return __position + __delta;
 }
 glm::vec3 Camera::getPosition() const {
-    return pPosition;
+    return __position;
 }
 glm::vec3 Camera::getDirection() const {
-    return pDelta;
+    return __delta;
+}
+void Camera::setPosition(const float& x, const float& y, const float& z) {
+    setPosition({x, y, z});
 }
 void Camera::setPosition(const glm::vec3& position) {
-    pPosition = position;
-    pView = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
+    __position = position;
+    __view = glm::lookAt(__position, __position + __delta, glm::vec3(0, 0, 1));
     update();
 }
 void Camera::setCameraDirection(const glm::vec3& position, const glm::vec3& center) {
-    pDelta = center-position;
-    pDelta = pDelta/glm::length(pDelta)*pDistance;
-    pPosition = position;
-    pView = glm::lookAt(pPosition, center, glm::vec3(0, 0, 1));
+    __delta = center-position;
+    __delta = __delta/glm::length(__delta)*CAMERA_DISTANCE;
+    __position = position;
+    __view = glm::lookAt(__position, center, glm::vec3(0, 0, 1));
     update();
 }
 
 void Camera::setPerpective(const float& angle, const float& aspect, const float& near, const float& far) {
-    pProjection = glm::perspective(glm::radians(angle), aspect, near, far);
+    __projection = glm::perspective(glm::radians(angle), aspect, near, far);
     update();
 }
 void Camera::rotate(const float& vertical_angle, const float& horizontal_angle) {
-    if (float tmp = pVerticalAngle + vertical_angle; tmp<M_PI_2-0.1 && tmp>-M_PI_2+0.1) {
-        pVerticalAngle = tmp;
+    if (float tmp = __verticalAngle + vertical_angle; tmp<M_PI_2-0.1 && tmp>-M_PI_2+0.1) {
+        __verticalAngle = tmp;
         glm::mat4 mat =  glm::rotate(glm::mat4(1), -horizontal_angle, glm::vec3(0, 0, 1));
         mat = glm::rotate(mat, vertical_angle, getHorizontalVector());
-        pDelta = mat*glm::vec4(pDelta, 1);
-        pView = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
+        __delta = mat*glm::vec4(__delta, 1);
+        __view = glm::lookAt(__position, __position + __delta, glm::vec3(0, 0, 1));
         update();
     }
 }
 void Camera::move(const float& x, const float& y, const float& z) {
-    pPosition += glm::vec3(x, y, z);
-    pView = glm::lookAt(pPosition, pPosition + pDelta, glm::vec3(0, 0, 1));
+    __position += glm::vec3(x, y, z);
+    __view = glm::lookAt(__position, __position + __delta, glm::vec3(0, 0, 1));
     update();
 }
 _handle_function(Camera, handle) {
     bool is_changed = Controller3D::handle(window, state);
     return is_changed;
 }
-void Camera::draw(RenderTarget& target, RenderStates state) const {
+void Camera::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     Controller3D::draw(target, state);
-    target.draw(pDirection);
+    target.draw(__direction);
 }
 void Camera::update() {
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, pCamera);
-    pClipPlane = pProjection*pView*glm::mat4(1);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &pClipPlane[0][0]);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, __camera);
+    __clipPlane= __projection*__view*glm::mat4(1);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &__clipPlane[0][0]);
 
-    glm::vec3 center = pPosition + pDelta;
+    glm::vec3 center = __position+ __delta;
     center.x += 0.05;
-    pDirection[1].position = transfer(center);
+    __direction[1].position = transfer(center);
     center.x -= 0.05;
 
     center.y += 0.05;
-    pDirection[3].position = transfer(center);
+    __direction[3].position = transfer(center);
     center.y -= 0.05;
 
-    pDirection[5].position.y = WindowSize.y/2.f - 15*cos(pVerticalAngle);
+    __direction[5].position.y = WindowSize.y/2.f - 15*cos(__verticalAngle);
 }
-Vector2f Camera::transfer(const glm::vec3& vector) const {
-    glm::vec4 pos= pClipPlane*glm::vec4(vector,1);
+sf::Vector2f Camera::transfer(const glm::vec3& vector) const {
+    glm::vec4 pos= __clipPlane*glm::vec4(vector,1);
     if (pos.w) pos /= pos.w;
-    float x = (pos.x + 1)*pWindowCenter.x;
-    float y = (1 - pos.y)*pWindowCenter.y;
+    float x = (pos.x + 1)*__windowCenter.x;
+    float y = (1 - pos.y)*__windowCenter.y;
     return {x, y};
 }
 Ray3f Camera::getSight() const {
-    return Ray3f(pPosition, pPosition + pDelta);
+    return Ray3f(__position, __position + __delta);
 }
 }

@@ -9,11 +9,14 @@ namespace MyBase3D {
             ~PointSet();
         
             static PointSet* Default;
-        
-            GLuint BlockSet;
-            GLuint ChunkSet;
-            GLuint MarginSet;
+
+            GLuint      getBlockSet() const,
+                        getChunkSet() const,
+                        getMarginSet() const;
         private:
+            GLuint      __blockSet,
+                        __chunkSet,
+                        __marginSet;
         };
 }
 #endif

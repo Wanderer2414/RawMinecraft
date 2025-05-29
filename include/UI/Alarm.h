@@ -9,8 +9,8 @@ namespace MyBase {
             virtual bool    get();
             virtual void    setDuration(const float& duration);
         private:
-            float           m_duration;
-            Clock           clock;
+            float           __duration;
+            sf::Clock       __clock;
     };
 };
 #endif

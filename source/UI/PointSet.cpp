@@ -34,8 +34,8 @@ namespace MyBase3D {
         vertices[22] = {0, 1, 0};
         vertices[23] = {0, 0, 0};
     
-        glGenBuffers(1, &BlockSet);
-        glBindBuffer(GL_ARRAY_BUFFER, BlockSet);
+        glGenBuffers(1, &__blockSet);
+        glBindBuffer(GL_ARRAY_BUFFER, __blockSet);
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*24*3, &vertices[0], GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     
@@ -60,8 +60,8 @@ namespace MyBase3D {
         vertices[14] = {0, 16, 16};
         vertices[15] = {0, 16, 0};
     
-        glGenBuffers(1, &ChunkSet);
-        glBindBuffer(GL_ARRAY_BUFFER, ChunkSet);
+        glGenBuffers(1, &__chunkSet);
+        glBindBuffer(GL_ARRAY_BUFFER, __chunkSet);
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*16*3, &vertices[0], GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     
@@ -87,15 +87,23 @@ namespace MyBase3D {
         vertices[14] = {0, 1, 1};
         vertices[15] = {0, 1, 0};
     
-        glGenBuffers(1, &MarginSet);
-        glBindBuffer(GL_ARRAY_BUFFER, MarginSet);
+        glGenBuffers(1, &__marginSet);
+        glBindBuffer(GL_ARRAY_BUFFER, __marginSet);
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*16*3, &vertices[0], GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     PointSet::~PointSet() {
-        glDeleteBuffers(1, &BlockSet);
-        glDeleteBuffers(1, &ChunkSet);
-        glDeleteBuffers(1, &MarginSet);
+        glDeleteBuffers(1, &__blockSet);
+        glDeleteBuffers(1, &__chunkSet);
+        glDeleteBuffers(1, &__marginSet);
     }
-    
+    GLuint PointSet::getBlockSet() const {
+        return __blockSet;
+    }
+    GLuint PointSet::getChunkSet() const {
+        return __chunkSet;
+    }
+    GLuint PointSet::getMarginSet() const {
+        return __marginSet;
+    }
 }

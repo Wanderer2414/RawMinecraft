@@ -9,27 +9,27 @@ namespace MyBase {
     public:
         Suggestionlist(ButtonSetting& button_setting = ButtonSetting::Default, TextSetting& text_setting = TextSetting::Default);
         ~Suggestionlist();
-        virtual bool    contains(const Vector2f& position) const override,
-                        setHover(const Vector2f& position) override;
+        virtual bool    contains(const sf::Vector2f& position) const override,
+                        setHover(const sf::Vector2f& position) override;
         size_t          getSelectionValue() const;
-        virtual void    setList(const vector<string>& list, const vector<size_t>& values = {}),
+        virtual void    setList(const std::vector<std::string>& list, const std::vector<size_t>& values = {}),
                         setAutoComplete(const bool& autocommplete);
         unsigned int    getSelectionIndex() const;
         virtual void    setDirection(const bool& downward);
     protected:
-        float start_show, end_show, wheel_delta;
+        float _startShow, _endShow, _wheelDelta;
     
         virtual void reset() override;
         virtual catch_function(CatchEvent) override;
         virtual catch_function(AfterCatch) override;
-        virtual void draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
-        bool            m_autocomplete,
-                        is_downward;
-        vector<string>  m_suggestion_list;
-        vector<size_t>  value;
-        ButtonSetting*  button_setting;
-        unsigned int    m_selection_index;
-        int             m_hover_index;
+        virtual void draw(sf::RenderTarget& target, sf::RenderStates state = sf::RenderStates::Default) const override;
+        bool            __autoComplete,
+                        __isDownward;
+        std::vector<std::string>  __suggestionList;
+        std::vector<std::size_t>  __value;
+        ButtonSetting*  __buttonSetting;
+        unsigned int    __selectionIndex;
+        int             __hoverIndex;
     private:
     };
     template class Suggestionlist<Rectangle>;

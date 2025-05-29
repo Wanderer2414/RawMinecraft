@@ -2,7 +2,7 @@
 #define STRING_EXTENDED_H
 #include "Global.h"
 
-void filter(string& string, const char& c);
-void to_lower(string& string);
+void filter(std::string& string, const char& c);
+void to_lower(std::string& string);
 
 #endif

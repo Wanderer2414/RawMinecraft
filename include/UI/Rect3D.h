@@ -12,14 +12,16 @@ class Rect3f {
     
         bool        isIntersect(const Ray3f& ray)       const,
                     contains(const glm::vec3& position)  const;
+
         float       distance(const glm::vec3& position)  const;
+
         void        move(const glm::vec3& offset);
-        glm::vec3    getCenter()                     const,
+        glm::vec3   getCenter()                     const,
                     getNormal()                     const,
                     getIntersect(const Ray3f& sight) const,
                     operator[](const uint& index)   const;
     private:
-        glm::vec3    pA, pB, pC;
+        glm::vec3    __A, __B, __C;
     };
 }
 #endif

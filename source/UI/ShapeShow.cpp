@@ -11,7 +11,7 @@ namespace MyBase {
     
     }
     template <typename T>
-    Vector2f ShapeShow<T>::getPosition() const {
+    sf::Vector2f ShapeShow<T>::getPosition() const {
         return T::getPosition();
     }
     
@@ -21,12 +21,12 @@ namespace MyBase {
     }
     
     template <typename T>
-    void ShapeShow<T>::setPosition(const Vector2f& position) {
+    void ShapeShow<T>::setPosition(const sf::Vector2f& position) {
         setPosition(position.x, position.y);
     }
     
     template <typename T>
-    void ShapeShow<T>::draw(RenderTarget& target, RenderStates state) const {
+    void ShapeShow<T>::draw(sf::RenderTarget& target, sf::RenderStates state) const {
         T::draw(target, state);
     }
 }

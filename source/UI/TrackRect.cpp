@@ -11,14 +11,14 @@ namespace MyBase3D {
     }
     bool TrackRect::setHover(const Ray3f& sight) {
         bool hover = false;
-        position = pRect.getIntersect(sight);
+        __position = __rect.getIntersect(sight);
         return Controller3D::setHover(hover);
     }
     void TrackRect::setPosition(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c) {
-        pRect = {a,b,c};
+        __rect = {a,b,c};
     }
     
-    void TrackRect::draw(RenderTarget& target, RenderStates state) const {
+    void TrackRect::draw(sf::RenderTarget& target, sf::RenderStates state) const {
         
         // glm::vec3 AB = (pRect[1]-pRect[0])/10.f, BC = (pRect[2]-pRect[1])/10.f;
         // if (pRect.contains(position)) glColor3f(0, 0, 1);

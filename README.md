@@ -59,6 +59,7 @@ Setup environment:                          ||      ||                    ||
         Item interaction:                   ||      ||                    ||                
         Sun/Moon:                           ||      ||                    ||
     Advaned:                                ||      ||                    ||    
+        Seed world                          ||      ||                    ||
         Nether world:                       ||      ||                    ||
         The end world:                      ||      ||                    ||
         Mob:                                ||      ||                    ||

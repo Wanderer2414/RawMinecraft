@@ -6,7 +6,7 @@ namespace MyBase3D {
 
 class Container3D;
 
-class Controller3D: public Drawable {
+class Controller3D: public sf::Drawable {
 public:
     Controller3D();
     ~Controller3D();
@@ -29,16 +29,16 @@ protected:
     virtual         catch_function(AfterCatch);
     virtual         handle_function(handle);
     virtual bool    contains(const Ray3f& position) const;
-    virtual void    draw(RenderTarget& target, RenderStates state) const override;
+    virtual void    draw(sf::RenderTarget& target, sf::RenderStates state) const override;
     virtual void    glDraw() const;
 
 private:
-    unsigned int    double_click_count;
-    bool            pIsHovered,
-                    pIsPressed,
-                    pIsDoubleClick,
-                    pIsReleased,
-                    pIsFocus;
+    unsigned int    __doubleClickCount;
+    bool            __isHovered,
+                    __isPressed,
+                    __isDoubleClick,
+                    __isReleased,
+                    __isFocus;
 };
 }
 #endif

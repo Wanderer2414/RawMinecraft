@@ -4,11 +4,12 @@
 namespace MyBase {
     class Application {
         public:
-            Application(const Vector2f& window_size, const string& title);
-            virtual void run();
+            Application(const sf::Vector2f& window_size, const std::string& title);
             ~Application();
+            
+            virtual void run();
         private:
-            RenderWindow window;
+            sf::RenderWindow __window;
     };        
 }
 #endif

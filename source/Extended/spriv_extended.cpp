@@ -1,8 +1,8 @@
 #include "Global.h"
 #include "spriv_extended.h"
 
-vector<char> loadSPIRV(const string& src) {
-    ifstream file(src, ios::binary | ios::ate);
+std::vector<char> loadSPIRV(const std::string& src) {
+    std::ifstream file(src, std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
         throw std::runtime_error("Failed to open SPIR-V binary");
         exit(0);
@@ -36,11 +36,11 @@ GLuint createShaderFromSPIRV(GLenum shaderType, const std::string& src) {
     return shader;
 }
 
-GLuint createProgram(const string& vertexPath, const string& fragmentPath) {
+GLuint createProgram(const std::string& vertexPath, const std::string& fragmentPath) {
     GLuint vertexShader = createShaderFromSPIRV(GL_VERTEX_SHADER, vertexPath);
     GLuint fragmentShader = createShaderFromSPIRV(GL_FRAGMENT_SHADER, fragmentPath);
     if (vertexShader == 0 || fragmentShader == 0) {
-        cerr << "Failed to create shaders." << endl;
+        std::cerr << "Failed to create shaders." << std::endl;
         exit(0);
     }
     GLuint program = glCreateProgram();

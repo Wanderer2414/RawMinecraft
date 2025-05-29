@@ -3,25 +3,25 @@
 #include "Global.h"
 namespace MyBase3D {
     Container3D::Container3D() {
-        hovered_controller = focus_control = -1;
+        _currentHover = _currentFocus = -1;
     }
     Container3D::~Container3D() {
     
     }
     bool Container3D::setHover(const Ray3f& sight) {
         bool is_changed = Controller3D::setHover(sight);
-        hovered_controller = -1;
+        _currentHover = -1;
         if (isHovered()) {
-            if (focus_control != -1) {
-                is_changed = children[focus_control].first->setHover(sight) || is_changed;
-                if (children[focus_control].first->isHovered()) hovered_controller = focus_control;
+            if (_currentFocus != -1) {
+                is_changed = children[_currentFocus].first->setHover(sight) || is_changed;
+                if (children[_currentFocus].first->isHovered()) _currentHover = _currentFocus;
             }
             for (int i = 0; i<children.size(); i++) {
-                if (hovered_controller==-1 && focus_control != i) {
+                if (_currentHover==-1 && _currentFocus != i) {
                     is_changed = children[i].first->setHover(sight) || is_changed;
-                    if (children[i].first->isHovered()) hovered_controller = i;
+                    if (children[i].first->isHovered()) _currentHover = i;
                 }
-                else if (i!=hovered_controller) is_changed = children[i].first->setHover(false) || is_changed;
+                else if (i!=_currentHover) is_changed = children[i].first->setHover(false) || is_changed;
             }
         }
         else setHover(false);
@@ -35,38 +35,38 @@ namespace MyBase3D {
         return false;
     }
     void Container3D::setFocus(const bool& focus) {
-        pIsFocus = focus;
+        __isFocus = focus;
         if (!focus) {
             for (auto& i:children) i.first->setFocus(false);
         }
-        else focus_control = -1;
+        else _currentFocus = -1;
     }
     void Container3D::reset() {
         Controller3D::reset();
-        old_focus = focus_control;
+        _previosFocus = _currentFocus;
         for (auto& i:children) i.first->reset();
     }
     _catch_function(Container3D, CatchEvent) {
         bool is_changed = Controller3D::CatchEvent(window, event, state) || is_changed;
-        if (focus_control != -1) {
-            is_changed = children[focus_control].first->CatchEvent(window, event) || is_changed;
+        if (_currentFocus != -1) {
+            is_changed = children[_currentFocus].first->CatchEvent(window, event) || is_changed;
         }
-        if (hovered_controller != -1 && hovered_controller != focus_control) {
-            is_changed = children[hovered_controller].first->CatchEvent(window, event) || is_changed;
+        if (_currentHover != -1 && _currentHover != _currentFocus) {
+            is_changed = children[_currentHover].first->CatchEvent(window, event) || is_changed;
         }
         return is_changed;
     }
     _catch_function(Container3D, AfterCatch) {
         bool is_changed = Controller3D::AfterCatch(window, event, state) || is_changed;
-        if (focus_control != -1) {
-            is_changed = children[focus_control].first->AfterCatch(window, event) || is_changed;
-            if (!children[focus_control].first->isFocus()) focus_control = -1;
+        if (_currentFocus != -1) {
+            is_changed = children[_currentFocus].first->AfterCatch(window, event) || is_changed;
+            if (!children[_currentFocus].first->isFocus()) _currentFocus = -1;
         }
-        if (hovered_controller != -1 && hovered_controller != focus_control) {
-            is_changed = children[hovered_controller].first->AfterCatch(window, event) || is_changed;
-            if (children[hovered_controller].first->isFocus()) focus_control = hovered_controller;
+        if (_currentHover != -1 && _currentHover != _currentFocus) {
+            is_changed = children[_currentHover].first->AfterCatch(window, event) || is_changed;
+            if (children[_currentHover].first->isFocus()) _currentFocus = _currentHover;
         }
-        if (old_focus != focus_control) is_changed = true;
+        if (_previosFocus != _currentFocus) is_changed = true;
         return is_changed;
     }
     _handle_function(Container3D, handle) {
@@ -76,7 +76,7 @@ namespace MyBase3D {
         }
         return is_changed;
     }
-    size_t Container3D::size() const {
+    std::size_t Container3D::size() const {
         return children.size();
     }
     Controller3D* Container3D::operator[](const size_t& index) {
@@ -91,17 +91,17 @@ namespace MyBase3D {
         int i = 0;
         while (i<children.size() && children[i].first != controller) i++;
         if (i<children.size()) children.erase(children.begin() + i);
-        if (focus_control <= children.size()) focus_control--;
-        if (hovered_controller <= children.size()) hovered_controller--;
+        if (_currentFocus <= children.size()) _currentFocus--;
+        if (_currentHover <= children.size()) _currentHover--;
     }
     void Container3D::clear() {
         children.clear();
     }
     
-    void Container3D::draw(RenderTarget& target, RenderStates state) const {
+    void Container3D::draw(sf::RenderTarget& target, sf::RenderStates state) const {
         for (const auto& [child, layer]:children) 
-            if (focus_control == -1 || child != children[focus_control].first) target.draw(*child, state);
-        if (focus_control != -1) target.draw(*children[focus_control].first, state);
+            if (_currentFocus == -1 || child != children[_currentFocus].first) target.draw(*child, state);
+        if (_currentFocus != -1) target.draw(*children[_currentFocus].first, state);
     };
     void Container3D::glDraw() const {
         for (const auto& [child, layer]:children) 

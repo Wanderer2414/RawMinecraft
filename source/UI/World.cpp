@@ -29,7 +29,7 @@ namespace MyCraft {
                 glm::vec3 delta = ray.distance(0, planeX);
                 if (glm::length(delta)<=pMinDistance) {
                     glm::vec3 center = delta+pos;
-                    if (Block& tmp = at(planeX, floor(center.y), floor(center.z)); tmp.type != BlockCatogary::Air) {
+                    if (Block& tmp = at(planeX, floor(center.y), floor(center.z)); tmp.getType() != BlockCatogary::Air) {
                         hX = planeX;
                         hY = floor(center.y);
                         hZ = floor(center.z);
@@ -47,7 +47,7 @@ namespace MyCraft {
                 glm::vec3 delta = ray.distance(0, planeX);
                 if (glm::length(delta)<=pMinDistance) {
                     glm::vec3 center = delta+pos;
-                    if (at(planeX-1, floor(center.y), floor(center.z)).type != BlockCatogary::Air) {
+                    if (at(planeX-1, floor(center.y), floor(center.z)).getType() != BlockCatogary::Air) {
                         hX = planeX-1;
                         hY = floor(center.y);
                         hZ = floor(center.z);
@@ -65,7 +65,7 @@ namespace MyCraft {
                 glm::vec3 delta = ray.distance(1, planeY);
                 if (glm::length(delta)<=pMinDistance) {
                     glm::vec3 center = delta+pos;
-                    if (at(floor(center.x), planeY, floor(center.z)).type != BlockCatogary::Air) {
+                    if (at(floor(center.x), planeY, floor(center.z)).getType() != BlockCatogary::Air) {
                         hX = floor(center.x);
                         hY = planeY;
                         hZ = floor(center.z);
@@ -83,7 +83,7 @@ namespace MyCraft {
                 glm::vec3 delta = ray.distance(1, planeY);
                 if (glm::length(delta)<=pMinDistance) {
                     glm::vec3 center = delta+pos;
-                    if (at(floor(center.x), planeY-1, floor(center.z)).type != BlockCatogary::Air) {
+                    if (at(floor(center.x), planeY-1, floor(center.z)).getType() != BlockCatogary::Air) {
                         hX = floor(center.x);
                         hY = planeY-1;
                         hZ = floor(center.z);
@@ -101,7 +101,7 @@ namespace MyCraft {
                 glm::vec3 delta = ray.distance(2, planeZ);
                 if (glm::length(delta)<=pMinDistance) {
                     glm::vec3 center = delta+pos;
-                    if (at(floor(center.x), floor(center.y), planeZ).type != BlockCatogary::Air) {
+                    if (at(floor(center.x), floor(center.y), planeZ).getType() != BlockCatogary::Air) {
                         hX = floor(center.x);
                         hY = floor(center.y);
                         hZ = planeZ;
@@ -119,7 +119,7 @@ namespace MyCraft {
                 glm::vec3 delta = ray.distance(2, planeZ);
                 if (glm::length(delta)<=pMinDistance) {
                     glm::vec3 center = delta+pos;
-                    if (at(floor(center.x), floor(center.y), planeZ-1).type != BlockCatogary::Air) {
+                    if (at(floor(center.x), floor(center.y), planeZ-1).getType() != BlockCatogary::Air) {
                         hX = floor(center.x);
                         hY = floor(center.y);
                         hZ = planeZ-1;
@@ -141,7 +141,7 @@ namespace MyCraft {
     _handle_function(World, handle) {
         bool is_changed = Controller3D::handle(window, state);
         if (pFrameAlarm.get()) {
-            if (Mouse::isButtonPressed(Mouse::Button::Right)) {
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
                 if (isHovered()) {
                     Block& pCurrentBlock = at(hX, hY, hZ);
                     float nX = hX, nY = hY, nZ = hZ;
@@ -153,7 +153,7 @@ namespace MyCraft {
                         case 4: nZ--; break;
                         case 5: nZ++; break;
                     }
-                    at(nX, nY, nZ).type = BlockCatogary::Dirt;
+                    at(nX, nY, nZ).setType(BlockCatogary::Dirt);
                     is_changed = true;
                 }
             }

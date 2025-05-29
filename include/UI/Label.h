@@ -12,22 +12,22 @@ enum Align {
 };
 
 template <typename T>
-class Label: public Controller, public Text, public T {
+class Label: public Controller, public sf::Text, public T {
 public:
     Label(const TextSetting& text_setting = TextSetting::Default);
     ~Label();
 
     virtual void setTextPackage(const TextSetting& package),
                 setAlign(const int& align),
-                setString(const string& value),
+                setString(const std::string& value),
                 setPosition(const float& x, const float& y) override,
-                setPosition(const Vector2f& position),
+                setPosition(const sf::Vector2f& position),
                 setSize(const float& width, const float& height) override,
                 update() override;
-    virtual Vector2f getPosition() const override;
+    virtual sf::Vector2f getPosition() const override;
 protected:
-    virtual void draw(RenderTarget& target, RenderStates state) const override;
-    int         m_align;
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
+    int         _align;
 private:
 };
 template class Label<Rectangle>;

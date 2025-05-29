@@ -3,35 +3,34 @@
 #include "Global.h"
 #include <GL/gl.h>
 
-extern Vector2f WindowSize;
+extern sf::Vector2f WindowSize;
 namespace MyCraft {
 
-    GameForm::GameForm(RenderWindow& window, const int& index): Form3D(index), pWorld(0, 0, 0) {
+    GameForm::GameForm(sf::RenderWindow& window, const int& index): Form3D(index), pWorld(0, 0, 0) {
         insert(&pWorld);
         for (int i = 0; i<16; i++) {
             for (int j = 0; j<16; j++) {
-                pWorld.at(i, j, -1).type = BlockCatogary::Dirt;
+                pWorld.at(i, j, -1).setType(BlockCatogary::Dirt);
             }
         }
-        pWorld.at(5, 5, 0).type = BlockCatogary::Dirt;
-        pWorld.at(0, 0, 0).type = BlockCatogary::Dirt;
+        pWorld.at(5, 5, 0).setType(BlockCatogary::Dirt);
+        pWorld.at(0, 0, 0).setType(BlockCatogary::Dirt);
     
-        pWorld.at(0, 0, 1).type = BlockCatogary::Dirt;
-        pWorld.at(0, 0, 2).type = BlockCatogary::Dirt;
+        pWorld.at(0, 0, 1).setType(BlockCatogary::Dirt);
+        pWorld.at(0, 0, 2).setType(BlockCatogary::Dirt);
     
-        pWorld.at(1, 1, 1).type = BlockCatogary::Dirt;
-        pWorld.at(1, 1, 2).type = BlockCatogary::Dirt;
+        pWorld.at(1, 1, 1).setType(BlockCatogary::Dirt);
+        pWorld.at(1, 1, 2).setType(BlockCatogary::Dirt);
     
-        pWorld.at(-2, 0, 0).type = BlockCatogary::Dirt;
-        pWorld.at(-2, 0, 1).type = BlockCatogary::Dirt;
-        pWorld.at(-2, 0, 2).type = BlockCatogary::Dirt;
-    
+        pWorld.at(-2, 0, 0).setType(BlockCatogary::Dirt);
+        pWorld.at(-2, 0, 1).setType(BlockCatogary::Dirt);
+        pWorld.at(-2, 0, 2).setType(BlockCatogary::Dirt);    
         window.setMouseCursorVisible(false);
-        Mouse::setPosition(static_cast<Vector2i>(WindowSize)/2, window);
+        sf::Mouse::setPosition(static_cast<sf::Vector2i>(WindowSize)/2, window);
     
-        sCamera.setPosition({2, 2, 1.7});
+        _camera.setPosition({2, 2, 1.7});
         pZVelocity = 0;
-        pWindowCenter = static_cast<Vector2i>(WindowSize/2.f);
+        pWindowCenter = static_cast<sf::Vector2i>(WindowSize/2.f);
         pSpeed = 0.1;
         pFrameAlarm.setDuration(1.f/60);\
     }
@@ -39,9 +38,9 @@ namespace MyCraft {
     
     }
     bool GameForm::move(const float& x, const float& y, const float& z) {
-        glm::vec3 delta = {0, 0, 0}, pos= sCamera.getPosition();
-        delta += x*sCamera.getHorizontalVector();
-        glm::vec3 tmp = sCamera.getDirection();
+        glm::vec3 delta = {0, 0, 0}, pos= _camera.getPosition();
+        delta += x*_camera.getHorizontalVector();
+        glm::vec3 tmp = _camera.getDirection();
         tmp.z = 0;
         tmp /= glm::length(tmp);
         delta.x += y*tmp.x;
@@ -59,12 +58,12 @@ namespace MyCraft {
             cX = floor(cX);
             cY = floor(cY);
             if (cX != fX || cY!=fY) {
-                bool above_x = pWorld.at(cX, fY, fZ).type == BlockCatogary::Air;
-                bool above_y = pWorld.at(fX, cY, fZ).type == BlockCatogary::Air;
-                bool below_x = pWorld.at(cX, fY, fZ-1).type == BlockCatogary::Air;
-                bool below_y = pWorld.at(fX, cY, fZ - 1).type == BlockCatogary::Air;
-                bool above_xy = pWorld.at(cX, cY,fZ).type == BlockCatogary::Air;
-                bool below_xy = pWorld.at(cX, cY, fZ-1).type == BlockCatogary::Air;
+                bool above_x = pWorld.at(cX, fY, fZ).getType() == BlockCatogary::Air;
+                bool above_y = pWorld.at(fX, cY, fZ).getType() == BlockCatogary::Air;
+                bool below_x = pWorld.at(cX, fY, fZ-1).getType() == BlockCatogary::Air;
+                bool below_y = pWorld.at(fX, cY, fZ - 1).getType() == BlockCatogary::Air;
+                bool above_xy = pWorld.at(cX, cY,fZ).getType() == BlockCatogary::Air;
+                bool below_xy = pWorld.at(cX, cY, fZ-1).getType() == BlockCatogary::Air;
                 if (!above_x || !below_x) {
                     if (delta.x<0) delta.x = fX+0.3-pos.x;
                     else if (delta.x>0) delta.x = cX-0.3-pos.x;
@@ -80,9 +79,9 @@ namespace MyCraft {
                     else if (delta.y>0) delta.y = cY-0.3-pos.y;
                 }
                 if ((above_x && !below_x) || (above_y && !below_y) || (above_xy && !below_xy)) {
-                    if (    pWorld.at(cX, cY, fZ-2).type!=BlockCatogary::Air && 
-                            pWorld.at(fX, fY, fZ-2).type!=BlockCatogary::Air &&
-                            pWorld.at(cX, cY, fZ+1).type == BlockCatogary::Air) {
+                    if (    pWorld.at(cX, cY, fZ-2).getType()!=BlockCatogary::Air && 
+                            pWorld.at(fX, fY, fZ-2).getType()!=BlockCatogary::Air &&
+                            pWorld.at(cX, cY, fZ+1).getType() == BlockCatogary::Air) {
                         if (delta.x>0) delta.x+=0.1;
                         else if (delta.x<0) delta.x-=0.1;
                         if (delta.y>0) delta.y+=0.1;
@@ -91,12 +90,12 @@ namespace MyCraft {
                     }
                 }
             }
-            sCamera.setPosition(delta+pos);
+            _camera.setPosition(delta+pos);
             return true;
         }
         else {
-            if (pWorld.at(floor(pos.x), floor(pos.y), floor(pos.z+delta.z-1.7)).type == BlockCatogary::Air) {
-                sCamera.setPosition(delta+pos);
+            if (pWorld.at(floor(pos.x), floor(pos.y), floor(pos.z+delta.z-1.7)).getType() == BlockCatogary::Air) {
+                _camera.setPosition(delta+pos);
                 return true;
             }
             return false;
@@ -114,34 +113,34 @@ namespace MyCraft {
         bool is_changed = Form3D::handle(window);
     
         if (pFrameAlarm.get()) {
-            if (Keyboard::isKeyPressed(Keyboard::Scancode::LControl)) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl)) {
                 pSpeed = 0.2;
             }
             if (pZVelocity>-40) {
-                if (Keyboard::isKeyPressed(Keyboard::Scancode::A)) {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A)) {
                     move(pSpeed, 0, 0);
                     is_changed = true;
                 }
-                if (Keyboard::isKeyPressed(Keyboard::Scancode::D)) {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D)) {
                     move(-pSpeed, 0, 0);
                     is_changed = true;
                 }
-                if (Keyboard::isKeyPressed(Keyboard::Scancode::W)) {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)) {
                     move(0, pSpeed, 0);
                     is_changed = true;
                 } else pSpeed = 0.1;
-                if (Keyboard::isKeyPressed(Keyboard::Scancode::S)) {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S)) {
                     move(0, -pSpeed, 0);
                     is_changed = true;
                 }
             }
-            if (pZVelocity>-50 &&   pWorld.at(floor(sCamera.getPosition().x-0.25), floor(sCamera.getPosition().y-0.25), floor(sCamera.getPosition().z-2)).type == BlockCatogary::Air &&
-                                    pWorld.at(floor(sCamera.getPosition().x-0.25), floor(sCamera.getPosition().y+0.25), floor(sCamera.getPosition().z-2)).type == BlockCatogary::Air &&
-                                    pWorld.at(floor(sCamera.getPosition().x+0.25), floor(sCamera.getPosition().y+0.25), floor(sCamera.getPosition().z-2)).type == BlockCatogary::Air &&
-                                    pWorld.at(floor(sCamera.getPosition().x+0.25), floor(sCamera.getPosition().y-0.25), floor(sCamera.getPosition().z-2)).type == BlockCatogary::Air) {
+            if (pZVelocity>-50 &&   pWorld.at(floor(_camera.getPosition().x-0.25), floor(_camera.getPosition().y-0.25), floor(_camera.getPosition().z-2)).getType() == BlockCatogary::Air &&
+                                    pWorld.at(floor(_camera.getPosition().x-0.25), floor(_camera.getPosition().y+0.25), floor(_camera.getPosition().z-2)).getType() == BlockCatogary::Air &&
+                                    pWorld.at(floor(_camera.getPosition().x+0.25), floor(_camera.getPosition().y+0.25), floor(_camera.getPosition().z-2)).getType() == BlockCatogary::Air &&
+                                    pWorld.at(floor(_camera.getPosition().x+0.25), floor(_camera.getPosition().y-0.25), floor(_camera.getPosition().z-2)).getType() == BlockCatogary::Air) {
                 pZVelocity -= 3;
             }
-            else if (!pZVelocity && Keyboard::isKeyPressed(Keyboard::Key::Space)) {
+            else if (!pZVelocity && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
                 pZVelocity = 30;
             }
             if (pZVelocity>0) {
@@ -156,19 +155,19 @@ namespace MyCraft {
             }
         }
     
-        Vector2i position = Mouse::getPosition(window);
-        Vector2f delta;
+        sf::Vector2i position = sf::Mouse::getPosition(window);
+        sf::Vector2f delta;
         delta.x = position.x - pWindowCenter.x;
         delta.y = position.y - pWindowCenter.y;
     
         if (delta.x != 0 || delta.y != 0) {
-            Mouse::setPosition(pWindowCenter, window);
-            sCamera.rotate(delta.y/1000, delta.x/1000);
+            sf::Mouse::setPosition(pWindowCenter, window);
+            _camera.rotate(delta.y/1000, delta.x/1000);
             is_changed = true;
         }
         return is_changed;
     }
-    void GameForm::draw(RenderTarget& target, RenderStates state) const {
+    void GameForm::draw(sf::RenderTarget& target, sf::RenderStates state) const {
         Form3D::draw(target, state);
     }
 }

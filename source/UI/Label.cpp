@@ -7,8 +7,8 @@ namespace MyBase {
         setTextPackage(text_setting);
         T::setPosition(0, 0);
         T::setSize(100, 50);
-        T::setFillColor(Color::Transparent);
-        m_align = Left | Top;
+        T::setFillColor(sf::Color::Transparent);
+        _align = Left | Top;
     }
     template<typename T>
     Label<T>::~Label() {
@@ -16,7 +16,7 @@ namespace MyBase {
     }
     
     template<typename T>
-    Vector2f Label<T>::getPosition() const {
+    sf::Vector2f Label<T>::getPosition() const {
         return T::getPosition();
     }
     
@@ -36,13 +36,13 @@ namespace MyBase {
     }
     
     template<typename T>
-    void Label<T>::setPosition(const Vector2f& position) {
+    void Label<T>::setPosition(const sf::Vector2f& position) {
         setPosition(position.x, position.y);
     }
     
     template<typename T>
     void Label<T>::setAlign(const int& align) {
-        m_align = align;
+        _align = align;
         update();
     }
     
@@ -54,20 +54,20 @@ namespace MyBase {
     
     template<typename T>
     void Label<T>::update() {
-        Vector2f text_pos;
-        if ((m_align & Left) == Left) {
+        sf::Vector2f text_pos;
+        if ((_align & Left) == Left) {
             text_pos.x = getPosition().x;
         }
-        else if ((m_align & Right) == Right) {
+        else if ((_align & Right) == Right) {
             text_pos.x = getPosition().x + T::getSize().x - Text::getGlobalBounds().width;
         }
         else {
             text_pos.x = T::getCenter().x - Text::getGlobalBounds().width/2;
         }
-        if ((m_align & Top) == Top) {
+        if ((_align & Top) == Top) {
             text_pos.y = getPosition().y;
         }
-        else if ((m_align & Bottom) == Bottom) {
+        else if ((_align & Bottom) == Bottom) {
             text_pos.y = getPosition().y + T::getSize().y - Text::getGlobalBounds().height;
         }
         else {
@@ -78,12 +78,12 @@ namespace MyBase {
         }
     }
     template<typename T>
-    void Label<T>::setString(const string& value) {
+    void Label<T>::setString(const std::string& value) {
         Text::setString(value);
         update();
     }
     template<typename T>
-    void Label<T>::draw(RenderTarget& target, RenderStates state) const {
+    void Label<T>::draw(sf::RenderTarget& target, sf::RenderStates state) const {
         T::draw(target,state);
         Text::draw(target, state);
     }

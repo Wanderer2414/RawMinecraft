@@ -4,24 +4,24 @@
 namespace MyBase {
     class Container;
 
-    class Controller: public Drawable {
+    class Controller: public sf::Drawable {
     public:
         Controller();
         ~Controller();
-        virtual bool    isHovered() const,
-                        isReleased() const,
-                        isDoubleClick() const,
-                        isPressed() const,
-                        isFocus()   const,
-                        setHover(const bool& hover),
-                        setHover(const Vector2f& position);
+        virtual bool            isHovered()         const,
+                                isReleased()        const,
+                                isDoubleClick()     const,
+                                isPressed()         const,
+                                isFocus()           const,
+                                setHover(const bool& hover),
+                                setHover(const sf::Vector2f& position);
 
-        virtual Vector2f getPosition() const,
-                        getSize() const;
-        virtual void    setPosition(const float& x, const float& y),
-                        setFocus(const bool& focus),
-                        reset(),
-                        update();      
+        virtual sf::Vector2f    getPosition() const,
+                                getSize() const;
+        virtual void            setPosition(const float& x, const float& y),
+                                setFocus(const bool& focus),
+                                reset(),
+                                update();      
 
         friend Container;
     protected:
@@ -29,16 +29,16 @@ namespace MyBase {
         virtual         catch_function(BeforeCatch);
         virtual         catch_function(AfterCatch);
         virtual         handle_function(handle);
-        virtual bool    contains(const Vector2f& position) const;
-        virtual void    draw(RenderTarget& target, RenderStates state) const override;
+        virtual bool    contains(const sf::Vector2f& position) const;
+        virtual void    draw(sf::RenderTarget& target, sf::RenderStates state) const override;
 
     private:
-        unsigned int    double_click_count;
-        bool            m_is_hovered,
-                        m_is_pressed,
-                        m_is_double_click,
-                        m_is_released,
-                        m_is_focus;
+        unsigned int    __doubleClickCount;
+        bool            __isHovered,
+                        __isPressed,
+                        __isDoubleClick,
+                        __isReleased,
+                        __isFocus;
     };
 };
 #endif

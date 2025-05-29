@@ -3,56 +3,56 @@
 namespace MyBase {
 
     Controller::Controller() {
-        m_is_double_click = m_is_focus = m_is_pressed = m_is_hovered = m_is_released = false;
-        double_click_count = 0;
+        __isDoubleClick = __isFocus = __isPressed = __isHovered = __isReleased = false;
+        __doubleClickCount = 0;
     }
     Controller::~Controller() {
     
     }
     bool Controller::isDoubleClick() const {
-        return m_is_double_click;
+        return __isDoubleClick;
     }
     bool Controller::isHovered() const {
-        return m_is_hovered;
+        return __isHovered;
     }
     bool Controller::isReleased() const {
-        return m_is_released;
+        return __isReleased;
     }
     bool Controller::isPressed() const {
-        return m_is_pressed;
+        return __isPressed;
     }
     bool Controller::isFocus()   const {
-        return m_is_focus;
+        return __isFocus;
     }
     void Controller::setFocus(const bool& focus) {
-        m_is_focus = focus;
+        __isFocus = focus;
     }
     bool Controller::setHover(const bool& hover) {
-        if (m_is_hovered!=hover) {
-            m_is_hovered = hover;
+        if (__isHovered!=hover) {
+            __isHovered = hover;
             return true;    
         }
         return false;
     }
-    bool Controller::setHover(const Vector2f& position) {
+    bool Controller::setHover(const sf::Vector2f& position) {
         return setHover(contains(position));
     }
     void Controller::reset() {
-        m_is_double_click = m_is_pressed = m_is_released = false;
-        if (double_click_count>0) double_click_count--;
+        __isDoubleClick = __isPressed = __isReleased = false;
+        if (__doubleClickCount>0) __doubleClickCount--;
     }
     _catch_function(Controller, BeforeCatch) {
         return false;
     }
     _catch_function(Controller, CatchEvent) {
-        if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Button::Left) {
-            m_is_focus = m_is_pressed = m_is_hovered;
+        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Left) {
+            __isFocus = __isPressed = __isHovered;
         }
-        else if (event.type == Event::MouseButtonReleased && event.mouseButton.button == Mouse::Button::Left) {
-            m_is_released = m_is_hovered;
-            if (m_is_released) {
-                if (double_click_count) m_is_double_click = true;
-                else double_click_count = 20000;
+        else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Button::Left) {
+            __isReleased = __isHovered;
+            if (__isReleased) {
+                if (__doubleClickCount) __isDoubleClick = true;
+                else __doubleClickCount = 20000;
             }
         }
         return false;
@@ -63,16 +63,16 @@ namespace MyBase {
     _handle_function(Controller, handle) {
         return false;
     }
-    bool Controller::contains(const Vector2f& position) const {
+    bool Controller::contains(const sf::Vector2f& position) const {
         return false;
     }
-    Vector2f Controller::getPosition() const {
+    sf::Vector2f Controller::getPosition() const {
         return {0, 0};
     }
-    Vector2f Controller::getSize() const {
+    sf::Vector2f Controller::getSize() const {
         return {0, 0};
     }
-    void Controller::draw(RenderTarget& target, RenderStates state) const {
+    void Controller::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     }
     void Controller::setPosition(const float& x, const float& y) {
         

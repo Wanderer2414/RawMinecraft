@@ -14,11 +14,11 @@ namespace MyBase {
         ShapeShow(ButtonSetting* b_setting = &ButtonSetting::Default);
         ~ShapeShow();
     
-        virtual Vector2f    getPosition() const override;
-        virtual void        setPosition(const float& x, const float& y) override,
-                            setPosition(const Vector2f& position)       ;
+        virtual sf::Vector2f    getPosition() const override;
+        virtual void            setPosition(const float& x, const float& y) override,
+                                setPosition(const sf::Vector2f& position)       ;
     protected:
-        virtual void draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
+        virtual void draw(sf::RenderTarget& target, sf::RenderStates state = sf::RenderStates::Default) const override;
     private:
     };
     template class ShapeShow<RoundedRectangle>;

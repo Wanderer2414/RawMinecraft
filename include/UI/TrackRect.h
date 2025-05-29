@@ -14,10 +14,10 @@ class TrackRect: public Controller3D {
     
         virtual void setPosition(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c);
     protected:
-        virtual void draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
+        virtual void draw(sf::RenderTarget& target, sf::RenderStates state = sf::RenderStates::Default) const override;
     private:
-        Rect3f pRect;
-        glm::vec3 position;
+        Rect3f      __rect;
+        glm::vec3   __position;
     };
 }
 #endif

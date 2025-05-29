@@ -1,41 +1,45 @@
 #include "Rectangle.h"
-#include "BaseShape.h"
-#include "Global.h"
 namespace MyBase {
 
     Rectangle::Rectangle() {
-        m_size = {100, 50};
+        __size = {100, 50};
         update();
     };
-    bool Rectangle::contains(const Vector2f& point) const {
+    Rectangle::~Rectangle() {
+        
+    }
+    bool Rectangle::contains(const sf::Vector2f& point) const {
         return getGlobalBounds().contains(point);
     }
     
     std::size_t Rectangle::getPointCount() const {
         return 4;
     }
-    Vector2f Rectangle::getPoint(std::size_t index) const {
+    sf::Vector2f Rectangle::getPoint(std::size_t index) const {
         switch (index) {
             case 0: return {0, 0}; break;
-            case 1: return {m_size.x, 0}; break;
-            case 2: return m_size; break;
-            default: return {0, m_size.y}; break;
+            case 1: return {__size.x, 0}; break;
+            case 2: return __size; break;
+            default: return {0, __size.y}; break;
         }
     }
     
     void Rectangle::setSize(const float& x, const float& y) {
-        m_size = {x, y};
+        __size = {x, y};
         update();
+    }
+    void Rectangle::setSize(const sf::Vector2f& size) {
+        setSize(size.x, size.y);
     }
     void Rectangle::update() {
         Shape::update();
     }
-    Vector2f Rectangle::getCenter() const {
-        return Shape::getPosition()+m_size/2.f;
+    sf::Vector2f Rectangle::getCenter() const {
+        return Shape::getPosition()+__size/2.f;
     }
     
-    Vector2f Rectangle::getSize() const {
-        return m_size;
+    sf::Vector2f Rectangle::getSize() const {
+        return __size;
     }
     
 }

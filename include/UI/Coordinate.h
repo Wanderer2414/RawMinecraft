@@ -8,7 +8,7 @@ namespace MyCraft {
             ~Coordinate();
         
         protected:
-            void draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
+            void draw(sf::RenderTarget& target, sf::RenderStates state = sf::RenderStates::Default) const override;
             void glDraw() const override;
         };
 }

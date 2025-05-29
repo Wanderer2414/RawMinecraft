@@ -1,49 +1,49 @@
 #include "TextEditor.h"
-#include "BaseShape.h"
 #include "Rectangle.h"
 #include "SFML/Graphics/Sprite.hpp"
+
 namespace MyBase {
 
     TextEditor::TextEditor(const ButtonSetting& button_setting, const TextSetting& text_setting) {
-        m_is_multiline = true;
+        _isMultiLine = true;
     }
     TextEditor::~TextEditor() {
     }
     uint TextEditor::getSelectionValue() const {
-        if (shared_selection_index>=0 && shared_selection_index<shared_values.size())
-            return shared_values[shared_selection_index];
+        if (shared_selection_index>=0 && shared_selection_index<_values.size())
+            return _values[shared_selection_index];
         return 0;
     }
-    string TextEditor::getPreviousString() const {
-        return m_content.substr(0, m_cursor_index);
+    std::string TextEditor::getPreviousString() const {
+        return _content.substr(0, _cursorIndex);
     }
-    void TextEditor::setList(const vector<string>& list, const vector<std::size_t>& values) {
-        shared_list = list;
-        shared_values = values;
+    void TextEditor::setList(const std::vector<std::string>& list, const std::vector<std::size_t>& values) {
+        _list = list;
+        _values = values;
         shared_selection_index = list.size();
     }
     void TextEditor::update() {
         Rectangle::update();
         Text::setPosition(0, 0);
     }
-    void TextEditor::setString(const string& text) {
+    void TextEditor::setString(const std::string& text) {
         Textbox::setString(text);
-        shared_list.clear();
-        shared_values.clear();
+        _list.clear();
+        _values.clear();
     }
-    void TextEditor::draw(RenderTarget& target, RenderStates state) const {
+    void TextEditor::draw(sf::RenderTarget& target, sf::RenderStates state) const {
         Textbox::draw(target, state);
-        if (shared_list.size()) {
+        if (_list.size()) {
             Text text = *this;
-            RenderTexture texture;
+            sf::RenderTexture texture;
             float height = text.getCharacterSize() + 5;
             Rectangle rec;
-            rec.setFillColor(button_setting->normal_color);
+            rec.setFillColor(_buttonSetting->normal_color);
             rec.setSize(300, height);
-            texture.create(300, min(size_t(5), shared_list.size())*height);
-            texture.clear(button_setting->click_color);
+            texture.create(300, std::min(size_t(5), _list.size())*height);
+            texture.clear(_buttonSetting->click_color);
             text.setPosition(0, 0);
-            for (auto& i:shared_list) {
+            for (auto& i:_list) {
                 text.setString(i);
                 texture.draw(rec, state);
                 texture.draw(text, state);
@@ -51,8 +51,8 @@ namespace MyBase {
                 text.move({0, height});
             }
             texture.display();
-            Sprite sprite(texture.getTexture());
-            sprite.setPosition(cursor.getPosition().x + getPosition().x, getPosition().y + cursor.getSize().y);
+            sf::Sprite sprite(texture.getTexture());
+            sprite.setPosition(_cursor.getPosition().x + getPosition().x, getPosition().y + _cursor.getSize().y);
             target.draw(sprite, state);
         }
     }

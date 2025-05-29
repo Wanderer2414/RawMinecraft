@@ -1,88 +1,87 @@
 #include "RoundedRectangle.h"
-#include "BaseShape.h"
-#include "Global.h"
 namespace MyBase {
 
-    RoundedRectangle::RoundedRectangle() {
-        m_radius = 0;
-        m_size = {100, 50};
-        point_count = 30;
-        pointEachCount = 1.0f*point_count/4;
+    RoundedRectangle::RoundedRectangle():
+        __radius(0),
+        __size(100, 50),
+        __pointCount(30),
+        __pointEachCount(1.0f*__pointCount/4) {
         update();
     };
-    
+    RoundedRectangle::~RoundedRectangle() {
+    }
     
     bool RoundedRectangle::contains(const sf::Vector2f& point) const {
         sf::FloatRect rect = Shape::getGlobalBounds();
-        rect.left+=m_radius;
-        rect.width-=2*m_radius;
+        rect.left+=__radius;
+        rect.width-=2*__radius;
         if (rect.contains(point)) return true;
-        rect.left-=m_radius;
-        rect.width+=2*m_radius;
-        rect.top+=m_radius;
-        rect.height-=2*m_radius;
+        rect.left-=__radius;
+        rect.width+=2*__radius;
+        rect.top+=__radius;
+        rect.height-=2*__radius;
         if (rect.contains(point)) return true;
-        rect.left+=m_radius;
-        rect.width-=2*m_radius;
+        rect.left+=__radius;
+        rect.width-=2*__radius;
         sf::Vector2f vec(rect.left-point.x, rect.top-point.y);
-        if (vec.x*vec.x + vec.y*vec.y<=m_radius*m_radius) return true;
-        if (vec+={rect.width,0}; vec.x*vec.x+vec.y*vec.y <= m_radius*m_radius) return true;
-        if (vec+={0, rect.height}; vec.x*vec.x + vec.y*vec.y<=m_radius*m_radius) return true;
-        if (vec-={rect.width, 0}; vec.x*vec.x + vec.y*vec.y<=m_radius*m_radius) return true;
+        if (vec.x*vec.x + vec.y*vec.y<=__radius*__radius) return true;
+        if (vec+={rect.width,0}; vec.x*vec.x+vec.y*vec.y <= __radius*__radius) return true;
+        if (vec+={0, rect.height}; vec.x*vec.x + vec.y*vec.y<=__radius*__radius) return true;
+        if (vec-={rect.width, 0}; vec.x*vec.x + vec.y*vec.y<=__radius*__radius) return true;
         return false;
     }
     
-    size_t RoundedRectangle::getPointCount() const {
-        return point_count;
+    std::size_t RoundedRectangle::getPointCount() const {
+        return __pointCount;
     }
     sf::Vector2f RoundedRectangle::getPoint(size_t index) const {
-        if (!index) return {0, m_radius};
-        else if (index < pointEachCount - 1) {
-            float angle = M_PI/2*index/pointEachCount;
-            return sf::Vector2f(m_radius - m_radius*cos(angle), m_radius - m_radius*sin(angle));
+        if (!index) return {0, __radius};
+        else if (index < __pointEachCount - 1) {
+            float angle = M_PI/2*index/__pointEachCount;
+            return sf::Vector2f(__radius - __radius*cos(angle), __radius - __radius*sin(angle));
         }
-        else if (index < pointEachCount) return {m_radius, 0};
-        else if (index < pointEachCount+1) return {m_size.x - m_radius, 0};
-        else if (index < 2*pointEachCount-1) {
-            float angle = M_PI/2*index/pointEachCount;
-            return sf::Vector2f(m_size.x - m_radius - m_radius*cos(angle), m_radius - m_radius*sin(angle));
+        else if (index < __pointEachCount) return {__radius, 0};
+        else if (index < __pointEachCount+1) return {__size.x - __radius, 0};
+        else if (index < 2*__pointEachCount-1) {
+            float angle = M_PI/2*index/__pointEachCount;
+            return sf::Vector2f(__size.x - __radius - __radius*cos(angle), __radius - __radius*sin(angle));
         }
-        else if (index < 2*pointEachCount) return {m_size.x,m_radius};
-        else if (index < 2*pointEachCount+1) return {m_size.x, m_size.y-m_radius};
-        else if (index < 3*pointEachCount-1) {
-            float angle = M_PI/2*index/pointEachCount;
-            return sf::Vector2f(m_size.x - m_radius - m_radius*cos(angle), m_size.y - m_radius - m_radius*sin(angle));
+        else if (index < 2*__pointEachCount) return {__size.x,__radius};
+        else if (index < 2*__pointEachCount+1) return {__size.x, __size.y-__radius};
+        else if (index < 3*__pointEachCount-1) {
+            float angle = M_PI/2*index/__pointEachCount;
+            return sf::Vector2f(__size.x - __radius - __radius*cos(angle), __size.y - __radius - __radius*sin(angle));
         }
-        else if (index < 3*pointEachCount) return {m_size.x - m_radius, m_size.y};
-        else if (index < 3*pointEachCount+1) return {m_radius, m_size.y};
-        else if (index < point_count-1) {
-            float angle = M_PI/2*index/pointEachCount;
-            return sf::Vector2f(m_radius - m_radius*cos(angle), m_size.y - m_radius - m_radius*sin(angle));
+        else if (index < 3*__pointEachCount) return {__size.x - __radius, __size.y};
+        else if (index < 3*__pointEachCount+1) return {__radius, __size.y};
+        else if (index < __pointCount-1) {
+            float angle = M_PI/2*index/__pointEachCount;
+            return sf::Vector2f(__radius - __radius*cos(angle), __size.y - __radius - __radius*sin(angle));
         }
-        else return {0, m_size.y - m_radius};
+        else return {0, __size.y - __radius};
     }
     void RoundedRectangle::setPointCount(const size_t& count) {
-        point_count = count;
-        pointEachCount = 1.0f*point_count/4;
+        __pointCount = count;
+        __pointEachCount = 1.0f*__pointCount/4;
         update();
     }
     
     void RoundedRectangle::setSize(const float& x, const float& y) {
-        m_size = {x, y};
+        __size = {x, y};
         update();
     }
     void RoundedRectangle::update() {
         Shape::update();
     }
     void RoundedRectangle::setRoundness(const float& radius) {
-        m_radius = radius;
+        __radius = radius;
         update();
     }
-    Vector2f RoundedRectangle::getCenter() const {
-        return Shape::getPosition()+m_size/2.f;
+    sf::Vector2f RoundedRectangle::getCenter() const {
+        return Shape::getPosition()+__size/2.f;
     }
-    Vector2f RoundedRectangle::getSize() const {
-        return m_size;
+    sf::Vector2f RoundedRectangle::getSize() const {
+        return __size;
     }
     
 }

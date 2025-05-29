@@ -11,7 +11,7 @@ namespace MyCraft {
     
     }
     
-    void Coordinate::draw(RenderTarget& target, RenderStates state) const {
+    void Coordinate::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     }
     void Coordinate::glDraw() const {
         glLineWidth(3);
@@ -46,7 +46,7 @@ namespace MyCraft {
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(sizeof(GLfloat)*3));
         glEnableVertexAttribArray(1);
     
-        glUseProgram(MyBase3D::ShaderStorage::Default->DefaultShader);
+        glUseProgram(MyBase3D::ShaderStorage::Default->GetDefaultShader());
         glBindVertexArray(VAO);
         glDrawArrays(GL_LINES, 0, 42);
         glBindVertexArray(0);

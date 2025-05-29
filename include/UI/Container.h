@@ -8,14 +8,14 @@ class Container: public Controller {
     public:
         Container();
         ~Container();
-        virtual bool    setHover(const Vector2f& position)          override,
+        virtual bool    setHover(const sf::Vector2f& position)      override,
                         setHover(const bool& hover)                 override;
         std::size_t     size()                                      const;
         virtual void    insert(Controller* controller, const int& layer = 0),
                         erase(Controller* controller),
                         update()                                    override;
         virtual void    setFocus(const bool& focus)                 override;
-        Vector2f        getPosition() const                         override,
+        sf::Vector2f    getPosition() const                         override,
                         getSize() const                             override;
         virtual void    setPosition(const float& x, const float& y) override;
         virtual void    clear();
@@ -25,10 +25,10 @@ class Container: public Controller {
         virtual         catch_function(AfterCatch)                  override;
         virtual         handle_function(handle)                     override;
         virtual void    reset()                                     override;
-        virtual void    draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override;
-        vector<pair<Controller*, int>> children;
+        virtual void    draw(sf::RenderTarget& target, sf::RenderStates state = sf::RenderStates::Default) const override;
+        std::vector<std::pair<Controller*, int>> children;
     
-        int             old_focus, hovered_controller, focus_control;
+        int             _previosFocus, _currentHover, _currentFocus;
     private:
     };
 };

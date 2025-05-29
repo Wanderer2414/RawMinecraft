@@ -9,13 +9,13 @@ namespace MyBase3D {
     }
     
     bool Segment::contains(const glm::vec3& position) const {
-        if (position == sOrigin) return true;
-        glm::vec3 delta = position-sOrigin;
-        float length_delta = glm::length(delta), length_sDelta = glm::length(sDelta);
+        if (position == _origin) return true;
+        glm::vec3 delta = position-_origin;
+        float length_delta = glm::length(delta), length_sDelta = glm::length(_delta);
         delta = delta/length_delta*length_sDelta;
-        return delta == sDelta && length_delta <= length_sDelta;
+        return delta == _delta && length_delta <= length_sDelta;
     }
     float Segment::length() const {
-        return glm::length(sDelta);
+        return glm::length(_delta);
     }
 }

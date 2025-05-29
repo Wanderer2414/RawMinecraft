@@ -23,11 +23,11 @@ class Container3D: public Controller3D {
         virtual         catch_function(AfterCatch)                  override;
         virtual         handle_function(handle)                     override;
         virtual void    reset()                                     override;
-        virtual void    draw(RenderTarget& target, RenderStates state = RenderStates::Default) const override,
+        virtual void    draw(sf::RenderTarget& target, sf::RenderStates state = sf::RenderStates::Default) const override,
                         glDraw() const override;
-        vector<pair<Controller3D*, int>> children;
+        std::vector<std::pair<Controller3D*, int>> children;
     
-        int             old_focus, hovered_controller, focus_control;
+        int             _previosFocus, _currentFocus, _currentHover;
     private:
     };
 };

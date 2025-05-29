@@ -5,26 +5,26 @@
 #include "ShaderStorage.h"
 #include <GL/gl.h>
 
-Vector2f WindowSize;
+sf::Vector2f WindowSize;
 MyBase3D::ShaderStorage*    MyBase3D::ShaderStorage::Default = 0;
 MyBase3D::PointSet*         MyBase3D::PointSet::Default = 0;
 MyCraft::BlockCatogary*     MyCraft::BlockCatogary::Default = 0;
 
 namespace MyBase {
 
-    Application::Application(const Vector2f& window_size, const string& title) {
-        ContextSettings settings;
+    Application::Application(const sf::Vector2f& window_size, const std::string& title) {
+        sf::ContextSettings settings;
         settings.depthBits = 24; 
         settings.stencilBits = 8;
         settings.antialiasingLevel = 4;
         settings.majorVersion = 3;
         settings.minorVersion = 3;
-        settings.attributeFlags = ContextSettings::Default;
+        settings.attributeFlags = sf::ContextSettings::Default;
         WindowSize = window_size ;
     
-        window.create(VideoMode(window_size.x, window_size.y), title, Style::Default, settings);
-        Mouse::setPosition(static_cast<Vector2i>(window.getPosition() + static_cast<Vector2i>(WindowSize)/2), window);
-        window.display();
+        __window.create(sf::VideoMode(window_size.x, window_size.y), title, sf::Style::Default, settings);
+        sf::Mouse::setPosition(static_cast<sf::Vector2i>(__window.getPosition() + static_cast<sf::Vector2i>(WindowSize)/2), __window);
+        __window.display();
     
         gladLoadGL();
         
@@ -42,12 +42,12 @@ namespace MyBase {
         MyCraft::BlockCatogary::Default = 0;
     }
     void Application::run() {
-        int form_index = 0;
-        while (window.isOpen()) {
-            switch (form_index) {
+        int formIndex = 0;
+        while (__window.isOpen()) {
+            switch (formIndex) {
                 case 0: {
-                    MyCraft::GameForm gameForm(window, 0);
-                    form_index = gameForm.run(window);
+                    MyCraft::GameForm gameForm(__window, 0);
+                    formIndex = gameForm.run(__window);
                 };
                 break;
             }
