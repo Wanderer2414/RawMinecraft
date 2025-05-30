@@ -26,6 +26,7 @@ file(GLOB SOURCES
 )
 set(CMAKE_BUILD_TYPE Debug)
 add_subdirectory(${CMAKE_SOURCE_DIR}/glm-master)
+add_subdirectory(${CMAKE_SOURCE_DIR}/assimp)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/SFML-2.6.2/lib)

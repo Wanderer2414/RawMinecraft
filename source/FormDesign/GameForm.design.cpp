@@ -10,7 +10,7 @@ namespace MyCraft {
         insert(&pWorld);
         for (int i = 0; i<16; i++) {
             for (int j = 0; j<16; j++) {
-                pWorld.at(i, j, -1).setType(BlockCatogary::Dirt);
+                pWorld.at(i, j, -1).setType(BlockCatogary::Grass);
             }
         }
         pWorld.at(5, 5, 0).setType(BlockCatogary::Dirt);

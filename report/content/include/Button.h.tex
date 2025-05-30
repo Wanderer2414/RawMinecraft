@@ -1,0 +1,24 @@
+\subsection{Button}
+\begin{lstlisting}[language=C++]
+
+
+class Button: public Controller {
+public:
+    Button();
+    bool                isHovered() const override,
+                        isPressed() const;
+    virtual void        handle()        override,
+                        draw()          override;
+    ~Button();
+protected:
+    char                before_press;
+    bool                m_is_hovered = false,
+                        m_is_pressed = false;
+};
+
+
+
+
+
+
+\end{lstlisting}

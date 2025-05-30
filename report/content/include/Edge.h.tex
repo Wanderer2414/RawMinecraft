@@ -1,0 +1,46 @@
+\subsection{Edge}
+\begin{lstlisting}[language=C++]
+
+
+
+class Edge:public Controller {
+public:
+    bool            IsColorChange() const,
+                    IsReverse() const,
+                    isHovered() const override,
+                    isPressed() const;
+    int             getWeight() const,
+                    getGlobalIndex()  const,
+                    getLocalIndex() const;
+    virtual void    draw()      override,
+                    handle()    override,
+                    setType(const bool& is_direct),
+                    setWeight(const int& weight),
+                    setMode(const bool& is_weight),
+                    setColor(const Color& color),
+                    setDuration(const float& duration),
+                    complete(),
+                    start(const bool& reverse, const bool& transparent = true);
+
+    Edge            *reverse;
+private:
+    bool            m_is_color_changed,
+                    m_is_direct,
+                    m_is_weight,
+                    is_reverse,
+                    m_is_hovered,
+                    m_is_pressed;
+    int             m_local_index, m_global_index;
+    float           percent,
+                    m_duration,
+                    m_start_time;
+    int             weight;
+    Vector2         m_point;
+};
+
+
+
+
+
+
+\end{lstlisting}

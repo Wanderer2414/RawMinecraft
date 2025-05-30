@@ -1,0 +1,31 @@
+\subsection{Menu}
+\begin{lstlisting}[language=C++]
+
+
+class Menu {
+public:
+    Menu(FormSetting form_setting, const Vector2& windowSize) ;
+    virtual int     run()           ;
+    
+    virtual void    handle()        ,
+                    draw()          ;
+    FormSetting     form_setting;
+private:
+    int             return_value;
+    MoveTexture     BSTForm,
+                    GraphForm,
+                    HashTableForm,
+                    SLLForm;
+    MoveTexture     Back,
+                    MenuDSA;
+    ZoomInTransition zoom;
+    std::vector<Controller*> children;
+    Vector2         m_windowSize;
+};
+
+
+
+
+
+
+\end{lstlisting}

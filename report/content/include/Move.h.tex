@@ -1,0 +1,29 @@
+\subsection{Move}
+\begin{lstlisting}[language=C++]
+
+
+class Move {
+public:
+    Move();
+                    size()          const;
+    float           getProgress() const;
+    virtual void    handle();
+    virtual void    setPosition(const float& x, const float& y),
+                    setVerticesPosition(const float& x, const float& y),
+                    clearVertices(),
+                    skip(),
+                    moveNext(),
+                    moveBack();
+    virtual Vector2 getPosition() const;
+private:
+    float           progress;
+    int             pointer;
+    std::vector<Vector2> m_vertices;
+};
+
+
+
+
+
+
+\end{lstlisting}

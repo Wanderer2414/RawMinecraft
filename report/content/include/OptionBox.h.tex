@@ -1,0 +1,26 @@
+\subsection{OptionBox}
+\begin{lstlisting}[language=C++]
+
+
+class OptionBox : public Controller {
+public:
+    bool        isHovered() const override,
+                isPressed() const,
+                isChanged() const;
+    virtual void    draw()      override,
+                    handle()    override,
+                    select(const int& index),
+protected:
+    bool        m_is_hovered,
+                m_is_pressed,
+                m_is_focus,
+                m_is_changed;
+    int&        option;
+    int         m_index;
+};
+
+
+
+
+
+\end{lstlisting}

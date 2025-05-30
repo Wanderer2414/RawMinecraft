@@ -1,0 +1,28 @@
+\subsection{EmptyButton}
+\begin{lstlisting}[language=C++]
+
+
+class EmptyButton : public Controller {
+public:
+    EmptyButton();
+    bool                isHovered() const override,
+                        isPressed() const;
+    float               roundness;
+    int                 segment;
+    virtual void        handle()        override,
+                        draw()          override;
+    Color               normal_color, hover_color, click_color;
+
+    ~EmptyButton();
+protected:
+    char                before_press;
+    bool                m_is_hovered = false,
+                        m_is_pressed = false;
+};
+
+
+
+
+
+
+\end{lstlisting}

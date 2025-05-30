@@ -1,0 +1,147 @@
+\subsection{Graph}
+\begin{lstlisting}[language=C++]
+
+
+class Graph: public Form {
+public:
+    enum CommandCode {
+        search_code,
+
+        choose_edge,
+        unchoose,
+
+        goUp,
+        goDown,
+        reback_color,
+        reset_color,
+        
+        fill_edge,
+        
+        fill,
+        add_code,
+        
+        remove_edge,
+
+        add_heap,
+        pop_heap,
+
+        prim_code,
+
+        kruskal_code,
+
+        Dijkstra_code,
+
+        set_cost,
+        update_code,
+        match_code,
+        
+        wait
+    };
+    Graph(const int& index, FormSetting form_setting, const Vector2& window_size);
+    
+    virtual void        add(const vector<std::string>& value) override,
+                        remove(const std::string &str)        override,
+                        handle()                              override,
+                        draw()                                override,
+
+                        search(const std::string& val)        override,
+                        update(const std::string &old_value, const std::string &new_value) override,
+                        prim(const std::string& val),
+                        kruskal(const string& str),
+                        Dijkstra(const string& str),
+                        FetchNextCommand(const vector<float>& codes) override,
+                        FetchPrevCommand(const vector<float>& codes) override;
+                        
+    virtual string      RandomCreate() const override,
+                        RandomSearch() const override,
+                        RandomInsert() const override,
+                        RandomNewValue() const override,
+                        RandomOldValue() const override,
+                        RandomRemove() const override;
+    void clearGraph();
+    ~Graph();
+  
+private:
+    bool                m_is_physics,
+                        m_is_lock;
+    int                 chosen, 
+                        edge_chosen,
+                        m_mode,
+                        m_type,
+                        m_weight,
+                        m_tool,
+                        search_type,
+                        color_pointer;
+
+
+                        random_Dijkstra_button;
+
+    OptionBox           bfs_choice, dfs_choice;
+
+    TextButton          track_graph_hover,
+                        pull_matrix_button,
+                        prim_button, kruskal_button,
+                        Dijkstra_button;
+    TabBox              graph_setting, algorithms_box;
+
+    vector<Edge*>       edges;
+
+    Container           setting_box, 
+                        tools_box, 
+                        extract_box, 
+                        prim_box, 
+                        kruskal_box, 
+                        Dijkstra_box,
+                        search_graph_box,
+                        update_edge;
+
+    TextureButton       match_tool, filled_tool, scissors_tool;
+    
+    OptionBox           fixed_choice, drag_choice, collision_choice, 
+                        weight_choice, unweight_choice, 
+                        direct_choice, undirect_choice;
+
+    Color               colors[6] = {RED, GREEN, BLUE, YELLOW, BROWN, GRAY};
+    Color               tmp_color;
+    void                free(),
+                        update(const int& index, const int& value);
+
+    Texture2D           cursor_icon;
+
+    ColorPointer        color_box;
+    HeapVisual          heap;
+    NotationBox         notation_box;
+    void                insert(const int& value),
+                        remove(const int& index),
+
+    void                pull_matrix(const int& graph),
+                        complete_color();
+
+    void                prim_console_add(),
+                        
+                        kruskal_console_add(),
+                        kruskal_algorithms(const int& index),
+                        
+                        Dijkstra_console_add(const int& val),
+                        Dijkstra_algorithms(const int& index),
+
+                        create_Dmargin(),
+                        free_Dmargin();
+                        
+    vector<int>         getEdge(const int& graph),
+                        getEdge(const int& graph, vector<bool>& visited);
+
+    stack<float>        prevs;
+    vector<Dijkstra_Margin*> DMargins;
+
+};
+
+string to_string(const vector<vector<int>>& matrix);
+vector<vector<int>> to_matrix(const vector<string>& str);
+
+
+
+
+
+
+\end{lstlisting}

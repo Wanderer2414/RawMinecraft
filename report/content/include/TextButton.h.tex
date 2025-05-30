@@ -1,0 +1,23 @@
+\subsection{TextButton}
+\begin{lstlisting}[language=C++]
+
+
+class TextButton : public Button {
+public:
+    TextButton(ButtonSetting* b_setting, TextSetting* t_setting);
+    ButtonSetting   *button_setting;
+    virtual void    handle()                                            override,
+                    draw()                                              override,
+                    setPosition(const float& x, const float& y)         override,
+                    setSize(const float& width, const float& height)    override,
+    std::string     getText() const;
+    virtual void    update() override;
+    ~TextButton();
+protected:
+};
+
+
+
+
+
+\end{lstlisting}

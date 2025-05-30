@@ -1,0 +1,32 @@
+\subsection{DSU}
+\begin{lstlisting}[language=C++]
+
+
+class DSU {
+public:
+    DSU(const int& size);
+    struct Node {
+        int value;
+        Node* next;
+        Node(): value(0), next(0) {};
+        Node(const int& val):value(val), next(0) {};
+        Node(Node* n): value(0), next(n) {};
+        Node(const int& val, Node* n): value(val), next(n) {};
+    };
+    virtual bool        check(const int& i, const int& j);
+    virtual int         parent(const int& i)    const,
+                        root(const int& i);
+    virtual void        match(const int& i, const int& j),
+                        join(const int& i, const int& j),
+                        clear();
+    ~DSU();
+private:
+    vector<Node*> data;
+};
+
+
+
+
+
+
+\end{lstlisting}

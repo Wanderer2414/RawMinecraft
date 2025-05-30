@@ -1,0 +1,36 @@
+\subsection{ProgressBar}
+\begin{lstlisting}[language=C++]
+
+
+class ProgressBar : public Controller {
+public:
+    ProgressBar(FormSetting*);
+    FormSetting     *form_setting;
+    bool            isFocus(),
+                    isChanged();
+    float           getProgress() const;
+    virtual void    draw()      override,
+                    handle()    override,
+                    setProgresss(const float& progress),
+                    setSize(const float& x, const float& y)     override,
+                    setPosition(const float& x, const float& y) override,
+                    setCursorSize(const float& radius),
+                    setSplitCount(const int& count);
+    ~ProgressBar();
+private:
+    bool            m_is_focus,
+                    m_is_changed;
+    int             m_split_count;
+    float           m_progress,
+                    m_thick,
+                    m_radius,
+                    m_split_size,
+                    m_split_thick;
+    Vector2         m_point;
+};
+
+
+
+
+
+\end{lstlisting}

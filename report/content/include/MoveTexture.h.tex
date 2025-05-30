@@ -1,0 +1,18 @@
+\subsection{MoveTexture}
+\begin{lstlisting}[language=C++]
+
+
+class MoveTexture : public TextureButton, public Move {
+public:
+    MoveTexture();
+    virtual void    setPosition(const float& x, const float& y) override,
+                    handle()    override;
+    virtual Vector2 getPosition() const override;
+};
+
+
+
+
+
+
+\end{lstlisting}

@@ -1,0 +1,78 @@
+\subsection{AVLTree}
+\begin{lstlisting}[language=C++]
+
+
+class AVLTreeForm : public Form {
+public:
+    AVLTreeForm(const int& index, FormSetting form_setting, const Vector2& window_size);
+    struct Node {
+        int val;
+        int height;
+        int index;
+        Node* left, *right, *parent;
+        Node(const int& value, const int& h, const int& i): 
+            val(value), height(h), left(0), right(0), index(i) {};
+    };
+    void            add(const vector<std::string>& x)   override,
+                    remove(const std::string& x)        override,
+                    search(const string& x)             override,
+                    update(const string& oldValue, const string& newValue)  override,
+                    FetchNextCommand(const std::vector<float>& codes)       override,
+                    FetchPrevCommand(const std::vector<float>& codes)       override,
+                    draw()                      override,
+                    handle()                    override;
+    
+    string          RandomInsert() const override,
+                    RandomSearch() const override,
+                    RandomRemove() const override,
+                    RandomOldValue() const override,
+                    RandomNewValue() const override;
+    ~AVLTreeForm();
+private:
+    Node* m_root;
+    int height(Node* root) {
+        if (root) return root->height;
+        else return 0;
+    }
+    int height(AVLNode* root) {
+        if (root) return root->height;
+        else return 0;
+    }
+    void            insert(Node*& root, Node* parent, const int& x)                 ,
+                    insert_console_add()                                            ,
+                    update(Node*& root, const int& old, const int& x)               ,
+                    update(Node*& root, const bool& isGreater)                      ,
+                    update_console_add()                                            ,
+                    remove_console_add()                                            ,
+                    search_console_add()                                            ,
+                    visual_rotateRight(AVLNode*& root)                              ,
+                    visual_rotateLeft(AVLNode*& root)                               ,
+                    rotateRight(Node*& root)                                        ,
+                    rotateLeft(Node*& root)                                         ,
+                    clone(Node*& rootA, AVLNode*& rootB)                            ,
+                    search(Node* rootA, const int& x)                               ,
+                    show(Node* root, const int& indent)                             ,
+                    show(AVLNode* root, const int& indent)                          ;
+    
+    int             remove(Node*& root, const int& x)                               ;
+    void            swap(AVLNode* rootA, AVLNode* rootB)                            ,
+                    swap(Node* rootA, Node* rootB)                                  ,
+                    rePosition(const float& dur)                                    ,
+                    draw(AVLNode* root)                                             ,
+                    free()                                                          ,
+                    free(AVLNode* root)                                             ,
+                    reFocusCamera()                                                 ;
+
+    float           rePosition(AVLNode* root, float left, const int& level)         ;
+    stack<Node*>   Up, Down;
+    AVLNode         *vroot;
+    vector<Node*>   logic_node;
+    vector<AVLNode*>visual_node;
+};
+
+
+
+
+
+
+\end{lstlisting}

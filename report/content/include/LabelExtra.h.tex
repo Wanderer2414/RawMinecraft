@@ -1,0 +1,50 @@
+\subsection{LabelExtra}
+\begin{lstlisting}[language=C++]
+
+
+class LabelEx : public Controller {
+public:
+    enum Align {
+        Left    = 1,
+        Right   = 2,
+        Middle  = 0,
+        Top     = 4,
+        Bottom  = 8,
+        Center  = 0
+    };
+    bool                    empty() const;
+    virtual void            draw()          override,
+                            handle()        override,
+                            setSize(const float& width, const float& height) override,
+                            setPosition(const float& x, const float& y) override,
+                            setText(const std::string& str),
+
+                            setAlignText(const int& line, const int& align),
+                            clear();
+    float                   margin;
+    float                   getAutoHeight() const;
+    int                     getTextSize()       const,
+                            getCurrentTextSize() const;
+    virtual void            update() override,
+                            skip(),
+                            Push();
+    Vector2                 getCursorPosition() const;
+    ~LabelEx();
+protected:
+    Sound                   wave1, wave2, wave3;
+    Clock                   clock;
+    bool                    canReset, is_push;
+    string                  dummy_string;
+                            update_line(const int& line);
+    vector<vector<float>>   spacing;
+    vector<vector<int>>     number_word;
+    vector<char>            align;
+    Vector2                 cursor_position;
+};
+
+
+
+
+
+
+\end{lstlisting}

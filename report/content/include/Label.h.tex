@@ -1,0 +1,46 @@
+\subsection{Label}
+\begin{lstlisting}[language=C++]
+
+
+class Label : public Controller {
+public:
+    enum Align {
+        Left    = 1,
+        Right   = 2,
+        Middle  = 0,
+        Top     = 4,
+        Bottom  = 8,
+        Center  = 0
+    };
+    bool                    empty() const;
+    int                     getLineSize(const int& line) const,
+                            getLineCount()              const;
+    virtual void            draw()          override,
+                            handle()        override,
+                            setSize(const float& width, const float& height) override,
+                            setPosition(const float& x, const float& y) override,
+                            setText(const std::string& str),
+
+                            setAlignText(const int& align),
+                            insert(const int& row, const int& col, const char& c),
+                            insert(int& row, int& col, const string& c),
+                            erase(const int& row, const int& col),
+                            clear();
+    Vector2                 getLinePosition(const int& index) const,
+                            getCharPosition(const int& row, const int& col) const;
+    std::string             getText()                                           const,
+    float                   margin;
+    virtual void            update() override;
+    ~Label();
+protected:
+                            update_line(const int& line);
+
+    int                     m_align;
+};
+
+
+
+
+
+
+\end{lstlisting}

@@ -1,0 +1,83 @@
+\subsection{LinearHashTable}
+\begin{lstlisting}[language=C++]
+
+
+namespace HT {
+    class Node : public Controller, public SlowMotion {
+    public:
+        ButtonSetting       *button_setting;
+        bool                isSizeChanged() const,
+                            isFocus() const override;
+        int                 getValue() const;
+        virtual void        setValue(const int& value),
+                            draw()      override,
+                            handle()    override,
+                            setIndex(const int& index),
+                            setPosition(const float &x, const float &y) override,
+                            setSize(const float &width, const float &height) override,
+                            update() override;
+        Vector2             getPosition() const override;
+        bool                is_animating = false;
+        Camera2D            &camera;
+        
+    private:
+        bool                m_is_hovered, m_is_pressed, m_is_focus;
+        float               percent;
+        int                 m_value,
+                            m_index;
+    };
+    class HashTable : public Form {
+    public:
+        enum CommandCode {
+            _insert = 0,
+            _delete = 5,
+            _choose = 1,
+            _unchoose = 2,
+            _add = 3,
+            _remove = 4,
+            _search = 6,
+            _update = 7,
+            _empty = 8,
+            _goUp = 9,
+            _goDown = 10,
+        };
+        HashTable(const int& index, FormSetting form_setting, const Vector2& window_size);
+        virtual void add(const vector<std::string>& data) override,
+            remove(const std::string& data) override,
+            search(const std::string& x) override,
+            update(const std::string& old_value, const std::string& new_value) override,
+                
+            draw()              override,
+            handle()            override,
+            setMemorySize(const int& size),
+            FetchNextCommand(const std::vector<float>& command) override,
+            FetchPrevCommand(const std::vector<float>& command) override,
+            insert_console_add(),
+            search_console_add(),
+            remove_console_add(),
+            update_console_add();
+        virtual string RandomCreateSize(int _max, int _min);
+        ~HashTable();
+    private:
+        int         m_storage_size,
+                    m_node_spacing;
+        float       min_width, max_width, true_width, line;
+
+        int         index(const int& value);
+        void        insert(const int& value),
+                    remove(const int& value),
+                    search(const int& value),
+                    update(const int& oldvalue, const int& newvalue),
+                    reLocate(const bool& visual = true);
+        Label       size_label;
+        TextureButton random_size_button;
+        vector<Node> m_memory;
+    };
+}
+
+
+
+
+
+
+\end{lstlisting}

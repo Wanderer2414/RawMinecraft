@@ -1,0 +1,34 @@
+\subsection{MinHeap}
+\begin{lstlisting}[language=C++]
+
+
+struct Path {
+    int weight;
+    int index;
+    bool operator<(const Path& b);
+    bool operator>(const Path& b);
+    bool operator==(const Path& b);
+};
+
+class MinHeap {
+public:
+    MinHeap();
+    int                     size() const;
+    virtual void            MinHeapify(const int& index),
+                            Insert(const Path& path),
+                            erase(const int& index),
+                            clear();
+    
+    virtual Path            front() const, pop(),
+                            operator[](const int& index) const;
+protected:
+    vector<Path> data;
+    virtual void swap(Path& a, Path& b);
+};
+
+
+
+
+
+
+\end{lstlisting}

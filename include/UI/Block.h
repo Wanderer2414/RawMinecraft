@@ -5,7 +5,7 @@ namespace MyCraft {
     class BlockCatogary {
         public:
             enum Catogary {
-                Air, Dirt
+                Air, Dirt, Grass
             };
 
             BlockCatogary();

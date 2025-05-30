@@ -1,0 +1,20 @@
+\subsection{ZoomInTransition}
+\begin{lstlisting}[language=C++]
+
+
+class ZoomInTransition:public Controller {
+public:
+    Controller* host;
+    ZoomInTransition();
+    float           getProgress() const;
+    virtual void    handle() override,
+                    draw() override,
+                    start();
+    Color color;
+private:
+    float percent = 1;
+    Vector2 delta, start_pos, start_size, delta_size;
+    Clock   clock;
+};
+
+\end{lstlisting}

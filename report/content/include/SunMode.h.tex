@@ -1,0 +1,30 @@
+\subsection{SunMode}
+\begin{lstlisting}[language=C++]
+
+
+class SunMode: public Controller {
+public:
+    ButtonSetting   *light_button_setting, *dark_button_setting;
+    SunMode(ButtonSetting* light_setting, ButtonSetting* dark_setting);
+    float           getPercent() const;
+    virtual void    draw()      override,
+                    handle()    override;
+    
+    virtual void    setPosition(const float& x, const float& y) override,
+                    setSize(const float& x, const float& y)     override,
+                    setMode(const int& mode);
+    ~SunMode();
+private:
+    bool            m_is_light,
+                    m_is_pressed,
+                    m_is_hovered;
+    float           percent;
+    unsigned char   percent_alpha;
+    Vector2         m_point;
+};
+
+
+
+
+
+\end{lstlisting}

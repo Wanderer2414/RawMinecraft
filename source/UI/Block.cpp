@@ -4,12 +4,19 @@
 #include "ShaderStorage.h"
 
 MyCraft::BlockCatogary::BlockCatogary() {
-    __ptr.resize(2, 0);
+    __ptr.resize(3, 0);
     __ptr[0] = 0;
     sf::Image image;
     image.loadFromFile("assets/images/Dirt.png");
     glGenTextures(1, &__ptr[1]);
     glBindTexture(GL_TEXTURE_2D, __ptr[1]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x,image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    image.loadFromFile("assets/images/Grass.png");
+    glGenTextures(1, &__ptr[2]);
+    glBindTexture(GL_TEXTURE_2D, __ptr[2]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x,image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

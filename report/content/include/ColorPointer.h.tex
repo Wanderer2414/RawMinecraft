@@ -1,0 +1,30 @@
+\subsection{ColorPointer}
+\begin{lstlisting}[language=C++]
+
+
+class ColorPointer : public Controller {
+public:
+    ColorPointer(ButtonSetting* button_setting);
+    ButtonSetting       *button_setting;
+    bool                isVisible() const,
+                        isHovered() const override,
+                        isFocus() const override;
+    virtual void        draw()      override,
+                        handle()    override,
+
+                        setPosition(const float& x, const float& y) override,
+                        setSize(const float& width, const float& height) override,
+                        setColor(const Color& color),
+                        setVisible(const bool& visible);
+    Color               getColor() const;
+private:
+    bool                m_is_visible, m_is_hovered, m_is_focus;
+    ColorBox            red, green, blue, alpha;
+};
+
+
+
+
+
+
+\end{lstlisting}

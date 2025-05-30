@@ -1,0 +1,48 @@
+\subsection{HeapVisual}
+\begin{lstlisting}[language=C++]
+
+
+class HeapBlock : public Controller, public SlowMotion {
+public:
+    ButtonSetting       *button_setting;
+    virtual void        setSize(const float& width, const float& height) override,
+                        setPosition(const float& x, const float& y)      override,
+                        draw()                                           override,
+                        handle()                                         override,
+    Vector2             getPosition() const override;
+private:
+    Vector2             m_des_position, m_weight_position;
+};
+
+class HeapVisual : public Controller, public MinHeap {
+public:
+    HeapVisual(FormSetting* form_setting);
+    FormSetting         *form_setting;
+
+    bool                isVisible() const;
+    virtual void        handle() override,
+                        draw()   override,
+
+                        setPosition(const float &x, const float &y)         override,
+                        setSize(const float &width, const float &height)    override,
+                        setVisible(const bool& visible),
+                        Insert(const Path& path)                            override,
+                        erase(const int &index)                             override,
+                        clear()                                             override;
+    Path                pop()                                               override;
+private:
+    enum HeapCode {
+        swap_code, pop_code, add_code, fill, pop_back
+    };
+    ButtonSetting       choose_setting;
+    bool                m_visible;
+    vector<HeapBlock>   heap;
+    virtual void        swap(Path& a, Path& b) override;
+};
+
+
+
+
+
+
+\end{lstlisting}

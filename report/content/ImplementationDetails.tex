@@ -1,0 +1,94 @@
+\section{Implementation Details}
+\subsection{Include Files}
+\begin{itemize}
+    \item UI Controller: 
+TextureButton.h,
+Controller.h,
+Console.h,
+Button.h,
+ColorPointer.h,
+TextureButton.h,
+Controller.h,
+Console.h,
+Button.h,
+ColorPointer.h,
+DijkstraMargin.h,
+Bubble.h,
+Label.h,
+SunMode.h,
+AVLNode.h,
+Vertex.h,
+ValueScroll.h,
+ImageTab.h,
+ProgressBar.h,
+MenuTab.h,
+EmptyButton.h,
+TextBox.h,
+FileDropBox.h,
+LabelExtra.h,
+HeapVisual.h,
+ColorBox.h,
+Edge.h,
+DSU.h,
+GIF.h,
+MinHeap.h,
+TextButton.h,
+TabBox.h,
+DynamicColorCircle.h,
+    \item Container UI: 
+MenuBox.h,
+Container.h,
+    \item Combine Control: 
+MoveLabel.h,
+MoveButton.h,
+MoveTexture.h,
+MoveContainer.h,
+    \item Logic control: 
+Clock.h,
+CommandLists.h,
+    \item Form: 
+AboutUsForm.h
+Graph.h,
+AVLTree.h,
+LinearHashTable.h,
+SinglyLinkedList.h,
+Application.h,
+FormStart.h,
+Form.h,
+Menu.h.
+    \item Effect: 
+ZoomInTransition.h,
+SlowMotion.h,
+VerticalOpen.h,
+Move.h.
+    \item General: 
+GUI.h,
+RaylibExtra.h,
+IncludePath.h,
+Global.h,
+SettingPackage.h,
+General.h.
+[see more in Appendix]
+\end{itemize}
+\subsection{Common flow}
+Although, there are so many class, all of them both have 2 main functions: 
+\begin{itemize}
+    \item handle(): Be called on every loop, to catch event and adjust variable itself;
+    \item draw(): Only used to draw this UI (some logic controller will have an empty draw())
+\end{itemize}
+Furthermore, most of UI controller are inherited from class Controller, so they both have functions: setPosition(...), getPosition(), setSize(...), getSize(), ...;
+
+\subsection{Step by step flow}
+The step by step is controlled by class CommandList.
+It's simple that we add a code represent for some work of visuallization to queue. To go next, we get front of queue, pop it and push it to reverse queue. To turn back, we get front of reverse queue, pop it and push it again to queue.
+To combine CommandList to main form, the form will be inherited CommandList and override FetchNextCommand() and FetchPrevCommand().
+Moreover, we call CommandList handle() from Form.handle() to ensure FetchNext functions is called after a specified time.
+\subsection{About custom feature}
+To easy to change many attribute in same time, we firstly declare a new class contains 1 type of Controller, divide to ButtonSetting and TextSetting, and a class include both of them - FormSetting.
+So, in setting form, when change any attribute or light/dark theme, we will change a pointer of FormSetting and pass it address/pointer to other form.
+Note that: we use a pointer in many form to transfer the data to many sub-controller in form.
+\subsection{Some common UI effect}
+In most of UI effect controllers, we declare 2 types of functions: set and get.
+Like Move effect, there are setPosition and getPosition function. So, to use them, we will combine it with other UI controller, inherit them, overriding set and get function and call it from derived class handle.
+A few remain effect of function, it is easier to control, like zoom in. It contains only 1 main function: handle (except some other function to start or get some attribute or progress).
+It is simple that this effect class will have a pointer of Controller to link to other UI, and use the properties of OOP, with some virtual functions from base class like setPosition/ getPosition and control linked class through these function.

@@ -1,0 +1,23 @@
+\section{Project Architecture}
+\subsection{Architecture}
+    Contains 7 sub folders:
+    \begin{itemize}
+        \item .vscode: have many config file to run for Visual Studio Code.
+        \item asset: contains images and sound file for prorgam.
+        \item build: contains cmake build file and exe for Visual Studio Code.
+        \item include: contains all include files of program.
+        \item source: contains all cpp and main file.
+    \end{itemize}
+\subsection{Main structure of program}
+    Firstly, program starts at main.cpp, declare application class and do application.run().
+    This application object when constructing inits main window, connect with audio device and construct many other variables.
+    The program is offically starting with run() function. This function contains main while loop with many case (condition) to open current chosen form: FormStart, Menu, About us or AVL, Linear HashTable, Singly Linked List and Graph.
+    At the beginning, first form will be FormStart, which has some button to go to Menu, About us, Custom setting or exit program.
+    With each form, there are 3 main functions (except constructor and destructor): 
+    \begin{itemize}
+        \item  int run(): contains while loop, return next form will go to.
+        \item void handle(): catch event and control behavour of controller on real time;
+        \item void draw(): only for drawing UI;
+    \end{itemize}
+    For data structure form, using OOP inherit, we observe that there are many same function between many data structure function. So, all data structure form will be inherited from one exactly Form class with 3 main functions like above and some feature virtual functions to add, remove, update,... (for Derived class to override in the future);
+    

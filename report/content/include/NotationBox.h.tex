@@ -1,0 +1,24 @@
+\subsection{NotationBox}
+\begin{lstlisting}[language=C++]
+
+
+class NotationBox : public Controller {
+public:
+    NotationBox(FormSetting* form_setting);
+    FormSetting         *form_setting;
+    virtual void        handle()    override,
+                        draw()      override,
+                        setPosition(const float& x, const float& y)         override,
+                        setSize(const float& widht, const float& height)    override;
+    virtual void        show(),
+                        hide();
+private:
+    bool                isVisible;
+    Label               m_address, m_value, m_pos, m_index;
+};
+
+
+
+
+
+\end{lstlisting}

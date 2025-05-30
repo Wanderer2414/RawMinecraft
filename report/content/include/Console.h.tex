@@ -1,0 +1,53 @@
+\subsection{Console}
+\begin{lstlisting}[language=C++]
+
+
+class Console : public TextButton, public Move {
+public:
+    Console(ButtonSetting *b_setting, TextSetting* t_setting);
+    int             getFillLine() const;
+    virtual void    InsertNextSubCommand(const std::string& log),
+                    InsertNextMainCommand(const std::string& log),
+                    PushBackMainCommand(const std::string& log),
+                    PushBackSubCommand(const std::string& log),
+                    GotoCommandLine(const float& progress),
+                    goUp(),
+                    goDown(),
+                    clear(),
+                    handle()                                    override,
+                    draw()                                      override,
+                    setSize(const float& width, const float& y) override,
+                    setText(const std::string& str)             override,
+                    setTextOrigin(const Vector2& origin),
+                    setEnable(const bool& enable),
+                    setPosition(const float &x, const float &y) override;
+    Vector2         getPosition() const override;
+    bool            isEmpty();
+    ~Console();
+private:
+    bool            m_is_enable;
+    float           min_x = 0,
+                    min_y = 0,
+                    max_width = 0,
+                    max_height = 0,
+                    current_line = 0;
+    int             line_cursor = 0,
+                    main_line_cursor = 0,
+                    current_add = 0;
+    void            BeforeGoUp(),
+                    BeforeGoDown(),
+                    update_tail();
+    std::vector<std::string>    m_list;
+    std::vector<bool>           temporary;
+    Vector2     m_origin = { 0, 0 },
+                m_delta = { 0 , 0 },
+                m_fixed = { 0, 0 };
+    Clock       clock;
+};
+
+
+
+
+
+
+\end{lstlisting}

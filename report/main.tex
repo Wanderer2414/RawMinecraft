@@ -1,0 +1,71 @@
+\documentclass[12pt]{article}
+
+\usepackage{hcmus-report-template}
+
+% Disable indentation on new paragraphs
+\setlength{\parindent}{0pt}
+
+% Line spacing 1.5
+\renewcommand{\baselinestretch}{1.5}
+
+% Optional: graphic path
+% \graphicspath{PATH_TO_GRAPHIC_FOLDER}
+
+% To use Times font family, uncomment this row
+% \usepackage{mathptmx}
+
+% To use roman section / subsection, uncomment these rows
+% \renewcommand{\thesection}{\Roman{section}}
+% \renewcommand{\thesubsection}{\thesection.\Roman{subsection}}
+
+% Define course name, report name and report title.
+\newcommand{\coursename}{CS163 - Data Structures}
+\newcommand{\reportname}{Data Visualization}
+\newcommand{\reporttitle}{Project Report}
+\date{\today}
+
+\newcommand{\studentname}{
+\begin{tabular}{ll}
+\end{tabular}
+}
+
+% Header
+\lhead{\reporttitle}
+\rhead{
+HCMUS - Group 02\\
+\coursename
+}
+
+% Footer
+
+% ============ DOCUMENT ============
+\begin{document}
+
+\input{content/title.tex}
+
+\tableofcontents
+\listoftables
+\pagebreak
+
+% \pagenumbering{arabic}
+% \setcounter{page}{1}
+
+\input{content/introduction}
+\input{content/GroupInfor}
+\input{content/DataStorage}
+\input{content/project_architexture}
+\input{content/ImplementationDetails}
+\input{content/TechnicalProblems}
+\input{content/FeatureDemonstrate}
+\input{content/Conclusion}
+\input{content/Appendix}
+\pagebreak
+
+% References
+\pagebreak
+\input{ref/ref.tex}
+
+% Appendix
+\appendix
+% Add \cleardoublepage to move appendices to next page.
+\end{document}
