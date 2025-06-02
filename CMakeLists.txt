@@ -27,6 +27,6 @@ file(GLOB SOURCES
 set(CMAKE_BUILD_TYPE Debug)
 add_subdirectory(${CMAKE_SOURCE_DIR}/glm-master)
 add_executable(${PROJECT_NAME} ${SOURCES})
-
-# target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/glfw/build/src)
-target_link_libraries(${PROJECT_NAME} -lglfw)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/Extended/)
+target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/glfw/build/src)
+target_link_libraries(${PROJECT_NAME} -lglfw3)
