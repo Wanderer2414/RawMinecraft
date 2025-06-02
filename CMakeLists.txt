@@ -13,7 +13,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/include/Extended
     ${CMAKE_SOURCE_DIR}/glad/include
     ${CMAKE_SOURCE_DIR}/glm-master
-    ${CMAKE_SOURCE_DIR}/SFML-2.6.2/include
+    ${CMAKE_SOURCE_DIR}/glfw/include
     )
 file(GLOB SOURCES 
     ${CMAKE_SOURCE_DIR}/source/*
@@ -28,5 +28,5 @@ set(CMAKE_BUILD_TYPE Debug)
 add_subdirectory(${CMAKE_SOURCE_DIR}/glm-master)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/SFML-2.6.2/lib)
-target_link_libraries(${PROJECT_NAME} -lsfml-window -lsfml-graphics -lsfml-system)
+# target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/glfw/build/src)
+target_link_libraries(${PROJECT_NAME} -lglfw)
