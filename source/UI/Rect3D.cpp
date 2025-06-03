@@ -35,7 +35,7 @@ namespace MyBase3D {
         glm::vec3 normal = det(__B-__A, __C-__B);
         return delta*normal/glm::length(normal);
     }
-    glm::vec3 Rect3f::operator[](const uint& index) const {
+    glm::vec3 Rect3f::operator[](const unsigned int& index) const {
         switch (index) {
         case 0: return __A;
         case 1: return __B;
