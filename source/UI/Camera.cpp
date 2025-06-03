@@ -2,6 +2,7 @@
 #include "Controller3D.h"
 #include "Global.h"
 #include "InfoCenter.h"
+#include "ShaderStorage.h"
 
 namespace MyBase3D {
 
@@ -13,14 +14,12 @@ Camera::Camera():
 
     __delta = __delta/glm::length(__delta)*CAMERA_DISTANCE;
 
-    // __direction.setPrimitiveType(sf::Lines);
-    // __direction.resize(6);
-    // __direction[0].position = __direction[1].position = WindowSize/2.f;
-    // __direction[2].position = __direction[3].position = WindowSize/2.f;
-    // __direction[4].position = __direction[5].position = WindowSize/2.f;
-    // __direction[0].color = __direction[1].color = sf::Color::Red;
-    // __direction[2].color = __direction[3].color = sf::Color::Green;
-    // __direction[4].color = __direction[5].color = sf::Color::Blue;
+    __direction[0] = __direction[1] = {0, 0};
+    __direction[2] = __direction[3] = {0, 0};
+    __direction[4] = __direction[5] = {0, 0};
+    __direction_color[0] = __direction_color[1] = {1, 0, 0, 1};
+    __direction_color[2] = __direction_color[3] = {0, 1, 0, 1};
+    __direction_color[4] = __direction_color[5] = {0, 0, 1, 1};
 
     glGenBuffers(1, &__camera);
     glBindBuffer(GL_UNIFORM_BUFFER, __camera);
@@ -73,11 +72,11 @@ void Camera::setPerpective(const float& angle, const float& aspect, const float&
     update();
 }
 void Camera::rotate(const float& vertical_angle, const float& horizontal_angle) {
-    if (float tmp = __verticalAngle + vertical_angle; tmp<M_PI_2-0.1 && tmp>-M_PI_2+0.1) {
+    if (float tmp = vertical_angle+__verticalAngle; tmp<M_PI_2-0.1 && tmp>-M_PI_2+0.1) {
         __verticalAngle = tmp;
         glm::mat4 mat =  glm::rotate(glm::mat4(1), -horizontal_angle, glm::vec3(0, 0, 1));
         mat = glm::rotate(mat, vertical_angle, getHorizontalVector());
-        __delta = mat*glm::vec4(__delta, 1);
+        __delta = mat*glm::vec4(__delta,1);
         __view = glm::lookAt(__position, __position + __delta, glm::vec3(0, 0, 1));
         update();
     }
@@ -93,25 +92,42 @@ void Camera::update() {
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &__clipPlane[0][0]);
 
     glm::vec3 center = __position+ __delta;
-    center.x += 0.05;
-    // __direction[1].position = transfer(center);
-    center.x -= 0.05;
+    center.x += 0.02;
+    __direction[1] = transfer(center);
+    center.x -= 0.02;
 
-    center.y += 0.05;
-    // __direction[3].position = transfer(center);
-    center.y -= 0.05;
+    center.y += 0.02;
+    __direction[3] = transfer(center);
+    center.y -= 0.02;
 
-    // __direction[5].position.y = WindowSize.y/2.f - 15*cos(__verticalAngle);
+    __direction[5].y = 0.05*cos(__verticalAngle);
 }
 void Camera::glDraw() const {
-    
+    glUseProgram(MyBase3D::ShaderStorage::Default->getPoint2DShader());
+    GLuint VAO, Positions, Colors;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+        
+    glGenBuffers(1, &Positions);
+    glBindBuffer(GL_ARRAY_BUFFER, Positions);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2)*6, &__direction[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+
+    glGenBuffers(1, &Colors);
+    glBindBuffer(GL_ARRAY_BUFFER, Colors);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4)*6, &__direction_color[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+
+    glDrawArrays(GL_LINES, 0, 6);
+    glBindVertexArray(0);
+    glDeleteBuffers(1, &Positions);
+    glDeleteBuffers(1, &Colors);
 }
 glm::vec2 Camera::transfer(const glm::vec3& vector) const {
     glm::vec4 pos= __clipPlane*glm::vec4(vector,1);
-    if (pos.w) pos /= pos.w;
-    float x = (pos.x + 1)*__windowCenter.x;
-    float y = (1 - pos.y)*__windowCenter.y;
-    return {x, y};
+    return pos;
 }
 Ray3f Camera::getSight() const {
     return Ray3f(__position, __position + __delta);

@@ -24,10 +24,10 @@ namespace MyBase {
                                 update();      
 
         friend Container;
+        virtual void    glDraw() const;
     protected:
         virtual bool    handle(GLFWwindow* window);
         virtual bool    contains(const glm::vec2& position) const;
-        virtual void    glDraw() const;
 
     private:
         unsigned int    __doubleClickCount;

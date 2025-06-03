@@ -25,49 +25,68 @@ MyCraft::BlockCatogary::BlockCatogary() {
     }
     glGenTextures(1, &__ptr[2]);
     glBindTexture(GL_TEXTURE_2D, __ptr[2]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width,height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     stbi_image_free(data);
 
-    glm::vec2 tex_coord[24];
+    glm::vec2 tex_coord[36];
     tex_coord[0] = {1.0/3, 0};
     tex_coord[1] = {2.0/3, 0};
-    tex_coord[2] = {2.0/3, 1.0/4};
+    tex_coord[2] = {1.0/3, 1.0/4};
+
     tex_coord[3] = {1.0/3, 1.0/4};
-
-    tex_coord[4] = {1.0/3, 1.0/4};
+    tex_coord[4] = {2.0/3, 0};
     tex_coord[5] = {2.0/3, 1.0/4};
-    tex_coord[6] = {2.0/3, 2.0/4};
-    tex_coord[7] = {1.0/3, 2.0/4};
 
+    tex_coord[6] = {1.0/3, 1.0/4};
+    tex_coord[7] = {2.0/3, 1.0/4};
     tex_coord[8] = {1.0/3, 2.0/4};
-    tex_coord[9] = {2.0/3, 2.0/4};
-    tex_coord[10] = {2.0/3, 3.0/4};
-    tex_coord[11] = {1.0/3, 3.0/4};
 
-    tex_coord[12] = {1.0/3, 3.0/4};
-    tex_coord[13] = {2.0/3, 3.0/4};
-    tex_coord[14] = {2.0/3, 1};
-    tex_coord[15] = {1.0/3, 1};
+    tex_coord[9] = {1.0/3, 2.0/4};
+    tex_coord[10] = {2.0/3, 1.0/4};
+    tex_coord[11] = {2.0/3, 2.0/4};
 
+    tex_coord[12] = {1.0/3, 2.0/4};
+    tex_coord[13] = {2.0/3, 2.0/4};
+    tex_coord[14] = {1.0/3, 3.0/4};
+
+    tex_coord[15] = {1.0/3, 3.0/4};
     tex_coord[16] = {2.0/3, 2.0/4};
-    tex_coord[17] = {2.0/3, 1.0/4};
-    tex_coord[18] = {1, 1.0/4};
-    tex_coord[19] = {1, 2.0/4};
+    tex_coord[17] = {2.0/3, 3.0/4};
 
-    tex_coord[20] = {1.0/3, 1.0/4};
-    tex_coord[21] = {1.0/3, 2.0/4};
-    tex_coord[22] = {0, 2.0/4};
-    tex_coord[23] = {0, 1.0/4};
+    tex_coord[18] = {1.0/3, 3.0/4};
+    tex_coord[19] = {2.0/3, 3.0/4};
+    tex_coord[20] = {1.0/3, 1};
+
+    tex_coord[21] = {1.0/3, 1};
+    tex_coord[22] = {2.0/3, 3.0/4};
+    tex_coord[23] = {2.0/3, 1};
+
+    tex_coord[24] = {2.0/3, 2.0/4};
+    tex_coord[25] = {2.0/3, 1.0/4};
+    tex_coord[26] = {1, 2.0/4};
+
+    tex_coord[27] = {1, 2.0/4};
+    tex_coord[28] = {2.0/3, 1.0/4};
+    tex_coord[29] = {1, 1.0/4};
+
+    tex_coord[30] = {1.0/3, 1.0/4};
+    tex_coord[31] = {1.0/3, 2.0/4};
+    tex_coord[32] = {0, 1.0/4};
+
+    tex_coord[33] = {0, 1.0/4};
+    tex_coord[34] = {1.0/3, 2.0/4};
+    tex_coord[35] = {0, 2.0/4};
 
     glGenBuffers(1, &__blockTexture);
     glBindBuffer(GL_ARRAY_BUFFER, __blockTexture);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*24*2, &tex_coord[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*36*2, &tex_coord[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 MyCraft::BlockCatogary::~BlockCatogary() {
     glDeleteTextures(1, &__ptr[1]);
+    glDeleteTextures(1, &__ptr[2]);
     glDeleteBuffers(1, &__blockTexture);
 }
 
@@ -127,8 +146,7 @@ void MyCraft::Block::glDraw() const {
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, MyCraft::BlockCatogary::Default->getBlock(__type));
-
-    glDrawArrays(GL_QUADS, 0, 24);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
     if (__hoverPlane!=-1) {
         glUseProgram(MyBase3D::ShaderStorage::Default->GetMarginShader());
         glLineWidth(3);

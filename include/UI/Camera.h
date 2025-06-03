@@ -35,7 +35,8 @@ namespace MyBase3D {
         glm::vec2       __windowCenter;
         glm::vec3       __position, __delta;
         double          __verticalAngle;
-        // sf::VertexArray __direction;
+        glm::vec2       __direction[6];
+        glm::vec4       __direction_color[6];
         glm::mat4       __view, 
                         __projection, 
                         __clipPlane;

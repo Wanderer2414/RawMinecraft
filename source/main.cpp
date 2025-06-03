@@ -5,7 +5,7 @@
 #include "stb_image.h"
 
 int main() {
-    MyCraft::Application application(800, 600);
+    MyCraft::Application application(1366, 768);
     application.run();
     return 0;
 }

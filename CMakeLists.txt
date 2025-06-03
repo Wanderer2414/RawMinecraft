@@ -4,7 +4,19 @@ project(RawMinecraft VERSION 0.1 LANGUAGES CXX C)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
-
+if (NOT EXISTS ${CMAKE_SOURCE_DIR}/glfw/build)
+    file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/glfw/build)
+endif()
+if (NOT EXISTS ${CMAKE_SOURCE_DIR}/glfw/build/Makefile) 
+    if (UNIX)
+        execute_process(COMMAND cmake -S ${CMAKE_SOURCE_DIR}/glfw -B ${CMAKE_SOURCE_DIR}/glfw/build -G "Unix Makefiles")
+    elseif (MINGW)
+        execute_process(COMMAND cmake -S ${CMAKE_SOURCE_DIR}/glfw -B ${CMAKE_SOURCE_DIR}/glfw/build -G "MinGW Makefiles")
+    elseif (MSYS) 
+       execute_process(COMMAND cmake -S ${CMAKE_SOURCE_DIR}/glfw -B ${CMAKE_SOURCE_DIR}/glfw/build -G "MSYS Makefiles")
+    endif()
+endif()
+execute_process(COMMAND make -j${nproc} -C ${CMAKE_SOURCE_DIR}/glfw/build )
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/include/UI

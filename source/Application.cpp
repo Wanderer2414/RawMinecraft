@@ -35,8 +35,8 @@ namespace MyCraft {
         else {
             std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
         }
+        glEnable(GL_DEPTH_TEST);
 
-        glfwSetInputMode(__window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         InfoCenter::Default = new InfoCenter(width, height);
         MyBase3D::PointSet::Default = new MyBase3D::PointSet();
         MyBase3D::ShaderStorage::Default = new MyBase3D::ShaderStorage();
@@ -51,7 +51,7 @@ namespace MyCraft {
         while (!glfwWindowShouldClose(__window)) {
             switch (formIndex) {
                 case 0: {
-                    GameForm gameForm;
+                    GameForm gameForm(__window, 0);
                     gameForm.run(__window);
                 }
                 break;
