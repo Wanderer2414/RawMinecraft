@@ -4,7 +4,6 @@ namespace MyCraft {
         
     }
     InfoCenter::~InfoCenter() {
-        glfwTerminate();
     }
 
     float InfoCenter::getWindowRatio() const {

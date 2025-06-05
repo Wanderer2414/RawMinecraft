@@ -10,6 +10,8 @@
 #include <vector>
 #include <stb_image.h>
 #include <chrono>
+#include "tiny_gltf.h"
+#include <stack>
 
 
 #include "glm/ext/matrix_clip_space.hpp"

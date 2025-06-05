@@ -3,12 +3,16 @@
 #include "GLFW/glfw3.h"
 #include "InfoCenter.h"
 #include "GameForm.h"
+#include "Model.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
+#include "ModelStorage.h"
+
 MyBase3D::PointSet* MyBase3D::PointSet::Default;
 MyCraft::InfoCenter* MyCraft::InfoCenter::Default;
 MyBase3D::ShaderStorage* MyBase3D::ShaderStorage::Default;
 MyCraft::BlockCatogary* MyCraft::BlockCatogary::Default;
+MyCraft::ModelStorage* MyCraft::ModelStorage::Default;
 namespace MyCraft {
     Application::Application(const float& width, const float& height) {
         
@@ -41,9 +45,15 @@ namespace MyCraft {
         MyBase3D::PointSet::Default = new MyBase3D::PointSet();
         MyBase3D::ShaderStorage::Default = new MyBase3D::ShaderStorage();
         MyCraft::BlockCatogary::Default = new MyCraft::BlockCatogary();
+        MyCraft::ModelStorage::Default = new MyCraft::ModelStorage();
     }
     Application::~Application() {
         delete InfoCenter::Default;
+        delete MyBase3D::PointSet::Default;
+        delete MyBase3D::ShaderStorage::Default;
+        delete MyCraft::BlockCatogary::Default;
+        delete MyCraft::ModelStorage::Default;
+        glfwTerminate();
     }
 
     void Application::run() {

@@ -11,7 +11,7 @@ namespace MyCraft {
             }
         }
         hX = hY = hZ = 0;
-        pFrameAlarm.setDuration(1000.f/60);
+        pFrameAlarm.setDuration(150);
     }
     World::~World() {
     }

@@ -4,6 +4,7 @@
 #include "Clock.h"
 #include "Form3D.h"
 #include "Global.h"
+#include "Model.h"
 #include "World.h"
 
 namespace MyCraft {
@@ -20,6 +21,7 @@ namespace MyCraft {
             bool            handle(GLFWwindow* window) override;
             MyBase::Clock   pFrameAlarm;
             World           pWorld;
+        Model               __model;
             float           pSpeed;
         };
 }

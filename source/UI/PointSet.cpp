@@ -1,5 +1,6 @@
 #include "PointSet.h"
 #include "Global.h"
+#include "tiny_gltf.h"
 namespace MyBase3D {
     PointSet::PointSet() {
 
@@ -111,6 +112,7 @@ namespace MyBase3D {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     PointSet::~PointSet() {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(1, &__blockSet);
         glDeleteBuffers(1, &__chunkSet);
         glDeleteBuffers(1, &__marginSet);

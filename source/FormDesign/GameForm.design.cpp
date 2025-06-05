@@ -9,27 +9,18 @@ namespace MyCraft {
 
     GameForm::GameForm(GLFWwindow* window, const int& index): Form3D(index), pWorld(0, 0, 0) {
         insert(&pWorld);
+        insert(&__model);
         for (int i = 0; i<16; i++) {
             for (int j = 0; j<16; j++) {
+                if (i>=5 || j>=5)
                 pWorld.at(i, j, -1).setType(BlockCatogary::Grass);
             }
         }
-        pWorld.at(5, 5, 0).setType(BlockCatogary::Dirt);
-        pWorld.at(0, 0, 0).setType(BlockCatogary::Dirt);
     
-        pWorld.at(0, 0, 1).setType(BlockCatogary::Dirt);
-        pWorld.at(0, 0, 2).setType(BlockCatogary::Dirt);
-    
-        pWorld.at(1, 1, 1).setType(BlockCatogary::Dirt);
-        pWorld.at(1, 1, 2).setType(BlockCatogary::Dirt);
-    
-        pWorld.at(-2, 0, 0).setType(BlockCatogary::Dirt);
-        pWorld.at(-2, 0, 1).setType(BlockCatogary::Dirt);
-        pWorld.at(-2, 0, 2).setType(BlockCatogary::Dirt);    
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glfwSetCursorPos(window, InfoCenter::Default->getWindowHalf().x, InfoCenter::Default->getWindowHalf().y);
     
-        _camera.setPosition({2, 2, 1.7});
+        _camera.setPosition({10, 10, 1.7});
         pZVelocity = 0;
         pSpeed = 0.1;
         pFrameAlarm.setDuration(1000.f/60);\
