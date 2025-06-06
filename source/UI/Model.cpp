@@ -14,9 +14,7 @@ namespace MyCraft {
         GLuint VAO;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
-        
-        ModelStorage::Default->DrawModel();
-        // glDrawArrays(VAO, 0, 144);
+        ModelStorage::Default->DrawModel(ModelStorage::Default->getPlayerModel());
         glDeleteVertexArrays(1, &VAO);
     }
 }

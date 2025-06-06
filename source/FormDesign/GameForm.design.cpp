@@ -12,7 +12,7 @@ namespace MyCraft {
         insert(&__model);
         for (int i = 0; i<16; i++) {
             for (int j = 0; j<16; j++) {
-                if (i>=5 || j>=5)
+                if (i>=2 || j>=2)
                 pWorld.at(i, j, -1).setType(BlockCatogary::Grass);
             }
         }
