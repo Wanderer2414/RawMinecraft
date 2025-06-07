@@ -12,8 +12,13 @@
 #include <chrono>
 #include "tiny_gltf.h"
 #include <stack>
+#include <queue>
 
 
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/fwd.hpp"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/quaternion.hpp"
 #endif

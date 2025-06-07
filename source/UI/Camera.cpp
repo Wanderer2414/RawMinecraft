@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include "Controller3D.h"
 #include "Global.h"
 #include "InfoCenter.h"
 #include "ShaderStorage.h"
@@ -88,7 +87,7 @@ void Camera::move(const float& x, const float& y, const float& z) {
 }
 void Camera::update() {
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, __camera);
-    __clipPlane= __projection*__view*glm::mat4(1);
+    __clipPlane= __projection*__view;
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &__clipPlane[0][0]);
 
     glm::vec3 center = __position+ __delta;
