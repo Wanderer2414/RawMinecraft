@@ -9,7 +9,7 @@ namespace MyCraft {
         PlayerModel();
         ~PlayerModel();
         bool        handle(GLFWwindow* window) override;
-        glm::vec3   getPosition() const,
+        glm::vec3   getPosition() const override,
                     getDirection() const;
         void        move(const glm::vec3& delta) override,
                     rotate(const float& angle) override,
@@ -19,6 +19,11 @@ namespace MyCraft {
                     see(const glm::vec3& dir) override,
                     seeRotate(const float& angle),
                     glDraw() const override;
+        
+        const glm::mat4x3& getBottomRec() const override;
+        glm::vec2 getZRange() const override;
+        
+        
     private:
         bool            __isRun,
                         __isLeftAttack, __isRightAttack,

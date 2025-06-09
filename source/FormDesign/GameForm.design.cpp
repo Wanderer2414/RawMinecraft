@@ -10,6 +10,8 @@ namespace MyCraft {
     GameForm::GameForm(GLFWwindow* window, const int& index): Form3D(index), pWorld(0, 0, 0) {
         insert(&pWorld);
         insert(&__model);
+        insert(&__hitbox);
+        __hitbox.insert(&__model);
         for (int i = 0; i<16; i++) {
             for (int j = 0; j<16; j++) {
                 if (i>=2 || j>=2)

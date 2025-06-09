@@ -4,6 +4,7 @@
 #include "Clock.h"
 #include "Form3D.h"
 #include "Global.h"
+#include "HitBoxCenter.h"
 #include "Model.h"
 #include "PlayerModel.h"
 #include "World.h"
@@ -23,6 +24,7 @@ namespace MyCraft {
             MyBase::Clock   pFrameAlarm;
             World           pWorld;
             PlayerModel     __model;
+            HitBoxCenter    __hitbox;
             float           pSpeed;
         };
 }

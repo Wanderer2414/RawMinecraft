@@ -17,6 +17,12 @@ namespace MyCraft {
         __attack__cooldown.setDuration(250);
         __isRun = false;
         __speed = 0.2;
+        _bottomRec[0] = {-0.4, 0.2, 0};
+        _bottomRec[1] = {-0.4, -0.2, 0};
+        _bottomRec[2] = {0.4, -0.2, 0};
+        _bottomRec[3] = {0.4, 0.2, 0};
+        _minZ = 0;
+        _maxZ = 3;
     }
     PlayerModel::~PlayerModel() {
 
@@ -37,6 +43,11 @@ namespace MyCraft {
                 ModelStorage::Default->getPlayerModel().apply(__animation, "walk", __runTime);
                 is_changed = true;
             }
+            if (__isCrouch) {
+                ModelStorage::Default->getPlayerModel().apply(__animation, "crouch", 0);
+                __speed = 0.05;
+                is_changed = true;
+            }
             if (__isRightAttack) {
                 if (__attack__cooldown.get()) {
                     __isRightAttack = false;
@@ -53,11 +64,6 @@ namespace MyCraft {
                 }
                 else __handTime += 0.03;
                 ModelStorage::Default->getPlayerModel().apply(__animation, "left_attack", __handTime);
-                is_changed = true;
-            }
-            if (__isCrouch) {
-                ModelStorage::Default->getPlayerModel().apply(__animation, "crouch", 0);
-                __speed = 0.05;
                 is_changed = true;
             }
             glm::vec3 dir(0);
@@ -97,6 +103,12 @@ namespace MyCraft {
     }
     glm::vec3 PlayerModel::getDirection() const {
         return __eye_direction;
+    }
+    const glm::mat4x3& PlayerModel::getBottomRec() const {
+        return _bottomRec;
+    }
+    glm::vec2 PlayerModel::getZRange() const {
+        return {_minZ, _maxZ};
     }
     void PlayerModel::leftAttack() {
         if (__attack__cooldown.get()) {
