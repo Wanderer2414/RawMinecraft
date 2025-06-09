@@ -1,15 +1,15 @@
 #include "Clock.h"
 #include "General.h"
+#include <cmath>
 namespace MyBase {
 
     Clock::Clock() {
 
     }
-    bool Clock::get() {
+    bool Clock::get() const {
         if (!__duration) return true;
         std::size_t current = GetTime();
         if (current-__previous>=__duration) {
-            __previous = current;
             return true;
         }
         return false;
@@ -22,6 +22,12 @@ namespace MyBase {
         if (__duration) {
             __previous = GetTime();
         }
+    }
+    void Clock::stop() {
+        __previous = INFINITY;
+    }
+    void Clock::restart() {
+        __previous = GetTime();
     }
     Clock::~Clock() {
     

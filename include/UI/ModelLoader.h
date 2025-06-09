@@ -7,23 +7,24 @@ namespace MyCraft {
     public:
         class Animation {
         public:
-            Animation(const tinygltf::Animation& animation, const ModelLoader& model);
+            Animation(tinygltf::Animation& animation,tinygltf::Model& model);
             ~Animation();
 
-            std::vector<glm::mat4> operator[](float x);
+            void apply(std::vector<glm::mat4>&, float x, tinygltf::Model& model);
             float       getLength() const;
 
         private:
             float                                                   __length;
-            std::vector<std::queue<std::pair<float, glm::quat>>>    __animation;
+            tinygltf::Animation&                                    __animation;
+            std::vector<int>                                        __pointers;
         };
         ModelLoader(const std::string& source);
         ~ModelLoader();
 
         int getNodeCount() const;
 
+        bool apply(std::vector<glm::mat4>&, const std::string& name, const float& t);
         friend MyCraft::ModelStorage;
-        std::vector<glm::mat4> get(const std::string& name, const float& t);
     private:
         tinygltf::Model     __model;
         std::vector<GLuint> __buffers;

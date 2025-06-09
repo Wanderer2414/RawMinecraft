@@ -2,6 +2,8 @@
 #include "Global.h"
 #include "InfoCenter.h"
 #include "ShaderStorage.h"
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/geometric.hpp"
 
 namespace MyBase3D {
 
@@ -58,6 +60,11 @@ void Camera::setPosition(const glm::vec3& position) {
     __view = glm::lookAt(__position, __position + __delta, glm::vec3(0, 0, 1));
     update();
 }
+void Camera::look(const glm::vec3& dir) {
+    __delta = glm::normalize(dir-__position)*CAMERA_DISTANCE;
+    __view = glm::lookAt(__position, __position+__delta, glm::vec3(0, 0, 1));
+    update();
+}
 void Camera::setCameraDirection(const glm::vec3& position, const glm::vec3& center) {
     __delta = center-position;
     __delta = __delta/glm::length(__delta)*CAMERA_DISTANCE;
@@ -80,8 +87,8 @@ void Camera::rotate(const float& vertical_angle, const float& horizontal_angle) 
         update();
     }
 }
-void Camera::move(const float& x, const float& y, const float& z) {
-    __position += glm::vec3(x, y, z);
+void Camera::move(const glm::vec3& dir) {
+    __position += dir;
     __view = glm::lookAt(__position, __position + __delta, glm::vec3(0, 0, 1));
     update();
 }

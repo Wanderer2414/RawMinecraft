@@ -15,22 +15,20 @@ namespace MyCraft {
     void ModelStorage::DrawModel(std::vector<glm::mat4>& state, const ModelLoader& model) {
         glUseProgram(MyBase3D::ShaderStorage::Default->getModelShader());
         const tinygltf::Scene& scene = model.__model.scenes[model.__model.defaultScene];
-        for (int i = 0; i<scene.nodes.size(); i++) {
-            __drawNode(scene.nodes[i], state, model);
-        }
+        __drawNode(scene.nodes.back(), state, model);
     }
     void ModelStorage::__drawNode(const int& nodeIndex, std::vector<glm::mat4>& state, const ModelLoader& lmodel) {
         const tinygltf::Model& model = lmodel.__model;
         const tinygltf::Node& node = model.nodes[nodeIndex];
-        if (node.translation.size()) 
+        if (model.nodes[nodeIndex].translation.size()) {
             state[nodeIndex] = glm::translate(state[nodeIndex], glm::vec3(node.translation[0], node.translation[2], node.translation[1]));
+        }
         if (node.mesh >= 0 && node.mesh<model.meshes.size()) {
             glBindBuffer(GL_UNIFORM_BUFFER, __nodeState);
             glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &state[nodeIndex]);
             glBindBufferBase(GL_UNIFORM_BUFFER, 1, __nodeState);
             __drawMesh(node.mesh, lmodel);
         }
-        
         for (int i:model.nodes[nodeIndex].children) {
             state[i] = state[nodeIndex]*state[i];
             __drawNode(i, state, lmodel);
@@ -50,7 +48,7 @@ namespace MyCraft {
             
             const tinygltf::BufferView& bufferView = model.bufferViews[accessorIndices.bufferView];
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lmodel.__buffers[accessorIndices.bufferView]);
-            glDrawElements(GL_TRIANGLES, accessorIndices.count, accessorIndices.componentType, (void*)accessorIndices.byteOffset);
+            glDrawElements(GL_LINE_STRIP, accessorIndices.count, accessorIndices.componentType, (void*)accessorIndices.byteOffset);
         }
     }
     ModelLoader& ModelStorage::getPlayerModel() {

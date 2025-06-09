@@ -1,49 +1,71 @@
 #include "ModelLoader.h"
 #include "Global.h"
+#include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/quaternion_common.hpp"
 #include "glm/ext/quaternion_geometric.hpp"
 #include <vector>
 namespace  MyCraft {
 
-    ModelLoader::Animation::Animation(const tinygltf::Animation& animation, const ModelLoader& model): __length(0) {
-        __animation.resize(model.getNodeCount());
-        for (const auto& channel: animation.channels) {
-            const tinygltf::AnimationSampler& sampler = animation.samplers[channel.sampler];
-            if (channel.target_path == "rotation") {
-                const tinygltf::Accessor& TimeAccessor = model.__model.accessors[sampler.input];
-                const tinygltf::Accessor& ValueAccessor = model.__model.accessors[sampler.output];
-                const tinygltf::BufferView& TimeView = model.__model.bufferViews[TimeAccessor.bufferView];
-                const tinygltf::BufferView& ValueView = model.__model.bufferViews[ValueAccessor.bufferView];
-                float* time = (float*)(model.__model.buffers[TimeView.buffer].data.data() + TimeView.byteOffset + TimeAccessor.byteOffset);
-                glm::quat* value = (glm::quat*)(model.__model.buffers[ValueView.buffer].data.data() + ValueView.byteOffset + ValueAccessor.byteOffset);
-                for (int i = 0; i<TimeAccessor.count; i++) {;
-                    for (int child:model.__model.nodes[channel.target_node].children)
-                        __animation[child].push({time[i], value[i]});
-                    __length = std::max(__length, time[i]);
-                }
-            }
-        }
+    ModelLoader::Animation::Animation(tinygltf::Animation& animation, tinygltf::Model& model): __length(0), __animation(animation) {
+        __pointers.resize(animation.channels.size(), 0);
     }
     ModelLoader::Animation::~Animation() {}
-
-    std::vector<glm::mat4> ModelLoader::Animation::operator[](float t) {
-        std::vector<glm::mat4> ans(__animation.size(), glm::mat4(1));
-        for (int i = 0; i<ans.size(); i++) {
-            auto& animation = __animation[i];
-            if (animation.size()) {
-                while (animation.front().first <= t) {
-                    animation.push(animation.front());
-                    animation.pop();
-                    if (animation.front().first<animation.back().first) animation.front().first+=__length;
-                }
+    void ModelLoader::Animation::apply(std::vector<glm::mat4>& out, float t, tinygltf::Model& model) {
+        if (t>=__length) {
+            int n = t/__length;
+            t -= n*__length;
+        }
+        if (out.size()!=model.nodes.size()) 
+            out.resize(model.nodes.size(), glm::mat4(1));
+        for (int i  = 0; i<__animation.channels.size(); i++) {
+            const auto& channel = __animation.channels[i];
+            const tinygltf::AnimationSampler& sampler = __animation.samplers[channel.sampler];
+            if (channel.target_path == "rotation") {
+                const tinygltf::Accessor& TimeAccessor = model.accessors[sampler.input];
+                const tinygltf::Accessor& ValueAccessor = model.accessors[sampler.output];
+                const tinygltf::BufferView& TimeView = model.bufferViews[TimeAccessor.bufferView];
+                const tinygltf::BufferView& ValueView = model.bufferViews[ValueAccessor.bufferView];
+                float* time = (float*)(model.buffers[TimeView.buffer].data.data() + TimeView.byteOffset + TimeAccessor.byteOffset);
+                glm::quat* value = (glm::quat*)(model.buffers[ValueView.buffer].data.data() + ValueView.byteOffset + ValueAccessor.byteOffset);
+                auto& pointer = __pointers[i];
+                glm::mat4 tmp;
+                if (t<time[pointer]) pointer = 0;
+                while (pointer+1<TimeAccessor.count && t>=time[pointer+1]) pointer++;
                 float ratio;
-                if (animation.front().first<animation.back().first) 
-                    ratio = (t-animation.back().first)/(animation.front().first-animation.back().first+__length);
-                else ratio = (t-animation.back().first)/(animation.front().first-animation.back().first);
-                ans[i] = glm::toMat4(glm::normalize(glm::slerp(animation.back().second, animation.front().second, ratio)));
+                if (pointer+1<TimeAccessor.count) {
+                    ratio = (t-time[pointer])/(time[pointer+1]-time[pointer]);
+                    tmp = glm::toMat4(glm::normalize(glm::slerp(value[pointer], value[pointer+1], ratio)));
+                }
+                else tmp = glm::toMat4(glm::normalize(value[pointer]));
+                for (int child: model.nodes[channel.target_node].children) 
+                    out[child] = tmp;
+            }
+            else if (channel.target_path == "translation") {
+                const tinygltf::Accessor& TimeAccessor = model.accessors[sampler.input];
+                const tinygltf::Accessor& ValueAccessor = model.accessors[sampler.output];
+                const tinygltf::BufferView& TimeView = model.bufferViews[TimeAccessor.bufferView];
+                const tinygltf::BufferView& ValueView = model.bufferViews[ValueAccessor.bufferView];
+                float* time = (float*)(model.buffers[TimeView.buffer].data.data() + TimeView.byteOffset + TimeAccessor.byteOffset);
+                float* value = (float*)(model.buffers[ValueView.buffer].data.data() + ValueView.byteOffset + ValueAccessor.byteOffset);
+                auto& pointer = __pointers[i];
+                glm::mat4 tmp;
+                if (t<=time[pointer]) pointer = 0;
+                while (pointer+1<TimeAccessor.count && t>=time[pointer+1]) pointer++;
+                if (pointer+1 < TimeAccessor.count) {
+                    float ratio = (t-time[pointer])/(time[pointer+1]-time[pointer]);
+                    // out[channel.target_node] = glm::translate(glm::mat4(1), value[pointer]*ratio + value[pointer+1]*(1-ratio));
+                }
+                else {
+                    glm::vec3 tmp(model.nodes[channel.target_node].translation[0], model.nodes[channel.target_node].translation[2], model.nodes[channel.target_node].translation[1]);
+                    tmp.x = value[pointer*3] - tmp.x;
+                    tmp.y = value[pointer*3+2] - tmp.y;
+                    tmp.z = value[pointer*3+1] - tmp.z;
+                    for (int child:model.nodes[channel.target_node].children)
+                        out[child]= glm::translate(out[child], -tmp);
+                }
+
             }
         }
-        return ans;
     }
 
     float ModelLoader::Animation::getLength() const {
@@ -72,8 +94,8 @@ namespace  MyCraft {
             glBindBuffer(bufferView.target, 0);
             __buffers[i] = VBO;
         }
-        for (const auto& animation: __model.animations) {
-            __animations[animation.name] = new ModelLoader::Animation(animation, *this);
+        for (auto& animation: __model.animations) {
+            __animations[animation.name] = new ModelLoader::Animation(animation, __model);
         }
     }
     ModelLoader::~ModelLoader() {
@@ -81,8 +103,10 @@ namespace  MyCraft {
             glDeleteBuffers(1, &__buffers[i]);
         for (auto& i:__animations) delete i.second;
     }   
-    std::vector<glm::mat4> ModelLoader::get(const std::string& name, const float& t) {
-        return __animations[name]->operator[](t);
+    bool ModelLoader::apply(std::vector<glm::mat4>& out, const std::string& name, const float& t) {
+        if (__animations.find(name)==__animations.end()) return false;
+        __animations[name]->apply(out, t, __model);
+        return true;
     }
     int ModelLoader::getNodeCount() const {
         return __model.nodes.size();

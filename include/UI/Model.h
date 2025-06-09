@@ -6,13 +6,11 @@
 namespace MyCraft {
     class Model: public MyBase3D::Controller3D {
         public:
-            Model();
-            ~Model();
-            void glDraw() const override;
-            bool handle(GLFWwindow* window) override;
+            virtual void    see(const glm::vec3& dir) = 0,
+                            move(const glm::vec3& dir) = 0,
+                            rotate(const float& angle) = 0;
         private:
-            MyBase::Clock   __clock;
-            float           __sec;
+            
     };
 }
 #endif

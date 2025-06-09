@@ -11,8 +11,9 @@ namespace MyBase3D {
         Camera();
         ~Camera();
 
-        virtual void    move(const float& x, const float& y, const float& z),
+        virtual void    move(const glm::vec3& delta),
                         rotate(const float& vertical_angle, const float& horizontal_angle),
+                        look(const glm::vec3& pos),
 
                         setPosition(const glm::vec3& position),
                         setPosition(const float& x, const float& y, const float& z),

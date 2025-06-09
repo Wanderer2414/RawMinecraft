@@ -23,7 +23,7 @@ namespace MyCraft {
         _camera.setPosition({10, 10, 1.7});
         pZVelocity = 0;
         pSpeed = 0.1;
-        pFrameAlarm.setDuration(1000.f/60);\
+        pFrameAlarm.setDuration(50);
     }
     GameForm::~GameForm() {
     
@@ -37,106 +37,94 @@ namespace MyCraft {
         delta.x += y*tmp.x;
         delta.y += y*tmp.y;
         delta.z += z;
-        if (!z) {
-            float cX = pos.x+delta.x;
-            int fX = floor(pos.x), fY = floor(pos.y);
-            float cY = pos.y+delta.y;
-            int fZ = floor(pos.z-0.7);
-            if (delta.x>0) cX += 0.3;
-            if (delta.x<0) cX -= 0.3;
-            if (delta.y>0) cY += 0.3;
-            if (delta.y<0) cY -= 0.3;
-            cX = floor(cX);
-            cY = floor(cY);
-            if (cX != fX || cY!=fY) {
-                bool above_x = pWorld.at(cX, fY, fZ).getType() == BlockCatogary::Air;
-                bool above_y = pWorld.at(fX, cY, fZ).getType() == BlockCatogary::Air;
-                bool below_x = pWorld.at(cX, fY, fZ-1).getType() == BlockCatogary::Air;
-                bool below_y = pWorld.at(fX, cY, fZ - 1).getType() == BlockCatogary::Air;
-                bool above_xy = pWorld.at(cX, cY,fZ).getType() == BlockCatogary::Air;
-                bool below_xy = pWorld.at(cX, cY, fZ-1).getType() == BlockCatogary::Air;
-                if (!above_x || !below_x) {
-                    if (delta.x<0) delta.x = fX+0.3-pos.x;
-                    else if (delta.x>0) delta.x = cX-0.3-pos.x;
-                }
-                if (!above_y || !below_y) {
-                    if (delta.y<0) delta.y = fY+0.3-pos.y;
-                    else if (delta.y>0) delta.y = cY-0.3-pos.y;
-                }
-                if (above_x && above_y && !above_xy) {
-                    if (delta.x<0) delta.x = fX+0.3-pos.x;
-                    else if (delta.x>0) delta.x = cX-0.3-pos.x;
-                    if (delta.y<0) delta.y = fY+0.3-pos.y;
-                    else if (delta.y>0) delta.y = cY-0.3-pos.y;
-                }
-                if ((above_x && !below_x) || (above_y && !below_y) || (above_xy && !below_xy)) {
-                    if (    pWorld.at(cX, cY, fZ-2).getType()!=BlockCatogary::Air && 
-                            pWorld.at(fX, fY, fZ-2).getType()!=BlockCatogary::Air &&
-                            pWorld.at(cX, cY, fZ+1).getType() == BlockCatogary::Air) {
-                        if (delta.x>0) delta.x+=0.1;
-                        else if (delta.x<0) delta.x-=0.1;
-                        if (delta.y>0) delta.y+=0.1;
-                        else if (delta.y<0) delta.y-=0.1;
-                        delta.z = 1;
-                    }
-                }
-            }
-            _camera.setPosition(delta+pos);
-            return true;
-        }
-        else {
-            if (pWorld.at(floor(pos.x), floor(pos.y), floor(pos.z+delta.z-1.7)).getType() == BlockCatogary::Air) {
-                _camera.setPosition(delta+pos);
-                return true;
-            }
-            return false;
-        };
+        // if (!z) {
+        //     float cX = pos.x+delta.x;
+        //     int fX = floor(pos.x), fY = floor(pos.y);
+        //     float cY = pos.y+delta.y;
+        //     int fZ = floor(pos.z-0.7);
+        //     if (delta.x>0) cX += 0.3;
+        //     if (delta.x<0) cX -= 0.3;
+        //     if (delta.y>0) cY += 0.3;
+        //     if (delta.y<0) cY -= 0.3;
+        //     cX = floor(cX);
+        //     cY = floor(cY);
+        //     if (cX != fX || cY!=fY) {
+        //         bool above_x = pWorld.at(cX, fY, fZ).getType() == BlockCatogary::Air;
+        //         bool above_y = pWorld.at(fX, cY, fZ).getType() == BlockCatogary::Air;
+        //         bool below_x = pWorld.at(cX, fY, fZ-1).getType() == BlockCatogary::Air;
+        //         bool below_y = pWorld.at(fX, cY, fZ - 1).getType() == BlockCatogary::Air;
+        //         bool above_xy = pWorld.at(cX, cY,fZ).getType() == BlockCatogary::Air;
+        //         bool below_xy = pWorld.at(cX, cY, fZ-1).getType() == BlockCatogary::Air;
+        //         if (!above_x || !below_x) {
+        //             if (delta.x<0) delta.x = fX+0.3-pos.x;
+        //             else if (delta.x>0) delta.x = cX-0.3-pos.x;
+        //         }
+        //         if (!above_y || !below_y) {
+        //             if (delta.y<0) delta.y = fY+0.3-pos.y;
+        //             else if (delta.y>0) delta.y = cY-0.3-pos.y;
+        //         }
+        //         if (above_x && above_y && !above_xy) {
+        //             if (delta.x<0) delta.x = fX+0.3-pos.x;
+        //             else if (delta.x>0) delta.x = cX-0.3-pos.x;
+        //             if (delta.y<0) delta.y = fY+0.3-pos.y;
+        //             else if (delta.y>0) delta.y = cY-0.3-pos.y;
+        //         }
+        //         if ((above_x && !below_x) || (above_y && !below_y) || (above_xy && !below_xy)) {
+        //             if (    pWorld.at(cX, cY, fZ-2).getType()!=BlockCatogary::Air && 
+        //                     pWorld.at(fX, fY, fZ-2).getType()!=BlockCatogary::Air &&
+        //                     pWorld.at(cX, cY, fZ+1).getType() == BlockCatogary::Air) {
+        //                 if (delta.x>0) delta.x+=0.1;
+        //                 else if (delta.x<0) delta.x-=0.1;
+        //                 if (delta.y>0) delta.y+=0.1;
+        //                 else if (delta.y<0) delta.y-=0.1;
+        //                 delta.z = 1;
+        //             }
+        //         }
+        //     }
+        //     _camera.setPosition(delta+pos);
+        //     return true;
+        // }
+        // else {
+        //     if (pWorld.at(floor(pos.x), floor(pos.y), floor(pos.z+delta.z-1.7)).getType() == BlockCatogary::Air) {
+        //         _camera.setPosition(delta+pos);
+        //         return true;
+        //     }
+        //     return false;
+        // };
+        // __model.move(delta);
+        return true;
     }
     bool GameForm::handle(GLFWwindow* window) {
         bool is_changed = Form3D::handle(window);
     
         if (pFrameAlarm.get()) {
-            if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL)) {
-                pSpeed = 0.2;
-            }
-            if (pZVelocity>-40) {
-                if (glfwGetKey(window, GLFW_KEY_A)) {
-                    move(pSpeed, 0, 0);
-                    is_changed = true;
-                }
-                if (glfwGetKey(window, GLFW_KEY_D)) {
-                    move(-pSpeed, 0, 0);
-                    is_changed = true;
-                }
-                if (glfwGetKey(window, GLFW_KEY_W)) {
-                    move(0, pSpeed, 0);
-                    is_changed = true;
-                } else pSpeed = 0.1;
-                if (glfwGetKey(window, GLFW_KEY_S)) {
-                    move(0, -pSpeed, 0);
-                    is_changed = true;
-                }
-            }
-            if (pZVelocity>-50 &&   pWorld.at(floor(_camera.getPosition().x-0.25), floor(_camera.getPosition().y-0.25), floor(_camera.getPosition().z-2)).getType() == BlockCatogary::Air &&
-                                    pWorld.at(floor(_camera.getPosition().x-0.25), floor(_camera.getPosition().y+0.25), floor(_camera.getPosition().z-2)).getType() == BlockCatogary::Air &&
-                                    pWorld.at(floor(_camera.getPosition().x+0.25), floor(_camera.getPosition().y+0.25), floor(_camera.getPosition().z-2)).getType() == BlockCatogary::Air &&
-                                    pWorld.at(floor(_camera.getPosition().x+0.25), floor(_camera.getPosition().y-0.25), floor(_camera.getPosition().z-2)).getType() == BlockCatogary::Air) {
-                pZVelocity -= 3;
-            }
-            else if (!pZVelocity && glfwGetKey(window, GLFW_KEY_SPACE)) {
-                pZVelocity = 30;
-            }
-            if (pZVelocity>0) {
-                move(0, 0, pZVelocity/150);
-                is_changed = true;
-            }
-            else if (pZVelocity<0) {
-                if (!move(0, 0, pZVelocity/200)) {
-                    pZVelocity = 0;
-                };
-                is_changed = true;
-            }
+            pFrameAlarm.restart();
+            // if (pZVelocity>-40) {
+            //     if (glfwGetKey(
+            // if (pZVelocity>-50 &&   pWorld.at(floor(_camera.getPosition().x-0.25), floor(_camera.getPosition().y-0.25), floor(_camera.getPosition().z-2)).getType() == BlockCatogary::Air &&
+            //                         pWorld.at(floor(_camera.getPosition().x-0.25), floor(_camera.getPosition().y+0.25), floor(_camera.getPosition().z-2)).getType() == BlockCatogary::Air &&
+            //                         pWorld.at(floor(_camera.getPosition().x+0.25), floor(_camera.getPosition().y+0.25), floor(_camera.getPosition().z-2)).getType() == BlockCatogary::Air &&
+            //                         pWorld.at(floor(_camera.getPosition().x+0.25), floor(_camera.getPosition().y-0.25), floor(_camera.getPosition().z-2)).getType() == BlockCatogary::Air) {
+            //     pZVelocity -= 3;
+            // }
+            // else if (!pZVelocity && glfwGetKey(window, GLFW_KEY_SPACE)) {
+            //     pZVelocity = 30;
+            // }
+            // if (pZVelocity>0) {
+            //     move(0, 0, pZVelocity/150);
+            //     is_changed = true;
+            // }
+            // else if (pZVelocity<0) {
+            //     if (!move(0, 0, pZVelocity/200)) {
+            //         pZVelocity = 0;
+            //     };
+            //     is_changed = true;
+            // }
         }
+        glm::vec3 dir = __model.getDirection();
+        dir.z -= 3;
+        _camera.setPosition(__model.getPosition() - 3.f*dir);
+        _camera.look(__model.getPosition()+glm::vec3(0, 0, 4));
     
         glm::vec<2, double> position;
         glfwGetCursorPos(window, &position.x, &position.y);
@@ -145,9 +133,9 @@ namespace MyCraft {
     
         if (delta.x != 0 || delta.y != 0) {
             glfwSetCursorPos(window, InfoCenter::Default->getWindowHalf().x, InfoCenter::Default->getWindowHalf().y);
-            _camera.rotate(delta.y/1000, delta.x/1000);
+            __model.seeRotate(-delta.x/1000);
             is_changed = true;
         }
-        return is_changed;
+        return true;
     }
 }
