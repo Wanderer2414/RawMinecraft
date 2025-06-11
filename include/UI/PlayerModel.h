@@ -20,21 +20,21 @@ namespace MyCraft {
                     seeRotate(const float& angle),
                     glDraw() const override;
         
-        const glm::mat4x3& getBottomRec() const override;
-        glm::vec2 getZRange() const override;
+        glm::mat4x3 getShape() const override;
         
         
     private:
         bool            __isRun,
                         __isLeftAttack, __isRightAttack,
                         __isCrouch;
-        float           __runTime, __handTime, __speed;
-        glm::vec3       __postition;
+        float           __runTime, __handTime, __speed, __z;
+        glm::vec3       __position, __diagonal;
         glm::vec3       __direction, __eye_direction;
         std::vector<glm::mat4> __animation;
         MyBase::Clock   __animationClock, 
                         __behaviourClock,
                         __attack__cooldown;
+        glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
     };
 }
 #endif

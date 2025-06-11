@@ -1,4 +1,5 @@
 #include "PlayerModel.h"
+#include "Command.h"
 #include "GLFW/glfw3.h"
 #include "Global.h"
 #include "Model.h"
@@ -8,7 +9,7 @@
 #include "glm/geometric.hpp"
 #include <algorithm>
 namespace MyCraft {
-    PlayerModel::PlayerModel(): __postition(1), __direction(0, -1, 0), __runTime(0), __handTime(0),
+    PlayerModel::PlayerModel(): __position(0), __direction(0, -1, 0), __runTime(0), __handTime(0),
         __isLeftAttack(0), __isRightAttack(0), __animation(ModelStorage::Default->getPlayerModel().getNodeCount(), 1), __eye_direction(0, -1, 0),
         __isCrouch(false) {
         ModelStorage::Default->getPlayerModel().apply(__animation, "walk", __runTime);
@@ -17,13 +18,9 @@ namespace MyCraft {
         __attack__cooldown.setDuration(250);
         __isRun = false;
         __speed = 0.2;
-        _bottomRec[0] = {-0.4, 0.2, 0};
-        _bottomRec[1] = {-0.4, -0.2, 0};
-        _bottomRec[2] = {0.4, -0.2, 0};
-        _bottomRec[3] = {0.4, 0.2, 0};
-        _minZ = 0;
-        _maxZ = 3;
-    }
+        __diagonal = {0.4, 0.2, 1.8};
+        __z = 0;
+}
     PlayerModel::~PlayerModel() {
 
     }
@@ -81,8 +78,12 @@ namespace MyCraft {
             }
             if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) && !__isCrouch) __speed = 0.3;
             if (glm::length(dir)) {
-                move(dir);
-                is_changed = true;
+                request.push(Command::MoveRequest);
+                dir = __toAbsoluteCoordinate(dir);
+                dir = glm::normalize(dir)*__speed;
+                rotate(dir);
+                request.push(dir.x);
+                request.push(dir.y);
             }
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
                 rightAttack();
@@ -96,19 +97,49 @@ namespace MyCraft {
                 __isCrouch = true;
             } else __isCrouch = false;
         }
+        if (post.size()) {
+            if (post.front() == Command::MoveRequest) {
+                post.pop(); 
+                glm::vec3 delta;
+                delta.x = post.front(); post.pop();
+                delta.y = post.front(); post.pop();
+                delta.z = 0;
+                move(delta);
+                is_changed = true;
+            }
+            
+        }
         return is_changed;
     }
     glm::vec3 PlayerModel::getPosition() const {
-        return __postition;
+        return __position;
     }
     glm::vec3 PlayerModel::getDirection() const {
         return __eye_direction;
     }
-    const glm::mat4x3& PlayerModel::getBottomRec() const {
-        return _bottomRec;
+    glm::vec3 PlayerModel::__toAbsoluteCoordinate(const glm::vec3& delta) const {
+        glm::vec3 d = delta.x*__eye_direction;
+        d += delta.y*glm::normalize(glm::cross(__eye_direction, glm::vec3(0, 0, 1)));
+        return d;
     }
-    glm::vec2 PlayerModel::getZRange() const {
-        return {_minZ, _maxZ};
+    glm::mat4x3 PlayerModel::getShape() const {
+        float angle = glm::angle(__direction, glm::vec3(0, -1, 0));
+        if (__direction.x < 0) angle = -angle;
+
+        glm::mat4x3 ans;
+        ans[0] = __position;
+        ans[1] = {0.6, 0, 0};
+        ans[2] = {0, 0.4, 0};
+        ans[3] = {0, 0, 1.8};
+
+        ans[1] = glm::rotate(ans[1], angle, glm::vec3(0, 0, 1));
+        ans[2] = glm::rotate(ans[2], angle, glm::vec3(0, 0, 1));
+        ans[0] -= ans[1]/2.f+ans[2]/2.f;
+        if (__isCrouch) {
+            ans[0] -= ans[2];
+            ans[2] = ans[2]*1.8f;
+        } 
+        return ans;
     }
     void PlayerModel::leftAttack() {
         if (__attack__cooldown.get()) {
@@ -125,23 +156,12 @@ namespace MyCraft {
         }
     }
     void PlayerModel::move(const glm::vec3& delta) {
-        rotate(delta);
-        glm::vec3 d = delta.x*__eye_direction;
-        d += delta.y*glm::normalize(glm::cross(__eye_direction, glm::vec3(0, 0, 1)));
-        __postition += d;
+        __position += delta;
         __behaviourClock.restart();
         __isRun = true;
     }
     void PlayerModel::rotate(const glm::vec3& dir) {
-        // std::cout << dir.x << " " << dir.y << " " << dir.z << std::endl;
-        // glm::vec3 direction = dir;
-        // if (direction.z) direction.z = 0;
-        // direction = glm::normalize(direction);
-        // float angle = glm::angle(direction, __direction);
-        glm::vec3 d;
-        d = dir.x*__eye_direction;
-        d += dir.y*glm::normalize(glm::cross(__eye_direction, glm::vec3(0, 0, 1)));
-        __direction = glm::normalize(d);
+        __direction = glm::normalize(dir);
     }
     void PlayerModel::rotate(const float& angle) {
         __direction = glm::rotate(__direction, angle, glm::vec3(0,0, 1));
@@ -159,7 +179,7 @@ namespace MyCraft {
         glBindVertexArray(VAO);
         const ModelLoader& model = ModelStorage::Default->getPlayerModel();
         auto state = __animation;
-        state.back() = glm::translate(state.back(), __postition);
+        state.back() = glm::translate(state.back(), __position);
         float angle = glm::angle(__direction, glm::vec3(0, -1, 0));
         if (__direction.x<0) angle=-angle;
         state.back() = glm::rotate(state.back(), angle, glm::vec3(0, 0, 1));

@@ -38,7 +38,7 @@ namespace  MyCraft {
                 }
                 else tmp = glm::toMat4(glm::normalize(value[pointer]));
                 for (int child: model.nodes[channel.target_node].children) 
-                    out[child] = tmp;
+                    out[child] *= tmp;
             }
             else if (channel.target_path == "translation") {
                 const tinygltf::Accessor& TimeAccessor = model.accessors[sampler.input];
@@ -57,11 +57,12 @@ namespace  MyCraft {
                 }
                 else {
                     glm::vec3 tmp(model.nodes[channel.target_node].translation[0], model.nodes[channel.target_node].translation[2], model.nodes[channel.target_node].translation[1]);
-                    tmp.x = value[pointer*3] - tmp.x;
+                    tmp.x =tmp.x - value[pointer*3] ;
                     tmp.y = value[pointer*3+2] - tmp.y;
-                    tmp.z = value[pointer*3+1] - tmp.z;
-                    for (int child:model.nodes[channel.target_node].children)
+                    tmp.z = tmp.z - value[pointer*3+1];
+                    for (int child:model.nodes[channel.target_node].children) {
                         out[child]= glm::translate(out[child], -tmp);
+                    }
                 }
 
             }

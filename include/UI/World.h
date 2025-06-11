@@ -1,6 +1,7 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#include "Block.h"
 #include "Clock.h"
 #include "Chunk.h"
 #include "Controller3D.h"
@@ -13,6 +14,7 @@ class World: public MyBase3D::Controller3D {
         ~World();
         virtual bool            setHover(const MyBase3D::Ray3f& hover) override;
         MyCraft::Block&         at(const int& x, const int& y, const int& z);
+        MyCraft::Block&         at(const glm::vec3& pos);
     protected:
         bool handle(GLFWwindow* window) override;
         virtual void glDraw() const override;

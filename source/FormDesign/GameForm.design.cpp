@@ -1,23 +1,54 @@
 #include "GameForm.h"
 #include "Block.h"
-#include "GLFW/glfw3.h"
-#include "Global.h"
+#include "HitBoxCenter.h"
 #include "InfoCenter.h"
 #include <GL/gl.h>
 
 namespace MyCraft {
-
     GameForm::GameForm(GLFWwindow* window, const int& index): Form3D(index), pWorld(0, 0, 0) {
         insert(&pWorld);
         insert(&__model);
         insert(&__hitbox);
         __hitbox.insert(&__model);
-        for (int i = 0; i<16; i++) {
-            for (int j = 0; j<16; j++) {
-                if (i>=2 || j>=2)
+        __hitbox.setWorld(&pWorld);
+        for (int i = -16; i<16; i++) {
+            for (int j = -16; j<16; j++) {
                 pWorld.at(i, j, -1).setType(BlockCatogary::Grass);
             }
         }
+        for (int i = -16; i<0; i++) {
+            for (int j = -16; j<0; j++) pWorld.at(i,j,0).setType(BlockCatogary::Grass);
+        }
+        pWorld.at(5,5,0).setType(BlockCatogary::Grass);
+        pWorld.at(5,5,1).setType(BlockCatogary::Grass);
+        pWorld.at(5,6,0).setType(BlockCatogary::Grass);
+        pWorld.at(5,6,1).setType(BlockCatogary::Grass);
+        pWorld.at(5,7,0).setType(BlockCatogary::Grass);
+        pWorld.at(5,7,1).setType(BlockCatogary::Grass);
+
+        pWorld.at(3,5,0).setType(BlockCatogary::Grass);
+        pWorld.at(3,5,1).setType(BlockCatogary::Grass);
+        pWorld.at(3,6,0).setType(BlockCatogary::Grass);
+        pWorld.at(3,6,1).setType(BlockCatogary::Grass);
+        pWorld.at(3,7,0).setType(BlockCatogary::Grass);
+        pWorld.at(3,7,1).setType(BlockCatogary::Grass);
+
+        pWorld.at(5,3,0).setType(BlockCatogary::Grass);
+        pWorld.at(5,3,1).setType(BlockCatogary::Grass);
+        pWorld.at(6,3,0).setType(BlockCatogary::Grass);
+        pWorld.at(6,3,1).setType(BlockCatogary::Grass);
+        pWorld.at(7,3,0).setType(BlockCatogary::Grass);
+        pWorld.at(7,3,1).setType(BlockCatogary::Grass);
+
+        pWorld.at(5,5,0).setType(BlockCatogary::Grass);
+        pWorld.at(5,5,1).setType(BlockCatogary::Grass);
+        pWorld.at(6,5,0).setType(BlockCatogary::Grass);
+        pWorld.at(6,5,1).setType(BlockCatogary::Grass);
+        pWorld.at(7,5,0).setType(BlockCatogary::Grass);
+        pWorld.at(7,5,1).setType(BlockCatogary::Grass);
+
+        pWorld.at(-5,-5,0).setType(BlockCatogary::Grass);
+        pWorld.at(-5,-5,1).setType(BlockCatogary::Grass);
     
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glfwSetCursorPos(window, InfoCenter::Default->getWindowHalf().x, InfoCenter::Default->getWindowHalf().y);
@@ -27,8 +58,7 @@ namespace MyCraft {
         pSpeed = 0.1;
         pFrameAlarm.setDuration(50);
     }
-    GameForm::~GameForm() {
-    
+    GameForm::~GameForm() {        
     }
     bool GameForm::move(const float& x, const float& y, const float& z) {
         glm::vec3 delta = {0, 0, 0}, pos= _camera.getPosition();
@@ -124,9 +154,9 @@ namespace MyCraft {
             // }
         }
         glm::vec3 dir = __model.getDirection();
-        dir.z -= 3;
+        dir.z -= 2;
         _camera.setPosition(__model.getPosition() - 3.f*dir);
-        _camera.look(__model.getPosition()+glm::vec3(0, 0, 4));
+        _camera.look(__model.getPosition()+glm::vec3(0, 0, 3));
     
         glm::vec<2, double> position;
         glfwGetCursorPos(window, &position.x, &position.y);

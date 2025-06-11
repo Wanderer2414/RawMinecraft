@@ -167,6 +167,9 @@ namespace MyCraft {
         int rZ = (z-pPosition.z);
         return pChunks[rX/16][rY/16][rZ/16].at(rX%16, rY%16, rZ%16);
     }
+    Block& World::at(const glm::vec3& pos) {
+        return at(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z));
+    }
     void World::glDraw() const {
         for (int i = 0; i<world_side*2+1; i++) {
             for (int j = 0; j<world_side*2+1; j++) {

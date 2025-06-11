@@ -4,18 +4,18 @@
 #include "Controller3D.h"
 
 namespace MyCraft {
+    class HitBoxCenter;
     class Model: public MyBase3D::Controller3D {
         public:
             virtual void    see(const glm::vec3& dir) = 0,
                             move(const glm::vec3& dir) = 0,
                             rotate(const float& angle) = 0;
             virtual glm::vec3 getPosition() const = 0;
-            virtual const glm::mat4x3& getBottomRec() const = 0; 
-            virtual glm::vec2 getZRange() const = 0;
+            virtual glm::mat4x3 getShape() const = 0;
+        friend class HitBoxCenter;
         protected:
-            glm::mat4x3     _bottomRec;
-            float           _minZ,
-                            _maxZ;
+            std::queue<float> request;
+            std::queue<float> post;
     };
 }
 #endif

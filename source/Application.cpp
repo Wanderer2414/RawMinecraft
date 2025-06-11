@@ -32,7 +32,8 @@ namespace MyCraft {
             exit(EXIT_FAILURE);
         }
         glfwMakeContextCurrent(__window);
-        if (!gladLoadGL() ) {
+
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             std::cout << "Failed to initialize GLAD" << std::endl;
             exit(EXIT_FAILURE);
         }
