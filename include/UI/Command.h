@@ -3,5 +3,8 @@
 enum Command {
     MoveRequest,
     ResizeRequest,
+    FallPost,
+    FallRequest,
+    StopFallPost
 };
 #endif

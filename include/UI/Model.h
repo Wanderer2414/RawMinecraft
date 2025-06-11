@@ -16,6 +16,8 @@ namespace MyCraft {
         protected:
             std::queue<float> request;
             std::queue<float> post;
+
+            virtual void update() = 0;
     };
 }
 #endif

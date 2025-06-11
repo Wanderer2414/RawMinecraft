@@ -19,12 +19,17 @@ namespace MyCraft {
         for (int i = -16; i<0; i++) {
             for (int j = -16; j<0; j++) pWorld.at(i,j,0).setType(BlockCatogary::Grass);
         }
+
+        for (int i = 16; i<32; i++) {
+            for (int j = 0; j<16; j++) pWorld.at(i,j,-8).setType(BlockCatogary::Grass);
+        }
         pWorld.at(5,5,0).setType(BlockCatogary::Grass);
         pWorld.at(5,5,1).setType(BlockCatogary::Grass);
         pWorld.at(5,6,0).setType(BlockCatogary::Grass);
         pWorld.at(5,6,1).setType(BlockCatogary::Grass);
         pWorld.at(5,7,0).setType(BlockCatogary::Grass);
         pWorld.at(5,7,1).setType(BlockCatogary::Grass);
+        pWorld.at(4,7,2).setType(BlockCatogary::Grass);
 
         pWorld.at(3,5,0).setType(BlockCatogary::Grass);
         pWorld.at(3,5,1).setType(BlockCatogary::Grass);
@@ -49,6 +54,7 @@ namespace MyCraft {
 
         pWorld.at(-5,-5,0).setType(BlockCatogary::Grass);
         pWorld.at(-5,-5,1).setType(BlockCatogary::Grass);
+        pWorld.at(7,4,1).setType(BlockCatogary::Grass);
     
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glfwSetCursorPos(window, InfoCenter::Default->getWindowHalf().x, InfoCenter::Default->getWindowHalf().y);

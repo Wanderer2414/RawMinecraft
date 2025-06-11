@@ -19,7 +19,7 @@ namespace MyCraft {
         __isRun = false;
         __speed = 0.2;
         __diagonal = {0.4, 0.2, 1.8};
-        __z = 0;
+        __zVelocity = 0;
 }
     PlayerModel::~PlayerModel() {
 
@@ -85,6 +85,19 @@ namespace MyCraft {
                 request.push(dir.x);
                 request.push(dir.y);
             }
+            if (!__isFall) {
+                if (glfwGetKey(window, GLFW_KEY_SPACE)) {
+                    //Jump here
+                    __zVelocity = 0.35;
+                    request.push(Command::FallRequest);
+                    request.push(__zVelocity);  
+                }
+            }
+            else {
+                //Auto fall
+                request.push(Command::FallRequest);
+                request.push(__zVelocity);  
+            }
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
                 rightAttack();
                 is_changed = true;
@@ -96,18 +109,6 @@ namespace MyCraft {
             if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) {
                 __isCrouch = true;
             } else __isCrouch = false;
-        }
-        if (post.size()) {
-            if (post.front() == Command::MoveRequest) {
-                post.pop(); 
-                glm::vec3 delta;
-                delta.x = post.front(); post.pop();
-                delta.y = post.front(); post.pop();
-                delta.z = 0;
-                move(delta);
-                is_changed = true;
-            }
-            
         }
         return is_changed;
     }
@@ -157,8 +158,10 @@ namespace MyCraft {
     }
     void PlayerModel::move(const glm::vec3& delta) {
         __position += delta;
-        __behaviourClock.restart();
-        __isRun = true;
+        if (delta.x || delta.y) {
+            __behaviourClock.restart();
+            __isRun = true;
+        }
     }
     void PlayerModel::rotate(const glm::vec3& dir) {
         __direction = glm::normalize(dir);
@@ -185,5 +188,32 @@ namespace MyCraft {
         state.back() = glm::rotate(state.back(), angle, glm::vec3(0, 0, 1));
         ModelStorage::Default->DrawModel(state, model);
         glDeleteVertexArrays(1, &VAO);
+    }
+
+    void PlayerModel::update() {
+        while (post.size()) {
+            if (post.front() == Command::MoveRequest) {
+                post.pop(); 
+                glm::vec3 delta;
+                delta.x = post.front(); post.pop();
+                delta.y = post.front(); post.pop();
+                delta.z = post.front(); post.pop();
+                move(delta);
+            }
+            else if (post.front()== Command::FallPost) {
+                post.pop();  __isFall = true;
+                __zVelocity = post.front();  post.pop();
+            }
+            else if (post.front() == Command::FallRequest) {
+                post.pop(); __isFall = true;
+                __zVelocity = post.front(); post.pop();
+                move(glm::vec3(0, 0, __zVelocity));
+            }
+            else if (post.front() == Command::StopFallPost) {
+                post.pop(); __isFall = false;
+                __zVelocity = 0;
+            }
+            else post.pop();
+        }
     }
 }

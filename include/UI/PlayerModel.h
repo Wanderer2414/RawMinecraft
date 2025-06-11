@@ -24,10 +24,10 @@ namespace MyCraft {
         
         
     private:
-        bool            __isRun,
+        bool            __isRun, __isFall,
                         __isLeftAttack, __isRightAttack,
                         __isCrouch;
-        float           __runTime, __handTime, __speed, __z;
+        float           __runTime, __handTime, __speed, __zVelocity;
         glm::vec3       __position, __diagonal;
         glm::vec3       __direction, __eye_direction;
         std::vector<glm::mat4> __animation;
@@ -35,6 +35,8 @@ namespace MyCraft {
                         __behaviourClock,
                         __attack__cooldown;
         glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
+
+        void            update() override;
     };
 }
 #endif
