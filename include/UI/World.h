@@ -16,7 +16,6 @@ class World: public MyBase3D::Controller3D, public Port {
         virtual bool            setHover(const MyBase3D::Ray3f& hover) override;
         MyCraft::Block&         at(const int& x, const int& y, const int& z);
         MyCraft::Block&         at(const glm::vec3& pos);
-        std::vector<MessageType> getTypes() const override;
     protected:
         bool handle(GLFWwindow* window) override;
         virtual void glDraw() const override;
@@ -26,9 +25,28 @@ class World: public MyBase3D::Controller3D, public Port {
         glm::vec3               pPosition;
         MyBase::Clock           pFrameAlarm;
 
-        void receive(Port& source, Message* Message) override;
-        void __checkEmpty(Port& source, RequestGoto* request);
-        void __checkFall(Port& source, RequestFall* request);
+    };
+
+    class CheckEmpty: public Command {
+    public:
+        CheckEmpty(World* world);
+        ~CheckEmpty();
+
+        void execute(Port& mine, Port& source, Message* message) override;
+        MessageType getType() const override;
+    private:
+        World*  __world;
+    };
+
+    class CheckFall: public Command {
+    public:
+        CheckFall(World* world);
+        ~CheckFall();
+
+        void execute(Port& mine, Port& des, Message* message) override;
+        MessageType getType() const override;
+    private:
+        World*  __world;
     };
 }
 #endif

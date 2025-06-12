@@ -22,13 +22,12 @@ namespace MyCraft {
                     glDraw() const override;
         
         glm::mat4x3 getShape() const override;
-        std::vector<MessageType> getTypes() const override;
         
     private:
-        bool            __isRun, __isFall,
+        bool            __isRun,
                         __isLeftAttack, __isRightAttack,
                         __isCrouch;
-        float           __runTime, __handTime, __speed, __zVelocity;
+        float           __runTime, __handTime, __speed;
         glm::vec3       __position, __diagonal;
         glm::vec3       __direction, __eye_direction;
         std::vector<glm::mat4> __animation;
@@ -36,8 +35,9 @@ namespace MyCraft {
                         __behaviourClock,
                         __attack__cooldown;
         glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
-        void            receive(Port& source, Message* Message) override;
         void            update() override;
     };
+
+    
 }
 #endif

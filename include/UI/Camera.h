@@ -2,11 +2,12 @@
 #define CAMERA_H
 #include "Controller3D.h"
 #include "Global.h"
+#include "Message.h"
 #include "Ray.h"
 namespace MyBase3D {
     class Form3D;
     #define CAMERA_DISTANCE 4.0f
-    class Camera: public MyBase3D::Controller3D {
+    class Camera: public MyBase3D::Controller3D, public MyCraft::Port {
     public:
         Camera();
         ~Camera();
@@ -46,4 +47,15 @@ namespace MyBase3D {
         glm::vec2       transfer(const glm::vec3& vector) const;
     };
 };
+namespace MyCraft {
+    class ThirdCameraSetup: public MyCraft::Command {
+    public:
+        ThirdCameraSetup(MyBase3D::Camera* camera);
+        ~ThirdCameraSetup();
+        MessageType getType() const override;
+        void execute(Port& mine, Port& source, Message* message) override;
+    private:
+        MyBase3D::Camera* __camera;
+    };
+}
 #endif

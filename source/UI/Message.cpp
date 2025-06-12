@@ -1,11 +1,10 @@
 #include "Message.h"
 
 namespace MyCraft {
-    Port::Port(Network* network): __network(network) {
-
-    }
+    Port::Port(Network* network): __network(network) {}
     Port::~Port() {
-
+        for (auto& command:__commands) delete command.second;
+        __commands.clear();
     }
 
     void Port::match(Network* network) {
@@ -18,8 +17,30 @@ namespace MyCraft {
     void Port::send(Port& port, Message* Message) {
         __network->receive(*this, port, Message);
     }
+    std::vector<MessageType> Port::getTypes() const {
+        std::vector<MessageType> types(__commands.size());
+        int i = 0;
+        for (const auto& command: __commands) types[i++] = command.first;
+        return types;
+    }
+    void Port::add(Command* command) {
+        auto& __command = __commands[command->getType()];
+        if (__command) delete __command;
+        __command = command;
+    }
+    void Port::erase(const MessageType& type) {
+        if (__commands.find(type)!=__commands.end()) delete __commands[type];
+        __commands.erase(type);
+    }
+    void Port::receive(Port& source, Message* Message) {
+        if (__commands.find(Message->getType())!=__commands.end()) {
+            __commands[Message->getType()]->execute(*this, source, Message);
+        }
+        delete Message;
+    }
 
-    Network::Network() {}
+
+    Network::Network(): __ports(MessageTypeSize) {}
     Network::~Network() {}
     void Network::match(Port* port) {
         port->match(this);
@@ -28,10 +49,8 @@ namespace MyCraft {
             __ports[type].push_back(port);
     }
     void Network::receive(Port& source, Message* Message) {
-        if (__ports.find(Message->getType()) != __ports.end()){
-            auto& ports = __ports[Message->getType()];
-            for (auto& port:ports) send(source, *port, Message);
-        }
+        auto& ports = __ports[Message->getType()];
+        for (auto& port:ports) send(source, *port, Message);
     }
     void Network::receive(Port& source, Port& destination, Message* Message) {
         destination.receive(source, Message);

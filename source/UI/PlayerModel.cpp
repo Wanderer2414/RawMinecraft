@@ -19,7 +19,10 @@ namespace MyCraft {
         __isRun = false;
         __speed = 0.2;
         __diagonal = {0.4, 0.2, 1.8};
-        __zVelocity = 0;
+
+        add(new MoveCommand(this));
+        add(new FallCommand(this));
+        add(new StopFallCommand(this));
 }
     PlayerModel::~PlayerModel() {
 
@@ -83,16 +86,16 @@ namespace MyCraft {
                 rotate(dir);
                 send(new RequestGoto(getShape(), dir));
             }
-            if (!__isFall) {
+            if (!isFall()) {
                 if (glfwGetKey(window, GLFW_KEY_SPACE)) {
                     //Jump here
-                    __zVelocity = 0.35;
-                    send(new RequestFall(getShape(), __zVelocity));
+                    setZVelocity(0.35);
+                    send(new RequestFall(getShape(), getZVelocity()));
                 }
             }
             else {
                 //Auto fall
-                send(new RequestFall(getShape(), __zVelocity));
+                send(new RequestFall(getShape(), getZVelocity()));
             }
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
                 rightAttack();
@@ -185,37 +188,6 @@ namespace MyCraft {
         ModelStorage::Default->DrawModel(state, model);
         glDeleteVertexArrays(1, &VAO);
     }
-    std::vector<MessageType> PlayerModel::getTypes() const {
-        return {MessageType::MoveMessage, MessageType::FallMessage, MessageType::StopFallMessage};
-    };
     void PlayerModel::update() {
-    }
-    void PlayerModel::receive(Port& port, Message* Message) {
-        switch (Message->getType()) {
-            case MyCraft::MessageType::MoveMessage: {
-                Move* moveMessage = (Move*)Message;
-                move(moveMessage->direction);
-                if (!__isFall)
-                    send(new RequestFall(getShape(), __zVelocity));
-                delete moveMessage;
-            }
-            break;
-            case MyCraft::MessageType::FallMessage: {
-                Fall* fall = (Fall*)Message;
-                __isFall = true;
-                __zVelocity = fall->zVelocity;
-                move(glm::vec3(0, 0, __zVelocity));
-                delete fall;
-            }
-            break;
-            case MyCraft::MessageType::StopFallMessage: {
-                __isFall = false;
-                __zVelocity = 0;
-                delete (StopFall*)Message;
-            };
-            break;
-            default:
-            break;
-        }
     }
 }

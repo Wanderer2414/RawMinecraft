@@ -6,12 +6,16 @@ namespace MyCraft {
     class Message;
     class Network;
     class World;
+    class Command;
+    #define MessageTypeSize 7
     enum MessageType: unsigned char {
         RequestGotoMessage,
         RequestFallMessage,
         MoveMessage,
         FallMessage,
         StopFallMessage,
+        MoveCamera,
+        RotateCamera
     };
     class Port {
     public:
@@ -20,13 +24,16 @@ namespace MyCraft {
 
         virtual void match(Network* network);
 
+        void add(Command* command);
+        void erase(const MessageType& type);
         void send(Message* Message);
         void send(Port& port, Message* Message);
-        virtual std::vector<MessageType> getTypes() const = 0;
+        std::vector<MessageType> getTypes() const;
         friend class Network;
     protected:
-        virtual void receive(Port& source, Message* Message) = 0;
+        virtual void receive(Port& source, Message* Message);
     private:
+        std::map<MessageType, Command*> __commands;
         Network* __network;
     };
 
@@ -38,7 +45,7 @@ namespace MyCraft {
         virtual void receive(Port& source, Message* Message);
         virtual void receive(Port& source, Port& destination, Message* Message);
     private:
-        std::map<MessageType, std::vector<Port*>>   __ports;
+        std::vector<std::vector<Port*>>             __ports;
         void send(Port& source, Port& destination, Message* Message);
     };
     
@@ -47,6 +54,12 @@ namespace MyCraft {
         virtual MessageType getType() const = 0;
     private:
     };
+    class Command {
+    public:
+        virtual MessageType getType()      const = 0;
+        virtual void execute(Port& mine, Port& source, Message* message) = 0;
+    };
+
 
     class RequestGoto: public Message {
     public:

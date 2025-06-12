@@ -1,5 +1,6 @@
 #include "World.h"
 #include "Block.h"
+#include "Chunk.h"
 #include "Message.h"
 #include "GLFW/glfw3.h"
 #include "General.h"
@@ -14,6 +15,8 @@ namespace MyCraft {
         }
         hX = hY = hZ = 0;
         pFrameAlarm.setDuration(150);
+        add(new CheckFall(this));
+        add(new CheckEmpty(this));
     }
     World::~World() {
     }
@@ -181,27 +184,12 @@ namespace MyCraft {
             }
         }
     }
-    std::vector<MessageType> World::getTypes() const {
-        return {MessageType::RequestGotoMessage, MessageType::RequestFallMessage};
-    }
-    void World::receive(Port& source, Message* Message) {
-        switch (Message->getType()) {
-            case MyCraft::MessageType::RequestGotoMessage: {
-                RequestGoto* request = (RequestGoto*)Message;
-                __checkEmpty(source, request);
-                delete request;
-            };
-            break;
-            case MyCraft::MessageType::RequestFallMessage: {
-                RequestFall* request = (RequestFall*)Message;
-                __checkFall(source, request);
-                delete request;
-            }
-            default:
-            break;
-        }
-    }
-    void World::__checkEmpty(Port& source, RequestGoto* request) {
+
+    CheckEmpty::CheckEmpty(World* world): __world(world) {}
+    CheckEmpty::~CheckEmpty() {}
+    
+    void CheckEmpty::execute(Port& mine, Port& source, Message* message) {
+        RequestGoto* request = (RequestGoto*)message;
         bool below_result = true, above_result = true;
         auto& shape = request->rectangleBox;
         glm::vec3 dir = glm::vec3(request->direction, 0);
@@ -209,7 +197,7 @@ namespace MyCraft {
         glm::vec3 npos = shape[0] + dir, epos = npos + shape[1];
         std::queue<glm::vec3> q = rasterize(npos, epos);
         while (q.size() && below_result) {
-            if (at(q.front()).getType() != BlockCatogary::Air) below_result = false;
+            if (__world->at(q.front()).getType() != BlockCatogary::Air) below_result = false;
             q.pop();
         }
         //Above block check
@@ -217,7 +205,7 @@ namespace MyCraft {
         epos.z += 1;
         q = rasterize(npos, epos);
         while (q.size() && above_result) {
-            if (at(q.front()).getType() != BlockCatogary::Air) above_result = false;
+            if (__world->at(q.front()).getType() != BlockCatogary::Air) above_result = false;
             q.pop();
         }
         if (!below_result || !above_result) {
@@ -226,19 +214,19 @@ namespace MyCraft {
                 below_result = above_result = true;
                 q = rasterize(shape[0]-glm::vec3(0,0,1), shape[0]+shape[1]-glm::vec3(0,0,1));
                 while (q.size() && above_result) {
-                    if (at(q.front()).getType() == BlockCatogary::Air) below_result = false;
+                    if (__world->at(q.front()).getType() == BlockCatogary::Air) below_result = false;
                     q.pop();
                 }
                 q = rasterize(shape[0]+shape[2]-glm::vec3(0,0,1), shape[0]+shape[1]+shape[2]-glm::vec3(0,0,1));
                 while (q.size() && above_result) {
-                    if (at(q.front()).getType() == BlockCatogary::Air) below_result = false;
+                    if (__world->at(q.front()).getType() == BlockCatogary::Air) below_result = false;
                     q.pop();
                 }
                 npos.z += 1;
                 epos.z += 1;
                 q = rasterize(npos, epos);
                 while (q.size() && above_result) {
-                    if (at(q.front()).getType() != BlockCatogary::Air) above_result = false;
+                    if (__world->at(q.front()).getType() != BlockCatogary::Air) above_result = false;
                     q.pop();
                 }
             }
@@ -249,13 +237,13 @@ namespace MyCraft {
                 below_result = above_result = true;
                 q = rasterize(npos, epos);
                 while (q.size() && below_result) {
-                    if (at(q.front()).getType() != BlockCatogary::Air) below_result = false;
+                    if (__world->at(q.front()).getType() != BlockCatogary::Air) below_result = false;
                     q.pop();
                 }
                 npos.z++; epos.z++;
                 q = rasterize(npos, epos);
                 while (q.size() && below_result) {
-                    if (at(q.front()).getType() != BlockCatogary::Air) above_result = false;
+                    if (__world->at(q.front()).getType() != BlockCatogary::Air) above_result = false;
                     q.pop();
                 }
 
@@ -266,13 +254,13 @@ namespace MyCraft {
                     below_result = above_result = true;
                     q = rasterize(npos, epos);
                     while (q.size() && below_result) {
-                        if (at(q.front()).getType() != BlockCatogary::Air) below_result = false;
+                        if (__world->at(q.front()).getType() != BlockCatogary::Air) below_result = false;
                         q.pop();
                     }
                     npos.z++; epos.z++;
                     q = rasterize(npos, epos);
                     while (q.size() && below_result) {
-                        if (at(q.front()).getType() != BlockCatogary::Air) below_result = false;
+                        if (__world->at(q.front()).getType() != BlockCatogary::Air) below_result = false;
                         q.pop();
                     }
                     if (below_result) dir.x = 0;
@@ -280,7 +268,7 @@ namespace MyCraft {
             }
         }
         if (below_result) {
-            send(source, new Move(dir));
+            mine.send(source, new Move(dir));
 
             shape[3] = shape[0] + shape[2];
             shape[3][2]--;
@@ -291,32 +279,40 @@ namespace MyCraft {
             shape[0][2]--;
         }
     }
-    void World::__checkFall(Port& source, RequestFall* request) {
+    MessageType CheckEmpty::getType() const {
+        return MessageType::RequestGotoMessage;
+    }
+    
+    CheckFall::CheckFall(World* world): __world(world) {}
+    CheckFall::~CheckFall() {}
+        
+    void CheckFall::execute(Port& mine, Port& source, Message* message) {
+        RequestFall* request = (RequestFall*)message;
         float z = request->zVelocity;
         auto& shape = request->rectangleBox;
         if (z<=0) {
             z -= 0.06;
             bool isFall = true;
             shape[3] = shape[0] + shape[2];
-            isFall = isFall && (at(shape[3]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
-                                at(shape[3]).getType()!=BlockCatogary::Air); 
+            isFall = isFall && (__world->at(shape[3]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
+                                __world->at(shape[3]).getType()!=BlockCatogary::Air); 
             shape[2] += shape[0] + shape[1];
-            isFall = isFall && (at(shape[2]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
-                                at(shape[2]).getType()!=BlockCatogary::Air); 
+            isFall = isFall && (__world->at(shape[2]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
+                                __world->at(shape[2]).getType()!=BlockCatogary::Air); 
             shape[1] += shape[0];
-            isFall = isFall && (at(shape[1]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
-                                at(shape[1]).getType()!=BlockCatogary::Air); 
+            isFall = isFall && (__world->at(shape[1]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
+                                __world->at(shape[1]).getType()!=BlockCatogary::Air); 
 
-            isFall = isFall && (at(shape[0]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
-                                at(shape[0]).getType()!=BlockCatogary::Air); 
-
+            isFall = isFall && (__world->at(shape[0]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
+                                __world->at(shape[0]).getType()!=BlockCatogary::Air); 
+            
             if (isFall) {
-                send(source, new Fall(z));
+                mine.send(source, new Fall(z));
             }
             else {
                 float delta = shape[0][2] - floor(shape[0][2]);
-                send(source, new Fall(-delta));
-                send(source, new StopFall());
+                mine.send(source, new Fall(-delta));
+                mine.send(source, new StopFall());
             }
         }
         else if (z>0) {
@@ -329,16 +325,19 @@ namespace MyCraft {
             shape[1] += shape[0];
             shape[1][2]++;
             shape[0][2]++;
-            if (at(shape[0]).getType()==BlockCatogary::Air && 
-                at(shape[1]).getType()==BlockCatogary::Air && 
-                at(shape[2]).getType()==BlockCatogary::Air && 
-                at(shape[3]).getType()==BlockCatogary::Air) {
-                    send(source, new Fall(z-0.035));
+            if (__world->at(shape[0]).getType()==BlockCatogary::Air && 
+                __world->at(shape[1]).getType()==BlockCatogary::Air && 
+                __world->at(shape[2]).getType()==BlockCatogary::Air && 
+                __world->at(shape[3]).getType()==BlockCatogary::Air) {
+                    mine.send(source, new Fall(z-0.035));
             }
             else {
                 float delta = floor(shape[0][2]) - shape[0][2] + 1 - 0.1;
-                send(source, new Fall(delta));
+                mine.send(source, new Fall(delta));
             }
         }
+    }
+    MessageType CheckFall::getType() const {
+        return MessageType::RequestFallMessage;
     }
 }
