@@ -10,7 +10,8 @@ namespace MyCraft {
         insert(&__model);
         insert(&__hitbox);
         __hitbox.insert(&__model);
-        __hitbox.setWorld(&pWorld);
+        __hitbox.match(&__model);
+        __hitbox.match(&pWorld);
         for (int i = -16; i<16; i++) {
             for (int j = -16; j<16; j++) {
                 pWorld.at(i, j, -1).setType(BlockCatogary::Grass);

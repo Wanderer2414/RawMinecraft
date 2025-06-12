@@ -54,16 +54,4 @@ namespace MyBase3D {
         Container3D::glDraw();
         Container::glDraw();
     }
-    void Form3D::insert(Controller* controller, const int& layer) {
-        Container::insert(controller, layer);
-    }
-    void Form3D::erase(Controller* controller) {
-        Container::erase(controller);
-    }
-    void Form3D::insert(Controller3D* controller, const int& layer) {
-        Container3D::insert(controller, layer);
-    }
-    void Form3D::erase(Controller3D* controller) {
-        Container3D::insert(controller);
-    }
 }

@@ -1,6 +1,8 @@
 #include "World.h"
 #include "Block.h"
+#include "Message.h"
 #include "GLFW/glfw3.h"
+#include "General.h"
 namespace MyCraft {
     World::World(const int& x, const int& y, const int& z): pPosition(x-world_side*16, y-world_side*16, z-world_side*16) {
         for (int i = 0; i<world_side*2+1; i++) {
@@ -176,6 +178,166 @@ namespace MyCraft {
                 for (int k = 0; k<world_side*2+1; k++) {
                     pChunks[i][j][k].glDraw();
                 }
+            }
+        }
+    }
+    std::vector<MessageType> World::getTypes() const {
+        return {MessageType::RequestGotoMessage, MessageType::RequestFallMessage};
+    }
+    void World::receive(Port& source, Message* Message) {
+        switch (Message->getType()) {
+            case MyCraft::MessageType::RequestGotoMessage: {
+                RequestGoto* request = (RequestGoto*)Message;
+                __checkEmpty(source, request);
+                delete request;
+            };
+            break;
+            case MyCraft::MessageType::RequestFallMessage: {
+                RequestFall* request = (RequestFall*)Message;
+                __checkFall(source, request);
+                delete request;
+            }
+            default:
+            break;
+        }
+    }
+    void World::__checkEmpty(Port& source, RequestGoto* request) {
+        bool below_result = true, above_result = true;
+        auto& shape = request->rectangleBox;
+        glm::vec3 dir = glm::vec3(request->direction, 0);
+        //Below check
+        glm::vec3 npos = shape[0] + dir, epos = npos + shape[1];
+        std::queue<glm::vec3> q = rasterize(npos, epos);
+        while (q.size() && below_result) {
+            if (at(q.front()).getType() != BlockCatogary::Air) below_result = false;
+            q.pop();
+        }
+        //Above block check
+        npos.z += 1;
+        epos.z += 1;
+        q = rasterize(npos, epos);
+        while (q.size() && above_result) {
+            if (at(q.front()).getType() != BlockCatogary::Air) above_result = false;
+            q.pop();
+        }
+        if (!below_result || !above_result) {
+            //Check auto jump
+            if (above_result) {
+                below_result = above_result = true;
+                q = rasterize(shape[0]-glm::vec3(0,0,1), shape[0]+shape[1]-glm::vec3(0,0,1));
+                while (q.size() && above_result) {
+                    if (at(q.front()).getType() == BlockCatogary::Air) below_result = false;
+                    q.pop();
+                }
+                q = rasterize(shape[0]+shape[2]-glm::vec3(0,0,1), shape[0]+shape[1]+shape[2]-glm::vec3(0,0,1));
+                while (q.size() && above_result) {
+                    if (at(q.front()).getType() == BlockCatogary::Air) below_result = false;
+                    q.pop();
+                }
+                npos.z += 1;
+                epos.z += 1;
+                q = rasterize(npos, epos);
+                while (q.size() && above_result) {
+                    if (at(q.front()).getType() != BlockCatogary::Air) above_result = false;
+                    q.pop();
+                }
+            }
+            if (below_result && above_result) dir.z=1;
+            else {
+                //Check parallel Ox
+                npos = shape[0] + glm::vec3(dir.x, 0, 0); epos = npos + shape[1];
+                below_result = above_result = true;
+                q = rasterize(npos, epos);
+                while (q.size() && below_result) {
+                    if (at(q.front()).getType() != BlockCatogary::Air) below_result = false;
+                    q.pop();
+                }
+                npos.z++; epos.z++;
+                q = rasterize(npos, epos);
+                while (q.size() && below_result) {
+                    if (at(q.front()).getType() != BlockCatogary::Air) above_result = false;
+                    q.pop();
+                }
+
+                if (above_result && below_result) dir.y = 0;
+                else {
+                    //Check paralel Oy
+                    npos = shape[0] + glm::vec3(0, dir.y, 0); epos = npos + shape[1];
+                    below_result = above_result = true;
+                    q = rasterize(npos, epos);
+                    while (q.size() && below_result) {
+                        if (at(q.front()).getType() != BlockCatogary::Air) below_result = false;
+                        q.pop();
+                    }
+                    npos.z++; epos.z++;
+                    q = rasterize(npos, epos);
+                    while (q.size() && below_result) {
+                        if (at(q.front()).getType() != BlockCatogary::Air) below_result = false;
+                        q.pop();
+                    }
+                    if (below_result) dir.x = 0;
+                }
+            }
+        }
+        if (below_result) {
+            send(source, new Move(dir));
+
+            shape[3] = shape[0] + shape[2];
+            shape[3][2]--;
+            shape[2] += shape[0] + shape[1];
+            shape[2][2]--;
+            shape[1] += shape[0];
+            shape[1][2]--;
+            shape[0][2]--;
+        }
+    }
+    void World::__checkFall(Port& source, RequestFall* request) {
+        float z = request->zVelocity;
+        auto& shape = request->rectangleBox;
+        if (z<=0) {
+            z -= 0.06;
+            bool isFall = true;
+            shape[3] = shape[0] + shape[2];
+            isFall = isFall && (at(shape[3]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
+                                at(shape[3]).getType()!=BlockCatogary::Air); 
+            shape[2] += shape[0] + shape[1];
+            isFall = isFall && (at(shape[2]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
+                                at(shape[2]).getType()!=BlockCatogary::Air); 
+            shape[1] += shape[0];
+            isFall = isFall && (at(shape[1]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
+                                at(shape[1]).getType()!=BlockCatogary::Air); 
+
+            isFall = isFall && (at(shape[0]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
+                                at(shape[0]).getType()!=BlockCatogary::Air); 
+
+            if (isFall) {
+                send(source, new Fall(z));
+            }
+            else {
+                float delta = shape[0][2] - floor(shape[0][2]);
+                send(source, new Fall(-delta));
+                send(source, new StopFall());
+            }
+        }
+        else if (z>0) {
+            shape[0] += shape[3];
+
+            shape[3] = shape[0] + shape[2];
+            shape[3][2]++;
+            shape[2] += shape[0] + shape[1];
+            shape[2][2]++;
+            shape[1] += shape[0];
+            shape[1][2]++;
+            shape[0][2]++;
+            if (at(shape[0]).getType()==BlockCatogary::Air && 
+                at(shape[1]).getType()==BlockCatogary::Air && 
+                at(shape[2]).getType()==BlockCatogary::Air && 
+                at(shape[3]).getType()==BlockCatogary::Air) {
+                    send(source, new Fall(z-0.035));
+            }
+            else {
+                float delta = floor(shape[0][2]) - shape[0][2] + 1 - 0.1;
+                send(source, new Fall(delta));
             }
         }
     }

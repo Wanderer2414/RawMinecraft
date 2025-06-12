@@ -1,10 +1,11 @@
 #ifndef PLAYER_MODEL_H
 #define PLAYER_MODEL_H
 #include "Clock.h"
+#include "Message.h"
 #include "GLFW/glfw3.h"
 #include "Model.h"
 namespace MyCraft {
-    class PlayerModel: public Model {
+    class PlayerModel: public Model, public Port {
     public: 
         PlayerModel();
         ~PlayerModel();
@@ -21,7 +22,7 @@ namespace MyCraft {
                     glDraw() const override;
         
         glm::mat4x3 getShape() const override;
-        
+        std::vector<MessageType> getTypes() const override;
         
     private:
         bool            __isRun, __isFall,
@@ -35,7 +36,7 @@ namespace MyCraft {
                         __behaviourClock,
                         __attack__cooldown;
         glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
-
+        void            receive(Port& source, Message* Message) override;
         void            update() override;
     };
 }

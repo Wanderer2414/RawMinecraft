@@ -1,5 +1,5 @@
 #include "PlayerModel.h"
-#include "Command.h"
+#include "Message.h"
 #include "GLFW/glfw3.h"
 #include "Global.h"
 #include "Model.h"
@@ -78,25 +78,21 @@ namespace MyCraft {
             }
             if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) && !__isCrouch) __speed = 0.3;
             if (glm::length(dir)) {
-                request.push(Command::MoveRequest);
                 dir = __toAbsoluteCoordinate(dir);
                 dir = glm::normalize(dir)*__speed;
                 rotate(dir);
-                request.push(dir.x);
-                request.push(dir.y);
+                send(new RequestGoto(getShape(), dir));
             }
             if (!__isFall) {
                 if (glfwGetKey(window, GLFW_KEY_SPACE)) {
                     //Jump here
                     __zVelocity = 0.35;
-                    request.push(Command::FallRequest);
-                    request.push(__zVelocity);  
+                    send(new RequestFall(getShape(), __zVelocity));
                 }
             }
             else {
                 //Auto fall
-                request.push(Command::FallRequest);
-                request.push(__zVelocity);  
+                send(new RequestFall(getShape(), __zVelocity));
             }
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
                 rightAttack();
@@ -189,31 +185,37 @@ namespace MyCraft {
         ModelStorage::Default->DrawModel(state, model);
         glDeleteVertexArrays(1, &VAO);
     }
-
+    std::vector<MessageType> PlayerModel::getTypes() const {
+        return {MessageType::MoveMessage, MessageType::FallMessage, MessageType::StopFallMessage};
+    };
     void PlayerModel::update() {
-        while (post.size()) {
-            if (post.front() == Command::MoveRequest) {
-                post.pop(); 
-                glm::vec3 delta;
-                delta.x = post.front(); post.pop();
-                delta.y = post.front(); post.pop();
-                delta.z = post.front(); post.pop();
-                move(delta);
+    }
+    void PlayerModel::receive(Port& port, Message* Message) {
+        switch (Message->getType()) {
+            case MyCraft::MessageType::MoveMessage: {
+                Move* moveMessage = (Move*)Message;
+                move(moveMessage->direction);
+                if (!__isFall)
+                    send(new RequestFall(getShape(), __zVelocity));
+                delete moveMessage;
             }
-            else if (post.front()== Command::FallPost) {
-                post.pop();  __isFall = true;
-                __zVelocity = post.front();  post.pop();
-            }
-            else if (post.front() == Command::FallRequest) {
-                post.pop(); __isFall = true;
-                __zVelocity = post.front(); post.pop();
+            break;
+            case MyCraft::MessageType::FallMessage: {
+                Fall* fall = (Fall*)Message;
+                __isFall = true;
+                __zVelocity = fall->zVelocity;
                 move(glm::vec3(0, 0, __zVelocity));
+                delete fall;
             }
-            else if (post.front() == Command::StopFallPost) {
-                post.pop(); __isFall = false;
+            break;
+            case MyCraft::MessageType::StopFallMessage: {
+                __isFall = false;
                 __zVelocity = 0;
-            }
-            else post.pop();
+                delete (StopFall*)Message;
+            };
+            break;
+            default:
+            break;
         }
     }
 }

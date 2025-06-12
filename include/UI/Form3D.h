@@ -9,12 +9,12 @@ namespace MyBase3D {
         public:
             Form3D(const int& index);
             ~Form3D();                                     
-            virtual void            insert(Controller* controller, const int& layer = 0)    override,
-                                    erase(Controller* controller)                           override,
-                                    insert(Controller3D* controller, const int& layer = 0)  override,
-                                    erase(Controller3D* controller)                         override;
             virtual bool            contains(const Ray3f& sight) const override;
             virtual int             run(GLFWwindow* window);
+            using Container3D::insert;
+            using Container3D::erase;
+            using Container::insert;
+            using Container::erase;
         protected:
             virtual bool            handle(GLFWwindow* window) override;
             virtual void            glDraw() const override;

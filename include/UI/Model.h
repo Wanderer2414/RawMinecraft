@@ -12,11 +12,7 @@ namespace MyCraft {
                             rotate(const float& angle) = 0;
             virtual glm::vec3 getPosition() const = 0;
             virtual glm::mat4x3 getShape() const = 0;
-        friend class HitBoxCenter;
         protected:
-            std::queue<float> request;
-            std::queue<float> post;
-
             virtual void update() = 0;
     };
 }
