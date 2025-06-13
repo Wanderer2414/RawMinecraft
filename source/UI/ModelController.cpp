@@ -1,23 +1,23 @@
-#include "Model.h"
+#include "ModelController.h"
 #include "Message.h"
 
 namespace MyCraft {
-    Model::Model(): __isFall(false), __zVelocity(0) {}
-    Model::~Model() {};
+    ModelController::ModelController(): __isFall(false), __zVelocity(0) {}
+    ModelController::~ModelController() {};
 
-    bool Model::isFall() const {
+    bool ModelController::isFall() const {
         return __isFall;
     }
-    float Model::getZVelocity() const {
+    float ModelController::getZVelocity() const {
         return __zVelocity;
     }
-    void Model::setFall(const bool& isFall) {
+    void ModelController::setFall(const bool& isFall) {
         __isFall = isFall;
     }
-    void Model::setZVelocity(const float& z) {
+    void ModelController::setZVelocity(const float& z) {
         __zVelocity = z;
     }
-    MoveCommand::MoveCommand(Model* model): __model(model) {}
+    MoveCommand::MoveCommand(ModelController* model): __model(model) {}
     MoveCommand::~MoveCommand() {}
 
     MessageType MoveCommand::getType() const {
@@ -30,7 +30,7 @@ namespace MyCraft {
             mine.send(new RequestFall(__model->getShape(), __model->getZVelocity()));
     }
     
-    FallCommand::FallCommand(Model* model): __model(model) {}
+    FallCommand::FallCommand(ModelController* model): __model(model) {}
     FallCommand::~FallCommand() {}
 
     MessageType FallCommand::getType() const {
@@ -42,7 +42,7 @@ namespace MyCraft {
         __model->setZVelocity(fall->zVelocity);
         __model->move(glm::vec3(0, 0, __model->getZVelocity()));
     }
-    StopFallCommand::StopFallCommand(Model* model): __model(model) {}
+    StopFallCommand::StopFallCommand(ModelController* model): __model(model) {}
     StopFallCommand::~StopFallCommand() {}
 
     MessageType StopFallCommand::getType() const {

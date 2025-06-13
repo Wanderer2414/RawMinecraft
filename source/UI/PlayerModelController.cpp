@@ -1,16 +1,12 @@
-#include "PlayerModel.h"
+#include "PlayerModelController.h"
 #include "Camera.h"
 #include "Message.h"
-#include "GLFW/glfw3.h"
 #include "Global.h"
-#include "Model.h"
+#include "ModelController.h"
 #include "ModelLoader.h"
 #include "ModelStorage.h"
-#include "glm/ext/matrix_transform.hpp"
-#include "glm/geometric.hpp"
-#include <algorithm>
 namespace MyCraft {
-    PlayerModel::PlayerModel(): __position(0), __direction(0, -1, 0), __runTime(0), __handTime(0),
+    PlayerModelController::PlayerModelController(): __position(0), __direction(0, -1, 0), __runTime(0), __handTime(0),
         __isLeftAttack(0), __isRightAttack(0), __animation(ModelStorage::Default->getPlayerModel().getNodeCount(), 1), __eye_direction(0, -1, 0),
         __isCrouch(false) {
         ModelStorage::Default->getPlayerModel().apply(__animation, "walk", __runTime);
@@ -26,11 +22,11 @@ namespace MyCraft {
         add(new StopFallCommand(this));
         add (new ResetCameraCommand(this));
 }
-    PlayerModel::~PlayerModel() {
+    PlayerModelController::~PlayerModelController() {
 
     }
-    bool PlayerModel::sensitiveHandle(GLFWwindow* window) {
-        bool is_changed = Model::handle(window);
+    bool PlayerModelController::sensitiveHandle(GLFWwindow* window) {
+        bool is_changed = ModelController::handle(window);
         glm::vec3 dir(0);
         if (glfwGetKey(window, GLFW_KEY_A)) {
             dir.y -= __speed;
@@ -85,8 +81,8 @@ namespace MyCraft {
 
         return is_changed;
     }
-    bool PlayerModel::handle(GLFWwindow* window) {
-        bool is_changed = Model::handle(window);
+    bool PlayerModelController::handle(GLFWwindow* window) {
+        bool is_changed = ModelController::handle(window);
         if (__animationClock.get()) {
             __animationClock.restart();
             std::fill(__animation.begin(), __animation.end(), glm::mat4(1));
@@ -127,18 +123,18 @@ namespace MyCraft {
         }
         return is_changed;
     }
-    glm::vec3 PlayerModel::getModelPosition() const {
+    glm::vec3 PlayerModelController::getModelPosition() const {
         return __position;
     }
-    glm::vec3 PlayerModel::getDirection() const {
+    glm::vec3 PlayerModelController::getDirection() const {
         return __eye_direction;
     }
-    glm::vec3 PlayerModel::__toAbsoluteCoordinate(const glm::vec3& delta) const {
+    glm::vec3 PlayerModelController::__toAbsoluteCoordinate(const glm::vec3& delta) const {
         glm::vec3 d = delta.x*__eye_direction;
         d += delta.y*glm::normalize(glm::cross(__eye_direction, glm::vec3(0, 0, 1)));
         return d;
     }
-    glm::mat4x3 PlayerModel::getShape() const {
+    glm::mat4x3 PlayerModelController::getShape() const {
         float angle = glm::angle(__direction, glm::vec3(0, -1, 0));
         if (__direction.x < 0) angle = -angle;
 
@@ -157,7 +153,7 @@ namespace MyCraft {
         } 
         return ans;
     }
-    void PlayerModel::leftAttack() {
+    void PlayerModelController::leftAttack() {
         if (__attack__cooldown.get()) {
             __attack__cooldown.restart();
             __handTime = 0;
@@ -165,7 +161,7 @@ namespace MyCraft {
             __isLeftAttack = true;
         } 
     }
-    void PlayerModel::rightAttack() {
+    void PlayerModelController::rightAttack() {
         if (__attack__cooldown.get()) {
             __attack__cooldown.restart();
             __handTime = 0;
@@ -173,7 +169,7 @@ namespace MyCraft {
             __isRightAttack = true;
         }
     }
-    void PlayerModel::move(const glm::vec3& delta) {
+    void PlayerModelController::move(const glm::vec3& delta) {
         send(new MoveCameraMessage(delta));
         __position += delta;
         if (delta.x || delta.y) {
@@ -181,21 +177,21 @@ namespace MyCraft {
             __isRun = true;
         }
     }
-    void PlayerModel::rotate(const glm::vec3& dir) {
+    void PlayerModelController::rotate(const glm::vec3& dir) {
         __direction = glm::normalize(dir);
     }
-    void PlayerModel::rotate(const float& angle) {
+    void PlayerModelController::rotate(const float& angle) {
         __direction = glm::rotate(__direction, angle, glm::vec3(0,0, 1));
     }
-    void PlayerModel::see(const glm::vec3& dir) {
+    void PlayerModelController::see(const glm::vec3& dir) {
         float angle = glm::angle(glm::vec3(0, 1, 0), glm::normalize(dir));
         __animation[8] = glm::rotate(glm::mat4(1), angle, glm::vec3(1, 0, 0));
     }
-    void PlayerModel::seeRotate(const float& angle) {
+    void PlayerModelController::seeRotate(const float& angle) {
         __eye_direction = glm::rotate(__eye_direction, angle, glm::vec3(0, 0, 1));
         send(new RotateCameraMessage(__position, __eye_direction));
     }
-    void PlayerModel::glDraw() const {
+    void PlayerModelController::glDraw() const {
         GLuint VAO;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
@@ -208,10 +204,10 @@ namespace MyCraft {
         ModelStorage::Default->DrawModel(state, model);
         glDeleteVertexArrays(1, &VAO);
     }
-    void PlayerModel::update() {
+    void PlayerModelController::update() {
     }
 
-    ResetCameraCommand::ResetCameraCommand(PlayerModel* model): __model(model) {};
+    ResetCameraCommand::ResetCameraCommand(PlayerModelController* model): __model(model) {};
     MessageType ResetCameraCommand::getType() const {
         return MessageType::ResetCamera;
     }

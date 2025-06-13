@@ -3,13 +3,12 @@
 #include "Camera.h"
 #include "Clock.h"
 #include "Message.h"
-#include "GLFW/glfw3.h"
-#include "Model.h"
+#include "ModelController.h"
 namespace MyCraft {
-    class PlayerModel: public Model, public Port {
+    class PlayerModelController: public ModelController, public Port {
     public: 
-        PlayerModel();
-        ~PlayerModel();
+        PlayerModelController();
+        ~PlayerModelController();
         bool        sensitiveHandle(GLFWwindow* window) override;
         bool        handle(GLFWwindow* window) override;
         glm::vec3   getModelPosition() const override,
@@ -42,12 +41,12 @@ namespace MyCraft {
 
     class ResetCameraCommand: public Command {
     public:
-        ResetCameraCommand(PlayerModel* model);
+        ResetCameraCommand(PlayerModelController* model);
         ~ResetCameraCommand();
         MessageType getType() const override;
         void execute(Port& mine, Port& source, Message* message) override;
     private:
-        PlayerModel* __model;
+        PlayerModelController* __model;
     };
 }
 #endif

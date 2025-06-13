@@ -1,6 +1,6 @@
 #include "HitBoxCenter.h"
 #include "Global.h"
-#include "Model.h"
+#include "ModelController.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
 namespace MyCraft {
@@ -20,10 +20,10 @@ namespace MyCraft {
     HitBoxCenter::~HitBoxCenter() {
         glDeleteBuffers(1, &__colors);
     }
-    void HitBoxCenter::insert(Model* model) {
+    void HitBoxCenter::insert(ModelController* model) {
         __models.push_back(model);
     }
-    void HitBoxCenter::erase(Model* model) {
+    void HitBoxCenter::erase(ModelController* model) {
     }
     void HitBoxCenter::glDraw() const {
         glUseProgram(MyBase3D::ShaderStorage::Default->GetDefaultShader());

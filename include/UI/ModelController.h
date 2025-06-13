@@ -6,10 +6,10 @@
 
 namespace MyCraft {
     class HitBoxCenter;
-    class Model: public MyBase::Controller {
+    class ModelController: public MyBase::Controller {
         public:
-            Model();
-            ~Model();
+            ModelController();
+            ~ModelController();
             bool isFall() const;
             float getZVelocity() const;
             virtual void    see(const glm::vec3& dir) = 0,
@@ -30,33 +30,33 @@ namespace MyCraft {
     };
     class MoveCommand: public Command {
     public:
-        MoveCommand(Model* model);
+        MoveCommand(ModelController* model);
         ~MoveCommand();
 
         MessageType getType()                               const override;
         void execute(Port& mine, Port& source, Message* message)   override;
     private:
-        Model*      __model;
+        ModelController*      __model;
     };
     class FallCommand: public Command {
     public:
-        FallCommand(Model* model);
+        FallCommand(ModelController* model);
         ~FallCommand();
 
         MessageType getType()                               const override;
         void execute(Port& mine, Port& source, Message* message)   override;
     private:
-        Model*      __model;
+        ModelController*      __model;
     };
     class StopFallCommand: public Command {
     public:
-        StopFallCommand(Model* model);
+        StopFallCommand(ModelController* model);
         ~StopFallCommand();
 
         MessageType getType()                               const override;
         void execute(Port& mine, Port& source, Message* message)   override;
     private:
-        Model*      __model;
+        ModelController*      __model;
     };
     
 }
