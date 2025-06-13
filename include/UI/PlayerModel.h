@@ -10,7 +10,7 @@ namespace MyCraft {
         PlayerModel();
         ~PlayerModel();
         bool        handle(GLFWwindow* window) override;
-        glm::vec3   getPosition() const override,
+        glm::vec3   getModelPosition() const override,
                     getDirection() const;
         void        move(const glm::vec3& delta) override,
                     rotate(const float& angle) override,

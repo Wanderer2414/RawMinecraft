@@ -69,7 +69,7 @@ namespace MyCraft {
     GameForm::~GameForm() {        
     }
     bool GameForm::move(const float& x, const float& y, const float& z) {
-        glm::vec3 delta = {0, 0, 0}, pos= _camera.getPosition();
+        glm::vec3 delta = {0, 0, 0}, pos= _camera.getCameraPosition();
         delta += x*_camera.getHorizontalVector();
         glm::vec3 tmp = _camera.getDirection();
         tmp.z = 0;

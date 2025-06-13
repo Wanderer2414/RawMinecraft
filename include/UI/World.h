@@ -5,15 +5,15 @@
 #include "Clock.h"
 #include "Chunk.h"
 #include "Message.h"
-#include "Controller3D.h"
+#include "Controller.h"
 #include "Global.h"
 namespace MyCraft {
-class World: public MyBase3D::Controller3D, public Port {
+class World: public MyBase::Controller, public Port {
     #define world_side 1
     public:
         World(const int& x, const int& y, const int& z);
         ~World();
-        virtual bool            setHover(const MyBase3D::Ray3f& hover) override;
+        // virtual bool            setHover(const MyBase3D::Ray3f& hover) override;
         MyCraft::Block&         at(const int& x, const int& y, const int& z);
         MyCraft::Block&         at(const glm::vec3& pos);
     protected:

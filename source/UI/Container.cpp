@@ -1,7 +1,5 @@
 #include "Container.h"
 #include "Controller.h"
-#include "Global.h"
-#include "glm/fwd.hpp"
 namespace MyBase{
 
     Container::Container(): _currentFocus(-1), _currentHover(-1), _previosFocus(-1) {
@@ -79,7 +77,7 @@ namespace MyBase{
         Controller::setPosition(x, y);
     }
     void Container::glDraw() const {
-
+        for (auto& child:children) child.first->glDraw();
     }
     void Container::update() {
         for (auto& [child, layer]:children) child->update();

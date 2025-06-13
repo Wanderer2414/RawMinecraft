@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include "Controller3D.h"
 #include "GLFW/glfw3.h"
 #include "Global.h"
 #include "InfoCenter.h"
@@ -52,7 +51,7 @@ namespace MyBase3D {
     glm::vec3 Camera::getCenter() const {
         return __position + __delta;
     }
-    glm::vec3 Camera::getPosition() const {
+    glm::vec3 Camera::getCameraPosition() const {
         return __position;
     }
     glm::vec3 Camera::getDirection() const {
@@ -120,7 +119,7 @@ namespace MyBase3D {
         __direction[5].y = 0.05*cos(__verticalAngle);
     }
     bool Camera::handle(GLFWwindow* window) {
-        bool is_changed = Controller3D::handle(window);
+        bool is_changed = Controller::handle(window);
         if (glfwGetKey(window, GLFW_KEY_F5)) {
             if (__isThirdCamera) {
                 add(new MyCraft::RotateCameraCommand_FirstPersonView(this));

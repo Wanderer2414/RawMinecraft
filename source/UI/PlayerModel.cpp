@@ -118,7 +118,7 @@ namespace MyCraft {
         }
         return is_changed;
     }
-    glm::vec3 PlayerModel::getPosition() const {
+    glm::vec3 PlayerModel::getModelPosition() const {
         return __position;
     }
     glm::vec3 PlayerModel::getDirection() const {

@@ -1,13 +1,13 @@
 #ifndef CAMERA_H
 #define CAMERA_H
-#include "Controller3D.h"
+#include "Controller.h"
 #include "Global.h"
 #include "Message.h"
 #include "Ray.h"
 namespace MyBase3D {
     class Form3D;
     #define CAMERA_DISTANCE 4.0f
-    class Camera: public MyBase3D::Controller3D, public MyCraft::Port {
+    class Camera: public MyBase::Controller, public MyCraft::Port {
     public:
         Camera();
         ~Camera();
@@ -26,7 +26,7 @@ namespace MyBase3D {
         glm::vec3       getHorizontalVector() const,
                         getCenter() const,
                         getDirection() const,
-                        getPosition() const;
+                        getCameraPosition() const;
 
         Ray3f           getSight() const;
         operator GLuint();

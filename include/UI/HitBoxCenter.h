@@ -1,11 +1,11 @@
 #ifndef HITBOX_H
 #define HITBOX_H
 #include "Message.h"
-#include "Controller3D.h"
+#include "Controller.h"
 #include "Model.h"
 #include "World.h"
 namespace MyCraft {
-    class HitBoxCenter: public MyBase3D::Controller3D, public Network {
+    class HitBoxCenter: public MyBase::Controller, public Network {
         public:
             HitBoxCenter();
             ~HitBoxCenter();

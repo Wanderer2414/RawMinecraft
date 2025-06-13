@@ -1,12 +1,12 @@
 #ifndef MODEL_H
 #define MODEL_H
 #include "Clock.h"
-#include "Controller3D.h"
+#include "Controller.h"
 #include "Message.h"
 
 namespace MyCraft {
     class HitBoxCenter;
-    class Model: public MyBase3D::Controller3D {
+    class Model: public MyBase::Controller {
         public:
             Model();
             ~Model();
@@ -15,7 +15,7 @@ namespace MyCraft {
             virtual void    see(const glm::vec3& dir) = 0,
                             move(const glm::vec3& dir) = 0,
                             rotate(const float& angle) = 0;
-            virtual glm::vec3 getPosition() const = 0;
+            virtual glm::vec3 getModelPosition() const = 0;
             virtual glm::mat4x3 getShape() const = 0;
             friend class MoveCommand;
             friend class FallCommand;
