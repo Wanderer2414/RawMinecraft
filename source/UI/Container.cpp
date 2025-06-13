@@ -2,26 +2,26 @@
 #include "Controller.h"
 namespace MyBase{
 
-    Container::Container(): _currentFocus(-1), _currentHover(-1), _previosFocus(-1) {
+    Container::Container(): __currentFocus(-1), __currentHover(-1), __previosFocus(-1) {
     }
     Container::~Container() {
     
     }
     bool Container::setHover(const glm::vec2& position) {
         bool is_changed = Controller::setHover(position);
-        _currentHover = -1;
+        __currentHover = -1;
         if (isHovered()) {
             glm::vec2 pos = position - getPosition();
-            if (_currentFocus != -1) {
-                is_changed = children[_currentFocus].first->setHover(pos) || is_changed;
-                if (children[_currentFocus].first->isHovered()) _currentHover = _currentFocus;
+            if (__currentFocus != -1) {
+                is_changed = children[__currentFocus].first->setHover(pos) || is_changed;
+                if (children[__currentFocus].first->isHovered()) __currentHover = __currentFocus;
             }
             for (int i = 0; i<children.size(); i++) {
-                if (_currentHover ==-1 && _currentFocus != i) {
+                if (__currentHover ==-1 && __currentFocus != i) {
                     is_changed = children[i].first->setHover(pos) || is_changed;
-                    if (children[i].first->isHovered()) _currentHover = i;
+                    if (children[i].first->isHovered()) __currentHover = i;
                 }
-                else if (i!=_currentHover) is_changed = children[i].first->setHover(false) || is_changed;
+                else if (i!=__currentHover) is_changed = children[i].first->setHover(false) || is_changed;
             }
         }
         else setHover(false);
@@ -34,22 +34,38 @@ namespace MyBase{
         }
         return false;
     }
+    Controller* Container::getCurrentFocus() const {
+        if (__currentFocus>=0) return children[__currentFocus].first;
+        else return 0;
+    }
     void Container::setFocus(const bool& focus) {
         __isFocus = focus;
         if (!focus) {
             for (auto& i:children) i.first->setFocus(false);
         }
-        else _currentFocus = -1;
+        else __currentFocus = -1;
     }
     void Container::reset() {
         Controller::reset();
-        _previosFocus = _currentFocus;
+        __previosFocus = __currentFocus;
         for (auto& i:children) i.first->reset();
+    }
+    bool Container::sensitiveHandle(GLFWwindow* window) {
+        bool is_changed = Controller::sensitiveHandle(window);
+        for (auto& child: children) 
+            is_changed = child.first->sensitiveHandle(window) || is_changed;
+        return is_changed;
+    }
+    bool Container::catchEvent(GLFWwindow* window) {
+        bool is_changed = Controller::catchEvent(window);
+        if (__currentFocus>=0) 
+            is_changed = children[__currentFocus].first->catchEvent(window) || is_changed;
+        return is_changed;
     }
     bool Container::handle(GLFWwindow* window) {
         bool is_changed = Controller::handle(window) || is_changed;
-        for (auto& i:children) 
-            is_changed = i.first->handle(window) || is_changed;
+        for (int i = 0; i<children.size(); i++) 
+            children[i].first->handle(window) || is_changed;
         return is_changed;
     }
     std::size_t Container::size() const {
@@ -67,8 +83,8 @@ namespace MyBase{
         int i = 0;
         while (i<children.size() && children[i].first != controller) i++;
         if (i<children.size()) children.erase(children.begin() + i);
-        if (_currentFocus <= children.size()) _currentFocus--;
-        if (_currentHover <= children.size()) _currentHover--;
+        if (__currentFocus <= children.size()) __currentFocus--;
+        if (__currentHover <= children.size()) __currentHover--;
     }
     void Container::clear() {
         children.clear();
@@ -77,7 +93,9 @@ namespace MyBase{
         Controller::setPosition(x, y);
     }
     void Container::glDraw() const {
-        for (auto& child:children) child.first->glDraw();
+        for (int i = 0; i<children.size(); i++) 
+            if (i!=__currentFocus) children[i].first->glDraw();
+        if (__currentFocus>=0) children[__currentFocus].first->glDraw();
     }
     void Container::update() {
         for (auto& [child, layer]:children) child->update();

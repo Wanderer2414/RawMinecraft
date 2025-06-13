@@ -1,5 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
+#include "Clock.h"
 #include "Controller.h"
 #include "Global.h"
 #include "Message.h"
@@ -47,6 +48,7 @@ namespace MyBase3D {
                         __clipPlane;
 
         GLuint          __camera;
+        MyBase::Clock   __keyCooldown;
         glm::vec2       transfer(const glm::vec3& vector) const;
     };
 };
@@ -93,5 +95,10 @@ namespace MyCraft {
     private:
         MyBase3D::Camera* __camera;
     };    
+
+    class ResetCameraMessage: public Message {
+    public:
+        MessageType getType() const override;
+    };
 }
 #endif

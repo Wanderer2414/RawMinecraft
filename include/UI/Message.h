@@ -7,7 +7,7 @@ namespace MyCraft {
     class Network;
     class World;
     class Command;
-    #define MessageTypeSize 7
+    #define MessageTypeSize 8
     enum MessageType: unsigned char {
         RequestGotoMessage,
         RequestFallMessage,
@@ -15,7 +15,8 @@ namespace MyCraft {
         FallMessage,
         StopFallMessage,
         MoveCamera,
-        RotateCamera
+        RotateCamera,
+        ResetCamera
     };
     class Port {
     public:

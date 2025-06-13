@@ -32,7 +32,7 @@ namespace MyBase3D {
 
         __view = glm::lookAt(__position, __position + __delta, glm::vec3(0, 0, 1));
         __projection = glm::perspective(glm::radians(60.f), MyCraft::InfoCenter::Default->getWindowRatio(), 0.1f, 100.f);
-
+        __keyCooldown.setDuration(200);
         add(new MyCraft::RotateCameraCommand_ThirdPersonView(this));
         add(new MyCraft::MoveCameraCommand(this));
         update();
@@ -120,14 +120,19 @@ namespace MyBase3D {
     }
     bool Camera::handle(GLFWwindow* window) {
         bool is_changed = Controller::handle(window);
-        if (glfwGetKey(window, GLFW_KEY_F5)) {
-            if (__isThirdCamera) {
-                add(new MyCraft::RotateCameraCommand_FirstPersonView(this));
-                __isThirdCamera = false;
-            }
-            else {
-                add(new MyCraft::RotateCameraCommand_ThirdPersonView(this));
-                __isThirdCamera = true;
+        if (__keyCooldown.get()) {
+            if (glfwGetKey(window, GLFW_KEY_F5)) {
+                if (__isThirdCamera) {
+                    add(new MyCraft::RotateCameraCommand_FirstPersonView(this));
+                    send(new MyCraft::ResetCameraMessage());
+                    __isThirdCamera = false;
+                }
+                else {
+                    add(new MyCraft::RotateCameraCommand_ThirdPersonView(this));
+                    send(new MyCraft::ResetCameraMessage());
+                    __isThirdCamera = true;
+                }
+                __keyCooldown.restart();
             }
         }
         return is_changed;
@@ -213,5 +218,9 @@ namespace MyCraft {
         package->direction.z = 0;
         __camera->setPosition(package->position + glm::vec3(0,0,1.8));
         __camera->see(package->direction);
+    }
+
+    MessageType ResetCameraMessage::getType() const {
+        return MessageType::ResetCamera;
     }
 }

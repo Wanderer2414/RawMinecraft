@@ -1,6 +1,7 @@
 #ifndef FORM_3D_H
 #define FORM_3D_H
 #include "Camera.h"
+#include "Clock.h"
 #include "Container.h"
 #include "Global.h"
 namespace MyBase3D {
@@ -10,14 +11,22 @@ namespace MyBase3D {
             ~Form3D();                                     
             virtual bool            contains(const glm::vec2& pos) const override;
             virtual int             run(GLFWwindow* window);
+            virtual void            setSensitiveTime(const size_t& milisecond);
             using Container::insert;
             using Container::erase;
         protected:
+            virtual bool            sensitiveHandle(GLFWwindow* window) override;
+            virtual bool            catchEvent(GLFWwindow* window) override;
             virtual bool            handle(GLFWwindow* window) override;
+            int                     getReturnForm() const;
+            int                     getFormIndex();
+            void                    setReturnForm(const int& returnValue);
             virtual void            glDraw() const override;
-            int             _formIndex, 
-                            _returnValue;
             Camera          _camera;
+        private:
+            int             __formIndex, 
+                            __returnValue;
+            MyBase::Clock   __sensitiveClock;
         };       
 }
 #endif

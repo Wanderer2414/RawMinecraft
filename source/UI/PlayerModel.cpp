@@ -14,39 +14,96 @@ namespace MyCraft {
         __isLeftAttack(0), __isRightAttack(0), __animation(ModelStorage::Default->getPlayerModel().getNodeCount(), 1), __eye_direction(0, -1, 0),
         __isCrouch(false) {
         ModelStorage::Default->getPlayerModel().apply(__animation, "walk", __runTime);
-        __behaviourClock.setDuration(100);
         __animationClock.setDuration(30);
         __attack__cooldown.setDuration(250);
         __isRun = false;
         __speed = 0.2;
         __diagonal = {0.6, 0.4, 1.9};
+        __runCooldown.setDuration(30);
 
         add(new MoveCommand(this));
         add(new FallCommand(this));
         add(new StopFallCommand(this));
+        add (new ResetCameraCommand(this));
 }
     PlayerModel::~PlayerModel() {
 
+    }
+    bool PlayerModel::sensitiveHandle(GLFWwindow* window) {
+        bool is_changed = Model::handle(window);
+        glm::vec3 dir(0);
+        if (glfwGetKey(window, GLFW_KEY_A)) {
+            dir.y -= __speed;
+        }
+        if (glfwGetKey(window, GLFW_KEY_D)) {
+            dir.y += __speed;
+        }
+        if (glfwGetKey(window, GLFW_KEY_W)) {
+            dir.x += __speed;
+        } else if (!__isCrouch && __speed!=0.2f) {
+            __speed = 0.2;
+            __animationClock.setDuration(30);
+        }
+        if (glfwGetKey(window, GLFW_KEY_S)) {
+            dir.x -= __speed;
+        }
+        if (__speed!=0.3f && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) && !__isCrouch) {
+            __speed = 0.3;
+            __animationClock.setDuration(10);
+        }
+        if (glm::length(dir)) {
+            dir = __toAbsoluteCoordinate(dir);
+            dir = glm::normalize(dir)*__speed;
+            rotate(dir);
+            send(new RequestGoto(getShape(), dir));
+        }
+        if (!isFall()) {
+            if (glfwGetKey(window, GLFW_KEY_SPACE)) {
+                //Jump here
+                setZVelocity(0.35);
+                send(new RequestFall(getShape(), getZVelocity()));
+            }
+        }
+        else {
+            //Auto fall
+            send(new RequestFall(getShape(), getZVelocity()));
+        }
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
+            rightAttack();
+            is_changed = true;
+        }
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
+            leftAttack();
+            is_changed = true;
+        }
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) {
+            if (!__isCrouch) {
+                __animationClock.setDuration(40);
+                __isCrouch = true;
+            }
+        } else __isCrouch = false;
+
+        return is_changed;
     }
     bool PlayerModel::handle(GLFWwindow* window) {
         bool is_changed = Model::handle(window);
         if (__animationClock.get()) {
             __animationClock.restart();
             std::fill(__animation.begin(), __animation.end(), glm::mat4(1));
+            if (__isCrouch) {
+                ModelStorage::Default->getPlayerModel().apply(__animation, "crouch", 0);
+                __speed = 0.05;
+                is_changed = true;
+            }
             if (__isRun) {
-                if (__behaviourClock.get()) {
-                    __behaviourClock.restart();
+                if (__runCooldown.get()) {
+                    __runCooldown.restart();
                     __isRun = false;
                     __runTime = 0;
                 }
                 else __runTime+=0.1;
                 if (__runTime>=1) __runTime -= 1;
                 ModelStorage::Default->getPlayerModel().apply(__animation, "walk", __runTime);
-                is_changed = true;
-            }
-            if (__isCrouch) {
-                ModelStorage::Default->getPlayerModel().apply(__animation, "crouch", 0);
-                __speed = 0.05;
                 is_changed = true;
             }
             if (__isRightAttack) {
@@ -67,54 +124,6 @@ namespace MyCraft {
                 ModelStorage::Default->getPlayerModel().apply(__animation, "left_attack", __handTime);
                 is_changed = true;
             }
-            glm::vec3 dir(0);
-            if (glfwGetKey(window, GLFW_KEY_A)) {
-                dir.y -= __speed;
-            }
-            if (glfwGetKey(window, GLFW_KEY_D)) {
-                dir.y += __speed;
-            }
-            if (glfwGetKey(window, GLFW_KEY_W)) {
-                dir.x += __speed;
-            } else if (!__isCrouch && __speed!=0.2f) {
-                __speed = 0.2;
-                __behaviourClock.setDuration(100);
-            }
-            if (glfwGetKey(window, GLFW_KEY_S)) {
-                dir.x -= __speed;
-            }
-            if (__speed!=0.3f && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) && !__isCrouch) {
-                __speed = 0.3;
-                __behaviourClock.setDuration(50);
-            }
-            if (glm::length(dir)) {
-                dir = __toAbsoluteCoordinate(dir);
-                dir = glm::normalize(dir)*__speed;
-                rotate(dir);
-                send(new RequestGoto(getShape(), dir));
-            }
-            if (!isFall()) {
-                if (glfwGetKey(window, GLFW_KEY_SPACE)) {
-                    //Jump here
-                    setZVelocity(0.35);
-                    send(new RequestFall(getShape(), getZVelocity()));
-                }
-            }
-            else {
-                //Auto fall
-                send(new RequestFall(getShape(), getZVelocity()));
-            }
-            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
-                rightAttack();
-                is_changed = true;
-            }
-            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
-                leftAttack();
-                is_changed = true;
-            }
-            if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) {
-                __isCrouch = true;
-            } else __isCrouch = false;
         }
         return is_changed;
     }
@@ -152,6 +161,7 @@ namespace MyCraft {
         if (__attack__cooldown.get()) {
             __attack__cooldown.restart();
             __handTime = 0;
+            __isRightAttack = false;
             __isLeftAttack = true;
         } 
     }
@@ -159,6 +169,7 @@ namespace MyCraft {
         if (__attack__cooldown.get()) {
             __attack__cooldown.restart();
             __handTime = 0;
+            __isRightAttack = false;
             __isRightAttack = true;
         }
     }
@@ -166,7 +177,7 @@ namespace MyCraft {
         send(new MoveCameraMessage(delta));
         __position += delta;
         if (delta.x || delta.y) {
-            __behaviourClock.restart();
+            __runCooldown.restart();
             __isRun = true;
         }
     }
@@ -198,5 +209,13 @@ namespace MyCraft {
         glDeleteVertexArrays(1, &VAO);
     }
     void PlayerModel::update() {
+    }
+
+    ResetCameraCommand::ResetCameraCommand(PlayerModel* model): __model(model) {};
+    MessageType ResetCameraCommand::getType() const {
+        return MessageType::ResetCamera;
+    }
+    void ResetCameraCommand::execute(Port& mine, Port& source, Message* message) {
+        __model->send(new RotateCameraMessage(__model->getModelPosition(), __model->getDirection()));
     }
 }

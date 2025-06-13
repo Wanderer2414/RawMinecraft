@@ -6,9 +6,8 @@
 #include <GL/gl.h>
 
 namespace MyBase {
-    Form::Form(const int& index) {
-        _formIndex = index;
-        _returnValue = INT_MIN;
+    Form::Form(const int& index): __formIndex(index), __returnValue(INT_MIN) {
+        __sensitiveClock.setDuration(10);
     }
     Form::~Form() {
     
@@ -22,20 +21,23 @@ namespace MyBase {
             reset();
             glfwPollEvents();
             is_changed = handle(window) || is_changed;
+            if (__sensitiveClock.get()) {
+                __sensitiveClock.restart();
+                is_changed = catchEvent(window) || is_changed;
+                is_changed = sensitiveHandle(window) || is_changed;
+            }
             if (is_changed) {
                 glClearColor(0, 0, 0, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glDraw();
                 glfwSwapBuffers(window);
             }
-            if (_returnValue!=INT_MIN) return _returnValue;
+            if (__returnValue!=INT_MIN) return __returnValue;
             is_changed = 0;
         }
-        return _formIndex;
+        return __formIndex;
     }
-    void Form::glDraw() const {
-        for (const auto& [child, layer]:children) 
-            if (_currentFocus == -1 || child != children[_currentFocus].first) child->glDraw();
-        if (_currentFocus != -1) glDraw();
+    void Form::setSensitiveTime(const size_t& time) {
+        __sensitiveClock.setDuration(time);
     }
 }
