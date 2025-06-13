@@ -1,4 +1,5 @@
 #include "PlayerModel.h"
+#include "Camera.h"
 #include "Message.h"
 #include "GLFW/glfw3.h"
 #include "Global.h"
@@ -18,7 +19,7 @@ namespace MyCraft {
         __attack__cooldown.setDuration(250);
         __isRun = false;
         __speed = 0.2;
-        __diagonal = {0.4, 0.2, 1.8};
+        __diagonal = {0.6, 0.4, 1.9};
 
         add(new MoveCommand(this));
         add(new FallCommand(this));
@@ -75,11 +76,17 @@ namespace MyCraft {
             }
             if (glfwGetKey(window, GLFW_KEY_W)) {
                 dir.x += __speed;
-            } else if (!__isCrouch) __speed = 0.2;
+            } else if (!__isCrouch && __speed!=0.2f) {
+                __speed = 0.2;
+                __behaviourClock.setDuration(100);
+            }
             if (glfwGetKey(window, GLFW_KEY_S)) {
                 dir.x -= __speed;
             }
-            if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) && !__isCrouch) __speed = 0.3;
+            if (__speed!=0.3f && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) && !__isCrouch) {
+                __speed = 0.3;
+                __behaviourClock.setDuration(50);
+            }
             if (glm::length(dir)) {
                 dir = __toAbsoluteCoordinate(dir);
                 dir = glm::normalize(dir)*__speed;
@@ -128,9 +135,9 @@ namespace MyCraft {
 
         glm::mat4x3 ans;
         ans[0] = __position;
-        ans[1] = {0.6, 0, 0};
-        ans[2] = {0, 0.4, 0};
-        ans[3] = {0, 0, 1.8};
+        ans[1] = {__diagonal.x, 0, 0};
+        ans[2] = {0, __diagonal.y, 0};
+        ans[3] = {0, 0, __diagonal.z};
 
         ans[1] = glm::rotate(ans[1], angle, glm::vec3(0, 0, 1));
         ans[2] = glm::rotate(ans[2], angle, glm::vec3(0, 0, 1));
@@ -156,6 +163,7 @@ namespace MyCraft {
         }
     }
     void PlayerModel::move(const glm::vec3& delta) {
+        send(new MoveCameraMessage(delta));
         __position += delta;
         if (delta.x || delta.y) {
             __behaviourClock.restart();
@@ -174,6 +182,7 @@ namespace MyCraft {
     }
     void PlayerModel::seeRotate(const float& angle) {
         __eye_direction = glm::rotate(__eye_direction, angle, glm::vec3(0, 0, 1));
+        send(new RotateCameraMessage(__position, __eye_direction));
     }
     void PlayerModel::glDraw() const {
         GLuint VAO;

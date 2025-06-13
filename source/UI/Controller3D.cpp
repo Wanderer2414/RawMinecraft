@@ -55,6 +55,9 @@ namespace MyBase3D {
         // }
         return false;
     }
+    bool Controller3D::sensitiveHandle(GLFWwindow* window) {
+        return false;
+    }
     bool Controller3D::contains(const Ray3f& position) const {
         return false;
     }

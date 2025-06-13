@@ -302,13 +302,9 @@ namespace MyCraft {
             shape[1] += shape[0];
             isFall = isFall && (__world->at(shape[1]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
                                 __world->at(shape[1]).getType()!=BlockCatogary::Air); 
-
             isFall = isFall && (__world->at(shape[0]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
                                 __world->at(shape[0]).getType()!=BlockCatogary::Air); 
-            
-            if (isFall) {
-                mine.send(source, new Fall(z));
-            }
+            if (isFall) mine.send(source, new Fall(z));
             else {
                 float delta = shape[0][2] - floor(shape[0][2]);
                 mine.send(source, new Fall(-delta));
@@ -332,7 +328,8 @@ namespace MyCraft {
                     mine.send(source, new Fall(z-0.035));
             }
             else {
-                float delta = floor(shape[0][2]) - shape[0][2] + 1 - 0.1;
+                float delta = floor(shape[0][2]) - shape[0][2] + 1;
+                if (delta>=0.01) delta -= 0.01;
                 mine.send(source, new Fall(delta));
             }
         }

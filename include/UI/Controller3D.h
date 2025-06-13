@@ -20,13 +20,14 @@ public:
 
     virtual void    setFocus(const bool& focus),
                     reset(),
-                    update();      
+                    update();
 
     friend Container3D;
 protected:
-    virtual bool    handle(GLFWwindow* window);
-    virtual bool    contains(const Ray3f& position) const;
-    virtual void    glDraw() const;
+    virtual bool    handle(GLFWwindow* window)            ;
+    virtual bool    sensitiveHandle(GLFWwindow* window)   ;
+    virtual bool    contains(const Ray3f& position) const ;
+    virtual void    glDraw() const                        ;
 
 private:
     unsigned int    __doubleClickCount;

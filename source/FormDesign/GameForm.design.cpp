@@ -12,6 +12,7 @@ namespace MyCraft {
         __hitbox.insert(&__model);
         __hitbox.match(&__model);
         __hitbox.match(&pWorld);
+        __hitbox.match(&_camera);
         for (int i = -16; i<16; i++) {
             for (int j = -16; j<16; j++) {
                 pWorld.at(i, j, -1).setType(BlockCatogary::Grass);
@@ -161,9 +162,9 @@ namespace MyCraft {
             // }
         }
         glm::vec3 dir = __model.getDirection();
-        dir.z -= 2;
-        _camera.setPosition(__model.getPosition() - 3.f*dir);
-        _camera.look(__model.getPosition()+glm::vec3(0, 0, 3));
+        dir.z -=2;
+        // _camedra.setPosition(__model.getPosition() - 3.f*dir);
+        // _camera.look(__model.getPosition()+glm::vec3(0, 0, 3));
     
         glm::vec<2, double> position;
         glfwGetCursorPos(window, &position.x, &position.y);
