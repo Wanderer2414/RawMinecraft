@@ -6,8 +6,11 @@
 namespace MyCraft {
 
 Chunk::Chunk() {
+    __blocks.resize(16);
     for (int i = 0; i<16; i++) {
+        __blocks[i].resize(16);
         for (int j = 0; j<16; j++) {
+            __blocks[i][j].resize(16);
             for (int k = 0; k<16; k++) {
                 __blocks[i][j][k].setType(BlockCatogary::Air);
                 __blocks[i][j][k].setPosition(__position.x+i, __position.y+j, __position.z+k);
