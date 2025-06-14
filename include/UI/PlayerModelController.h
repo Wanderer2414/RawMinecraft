@@ -19,13 +19,14 @@ namespace MyCraft {
                     rightAttack(),
                     leftAttack(),
                     see(const glm::vec3& dir) override,
-                    seeRotate(const float& angle),
+                    seeRotate(const float& horizontal, const float& vertical),
+                    setDrawAble(const bool& drawable),
                     glDraw() const override;
         
         glm::mat4x3 getShape() const override;
         
     private:
-        bool            __isRun,
+        bool            __isRun, __isDrawable,
                         __isLeftAttack, __isRightAttack,
                         __isCrouch;
         float           __runTime, __handTime, __speed;

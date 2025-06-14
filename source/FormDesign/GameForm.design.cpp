@@ -173,7 +173,7 @@ namespace MyCraft {
     
         if (delta.x != 0 || delta.y != 0) {
             glfwSetCursorPos(window, InfoCenter::Default->getWindowHalf().x, InfoCenter::Default->getWindowHalf().y);
-            __model.seeRotate(-delta.x/1000);
+            __model.seeRotate(-delta.x/1000, -delta.y/1000);
             is_changed = true;
         }
         return true;

@@ -22,10 +22,11 @@ namespace MyCraft {
         ~ModelLoader();
 
         int getNodeCount() const;
-
+        int getHead() const;
         bool apply(std::vector<glm::mat4>&, const std::string& name, const float& t);
         friend MyCraft::ModelStorage;
     private:
+        int     __head;
         tinygltf::Model     __model;
         std::vector<GLuint> __buffers;
         std::map<std::string, Animation*> __animations;

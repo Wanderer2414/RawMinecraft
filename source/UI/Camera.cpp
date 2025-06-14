@@ -124,12 +124,12 @@ namespace MyBase3D {
             if (glfwGetKey(window, GLFW_KEY_F5)) {
                 if (__isThirdCamera) {
                     add(new MyCraft::RotateCameraCommand_FirstPersonView(this));
-                    send(new MyCraft::ResetCameraMessage());
+                    send(new MyCraft::ResetCameraMessage(true));
                     __isThirdCamera = false;
                 }
                 else {
                     add(new MyCraft::RotateCameraCommand_ThirdPersonView(this));
-                    send(new MyCraft::ResetCameraMessage());
+                    send(new MyCraft::ResetCameraMessage(false));
                     __isThirdCamera = true;
                 }
                 __keyCooldown.restart();
@@ -202,7 +202,6 @@ namespace MyCraft {
     }
     void RotateCameraCommand_ThirdPersonView::execute(Port& mine, Port& source, Message* message) {
         RotateCameraMessage* package = (RotateCameraMessage*)message;
-        package->direction.z = 0;
         __camera->setPosition(package->position-3.f*package->direction + glm::vec3(0,0,2));
         __camera->see(package->direction);
     }
@@ -215,11 +214,13 @@ namespace MyCraft {
     }
     void RotateCameraCommand_FirstPersonView::execute(Port& mine, Port& source, Message* message) {
         RotateCameraMessage* package = (RotateCameraMessage*)message;
-        package->direction.z = 0;
         __camera->setPosition(package->position + glm::vec3(0,0,1.8));
         __camera->see(package->direction);
     }
 
+    ResetCameraMessage::ResetCameraMessage(const bool& firstCamera): isFirstCamera(firstCamera) {
+
+    }
     MessageType ResetCameraMessage::getType() const {
         return MessageType::ResetCamera;
     }

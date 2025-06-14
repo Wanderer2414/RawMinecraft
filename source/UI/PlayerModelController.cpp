@@ -8,7 +8,7 @@
 namespace MyCraft {
     PlayerModelController::PlayerModelController(): __position(0), __direction(0, -1, 0), __runTime(0), __handTime(0),
         __isLeftAttack(0), __isRightAttack(0), __animation(ModelStorage::Default->getPlayerModel().getNodeCount(), 1), __eye_direction(0, -1, 0),
-        __isCrouch(false) {
+        __isCrouch(false), __isDrawable(true) {
         ModelStorage::Default->getPlayerModel().apply(__animation, "walk", __runTime);
         __animationClock.setDuration(30);
         __attack__cooldown.setDuration(250);
@@ -49,6 +49,7 @@ namespace MyCraft {
         }
         if (glm::length(dir)) {
             dir = __toAbsoluteCoordinate(dir);
+            dir.z = 0;
             dir = glm::normalize(dir)*__speed;
             rotate(dir);
             send(new RequestGoto(getShape(), dir));
@@ -187,22 +188,50 @@ namespace MyCraft {
         float angle = glm::angle(glm::vec3(0, 1, 0), glm::normalize(dir));
         __animation[8] = glm::rotate(glm::mat4(1), angle, glm::vec3(1, 0, 0));
     }
-    void PlayerModelController::seeRotate(const float& angle) {
-        __eye_direction = glm::rotate(__eye_direction, angle, glm::vec3(0, 0, 1));
+    void PlayerModelController::seeRotate(const float& horizontal, const float& vertical) {
+        __eye_direction = glm::rotate(__eye_direction, horizontal, glm::vec3(0, 0, 1));
+        glm::vec3 axis = glm::cross(__eye_direction, glm::vec3(0,0,1));
+        __eye_direction = glm::rotate(__eye_direction, vertical, axis);
         send(new RotateCameraMessage(__position, __eye_direction));
     }
+    void PlayerModelController::setDrawAble(const bool& drawable) {
+        __isDrawable = drawable;
+    }
     void PlayerModelController::glDraw() const {
-        GLuint VAO;
-        glGenVertexArrays(1, &VAO);
-        glBindVertexArray(VAO);
-        const ModelLoader& model = ModelStorage::Default->getPlayerModel();
-        auto state = __animation;
-        state.back() = glm::translate(state.back(), __position);
-        float angle = glm::angle(__direction, glm::vec3(0, -1, 0));
-        if (__direction.x<0) angle=-angle;
-        state.back() = glm::rotate(state.back(), angle, glm::vec3(0, 0, 1));
-        ModelStorage::Default->DrawModel(state, model);
-        glDeleteVertexArrays(1, &VAO);
+        if (__isDrawable) {
+
+            GLuint VAO;
+            glGenVertexArrays(1, &VAO);
+            glBindVertexArray(VAO);
+            const ModelLoader& model = ModelStorage::Default->getPlayerModel();
+            auto state = __animation;
+            state.back() = glm::translate(state.back(), __position);
+            float angle = glm::angle(__direction, glm::vec3(0, -1, 0));
+            if (__direction.x<0) angle=-angle;
+            state.back() = glm::rotate(state.back(), angle, glm::vec3(0, 0, 1));
+    
+            glm::vec3 tmp;
+            auto& head = state[ModelStorage::Default->getPlayerModel().getHead()];
+            // tmp = __eye_direction;
+            // tmp.z = 0;
+            // tmp = glm::normalize(tmp);
+            // angle = glm::angle( tmp, __eye_direction);
+            // if (angle) {
+            //     glm::vec3 axis = glm::cross(__eye_direction, tmp);
+            //     head = glm::rotate(head,angle, axis);
+            // }
+            tmp = __eye_direction;
+            tmp.z = 0;
+            tmp = glm::normalize(tmp);
+            angle = glm::angle( tmp, __direction);
+            if (angle) {
+                glm::vec3 axis = glm::cross(__direction, tmp);
+                head = glm::rotate(head,angle, axis);
+            }
+    
+            ModelStorage::Default->DrawModel(state, model);
+            glDeleteVertexArrays(1, &VAO);
+        }
     }
     void PlayerModelController::update() {
     }
@@ -212,6 +241,9 @@ namespace MyCraft {
         return MessageType::ResetCamera;
     }
     void ResetCameraCommand::execute(Port& mine, Port& source, Message* message) {
+        ResetCameraMessage* package = (ResetCameraMessage*)message;
+        if (package->isFirstCamera) __model->setDrawAble(false);
+        else __model->setDrawAble(true);
         __model->send(new RotateCameraMessage(__model->getModelPosition(), __model->getDirection()));
     }
 }

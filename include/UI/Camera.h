@@ -98,7 +98,10 @@ namespace MyCraft {
 
     class ResetCameraMessage: public Message {
     public:
+        ResetCameraMessage(const bool& isFirstCamera);
         MessageType getType() const override;
+        bool isFirstCamera;
+    private:
     };
 }
 #endif

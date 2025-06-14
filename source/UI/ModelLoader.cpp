@@ -98,12 +98,18 @@ namespace  MyCraft {
         for (auto& animation: __model.animations) {
             __animations[animation.name] = new ModelLoader::Animation(animation, __model);
         }
+        for (int i = 0; i<__model.nodes.size(); i++) {
+            if (__model.nodes[i].name == "head") __head = i;
+        }
     }
     ModelLoader::~ModelLoader() {
         for (int i = 0; i<__buffers.size(); i++)
             glDeleteBuffers(1, &__buffers[i]);
         for (auto& i:__animations) delete i.second;
     }   
+    int ModelLoader::getHead() const {
+        return __head;
+    }
     bool ModelLoader::apply(std::vector<glm::mat4>& out, const std::string& name, const float& t) {
         if (__animations.find(name)==__animations.end()) return false;
         __animations[name]->apply(out, t, __model);
