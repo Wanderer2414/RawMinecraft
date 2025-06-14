@@ -30,8 +30,8 @@ namespace MyCraft {
             virtual void        setHoverPlane(const char& index);
             virtual void        setType(const BlockCatogary::Catogary& type);
             friend class Chunk;
-        protected:
             virtual void        glDraw() const;
+        protected:
         private:
             char                        __hoverPlane;
             glm::vec3                   __position;

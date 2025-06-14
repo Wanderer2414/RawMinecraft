@@ -1,108 +1,74 @@
 #include "Form3D.h"
-#include "Container3D.h"
+#include "Container.h"
 #include "Controller.h"
+#include "General.h"
 #include "Global.h"
 #include "spriv_extended.h"
 
-extern sf::Vector2f WindowSize;
 namespace MyBase3D {
 
-    Form3D::Form3D(const int& index) {
-        _formIndex = index;
-        _returnValue = INT_MIN;
+    Form3D::Form3D(const int& index): __formIndex(index), __returnValue(INT_MIN) {
+        __sensitiveClock.setDuration(30);
     }
-    Form3D::~Form3D() {
-    }
-    sf::Vector2f Form3D::getSize() const {
-        return WindowSize;
-    }
-    _catch_function(Form3D, CatchEvent) {
-        bool ans = false;
-        if (event.type == sf::Event::Resized) {
-            sf::FloatRect rect = {0, 0, 1.0f*event.size.width, 1.0f*event.size.height};
-            window.setView(sf::View(rect));
-            ans = true;
-        }
-        ans = Container::CatchEvent(window, event, state) || ans;
-        ans = Container3D::CatchEvent(window, event, state) || ans;
-        ans = _camera.CatchEvent(window, event, state);
-        return ans;
-    }
-    bool Form3D::contains(const Ray3f& position) const {
+    Form3D::~Form3D() {}
+    bool Form3D::contains(const glm::vec2& position) const {
         return true;
     }
-    int Form3D::run(sf::RenderWindow& window) {
-        sf::Event event;
+    bool Form3D::handle(GLFWwindow* window) {
+        bool is_changed = MyBase::Container::handle(window);
+        is_changed = _camera.handle(window) || is_changed;
+        return is_changed;
+    }
+    bool Form3D::catchEvent(GLFWwindow* window) {
+        bool is_changed = MyBase::Container::catchEvent(window);   
+        is_changed = _camera.catchEvent(window) || is_changed;
+        return is_changed;
+    }
+    bool Form3D::sensitiveHandle(GLFWwindow* window) {
+        bool is_changed = MyBase::Container::sensitiveHandle(window);
+        is_changed = _camera.sensitiveHandle(window) || is_changed;
+        return is_changed;
+    }
+    int Form3D::run(GLFWwindow* window) {
         bool is_changed = true, is_catched = false;
-        while (window.isOpen()) {
+        while (!glfwWindowShouldClose(window)) {
             Container::reset();
-            Container3D::reset();
-            while (window.pollEvent(event)) {
-                if (!is_catched) {
-                    is_catched = true;
-                    is_changed = BeforeCatch(window, event) || is_changed;
-                    is_changed = Container::setHover(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window))) || is_changed;
-                    is_changed = Container3D::setHover(_camera.getSight()) || is_changed;
-                    is_changed = _camera.setHover(_camera.getSight()) || is_changed;
-                }
-                is_changed = CatchEvent(window, event) || is_changed;
-                if (event.type == sf::Event::Closed) window.close();
+            glfwPollEvents();
+            is_changed = catchEvent(window) || is_changed;
+            if (__sensitiveClock.get()) {
+                __sensitiveClock.restart();
+                is_changed = sensitiveHandle(window) || is_changed;
             }
-            if (is_catched) {
-                is_changed = AfterCatch(window, event) || is_changed;
-                is_catched = false;
-            }
+            is_catched = Container::setHover(getMousePosition(window)) || is_catched;
             is_changed = handle(window) || is_changed;
             if (is_changed) {
-                window.clear();
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glClearColor(0, 0, 0, 0);
-                Container3D::glDraw();
-                glFlush();
-                window.pushGLStates();
-                draw(window);
-                window.popGLStates();
-                window.display();
+                glDraw();
+                glfwSwapBuffers(window);
             }
-            if (_returnValue!=INT_MIN) return _returnValue;
+            if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+                glfwSetWindowShouldClose(window, true);
+            }
+            if (__returnValue!=INT_MIN) return __returnValue;
             is_changed = 0;
         }
-        return _formIndex;
+        return __formIndex;
     }
-    
-    _catch_function(Form3D, BeforeCatch) {
-        bool is_changed = Container::BeforeCatch(window, event);
-        is_changed = Container3D::BeforeCatch(window, event) || is_changed;
-        is_changed = _camera.BeforeCatch(window, event) || is_changed;
-        return is_changed;
+    int Form3D::getReturnForm() const {
+        return __returnValue;
     }
-    _catch_function(Form3D, AfterCatch) {
-        bool is_changed = Container::AfterCatch(window, event);
-        is_changed = Container3D::AfterCatch(window, event) || is_changed;
-        is_changed = _camera.AfterCatch(window, event) || is_changed;
-        return is_changed;
+    int Form3D::getFormIndex() {
+        return __formIndex;
     }
-    _handle_function(Form3D, handle) {
-        bool is_changed = Container::handle(window, state);
-        is_changed = Container3D::handle(window, state) || is_changed;
-        is_changed = _camera.handle(window, state) || is_changed;
-        return is_changed;
+    void Form3D::setReturnForm(const int& returnValue) {
+        __returnValue = returnValue;
     }
-    void Form3D::insert(Controller* controller, const int& layer) {
-        Container::insert(controller, layer);
+    void Form3D::setSensitiveTime(const size_t& time) {
+        __sensitiveClock.setDuration(time);
     }
-    void Form3D::erase(Controller* controller) {
-        Container::erase(controller);
-    }
-    void Form3D::insert(Controller3D* controller, const int& layer) {
-        Container3D::insert(controller, layer);
-    }
-    void Form3D::erase(Controller3D* controller) {
-        Container3D::insert(controller);
-    }
-    void Form3D::draw(sf::RenderTarget& target, sf::RenderStates state) const {
-        Container3D::draw(target, state);
-        _camera.draw(target, state);
-        Container::draw(target, state);
+    void Form3D::glDraw() const {
+        _camera.glDraw();
+        Container::glDraw();
     }
 }

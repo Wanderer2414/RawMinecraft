@@ -43,6 +43,11 @@ GLuint createProgram(const std::string& vertexPath, const std::string& fragmentP
         std::cerr << "Failed to create shaders." << std::endl;
         exit(0);
     }
+    else {
+        std::cout << "Shader created: " << std::endl;
+        std::cout << "Vertex shader: " << vertexPath << std::endl;
+        std::cout << "Fragment shader: " << fragmentPath << std::endl;
+    }
     GLuint program = glCreateProgram();
     glAttachShader(program, vertexShader);
     glAttachShader(program, fragmentShader);

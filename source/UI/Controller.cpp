@@ -34,45 +34,43 @@ namespace MyBase {
         }
         return false;
     }
-    bool Controller::setHover(const sf::Vector2f& position) {
+    bool Controller::setHover(const glm::vec2& position) {
         return setHover(contains(position));
+    }
+    bool Controller::catchEvent(GLFWwindow* window) {
+        return false;
+    }
+    bool Controller::sensitiveHandle(GLFWwindow* window) {
+        return false;
     }
     void Controller::reset() {
         __isDoubleClick = __isPressed = __isReleased = false;
         if (__doubleClickCount>0) __doubleClickCount--;
     }
-    _catch_function(Controller, BeforeCatch) {
+    bool Controller::handle(GLFWwindow* window) {
+        // if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Left) {
+        //     __isFocus = __isPressed = __isHovered;
+        // }
+        // else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Button::Left) {
+        //     __isReleased = __isHovered;
+        //     if (__isReleased) {
+        //         if (__doubleClickCount) __isDoubleClick = true;
+        //         else __doubleClickCount = 20000;
+        //     }
+        // }
         return false;
     }
-    _catch_function(Controller, CatchEvent) {
-        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Left) {
-            __isFocus = __isPressed = __isHovered;
-        }
-        else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Button::Left) {
-            __isReleased = __isHovered;
-            if (__isReleased) {
-                if (__doubleClickCount) __isDoubleClick = true;
-                else __doubleClickCount = 20000;
-            }
-        }
+    bool Controller::contains(const glm::vec2& position) const {
         return false;
     }
-    _catch_function(Controller, AfterCatch) {
-        return false;
-    }
-    _handle_function(Controller, handle) {
-        return false;
-    }
-    bool Controller::contains(const sf::Vector2f& position) const {
-        return false;
-    }
-    sf::Vector2f Controller::getPosition() const {
+    glm::vec2 Controller::getPosition() const {
         return {0, 0};
     }
-    sf::Vector2f Controller::getSize() const {
+    glm::vec2 Controller::getSize() const {
         return {0, 0};
     }
-    void Controller::draw(sf::RenderTarget& target, sf::RenderStates state) const {
+    void Controller::glDraw() const {
+
     }
     void Controller::setPosition(const float& x, const float& y) {
         

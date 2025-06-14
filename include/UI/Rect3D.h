@@ -19,7 +19,7 @@ class Rect3f {
         glm::vec3   getCenter()                     const,
                     getNormal()                     const,
                     getIntersect(const Ray3f& sight) const,
-                    operator[](const uint& index)   const;
+                    operator[](const unsigned int& index)   const;
     private:
         glm::vec3    __A, __B, __C;
     };

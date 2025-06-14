@@ -8,28 +8,28 @@ class Container: public Controller {
     public:
         Container();
         ~Container();
-        virtual bool    setHover(const sf::Vector2f& position)      override,
+        virtual bool    setHover(const glm::vec2& position)      override,
                         setHover(const bool& hover)                 override;
+        Controller*     getCurrentFocus() const;
         std::size_t     size()                                      const;
         virtual void    insert(Controller* controller, const int& layer = 0),
                         erase(Controller* controller),
                         update()                                    override;
         virtual void    setFocus(const bool& focus)                 override;
-        sf::Vector2f    getPosition() const                         override,
+        glm::vec2       getPosition() const                         override,
                         getSize() const                             override;
         virtual void    setPosition(const float& x, const float& y) override;
         virtual void    clear();
         Controller* operator[](const std::size_t& index);
     protected:
-        virtual         catch_function(CatchEvent)                  override;
-        virtual         catch_function(AfterCatch)                  override;
-        virtual         handle_function(handle)                     override;
+        virtual bool    sensitiveHandle(GLFWwindow* window)         override;
+        virtual bool    catchEvent(GLFWwindow* window)              override;
+        virtual bool    handle(GLFWwindow* window)                  override;
         virtual void    reset()                                     override;
-        virtual void    draw(sf::RenderTarget& target, sf::RenderStates state = sf::RenderStates::Default) const override;
+        virtual void    glDraw()                            const   override;
         std::vector<std::pair<Controller*, int>> children;
-    
-        int             _previosFocus, _currentHover, _currentFocus;
     private:
+        int             __previosFocus, __currentHover, __currentFocus;
     };
 };
 #endif

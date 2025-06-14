@@ -1,66 +1,43 @@
 #include "Form.h"
 #include "Container.h"
 #include "Controller.h"
+#include "GLFW/glfw3.h"
 #include "Global.h"
 #include <GL/gl.h>
 
-extern sf::Vector2f WindowSize;
 namespace MyBase {
-    Form::Form(const int& index) {
-        _formIndex = index;
-        _returnValue = INT_MIN;
+    Form::Form(const int& index): __formIndex(index), __returnValue(INT_MIN) {
+        __sensitiveClock.setDuration(10);
     }
     Form::~Form() {
     
     }
-    sf::Vector2f Form::getSize() const {
-        return WindowSize;
-    }
-    _catch_function(Form, CatchEvent) {
-        bool ans = false;
-        if (event.type == sf::Event::Resized) {
-            sf::FloatRect rect = {0, 0, 1.0f*event.size.width, 1.0f*event.size.height};
-            window.setView(sf::View(rect));
-            ans = true;
-        }
-        ans = Container::CatchEvent(window, event, state) || ans;
-        return ans;
-    }
-    bool Form::contains(const sf::Vector2f& position) const {
+    bool Form::contains(const glm::vec2& position) const {
         return true;
     }
-    int Form::run(sf::RenderWindow& window) {
-        sf::Event event;
-        bool is_changed = true, is_catched = false;
-        while (window.isOpen()) {
+    int Form::run(GLFWwindow* window) {
+        bool is_changed = true;
+        while (glfwWindowShouldClose(window)) {
             reset();
-            while (window.pollEvent(event)) {
-                if (!is_catched) {
-                    is_catched = true;
-                    is_changed = BeforeCatch(window, event) || is_changed;
-                    is_changed = setHover(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window))) || is_changed;
-                }
-                is_changed = CatchEvent(window, event) || is_changed;
-                if (event.type == sf::Event::Closed) window.close();
-            }
-            if (is_catched) {
-                is_changed = AfterCatch(window, event) || is_changed;
-                is_catched = false;
-            }
+            glfwPollEvents();
             is_changed = handle(window) || is_changed;
-            if (is_changed) {
-                window.clear();
-                draw(window);
-                window.display();
+            if (__sensitiveClock.get()) {
+                __sensitiveClock.restart();
+                is_changed = catchEvent(window) || is_changed;
+                is_changed = sensitiveHandle(window) || is_changed;
             }
-            if (_returnValue!=INT_MIN) return _returnValue;
+            if (is_changed) {
+                glClearColor(0, 0, 0, 1.0f);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                glDraw();
+                glfwSwapBuffers(window);
+            }
+            if (__returnValue!=INT_MIN) return __returnValue;
             is_changed = 0;
         }
-        return _formIndex;
+        return __formIndex;
     }
-    void Form::draw(sf::RenderTarget& target, sf::RenderStates state) const {
-        for (const auto& [child, layer]:children) 
-            if (_currentFocus == -1 || child != children[_currentFocus].first) target.draw(*child, state);
-        if (_currentFocus != -1) target.draw(*children[_currentFocus].first, state);
+    void Form::setSensitiveTime(const size_t& time) {
+        __sensitiveClock.setDuration(time);
     }
 }

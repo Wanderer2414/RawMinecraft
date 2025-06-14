@@ -21,7 +21,7 @@ namespace MyCraft {
             virtual void    glDraw() const;
         private:
             glm::vec3                    __position;
-            Block                        __blocks[16][16][16];
+            std::vector<std::vector<std::vector<Block>>>                        __blocks;
     };
 };
 #endif

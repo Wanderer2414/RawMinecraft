@@ -1,5 +1,6 @@
 #ifndef FORM_H
 #define FORM_H
+#include "Clock.h"
 #include "Container.h"
 #include "Global.h"
 namespace MyBase {
@@ -8,14 +9,17 @@ namespace MyBase {
     public:
         Form(const int& index);
         ~Form();
-        virtual bool    contains(const sf::Vector2f& position) const override;
-        virtual sf::Vector2f getSize() const override;
-        virtual int     run(sf::RenderWindow& window);
+        virtual bool    contains(const glm::vec2& position) const override;
+        virtual void    setSensitiveTime(const size_t& milisecond);
+        virtual int     run(GLFWwindow* window);
     protected:
-        virtual         catch_function(CatchEvent) override;
-        virtual void    draw(sf::RenderTarget& target, sf::RenderStates state = sf::RenderStates::Default) const override;
-        int             _formIndex, 
-                        _returnValue;
+        int             getReturnForm() const;
+        int             getFormIndex();
+        void            setReturnForm(const int& returnValue);
+    private:
+        int             __formIndex,
+                        __returnValue;
+        Clock           __sensitiveClock;
     };
     
 };

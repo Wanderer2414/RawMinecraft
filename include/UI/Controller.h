@@ -4,7 +4,7 @@
 namespace MyBase {
     class Container;
 
-    class Controller: public sf::Drawable {
+    class Controller {
     public:
         Controller();
         ~Controller();
@@ -14,9 +14,9 @@ namespace MyBase {
                                 isPressed()         const,
                                 isFocus()           const,
                                 setHover(const bool& hover),
-                                setHover(const sf::Vector2f& position);
+                                setHover(const glm::vec2& position);
 
-        virtual sf::Vector2f    getPosition() const,
+        virtual glm::vec2       getPosition() const,
                                 getSize() const;
         virtual void            setPosition(const float& x, const float& y),
                                 setFocus(const bool& focus),
@@ -24,13 +24,12 @@ namespace MyBase {
                                 update();      
 
         friend Container;
+        virtual void    glDraw() const;
     protected:
-        virtual         catch_function(CatchEvent);
-        virtual         catch_function(BeforeCatch);
-        virtual         catch_function(AfterCatch);
-        virtual         handle_function(handle);
-        virtual bool    contains(const sf::Vector2f& position) const;
-        virtual void    draw(sf::RenderTarget& target, sf::RenderStates state) const override;
+        virtual bool    catchEvent(GLFWwindow* window);
+        virtual bool    sensitiveHandle(GLFWwindow* window);
+        virtual bool    handle(GLFWwindow* window);
+        virtual bool    contains(const glm::vec2& position) const;
 
     private:
         unsigned int    __doubleClickCount;

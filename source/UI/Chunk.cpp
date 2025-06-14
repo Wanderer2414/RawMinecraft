@@ -6,8 +6,11 @@
 namespace MyCraft {
 
 Chunk::Chunk() {
+    __blocks.resize(16);
     for (int i = 0; i<16; i++) {
+        __blocks[i].resize(16);
         for (int j = 0; j<16; j++) {
+            __blocks[i][j].resize(16);
             for (int k = 0; k<16; k++) {
                 __blocks[i][j][k].setType(BlockCatogary::Air);
                 __blocks[i][j][k].setPosition(__position.x+i, __position.y+j, __position.z+k);
@@ -77,8 +80,10 @@ void Chunk::glDraw() const {
     glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*8, buffer, GL_STATIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, Origin);
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MyBase3D::PointSet::Default->getMarginBlockIndices());
     glUseProgram(MyBase3D::ShaderStorage::Default->GetChunkShader());
-    glDrawArrays(GL_LINE_STRIP, 0, 16);
+
+    glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_INT, 0);
     
     glDeleteBuffers(1, &Origin);
     glDeleteVertexArrays(1, &VAO);
