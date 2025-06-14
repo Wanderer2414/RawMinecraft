@@ -8,9 +8,11 @@ namespace MyBase {
         public:
             Clock();
             ~Clock();
-            bool        get();
+            bool        get() const;
             float       getDuration() const;
-            void        setDuration(const float& duration);
+            void        setDuration(const float& duration),
+                        stop(),
+                        restart();
         private:
             std::size_t       __previous          = 0;
             std::size_t       __duration          = 0;

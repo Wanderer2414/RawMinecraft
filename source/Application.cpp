@@ -1,9 +1,7 @@
 #include "Application.h"
 #include "Block.h"
-#include "GLFW/glfw3.h"
 #include "InfoCenter.h"
 #include "GameForm.h"
-#include "Model.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
 #include "ModelStorage.h"
@@ -32,7 +30,8 @@ namespace MyCraft {
             exit(EXIT_FAILURE);
         }
         glfwMakeContextCurrent(__window);
-        if (!gladLoadGL() ) {
+
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             std::cout << "Failed to initialize GLAD" << std::endl;
             exit(EXIT_FAILURE);
         }

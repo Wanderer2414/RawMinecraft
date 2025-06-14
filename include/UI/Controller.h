@@ -26,6 +26,8 @@ namespace MyBase {
         friend Container;
         virtual void    glDraw() const;
     protected:
+        virtual bool    catchEvent(GLFWwindow* window);
+        virtual bool    sensitiveHandle(GLFWwindow* window);
         virtual bool    handle(GLFWwindow* window);
         virtual bool    contains(const glm::vec2& position) const;
 

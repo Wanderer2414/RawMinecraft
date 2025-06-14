@@ -37,6 +37,12 @@ namespace MyBase {
     bool Controller::setHover(const glm::vec2& position) {
         return setHover(contains(position));
     }
+    bool Controller::catchEvent(GLFWwindow* window) {
+        return false;
+    }
+    bool Controller::sensitiveHandle(GLFWwindow* window) {
+        return false;
+    }
     void Controller::reset() {
         __isDoubleClick = __isPressed = __isReleased = false;
         if (__doubleClickCount>0) __doubleClickCount--;

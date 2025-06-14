@@ -22,7 +22,15 @@ if (UNIX AND NOT MSYS)
         execute_process(COMMAND cmake -S ${CMAKE_SOURCE_DIR}/glfw -B ${CMAKE_SOURCE_DIR}/glfw/build -G "Unix Makefiles")
     endif()
     execute_process(COMMAND make -j${nproc} -C ${CMAKE_SOURCE_DIR}/glfw/build )
+    if (NOT EXISTS ${CMAKE_SOURCE_DIR}/glm-master/build)
+        file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/glm-master/build)
+    endif()
+    if (NOT EXISTS ${CMAKE_SOURCE_DIR}/glm-master/build/Makefile) 
+        execute_process(COMMAND cmake -S ${CMAKE_SOURCE_DIR}/glm-master -B ${CMAKE_SOURCE_DIR}/glm-master/build -G "Unix Makefiles")
+    endif()
+    execute_process(COMMAND make -j${nproc} -C ${CMAKE_SOURCE_DIR}/glm-master/build )
 endif()
+
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/include/UI
@@ -45,5 +53,6 @@ file(GLOB SOURCES
 set(CMAKE_BUILD_TYPE Debug)
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/Extended/)
+target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/glfw/build/src)
 target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/glm-master/build/glm)
 target_link_libraries(${PROJECT_NAME} -lglfw3 -lglm)
