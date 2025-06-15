@@ -14,14 +14,14 @@ namespace MyCraft {
             virtual void    setPosition(const int& x, const int& y, const int& z),
                             setPosition(const glm::vec3& position);
                             
-            Block           &at(const int& x, const int& y, const int& z);
+            unsigned char   &at(const int& x, const int& y, const int& z);
             BlockCatogary::Catogary& getBlocks(const int& x, const int& y, const int& z);
             friend class World;
         protected:
             virtual void    glDraw() const;
         private:
             glm::vec3                    __position;
-            std::vector<std::vector<std::vector<Block>>>                        __blocks;
+            std::vector<std::vector<std::vector<unsigned char>>>  __blocks;
     };
 };
 #endif

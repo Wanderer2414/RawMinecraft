@@ -6,11 +6,7 @@ namespace MyCraft {
         public:
             InfoCenter(const float& width, const float& height);
             ~InfoCenter();
-            enum MouseButton {
-                Left = GLFW_MOUSE_BUTTON_LEFT,
-                Right,
-                Middle
-            };
+            
             static InfoCenter* Default;
             float getWindowRatio() const;
             glm::vec2 getWindowSize() const;

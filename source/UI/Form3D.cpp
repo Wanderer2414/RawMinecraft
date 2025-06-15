@@ -1,6 +1,7 @@
 #include "Form3D.h"
 #include "Container.h"
 #include "Controller.h"
+#include "Font.h"
 #include "General.h"
 #include "Global.h"
 #include "spriv_extended.h"
@@ -42,8 +43,8 @@ namespace MyBase3D {
             is_catched = Container::setHover(getMousePosition(window)) || is_catched;
             is_changed = handle(window) || is_changed;
             if (is_changed) {
+                glClearColor(0, 0, 0, 1);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                glClearColor(0, 0, 0, 0);
                 glDraw();
                 glfwSwapBuffers(window);
             }

@@ -2,6 +2,7 @@
 #define GAMEFORM_H
 #include "Camera.h"
 #include "Clock.h"
+#include "Font.h"
 #include "Form3D.h"
 #include "HitBoxCenter.h"
 #include "ModelController.h"

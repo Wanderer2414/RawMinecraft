@@ -10,6 +10,8 @@ namespace MyBase3D {
         __marginShader = createProgram("assets/shaders/margin.vert.spv", "assets/shaders/shader.frag.spv");
         __point2DShader = createProgram("assets/shaders/Point2D.vert.spv", "assets/shaders/Point2D.frag.spv");
         __modelShader = createProgram("assets/shaders/model.vert.spv", "assets/shaders/shader.frag.spv");
+        __image2DShader = createProgram("assets/shaders/Image2D.vert.spv", "assets/shaders/cube.frag.spv");
+        __fontShader = createProgram("assets/shaders/font2D.vert.spv", "assets/shaders/font2D.frag.spv");
     }
     ShaderStorage::~ShaderStorage() {
         glDeleteProgram(__defaultShader);
@@ -18,8 +20,9 @@ namespace MyBase3D {
         glDeleteProgram(__marginShader);
         glDeleteProgram(__point2DShader);
         glDeleteProgram(__modelShader);
+        glDeleteProgram(__image2DShader);
+        glDeleteProgram(__fontShader);
     }
-
     GLuint ShaderStorage::GetChunkShader() const {
         return __chunkShader;
     }
@@ -37,5 +40,11 @@ namespace MyBase3D {
     }
     GLuint ShaderStorage::getModelShader() const {
         return __modelShader;
+    }
+    GLuint ShaderStorage::getImage2DShader() const {
+        return __image2DShader;
+    }
+    GLuint ShaderStorage::getFontShader() const {
+        return __fontShader;
     }
 }

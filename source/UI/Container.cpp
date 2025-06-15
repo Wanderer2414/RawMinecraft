@@ -63,7 +63,7 @@ namespace MyBase{
         return is_changed;
     }
     bool Container::handle(GLFWwindow* window) {
-        bool is_changed = Controller::handle(window) || is_changed;
+        bool is_changed = Controller::handle(window);
         for (int i = 0; i<children.size(); i++) 
             children[i].first->handle(window) || is_changed;
         return is_changed;

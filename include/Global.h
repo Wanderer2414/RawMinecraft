@@ -8,6 +8,7 @@
 #include <cmath>
 #include <vector>
 #include <stb_image.h>
+#include <stb_truetype.h>
 #include <chrono>
 #include "tiny_gltf.h"
 #include <stack>
@@ -22,4 +23,8 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtx/vector_angle.hpp"
+#ifdef __linux__
+#include "X11/Xlib.h"
+#include "X11/Xutil.h"
+#endif
 #endif

@@ -1,5 +1,6 @@
 #include "Chunk.h"
 #include "Block.h"
+#include "General.h"
 #include "Global.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
@@ -12,8 +13,7 @@ Chunk::Chunk() {
         for (int j = 0; j<16; j++) {
             __blocks[i][j].resize(16);
             for (int k = 0; k<16; k++) {
-                __blocks[i][j][k].setType(BlockCatogary::Air);
-                __blocks[i][j][k].setPosition(__position.x+i, __position.y+j, __position.z+k);
+                __blocks[i][j][k] = BlockCatogary::Air;
             }
         }
     }
@@ -41,19 +41,12 @@ bool Chunk::setHover(const MyBase3D::Ray3f& ray) {
     return hover;
 }
 
-Block& Chunk::at(const int& x, const int& y, const int& z) {
+unsigned char& Chunk::at(const int& x, const int& y, const int& z) {
     return __blocks[x][y][z];
 }
 
 void Chunk::setPosition(const int& x, const int& y, const int& z) {
     __position = {x, y, z};
-    for (int i = 0; i<16; i++) {
-        for (int j = 0; j<16; j++) {
-            for (int k = 0; k<16; k++) {
-                __blocks[i][j][k].setPosition(__position.x+i, __position.y+j, __position.z+k);
-            }
-        }
-    }
 }
 void Chunk::setPosition(const glm::vec3& position) {
     setPosition(position.x, position.y, position.z);
@@ -91,8 +84,8 @@ void Chunk::glDraw() const {
     for (int i = 0; i<16; i++) {
         for (int j = 0; j<16; j++) {
             for (int k = 0; k<16; k++) {
-                if (__blocks[i][j][k].getType() != BlockCatogary::Air) {
-                    __blocks[i][j][k].glDraw();
+                if (__blocks[i][j][k] != BlockCatogary::Air) {
+                    DrawCube(__blocks[i][j][k], __position+glm::vec3(i,j,k));
                 }
             }
         }

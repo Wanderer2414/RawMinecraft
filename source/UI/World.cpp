@@ -35,7 +35,7 @@ namespace MyCraft {
     //             glm::vec3 delta = ray.distance(0, planeX);
     //             if (glm::length(delta)<=pMinDistance) {
     //                 glm::vec3 center = delta+pos;
-    //                 if (Block& tmp = at(planeX, floor(center.y), floor(center.z)); tmp.getType() != BlockCatogary::Air) {
+    //                 if (Block& tmp = at(planeX, floor(center.y), floor(center.z)); tmp != BlockCatogary::Air) {
     //                     hX = planeX;
     //                     hY = floor(center.y);
     //                     hZ = floor(center.z);
@@ -53,7 +53,7 @@ namespace MyCraft {
     //             glm::vec3 delta = ray.distance(0, planeX);
     //             if (glm::length(delta)<=pMinDistance) {
     //                 glm::vec3 center = delta+pos;
-    //                 if (at(planeX-1, floor(center.y), floor(center.z)).getType() != BlockCatogary::Air) {
+    //                 if (at(planeX-1, floor(center.y), floor(center.z)) != BlockCatogary::Air) {
     //                     hX = planeX-1;
     //                     hY = floor(center.y);
     //                     hZ = floor(center.z);
@@ -71,7 +71,7 @@ namespace MyCraft {
     //             glm::vec3 delta = ray.distance(1, planeY);
     //             if (glm::length(delta)<=pMinDistance) {
     //                 glm::vec3 center = delta+pos;
-    //                 if (at(floor(center.x), planeY, floor(center.z)).getType() != BlockCatogary::Air) {
+    //                 if (at(floor(center.x), planeY, floor(center.z)) != BlockCatogary::Air) {
     //                     hX = floor(center.x);
     //                     hY = planeY;
     //                     hZ = floor(center.z);
@@ -89,7 +89,7 @@ namespace MyCraft {
     //             glm::vec3 delta = ray.distance(1, planeY);
     //             if (glm::length(delta)<=pMinDistance) {
     //                 glm::vec3 center = delta+pos;
-    //                 if (at(floor(center.x), planeY-1, floor(center.z)).getType() != BlockCatogary::Air) {
+    //                 if (at(floor(center.x), planeY-1, floor(center.z)) != BlockCatogary::Air) {
     //                     hX = floor(center.x);
     //                     hY = planeY-1;
     //                     hZ = floor(center.z);
@@ -107,7 +107,7 @@ namespace MyCraft {
     //             glm::vec3 delta = ray.distance(2, planeZ);
     //             if (glm::length(delta)<=pMinDistance) {
     //                 glm::vec3 center = delta+pos;
-    //                 if (at(floor(center.x), floor(center.y), planeZ).getType() != BlockCatogary::Air) {
+    //                 if (at(floor(center.x), floor(center.y), planeZ) != BlockCatogary::Air) {
     //                     hX = floor(center.x);
     //                     hY = floor(center.y);
     //                     hZ = planeZ;
@@ -125,7 +125,7 @@ namespace MyCraft {
     //             glm::vec3 delta = ray.distance(2, planeZ);
     //             if (glm::length(delta)<=pMinDistance) {
     //                 glm::vec3 center = delta+pos;
-    //                 if (at(floor(center.x), floor(center.y), planeZ-1).getType() != BlockCatogary::Air) {
+    //                 if (at(floor(center.x), floor(center.y), planeZ-1) != BlockCatogary::Air) {
     //                     hX = floor(center.x);
     //                     hY = floor(center.y);
     //                     hZ = planeZ-1;
@@ -148,31 +148,31 @@ namespace MyCraft {
         bool is_changed = Controller::handle(window);
         if (pFrameAlarm.get()) {
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
-                if (isHovered()) {
-                    Block& pCurrentBlock = at(hX, hY, hZ);
-                    float nX = hX, nY = hY, nZ = hZ;
-                    switch (pCurrentBlock.getHoverPlane()) {
-                        case 0: nX--; break;
-                        case 1: nX++; break;
-                        case 2: nY--; break;
-                        case 3: nY++; break;
-                        case 4: nZ--; break;
-                        case 5: nZ++; break;
-                    }
-                    at(nX, nY, nZ).setType(BlockCatogary::Dirt);
-                    is_changed = true;
-                }
+                // if (isHovered()) {
+                //     Block& pCurrentBlock = at(hX, hY, hZ);
+                //     float nX = hX, nY = hY, nZ = hZ;
+                //     switch (pCurrentBlock.getHoverPlane()) {
+                //         case 0: nX--; break;
+                //         case 1: nX++; break;
+                //         case 2: nY--; break;
+                //         case 3: nY++; break;
+                //         case 4: nZ--; break;
+                //         case 5: nZ++; break;
+                //     }
+                //     at(nX, nY, nZ).setType(BlockCatogary::Dirt);
+                //     is_changed = true;
+                // }
             }
         }
         return is_changed;
     }
-    Block& World::at(const int& x, const int& y, const int& z) {
+    unsigned char& World::at(const int& x, const int& y, const int& z) {
         int rX = (x-pPosition.x);
         int rY = (y-pPosition.y);
         int rZ = (z-pPosition.z);
         return pChunks[rX/16][rY/16][rZ/16].at(rX%16, rY%16, rZ%16);
     }
-    Block& World::at(const glm::vec3& pos) {
+    unsigned char& World::at(const glm::vec3& pos) {
         return at(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z));
     }
     void World::glDraw() const {
@@ -197,7 +197,7 @@ namespace MyCraft {
         glm::vec3 npos = shape[0] + dir, epos = npos + shape[1];
         std::queue<glm::vec3> q = rasterize(npos, epos);
         while (q.size() && below_result) {
-            if (__world->at(q.front()).getType() != BlockCatogary::Air) below_result = false;
+            if (__world->at(q.front()) != BlockCatogary::Air) below_result = false;
             q.pop();
         }
         //Above block check
@@ -205,7 +205,7 @@ namespace MyCraft {
         epos.z += 1;
         q = rasterize(npos, epos);
         while (q.size() && above_result) {
-            if (__world->at(q.front()).getType() != BlockCatogary::Air) above_result = false;
+            if (__world->at(q.front()) != BlockCatogary::Air) above_result = false;
             q.pop();
         }
         if (!below_result || !above_result) {
@@ -214,19 +214,19 @@ namespace MyCraft {
                 below_result = above_result = true;
                 q = rasterize(shape[0]-glm::vec3(0,0,1), shape[0]+shape[1]-glm::vec3(0,0,1));
                 while (q.size() && above_result) {
-                    if (__world->at(q.front()).getType() == BlockCatogary::Air) below_result = false;
+                    if (__world->at(q.front()) == BlockCatogary::Air) below_result = false;
                     q.pop();
                 }
                 q = rasterize(shape[0]+shape[2]-glm::vec3(0,0,1), shape[0]+shape[1]+shape[2]-glm::vec3(0,0,1));
                 while (q.size() && above_result) {
-                    if (__world->at(q.front()).getType() == BlockCatogary::Air) below_result = false;
+                    if (__world->at(q.front()) == BlockCatogary::Air) below_result = false;
                     q.pop();
                 }
                 npos.z += 1;
                 epos.z += 1;
                 q = rasterize(npos, epos);
                 while (q.size() && above_result) {
-                    if (__world->at(q.front()).getType() != BlockCatogary::Air) above_result = false;
+                    if (__world->at(q.front()) != BlockCatogary::Air) above_result = false;
                     q.pop();
                 }
             }
@@ -237,13 +237,13 @@ namespace MyCraft {
                 below_result = above_result = true;
                 q = rasterize(npos, epos);
                 while (q.size() && below_result) {
-                    if (__world->at(q.front()).getType() != BlockCatogary::Air) below_result = false;
+                    if (__world->at(q.front()) != BlockCatogary::Air) below_result = false;
                     q.pop();
                 }
                 npos.z++; epos.z++;
                 q = rasterize(npos, epos);
                 while (q.size() && below_result) {
-                    if (__world->at(q.front()).getType() != BlockCatogary::Air) above_result = false;
+                    if (__world->at(q.front()) != BlockCatogary::Air) above_result = false;
                     q.pop();
                 }
 
@@ -254,13 +254,13 @@ namespace MyCraft {
                     below_result = above_result = true;
                     q = rasterize(npos, epos);
                     while (q.size() && below_result) {
-                        if (__world->at(q.front()).getType() != BlockCatogary::Air) below_result = false;
+                        if (__world->at(q.front()) != BlockCatogary::Air) below_result = false;
                         q.pop();
                     }
                     npos.z++; epos.z++;
                     q = rasterize(npos, epos);
                     while (q.size() && below_result) {
-                        if (__world->at(q.front()).getType() != BlockCatogary::Air) below_result = false;
+                        if (__world->at(q.front()) != BlockCatogary::Air) below_result = false;
                         q.pop();
                     }
                     if (below_result) dir.x = 0;
@@ -294,16 +294,16 @@ namespace MyCraft {
             z -= 0.06;
             bool isFall = true;
             shape[3] = shape[0] + shape[2];
-            isFall = isFall && (__world->at(shape[3]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
-                                __world->at(shape[3]).getType()!=BlockCatogary::Air); 
+            isFall = isFall && (__world->at(shape[3]+glm::vec3(0,0,z))==BlockCatogary::Air || 
+                                __world->at(shape[3])!=BlockCatogary::Air); 
             shape[2] += shape[0] + shape[1];
-            isFall = isFall && (__world->at(shape[2]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
-                                __world->at(shape[2]).getType()!=BlockCatogary::Air); 
+            isFall = isFall && (__world->at(shape[2]+glm::vec3(0,0,z))==BlockCatogary::Air || 
+                                __world->at(shape[2])!=BlockCatogary::Air); 
             shape[1] += shape[0];
-            isFall = isFall && (__world->at(shape[1]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
-                                __world->at(shape[1]).getType()!=BlockCatogary::Air); 
-            isFall = isFall && (__world->at(shape[0]+glm::vec3(0,0,z)).getType()==BlockCatogary::Air || 
-                                __world->at(shape[0]).getType()!=BlockCatogary::Air); 
+            isFall = isFall && (__world->at(shape[1]+glm::vec3(0,0,z))==BlockCatogary::Air || 
+                                __world->at(shape[1])!=BlockCatogary::Air); 
+            isFall = isFall && (__world->at(shape[0]+glm::vec3(0,0,z))==BlockCatogary::Air || 
+                                __world->at(shape[0])!=BlockCatogary::Air); 
             if (isFall) mine.send(source, new Fall(z));
             else {
                 float delta = shape[0][2] - floor(shape[0][2]);
@@ -321,10 +321,10 @@ namespace MyCraft {
             shape[1] += shape[0];
             shape[1][2]++;
             shape[0][2]++;
-            if (__world->at(shape[0]).getType()==BlockCatogary::Air && 
-                __world->at(shape[1]).getType()==BlockCatogary::Air && 
-                __world->at(shape[2]).getType()==BlockCatogary::Air && 
-                __world->at(shape[3]).getType()==BlockCatogary::Air) {
+            if (__world->at(shape[0])==BlockCatogary::Air && 
+                __world->at(shape[1])==BlockCatogary::Air && 
+                __world->at(shape[2])==BlockCatogary::Air && 
+                __world->at(shape[3])==BlockCatogary::Air) {
                     mine.send(source, new Fall(z-0.035));
             }
             else {

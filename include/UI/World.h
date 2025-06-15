@@ -14,8 +14,8 @@ class World: public MyBase::Controller, public Port {
         World(const int& x, const int& y, const int& z);
         ~World();
         // virtual bool            setHover(const MyBase3D::Ray3f& hover) override;
-        MyCraft::Block&         at(const int& x, const int& y, const int& z);
-        MyCraft::Block&         at(const glm::vec3& pos);
+        unsigned char&         at(const int& x, const int& y, const int& z);
+        unsigned char&         at(const glm::vec3& pos);
     protected:
         bool handle(GLFWwindow* window) override;
         virtual void glDraw() const override;

@@ -4,32 +4,6 @@ project(RawMinecraft VERSION 0.1 LANGUAGES CXX C)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
-if (WIN32 OR MSYS OR MINGW)
-    if (NOT EXISTS ${CMAKE_SOURCE_DIR}/glm-master/build)
-        file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/glm-master/build)
-    endif()
-    if (NOT EXISTS ${CMAKE_SOURCE_DIR}/glm-master/build/Makefile) 
-        execute_process(COMMAND cmake -S ${CMAKE_SOURCE_DIR}/glm-master -B ${CMAKE_SOURCE_DIR}/glm-master/build -G "MinGW Makefiles")
-    endif()
-    execute_process(COMMAND mingw32-make -j${nproc} -C ${CMAKE_SOURCE_DIR}/glm-master/build )
-    find_package(GLFW3 REQUIRED)
-endif()
-if (UNIX AND NOT MSYS)
-    if (NOT EXISTS ${CMAKE_SOURCE_DIR}/glfw/build)
-        file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/glfw/build)
-    endif()
-    if (NOT EXISTS ${CMAKE_SOURCE_DIR}/glfw/build/Makefile) 
-        execute_process(COMMAND cmake -S ${CMAKE_SOURCE_DIR}/glfw -B ${CMAKE_SOURCE_DIR}/glfw/build -G "Unix Makefiles")
-    endif()
-    execute_process(COMMAND make -j${nproc} -C ${CMAKE_SOURCE_DIR}/glfw/build )
-    if (NOT EXISTS ${CMAKE_SOURCE_DIR}/glm-master/build)
-        file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/glm-master/build)
-    endif()
-    if (NOT EXISTS ${CMAKE_SOURCE_DIR}/glm-master/build/Makefile) 
-        execute_process(COMMAND cmake -S ${CMAKE_SOURCE_DIR}/glm-master -B ${CMAKE_SOURCE_DIR}/glm-master/build -G "Unix Makefiles")
-    endif()
-    execute_process(COMMAND make -j${nproc} -C ${CMAKE_SOURCE_DIR}/glm-master/build )
-endif()
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
@@ -40,7 +14,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/glad/include
     ${CMAKE_SOURCE_DIR}/glm-master
     ${CMAKE_SOURCE_DIR}/glfw/include
-    )
+)
 file(GLOB SOURCES 
     ${CMAKE_SOURCE_DIR}/source/*
     ${CMAKE_SOURCE_DIR}/source/UI/*
@@ -50,9 +24,13 @@ file(GLOB SOURCES
     ${CMAKE_SOURCE_DIR}/source/FormDesign/*
     ${CMAKE_SOURCE_DIR}/glad/src/*.c
 )
+set(LIB glfw)
+if (UNIX) 
+    set(LIB X11 glfw)
+endif()
 set(CMAKE_BUILD_TYPE Debug)
+add_subdirectory(${CMAKE_SOURCE_DIR}/glm-master)
+add_subdirectory(${CMAKE_SOURCE_DIR}/glfw)
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include/Extended/)
-target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/glfw/build/src)
-target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/glm-master/build/glm)
-target_link_libraries(${PROJECT_NAME} -lglfw3 -lglm)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${LIB})

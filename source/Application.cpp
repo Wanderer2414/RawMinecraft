@@ -22,7 +22,7 @@ namespace MyCraft {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
+        
         __window = glfwCreateWindow(width, height, "MyCraft", nullptr, nullptr);
         if (!__window) {
             std::cout << "Failed to create GLFW window" << std::endl;
@@ -39,6 +39,8 @@ namespace MyCraft {
             std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
         }
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         InfoCenter::Default = new InfoCenter(width, height);
         MyBase3D::PointSet::Default = new MyBase3D::PointSet();

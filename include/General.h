@@ -17,4 +17,10 @@ std::queue<glm::vec3> rasterize(const glm::vec3& a, const glm::vec3& b);
 std::queue<glm::vec3> rasterize(const glm::mat3& rec);
 
 std::ostream& operator<<(std::ostream& cout, const glm::vec3& pos);
+namespace MyBase {
+    glm::vec2 getWindowSize();
+}
+namespace MyCraft {
+    void DrawCube(const unsigned char& blockType, const glm::vec3& position);
+}
 #endif
