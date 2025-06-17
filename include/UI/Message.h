@@ -7,16 +7,14 @@ namespace MyCraft {
     class Network;
     class World;
     class Command;
-    #define MessageTypeSize 8
+    #define MessageTypeSize 11
     enum MessageType: unsigned char {
-        RequestGotoMessage,
-        RequestFallMessage,
-        MoveMessage,
-        FallMessage,
-        StopFallMessage,
-        MoveCamera,
-        RotateCamera,
-        ResetCamera
+        RequestGoto, RequestFall,
+        Move, Fall,  StopFall,
+        SetCamera, ResetCamera,
+        LeftAttack, RightAttack,
+        Placeblock,
+        CheckHover
     };
     class Port {
     public:
@@ -64,44 +62,7 @@ namespace MyCraft {
     };
 
 
-    class RequestGoto: public Message {
-    public:
-        RequestGoto(const glm::mat4x3& rectangleBox, const glm::vec2& direction);
-        ~RequestGoto();
-        MessageType     getType() const override;
-        glm::vec2       direction;
-        glm::mat4x3     rectangleBox;
-    private:
-    };
-    class RequestFall: public Message {
-    public:
-        RequestFall(const glm::mat4x3& rectangleBox, const float& zVelocity);
-        ~RequestFall();
-        MessageType     getType() const override;
-        glm::mat4x3 rectangleBox;
-        float zVelocity;
-    };
-    class Move: public Message {
-    public:
-        Move(const glm::vec3& direction);
-        ~Move();
-        MessageType     getType() const override;
-        glm::vec3       direction;
-    };
-    class Fall: public Message {
-    public:
-        Fall(const float& zVelocity);
-        ~Fall();
-        MessageType     getType() const override;
 
-        float zVelocity;
-    };
-    class StopFall: public Message {
-    public:
-        StopFall();
-        ~StopFall();
-        MessageType     getType() const override;
-    };
 }
 #endif
 

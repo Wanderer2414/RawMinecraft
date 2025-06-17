@@ -13,24 +13,27 @@ class World: public MyBase::Controller, public Port {
     public:
         World(const int& x, const int& y, const int& z);
         ~World();
-        // virtual bool            setHover(const MyBase3D::Ray3f& hover) override;
-        unsigned char&         at(const int& x, const int& y, const int& z);
-        unsigned char&         at(const glm::vec3& pos);
+        unsigned char&          at(const int& x, const int& y, const int& z);
+        unsigned char&          at(const glm::vec3& pos);
+        void                    setHoverBlock(const glm::vec3& pos, const glm::vec3& placePosition),
+                                unHoverBlock();
+        friend class PlaceblockCommand;
     protected:
         bool handle(GLFWwindow* window) override;
         virtual void glDraw() const override;
     private:
-        float                   hX, hY, hZ;
+        bool                    __isHoverBlock;
+        glm::vec3               __hoverBlock, __placePosition;
         MyCraft::Chunk          pChunks[world_side*2 + 1][world_side*2 + 1][world_side*2 + 1];
         glm::vec3               pPosition;
         MyBase::Clock           pFrameAlarm;
 
     };
 
-    class CheckEmpty: public Command {
+    class CheckEmptyCommand: public Command {
     public:
-        CheckEmpty(World* world);
-        ~CheckEmpty();
+        CheckEmptyCommand(World* world);
+        ~CheckEmptyCommand();
 
         void execute(Port& mine, Port& source, Message* message) override;
         MessageType getType() const override;
@@ -38,10 +41,10 @@ class World: public MyBase::Controller, public Port {
         World*  __world;
     };
 
-    class CheckFall: public Command {
+    class CheckFallCommand: public Command {
     public:
-        CheckFall(World* world);
-        ~CheckFall();
+        CheckFallCommand(World* world);
+        ~CheckFallCommand();
 
         void execute(Port& mine, Port& des, Message* message) override;
         MessageType getType() const override;
@@ -53,6 +56,16 @@ class World: public MyBase::Controller, public Port {
     public:
         CheckHoverCommand(World* world);
         ~CheckHoverCommand();
+        MessageType getType() const override;
+        void execute(Port& mine, Port& des, Message* message) override;
+    private:
+        World* __world;
+    };
+
+    class PlaceblockCommand: public Command {
+    public:
+        PlaceblockCommand(World* world);
+        ~PlaceblockCommand();
         MessageType getType() const override;
         void execute(Port& mine, Port& des, Message* message) override;
     private:

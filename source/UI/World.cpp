@@ -3,10 +3,11 @@
 #include "Camera.h"
 #include "Chunk.h"
 #include "Message.h"
-#include "GLFW/glfw3.h"
 #include "General.h"
+#include "PlayerModelController.h"
+
 namespace MyCraft {
-    World::World(const int& x, const int& y, const int& z): pPosition(x-world_side*16, y-world_side*16, z-world_side*16) {
+    World::World(const int& x, const int& y, const int& z): pPosition(x-world_side*16, y-world_side*16, z-world_side*16), __isHoverBlock(false) {
         for (int i = 0; i<world_side*2+1; i++) {
             for (int j = 0; j<world_side*2+1; j++) {
                 for (int k = 0; k<world_side*2+1; k++) {
@@ -14,137 +15,14 @@ namespace MyCraft {
                 }
             }
         }
-        hX = hY = hZ = 0;
         pFrameAlarm.setDuration(150);
-        add(new CheckFall(this));
-        add(new CheckEmpty(this));
+        add(new CheckFallCommand(this));
+        add(new CheckEmptyCommand(this));
         add(new CheckHoverCommand(this));
+        add(new PlaceblockCommand(this));
     }
     World::~World() {
     }
-    // bool World::setHover(const MyBase3D::Ray3f& ray) {
-    //     bool hover = false;
-    //     glm::vec3 pos = ray.getOrigin();
-    //     glm::vec3 dir = ray;
-    //     if (isHovered()) {
-    //         at(hX, hY, hZ).setHoverPlane(-1);
-    //     }
-    //     glm::vec3 limit = abs(dir);
-    //     float pPlane = -1, pMinDistance = glm::length(dir);
-    //     if (dir.x>0) {
-    //         for (int i = 0; i<limit.x; i++) {
-    //             float planeX = ceil(pos.x)+i;
-    //             glm::vec3 delta = ray.distance(0, planeX);
-    //             if (glm::length(delta)<=pMinDistance) {
-    //                 glm::vec3 center = delta+pos;
-    //                 if (Block& tmp = at(planeX, floor(center.y), floor(center.z)); tmp != BlockCatogary::Air) {
-    //                     hX = planeX;
-    //                     hY = floor(center.y);
-    //                     hZ = floor(center.z);
-    //                     pMinDistance = glm::length(delta);
-    //                     pPlane = 0;
-    //                     hover = true;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     else if (dir.x<0) {
-    //         for (int i = 0; i<limit.x; i++) {
-    //             float planeX = floor(pos.x)-i;
-    //             glm::vec3 delta = ray.distance(0, planeX);
-    //             if (glm::length(delta)<=pMinDistance) {
-    //                 glm::vec3 center = delta+pos;
-    //                 if (at(planeX-1, floor(center.y), floor(center.z)) != BlockCatogary::Air) {
-    //                     hX = planeX-1;
-    //                     hY = floor(center.y);
-    //                     hZ = floor(center.z);
-    //                     pPlane=1;
-    //                     pMinDistance = glm::length(delta);
-    //                     hover = true;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     if (dir.y>0) {
-    //         for (int i = 0; i<limit.y; i++) {
-    //             float planeY = ceil(pos.y)+i;
-    //             glm::vec3 delta = ray.distance(1, planeY);
-    //             if (glm::length(delta)<=pMinDistance) {
-    //                 glm::vec3 center = delta+pos;
-    //                 if (at(floor(center.x), planeY, floor(center.z)) != BlockCatogary::Air) {
-    //                     hX = floor(center.x);
-    //                     hY = planeY;
-    //                     hZ = floor(center.z);
-    //                     pPlane=2;
-    //                     pMinDistance = glm::length(delta);
-    //                     hover = true;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     else if (dir.y<0) {
-    //         for (int i = 0; i<limit.y; i++) {
-    //             float planeY = floor(pos.y)-i;
-    //             glm::vec3 delta = ray.distance(1, planeY);
-    //             if (glm::length(delta)<=pMinDistance) {
-    //                 glm::vec3 center = delta+pos;
-    //                 if (at(floor(center.x), planeY-1, floor(center.z)) != BlockCatogary::Air) {
-    //                     hX = floor(center.x);
-    //                     hY = planeY-1;
-    //                     hZ = floor(center.z);
-    //                     pPlane=3;
-    //                     pMinDistance = glm::length(delta);
-    //                     hover = true;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     if (dir.z>0) {
-    //         for (int i = 0; i<limit.z; i++) {
-    //             float planeZ = ceil(pos.z)+i;
-    //             glm::vec3 delta = ray.distance(2, planeZ);
-    //             if (glm::length(delta)<=pMinDistance) {
-    //                 glm::vec3 center = delta+pos;
-    //                 if (at(floor(center.x), floor(center.y), planeZ) != BlockCatogary::Air) {
-    //                     hX = floor(center.x);
-    //                     hY = floor(center.y);
-    //                     hZ = planeZ;
-    //                     pPlane = 4;
-    //                     pMinDistance = glm::length(delta);
-    //                     hover = true;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     else if (dir.z<0) {
-    //         for (int i = 0; i<limit.z; i++) {
-    //             float planeZ = floor(pos.z)-i;
-    //             glm::vec3 delta = ray.distance(2, planeZ);
-    //             if (glm::length(delta)<=pMinDistance) {
-    //                 glm::vec3 center = delta+pos;
-    //                 if (at(floor(center.x), floor(center.y), planeZ-1) != BlockCatogary::Air) {
-    //                     hX = floor(center.x);
-    //                     hY = floor(center.y);
-    //                     hZ = planeZ-1;
-    //                     pPlane = 5;
-    //                     pMinDistance = glm::length(delta);
-    //                     hover = true;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     if (hover) {
-    //         at(hX, hY, hZ).setHoverPlane(pPlane);
-    //     }
-    //     Controller3D::setHover(hover);
-    //     return true;
-    // }
     
     bool World::handle(GLFWwindow* window) {
         bool is_changed = Controller::handle(window);
@@ -177,7 +55,16 @@ namespace MyCraft {
     unsigned char& World::at(const glm::vec3& pos) {
         return at(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z));
     }
+    void World::setHoverBlock(const glm::vec3& pos, const glm::vec3& placePosition) {
+        __hoverBlock = pos;
+        __placePosition = placePosition;
+        __isHoverBlock = true;
+    }
+    void World::unHoverBlock() {
+        __isHoverBlock = false;
+    }
     void World::glDraw() const {
+        if (__isHoverBlock) DrawMargin(__hoverBlock, glm::vec3(1), glm::vec3(1,0,0));
         for (int i = 0; i<world_side*2+1; i++) {
             for (int j = 0; j<world_side*2+1; j++) {
                 for (int k = 0; k<world_side*2+1; k++) {
@@ -187,13 +74,13 @@ namespace MyCraft {
         }
     }
 
-    CheckEmpty::CheckEmpty(World* world): __world(world) {}
-    CheckEmpty::~CheckEmpty() {Command::~Command();}
+    CheckEmptyCommand::CheckEmptyCommand(World* world): __world(world) {}
+    CheckEmptyCommand::~CheckEmptyCommand() {Command::~Command();}
     
-    void CheckEmpty::execute(Port& mine, Port& source, Message* message) {
-        RequestGoto* request = (RequestGoto*)message;
+    void CheckEmptyCommand::execute(Port& mine, Port& source, Message* message) {
+        RequestGotoMessage* request = (RequestGotoMessage*)message;
         bool below_result = true, above_result = true;
-        auto& shape = request->rectangleBox;
+        auto shape = request->rectangleBox;
         glm::vec3 dir = glm::vec3(request->direction, 0);
         //Below check
         glm::vec3 npos = shape[0] + dir, epos = npos + shape[1];
@@ -270,8 +157,6 @@ namespace MyCraft {
             }
         }
         if (below_result) {
-            mine.send(source, new Move(dir));
-
             shape[3] = shape[0] + shape[2];
             shape[3][2]--;
             shape[2] += shape[0] + shape[1];
@@ -279,19 +164,28 @@ namespace MyCraft {
             shape[1] += shape[0];
             shape[1][2]--;
             shape[0][2]--;
+
+            if (__world->at(shape[0])==BlockCatogary::Air && 
+                __world->at(shape[1])==BlockCatogary::Air && 
+                __world->at(shape[2])==BlockCatogary::Air && 
+                __world->at(shape[3])==BlockCatogary::Air) {
+                    dir.z = -0.01;
+            }
+
+            mine.send(source, new MoveMessage(dir));
         }
     }
-    MessageType CheckEmpty::getType() const {
-        return MessageType::RequestGotoMessage;
+    MessageType CheckEmptyCommand::getType() const {
+        return MessageType::RequestGoto;
     }
     
-    CheckFall::CheckFall(World* world): __world(world) {}
-    CheckFall::~CheckFall() {Command::~Command();}
+    CheckFallCommand::CheckFallCommand(World* world): __world(world) {}
+    CheckFallCommand::~CheckFallCommand() {}
         
-    void CheckFall::execute(Port& mine, Port& source, Message* message) {
-        RequestFall* request = (RequestFall*)message;
+    void CheckFallCommand::execute(Port& mine, Port& source, Message* message) {
+        RequestFallMessage* request = (RequestFallMessage*)message;
         float z = request->zVelocity;
-        auto& shape = request->rectangleBox;
+        auto shape = request->rectangleBox;
         if (z<=0) {
             z -= 0.06;
             bool isFall = true;
@@ -306,11 +200,11 @@ namespace MyCraft {
                                 __world->at(shape[1])!=BlockCatogary::Air); 
             isFall = isFall && (__world->at(shape[0]+glm::vec3(0,0,z))==BlockCatogary::Air || 
                                 __world->at(shape[0])!=BlockCatogary::Air); 
-            if (isFall) mine.send(source, new Fall(z));
+            if (isFall) mine.send(source, new FallMessage(z));
             else {
                 float delta = shape[0][2] - floor(shape[0][2]);
-                mine.send(source, new Fall(-delta));
-                mine.send(source, new StopFall());
+                mine.send(source, new FallMessage(-delta));
+                mine.send(source, new StopFallMessage());
             }
         }
         else if (z>0) {
@@ -327,25 +221,56 @@ namespace MyCraft {
                 __world->at(shape[1])==BlockCatogary::Air && 
                 __world->at(shape[2])==BlockCatogary::Air && 
                 __world->at(shape[3])==BlockCatogary::Air) {
-                    mine.send(source, new Fall(z-0.035));
+                    mine.send(source, new FallMessage(z-0.035));
             }
             else {
                 float delta = floor(shape[0][2]) - shape[0][2] + 1;
                 if (delta>=0.01) delta -= 0.01;
-                mine.send(source, new Fall(delta));
+                mine.send(source, new FallMessage(delta));
             }
         }
     }
-    MessageType CheckFall::getType() const {
-        return MessageType::RequestFallMessage;
+    MessageType CheckFallCommand::getType() const {
+        return MessageType::RequestFall;
     }
 
     CheckHoverCommand::CheckHoverCommand(World* world): __world(world) {}
     CheckHoverCommand::~CheckHoverCommand() {}
     MessageType CheckHoverCommand::getType() const {
-        return MessageType::RotateCamera;
+        return MessageType::CheckHover;
     };
     void CheckHoverCommand::execute(Port& mine, Port& des, Message* message) {
-        RotateCameraMessage* package = (RotateCameraMessage*)message;
+        CheckHoverMessage* package = (CheckHoverMessage*)message;
+        glm::vec3 pos = package->position + glm::vec3(0,0,1.8);
+        auto q = rasterize(pos, pos+package->direction*4.f);
+        bool hover = false;
+        glm::vec3 placePosition;
+        while (q.size() && !hover) {
+            if (__world->at(q.front())!=BlockCatogary::Air) {
+                hover = true;
+            }
+            else {
+                placePosition = q.front();
+                q.pop();
+            }
+        }
+        if (hover) {
+            __world->setHoverBlock(q.front(), placePosition);
+        }
+        else __world->unHoverBlock();
+    }
+    PlaceblockCommand::PlaceblockCommand(World* world): __world(world) {}
+    PlaceblockCommand::~PlaceblockCommand() {}
+    MessageType PlaceblockCommand::getType() const {
+        return MessageType::RightAttack;
+    }
+    void PlaceblockCommand::execute(Port& mine, Port& des, Message* message) {
+        RightAttackMessage* package = (RightAttackMessage*)message;
+        glm::vec3 fpos(floor(package->posistion.x), floor(package->posistion.y), floor(package->posistion.z));
+        if (__world->__isHoverBlock && __world->__placePosition!=fpos) {
+            fpos.z += 1;
+            if (__world->__placePosition != fpos)
+                 __world->at(__world->__placePosition) = BlockCatogary::Grass;
+        }
     }
 }

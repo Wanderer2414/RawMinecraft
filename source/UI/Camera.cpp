@@ -33,8 +33,7 @@ namespace MyBase3D {
         __view = glm::lookAt(__position, __position + __delta, glm::vec3(0, 0, 1));
         __projection = glm::perspective(glm::radians(60.f), MyCraft::InfoCenter::Default->getWindowRatio(), 0.1f, 100.f);
         __keyCooldown.setDuration(200);
-        add(new MyCraft::RotateCameraCommand_ThirdPersonView(this));
-        add(new MyCraft::MoveCameraCommand(this));
+        add(new MyCraft::SetCameraCommand_ThirdPersonView(this));
         update();
     }
     Camera::~Camera() {
@@ -123,12 +122,12 @@ namespace MyBase3D {
         if (__keyCooldown.get()) {
             if (glfwGetKey(window, GLFW_KEY_F5)) {
                 if (__isThirdCamera) {
-                    add(new MyCraft::RotateCameraCommand_FirstPersonView(this));
+                    add(new MyCraft::SetCameraCommand_FirstPersonView(this));
                     send(new MyCraft::ResetCameraMessage(true));
                     __isThirdCamera = false;
                 }
                 else {
-                    add(new MyCraft::RotateCameraCommand_ThirdPersonView(this));
+                    add(new MyCraft::SetCameraCommand_ThirdPersonView(this));
                     send(new MyCraft::ResetCameraMessage(false));
                     __isThirdCamera = true;
                 }
@@ -170,50 +169,32 @@ namespace MyBase3D {
 }
 
 namespace MyCraft {
-    
-    MoveCameraMessage::MoveCameraMessage(const glm::vec3& d): direction(d) {}
-    MoveCameraMessage::~MoveCameraMessage() {}
-    MessageType MoveCameraMessage::getType() const {
-        return MessageType::MoveCamera;
-    }
 
-    RotateCameraMessage::RotateCameraMessage(const glm::vec3& pos, const glm::vec3& d): position(pos), direction(d) {}
-    RotateCameraMessage::~RotateCameraMessage() {}
-    MessageType RotateCameraMessage::getType() const {
-        return MessageType::RotateCamera;
-    }
-
-    MoveCameraCommand::MoveCameraCommand(MyBase3D::Camera* camera): __camera(camera) {}
-    MoveCameraCommand::~MoveCameraCommand() {}
-    MessageType MoveCameraCommand::getType() const {
-        return MessageType::MoveCamera;
-    }
-    void MoveCameraCommand::execute(Port& mine, Port& source, Message* message) {
-        MoveCameraMessage* package = (MoveCameraMessage*)message;
-        if (glm::length(package->direction)!=0) {
-            __camera->move(package->direction);
-        }
+    SetCameraMessage::SetCameraMessage(const glm::vec3& pos, const glm::vec3& d): position(pos), direction(d) {}
+    SetCameraMessage::~SetCameraMessage() {}
+    MessageType SetCameraMessage::getType() const {
+        return MessageType::SetCamera;
     }
     
-    RotateCameraCommand_ThirdPersonView::RotateCameraCommand_ThirdPersonView(MyBase3D::Camera* camera): __camera(camera) {}
-    RotateCameraCommand_ThirdPersonView::~RotateCameraCommand_ThirdPersonView() {}
-    MessageType RotateCameraCommand_ThirdPersonView::getType() const {
-        return MessageType::RotateCamera;
+    SetCameraCommand_ThirdPersonView::SetCameraCommand_ThirdPersonView(MyBase3D::Camera* camera): __camera(camera) {}
+    SetCameraCommand_ThirdPersonView::~SetCameraCommand_ThirdPersonView() {}
+    MessageType SetCameraCommand_ThirdPersonView::getType() const {
+        return MessageType::SetCamera;
     }
-    void RotateCameraCommand_ThirdPersonView::execute(Port& mine, Port& source, Message* message) {
-        RotateCameraMessage* package = (RotateCameraMessage*)message;
+    void SetCameraCommand_ThirdPersonView::execute(Port& mine, Port& source, Message* message) {
+        SetCameraMessage* package = (SetCameraMessage*)message;
         __camera->setPosition(package->position-3.f*package->direction + glm::vec3(0,0,2));
         __camera->see(package->direction);
     }
     
     
-    RotateCameraCommand_FirstPersonView::RotateCameraCommand_FirstPersonView(MyBase3D::Camera* camera): __camera(camera) {}
-    RotateCameraCommand_FirstPersonView::~RotateCameraCommand_FirstPersonView() {}
-    MessageType RotateCameraCommand_FirstPersonView::getType() const {
-        return MessageType::RotateCamera;
+    SetCameraCommand_FirstPersonView::SetCameraCommand_FirstPersonView(MyBase3D::Camera* camera): __camera(camera) {}
+    SetCameraCommand_FirstPersonView::~SetCameraCommand_FirstPersonView() {}
+    MessageType SetCameraCommand_FirstPersonView::getType() const {
+        return MessageType::SetCamera;
     }
-    void RotateCameraCommand_FirstPersonView::execute(Port& mine, Port& source, Message* message) {
-        RotateCameraMessage* package = (RotateCameraMessage*)message;
+    void SetCameraCommand_FirstPersonView::execute(Port& mine, Port& source, Message* message) {
+        SetCameraMessage* package = (SetCameraMessage*)message;
         __camera->setPosition(package->position + glm::vec3(0,0,1.8));
         __camera->see(package->direction);
     }

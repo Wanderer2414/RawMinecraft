@@ -9,6 +9,7 @@ namespace MyCraft {
     public: 
         PlayerModelController();
         ~PlayerModelController();
+        bool        isCrounch() const;
         bool        sensitiveHandle(GLFWwindow* window) override;
         bool        handle(GLFWwindow* window) override;
         glm::vec3   getModelPosition() const override,
@@ -48,6 +49,80 @@ namespace MyCraft {
         void execute(Port& mine, Port& source, Message* message) override;
     private:
         PlayerModelController* __model;
+    };
+    class MoveMessage: public Message {
+    public:
+        MoveMessage(const glm::vec3& direction);
+        ~MoveMessage();
+        MessageType     getType() const override;
+        const glm::vec3       direction;
+    };
+    class FallMessage: public Message {
+    public:
+        FallMessage(const float& zVelocity);
+        ~FallMessage();
+        MessageType     getType() const override;
+
+        const float zVelocity;
+    };
+    class StopFallMessage: public Message {
+    public:
+        StopFallMessage();
+        ~StopFallMessage();
+        MessageType     getType() const override;
+    };
+    
+    class RequestGotoMessage: public Message {
+    public:
+        RequestGotoMessage(const glm::mat4x3& rectangleBox, const glm::vec2& direction);
+        ~RequestGotoMessage();
+        MessageType     getType() const override;
+        const glm::vec2       direction;
+        const glm::mat4x3     rectangleBox;
+    private:
+    };
+
+    class RequestFallMessage: public Message {
+    public:
+        RequestFallMessage(const glm::mat4x3& rectangleBox, const float& zVelocity);
+        ~RequestFallMessage();
+        MessageType     getType() const override;
+        const glm::mat4x3 rectangleBox;
+        float zVelocity;
+    };
+
+    class RightAttackMessage: public Message {
+    public:
+        RightAttackMessage(const glm::vec3& pos, const glm::vec3& dir);
+        ~RightAttackMessage();
+        MessageType getType() const override;
+        const glm::vec3 posistion, direction;
+    };
+
+    class LeftAttackMessage: public Message {
+    public:
+        LeftAttackMessage();
+        ~LeftAttackMessage();
+        MessageType     getType() const override;
+    };
+
+    class CheckHoverMessage: public Message {
+    public:
+        CheckHoverMessage(const glm::vec3& pos, const glm::vec3& dir);
+        ~CheckHoverMessage();
+        MessageType     getType() const override;
+        const glm::vec3 position, direction;
+    };
+
+    class PlayerMoveCommand: public Command {
+    public:
+        PlayerMoveCommand(PlayerModelController* model);
+        ~PlayerMoveCommand();
+
+        MessageType getType()                               const override;
+        void execute(Port& mine, Port& source, Message* message)   override;
+    private:
+        PlayerModelController*      __model;
     };
 }
 #endif

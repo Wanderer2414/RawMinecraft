@@ -53,43 +53,27 @@ namespace MyBase3D {
     };
 };
 namespace MyCraft {
-    class MoveCameraMessage: public MyCraft::Message {
+    class SetCameraMessage: public MyCraft::Message {
     public:
-        MoveCameraMessage(const glm::vec3& direction);
-        ~MoveCameraMessage();
+        SetCameraMessage(const glm::vec3& position, const glm::vec3& direction);
+        ~SetCameraMessage();
         MessageType getType() const override;
-        glm::vec3 direction;
+        const glm::vec3 direction;
+        const glm::vec3 position;
     };
-    class RotateCameraMessage: public MyCraft::Message {
+    class SetCameraCommand_ThirdPersonView: public MyCraft::Command {
     public:
-        RotateCameraMessage(const glm::vec3& position, const glm::vec3& direction);
-        ~RotateCameraMessage();
-        MessageType getType() const override;
-        glm::vec3 direction;
-        glm::vec3 position;
-    };
-    class MoveCameraCommand: public MyCraft::Command {
-    public:
-        MoveCameraCommand(MyBase3D::Camera* camera);
-        ~MoveCameraCommand();
-        MessageType getType() const override;
-        void execute(Port& mine, Port& source, Message* message) override;
-    private:
-        MyBase3D::Camera* __camera;
-    };
-    class RotateCameraCommand_ThirdPersonView: public MyCraft::Command {
-    public:
-        RotateCameraCommand_ThirdPersonView(MyBase3D::Camera* camera);
-        ~RotateCameraCommand_ThirdPersonView();
+        SetCameraCommand_ThirdPersonView(MyBase3D::Camera* camera);
+        ~SetCameraCommand_ThirdPersonView();
         MessageType getType() const override;
         void execute(Port& mine, Port& source, Message* message) override;
     private:
         MyBase3D::Camera* __camera;
     };    
-    class RotateCameraCommand_FirstPersonView: public MyCraft::Command {
+    class SetCameraCommand_FirstPersonView: public MyCraft::Command {
     public:
-        RotateCameraCommand_FirstPersonView(MyBase3D::Camera* camera);
-        ~RotateCameraCommand_FirstPersonView();
+        SetCameraCommand_FirstPersonView(MyBase3D::Camera* camera);
+        ~SetCameraCommand_FirstPersonView();
         MessageType getType() const override;
         void execute(Port& mine, Port& source, Message* message) override;
     private:
@@ -100,7 +84,7 @@ namespace MyCraft {
     public:
         ResetCameraMessage(const bool& isFirstCamera);
         MessageType getType() const override;
-        bool isFirstCamera;
+        const bool isFirstCamera;
     private:
     };
 }

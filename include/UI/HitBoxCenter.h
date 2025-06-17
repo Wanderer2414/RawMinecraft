@@ -13,7 +13,7 @@ namespace MyCraft {
             void erase(ModelController* model);
             void glDraw() const             override;
         private:
-            GLuint              __colors;
+            glm::vec3              __colors;
             std::vector<ModelController*> __models;
     };
 }

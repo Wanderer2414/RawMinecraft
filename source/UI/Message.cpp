@@ -1,4 +1,5 @@
 #include "Message.h"
+#include "PlayerModelController.h"
 
 namespace MyCraft {
     Port::Port(Network* network): __network(network) {}
@@ -62,35 +63,6 @@ namespace MyCraft {
     Command::~Command() {};
     Message::~Message() {};
     
-    RequestGoto::RequestGoto(const glm::mat4x3& p, const glm::vec2& d): rectangleBox(p), direction(d) {}
-    RequestGoto::~RequestGoto() {Message::~Message();}
-
-    RequestFall::RequestFall(const glm::mat4x3& rec, const float& z): rectangleBox(rec), zVelocity(z) {
-    }
-    RequestFall::~RequestFall() {
-    }
-    MessageType RequestFall::getType() const {
-        return MessageType::RequestFallMessage;
-    }
-    MessageType RequestGoto::getType() const {
-        return MessageType::RequestGotoMessage;
-    }
-    Move::Move(const glm::vec3& d): direction(d) {}
-    Move::~Move() {Message::~Message();}
-    MessageType Move::getType() const {
-        return MessageType::MoveMessage;
-    }
-    Fall::Fall(const float& z): zVelocity(z) {}
-    Fall::~Fall() {Message::~Message();}
-    MessageType Fall::getType() const  {
-        return MessageType::FallMessage;
-    }
-
-    MessageType StopFall::getType() const {
-        return MessageType::StopFallMessage;
-    }
-    StopFall::StopFall() {};
-    StopFall::~StopFall() {};
 }
 
 

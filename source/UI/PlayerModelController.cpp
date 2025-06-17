@@ -5,6 +5,7 @@
 #include "ModelController.h"
 #include "ModelLoader.h"
 #include "ModelStorage.h"
+#include "World.h"
 namespace MyCraft {
     PlayerModelController::PlayerModelController(): __position(0), __direction(0, -1, 0), __runTime(0), __handTime(0),
         __isLeftAttack(0), __isRightAttack(0), __animation(ModelStorage::Default->getPlayerModel().getNodeCount(), 1), __eye_direction(0, -1, 0),
@@ -17,13 +18,16 @@ namespace MyCraft {
         __diagonal = {0.6, 0.4, 1.9};
         __runCooldown.setDuration(30);
 
-        add(new MoveCommand(this));
+        add(new PlayerMoveCommand(this));
         add(new FallCommand(this));
         add(new StopFallCommand(this));
         add (new ResetCameraCommand(this));
 }
     PlayerModelController::~PlayerModelController() {
 
+    }
+    bool PlayerModelController::isCrounch() const {
+        return __isCrouch;
     }
     bool PlayerModelController::sensitiveHandle(GLFWwindow* window) {
         bool is_changed = ModelController::handle(window);
@@ -52,18 +56,18 @@ namespace MyCraft {
             dir.z = 0;
             dir = glm::normalize(dir)*__speed;
             rotate(dir);
-            send(new RequestGoto(getShape(), dir));
+            send(new RequestGotoMessage(getShape(), dir));
         }
         if (!isFall()) {
             if (glfwGetKey(window, GLFW_KEY_SPACE)) {
                 //Jump here
                 setZVelocity(0.35);
-                send(new RequestFall(getShape(), getZVelocity()));
+                send(new RequestFallMessage(getShape(), getZVelocity()));
             }
         }
         else {
             //Auto fall
-            send(new RequestFall(getShape(), getZVelocity()));
+            send(new RequestFallMessage(getShape(), getZVelocity()));
         }
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
             rightAttack();
@@ -168,11 +172,14 @@ namespace MyCraft {
             __handTime = 0;
             __isRightAttack = false;
             __isRightAttack = true;
+            send(new RightAttackMessage(__position, __eye_direction));
+            send(new CheckHoverMessage(__position, __eye_direction));
         }
     }
     void PlayerModelController::move(const glm::vec3& delta) {
-        send(new MoveCameraMessage(delta));
         __position += delta;
+        send(new SetCameraMessage(__position, __eye_direction));
+        send(new CheckHoverMessage(__position, __eye_direction));
         if (delta.x || delta.y) {
             __runCooldown.restart();
             __isRun = true;
@@ -192,7 +199,8 @@ namespace MyCraft {
         __eye_direction = glm::rotate(__eye_direction, horizontal, glm::vec3(0, 0, 1));
         glm::vec3 axis = glm::cross(__eye_direction, glm::vec3(0,0,1));
         __eye_direction = glm::rotate(__eye_direction, vertical, axis);
-        send(new RotateCameraMessage(__position, __eye_direction));
+        send(new SetCameraMessage(__position, __eye_direction));
+        send(new CheckHoverMessage(__position, __eye_direction));
     }
     void PlayerModelController::setDrawAble(const bool& drawable) {
         __isDrawable = drawable;
@@ -245,6 +253,76 @@ namespace MyCraft {
         ResetCameraMessage* package = (ResetCameraMessage*)message;
         if (package->isFirstCamera) __model->setDrawAble(false);
         else __model->setDrawAble(true);
-        __model->send(new RotateCameraMessage(__model->getModelPosition(), __model->getDirection()));
+        __model->send(new SetCameraMessage(__model->getModelPosition(), __model->getDirection()));
+    }
+
+
+    MoveMessage::MoveMessage(const glm::vec3& d): direction(d) {}
+    MoveMessage::~MoveMessage() {Message::~Message();}
+    MessageType MoveMessage::getType() const {
+        return MessageType::Move;
+    }
+
+    FallMessage::FallMessage(const float& z): zVelocity(z) {}
+    FallMessage::~FallMessage() {Message::~Message();}
+    MessageType FallMessage::getType() const  {
+        return MessageType::Fall;
+    }
+
+    MessageType StopFallMessage::getType() const {
+        return MessageType::StopFall;
+    }
+    StopFallMessage::StopFallMessage() {};
+    StopFallMessage::~StopFallMessage() {};
+
+    RequestGotoMessage::RequestGotoMessage(const glm::mat4x3& p, const glm::vec2& d): rectangleBox(p), direction(d) {}
+    RequestGotoMessage::~RequestGotoMessage() {Message::~Message();}
+
+    RequestFallMessage::RequestFallMessage(const glm::mat4x3& rec, const float& z): rectangleBox(rec), zVelocity(z) {
+    }
+    RequestFallMessage::~RequestFallMessage() {
+    }
+    MessageType RequestFallMessage::getType() const {
+        return MessageType::RequestFall;
+    }
+    MessageType RequestGotoMessage::getType() const {
+        return MessageType::RequestGoto;
+    }
+
+    RightAttackMessage::RightAttackMessage(const glm::vec3& pos, const glm::vec3& dir): posistion(pos), direction(dir) {}
+    RightAttackMessage::~RightAttackMessage() {}
+    MessageType RightAttackMessage::getType() const {
+        return MessageType::RightAttack;
+    }
+    
+    LeftAttackMessage::LeftAttackMessage() {}
+    LeftAttackMessage::~LeftAttackMessage() {}
+    MessageType LeftAttackMessage::getType() const{
+        return MessageType::LeftAttack;
+    }
+
+    CheckHoverMessage::CheckHoverMessage(const glm::vec3& pos, const glm::vec3& dir): position(pos), direction(dir) {}
+    CheckHoverMessage::~CheckHoverMessage() {}
+    MessageType CheckHoverMessage::getType() const {
+        return MessageType::CheckHover;
+    }
+
+    PlayerMoveCommand::PlayerMoveCommand(PlayerModelController* model): __model(model) {}
+    PlayerMoveCommand::~PlayerMoveCommand() {}
+
+    MessageType PlayerMoveCommand::getType() const {
+        return MessageType::Move;
+    }
+    void PlayerMoveCommand::execute(Port& mine, Port& source, Message* message)   {
+        MoveMessage* moveMessage = (MoveMessage*)message;
+        if (__model->isCrounch()) {
+            if (moveMessage->direction.z==0) 
+                __model->move(moveMessage->direction);
+        }
+        else {
+            __model->move(moveMessage->direction);
+            if (!__model->isFall())
+                mine.send(new RequestFallMessage(__model->getShape(), __model->getZVelocity()));
+        }
     }
 }
