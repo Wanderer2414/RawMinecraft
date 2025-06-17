@@ -16,9 +16,8 @@ class Container: public Controller {
                         erase(Controller* controller),
                         update()                                    override;
         virtual void    setFocus(const bool& focus)                 override;
-        glm::vec2       getPosition() const                         override,
-                        getSize() const                             override;
-        virtual void    setPosition(const float& x, const float& y) override;
+        virtual glm::vec2   getPosition() const                         = 0,
+                            getSize() const                             = 0;
         virtual void    clear();
         Controller* operator[](const std::size_t& index);
     protected:

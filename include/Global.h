@@ -13,7 +13,7 @@
 #include "tiny_gltf.h"
 #include <stack>
 #include <queue>
-
+#include <limits>
 
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"
@@ -26,5 +26,9 @@
 #ifdef __linux__
 #include "X11/Xlib.h"
 #include "X11/Xutil.h"
+#define TransX(X) 2.0f*X/1366-1
+#define TransY(Y) 1-2.0*Y/768
+#endif
+#ifdef _WIN32
 #endif
 #endif

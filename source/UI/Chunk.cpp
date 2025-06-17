@@ -1,9 +1,6 @@
 #include "Chunk.h"
 #include "Block.h"
 #include "General.h"
-#include "Global.h"
-#include "PointSet.h"
-#include "ShaderStorage.h"
 namespace MyCraft {
 
 Chunk::Chunk() {
@@ -53,34 +50,7 @@ void Chunk::setPosition(const glm::vec3& position) {
 }
 
 void Chunk::glDraw() const {
-    glLineWidth(2);
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getChunkSet());
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
-    glEnableVertexAttribArray(0);
-
-    GLuint Origin;
-
-    float buffer[8] = {
-        __position.x, __position.y, __position.z, 0,
-        1, 0, 0, 1
-    };
-    glGenBuffers(1, &Origin);
-    glBindBuffer(GL_UNIFORM_BUFFER, Origin);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*8, buffer, GL_STATIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, Origin);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MyBase3D::PointSet::Default->getMarginBlockIndices());
-    glUseProgram(MyBase3D::ShaderStorage::Default->GetChunkShader());
-
-    glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_INT, 0);
-    
-    glDeleteBuffers(1, &Origin);
-    glDeleteVertexArrays(1, &VAO);
-
+    DrawMargin(__position, glm::vec3(16,16,16), glm::vec3(1,0,0));
     for (int i = 0; i<16; i++) {
         for (int j = 0; j<16; j++) {
             for (int k = 0; k<16; k++) {

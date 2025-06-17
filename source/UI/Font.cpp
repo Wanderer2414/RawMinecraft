@@ -1,20 +1,18 @@
 #include "Font.h"
-#include "Block.h"
 #include "Global.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
 #include "stb_truetype.h"
-#include <GL/gl.h>
-#include <GL/glext.h>
 
-namespace MyBase3D {
+namespace MyBase {
     Font::Font(const std::string& source) {
         if (source.size()) loadFont(source);
+        glGenVertexArrays(1, &__vertex);
     }
     Font::~Font() {
         glDeleteTextures(1, &__textmap);
+        glDeleteVertexArrays(1, &__vertex);
     }
-
     void Font::loadFont(const std::string& source) {
         std::ifstream fstream(source);
         if (!fstream.is_open()) {
@@ -38,63 +36,63 @@ namespace MyBase3D {
         
         glBindTexture(GL_TEXTURE_2D, 0);
     }
-    void Font::DrawText(const std::string& text, const glm::vec2& position) {
-        glUseProgram(ShaderStorage::Default->getFontShader());
+    void Font::DrawText(const std::string& text, const glm::vec2& position, const glm::vec3& color) const{
+        glUseProgram(MyBase3D::ShaderStorage::Default->getFontShader());
         auto map = __utf8_to_codepoint(text);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, __textmap);
         
         float x = position.x, y = position.y;
-        float color[] = {0, 1, 0};
+        
+        glBindVertexArray(__vertex);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MyBase3D::PointSet::Default->getRectangleIndices());
+
+
         GLuint COLOR;
         glGenBuffers(1, &COLOR);
         glBindBuffer(GL_UNIFORM_BUFFER, COLOR);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(color), color, GL_STATIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec3), &color, GL_STATIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, 1, COLOR);
         for (int i = 0; i<map.size(); i++) {
             stbtt_aligned_quad q;
             stbtt_GetBakedQuad(__data, 512, 512, map[i]-32, &x, &y, &q, 1);
-            q.x0/=512; q.y0 = - q.y0/512;
-            q.x1/=512; q.y1 = - q.y1/512;
+            q.x0=q.x0/512 + position.x; q.y0 = - (q.y0+32)/512 + position.y;
+            q.x1=q.x1/512 + position.x; q.y1 = - (q.y1+32)/512 + position.y;
             float tmp[] = {q.x0, q.y0, q.s0, q.t0, q.x0, q.y1, q.s0, q.t1, q.x1, q.y1, q.s1, q.t1, q.x1, q.y0, q.s1, q.t0};
-            unsigned int indices[] = {0, 1, 3, 3, 1, 2};
-            GLuint VAO, VBO, IDS;
-            glGenVertexArrays(1, &VAO);
-            glBindVertexArray(VAO);
+            GLuint VBO;
     
             glGenBuffers(1, &VBO);
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
             glBufferData(GL_ARRAY_BUFFER, sizeof(tmp), &tmp, GL_STATIC_DRAW);
     
-            glGenBuffers(1, &IDS);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IDS);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
-    
-            glEnableVertexArrayAttrib(VAO, 0);
+            glEnableVertexArrayAttrib(__vertex, 0);
             glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 16, 0);
-            glEnableVertexArrayAttrib(VAO, 1);
+            glEnableVertexArrayAttrib(__vertex, 1);
             glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 16, (void*)8);
             
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-            glDeleteVertexArrays(1, &VAO);
+
             glDeleteBuffers(1, &VBO);
-            glDeleteBuffers(1, &IDS);
         }
+        glDeleteBuffers(1, &COLOR);
     }
-    std::vector<int> Font::__utf8_to_codepoint(const std::string& text) {
+    std::vector<int> Font::__utf8_to_codepoint(const std::string& text) const {
         std::vector<int> ans;
         for (int i = 0; i<text.size();) {        
             unsigned char c = text[i];
             if (c < 128) {
                 i++;
                 ans.push_back(c);
-            } else if ((c >> 5) == 0x6) {
+            } 
+            else if ((c >> 5) == 0x6) {
                 i+=2;
                 ans.push_back(((text[i] & 0x1F) << 6) | (text[i+1] & 0x3F));
-            } else if ((c >> 4) == 0xE) {
+            } 
+            else if ((c >> 4) == 0xE) {
                 i+=3;
                 ans.push_back(((text[0] & 0x0F) << 12) | ((text[1] & 0x3F) << 6) | (text[2] & 0x3F));
-            } else if ((c >> 3) == 0x1E) {
+            } 
+            else if ((c >> 3) == 0x1E) {
                 i+=4;
                 ans.push_back(((text[0] & 0x07) << 18) |
                        ((text[1] & 0x3F) << 12) |

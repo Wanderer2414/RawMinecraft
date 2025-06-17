@@ -48,5 +48,15 @@ class World: public MyBase::Controller, public Port {
     private:
         World*  __world;
     };
+
+    class CheckHoverCommand: public Command {
+    public:
+        CheckHoverCommand(World* world);
+        ~CheckHoverCommand();
+        MessageType getType() const override;
+        void execute(Port& mine, Port& des, Message* message) override;
+    private:
+        World* __world;
+    };
 }
 #endif

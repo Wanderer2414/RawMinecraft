@@ -221,6 +221,7 @@ namespace MyCraft {
     ResetCameraMessage::ResetCameraMessage(const bool& firstCamera): isFirstCamera(firstCamera) {
 
     }
+    
     MessageType ResetCameraMessage::getType() const {
         return MessageType::ResetCamera;
     }

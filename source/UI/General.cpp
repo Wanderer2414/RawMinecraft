@@ -41,7 +41,7 @@ std::queue<glm::vec3> rasterize(const glm::vec3& a, const glm::vec3& b) {
     return ans;
 }
 std::queue<glm::vec3> rasterize(const glm::mat3& rec) {
-    
+    return {};
 }
 namespace MyBase {
     glm::vec2 getWindowSize() {
@@ -91,5 +91,40 @@ namespace MyCraft {
 
         glDeleteVertexArrays(1, &VAO);
         glDeleteBuffers(1, &originPoint);
+    }
+    void DrawMargin(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& color, const float& linewidth) {
+        glUseProgram(MyBase3D::ShaderStorage::Default->GetMarginShader());
+        glLineWidth(linewidth);
+        GLuint VAO, originPoint;
+
+        glGenVertexArrays(1, &VAO);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getBlockSet());
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
+        glEnableVertexAttribArray(0);
+
+        glGenBuffers(1, &originPoint);
+        glBindBuffer(GL_UNIFORM_BUFFER, originPoint);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec3), &position, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 1, originPoint);
+
+        float buffer[8] = {
+            scale.x, scale.y, scale.z, 0,
+            color.r, color.g, color.b, 1
+        };
+        GLuint margin;
+        glGenBuffers(1, &margin);
+        glBindBuffer(GL_UNIFORM_BUFFER, margin);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*8, buffer, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, margin);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MyBase3D::PointSet::Default->getMarginBlockIndices());
+        glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_INT, 0);
+
+        glDeleteVertexArrays(1, &VAO);
+        glDeleteBuffers(1, &margin);
+        glDeleteBuffers(1, &originPoint);
+    }
+    void DrawMargin(const glm::mat4& state, const glm::vec3& scale, const glm::vec3& color, const float& linewidth) {
     }
 }

@@ -5,6 +5,7 @@
 #include "Font.h"
 #include "Form3D.h"
 #include "HitBoxCenter.h"
+#include "Label.h"
 #include "ModelController.h"
 #include "PlayerModelController.h"
 #include "World.h"
@@ -22,6 +23,8 @@ namespace MyCraft {
             float           pZVelocity;
             bool            handle(GLFWwindow* window) override;
             MyBase::Clock   pFrameAlarm;
+            MyBase::Font    __font;
+            MyBase::Label   __label;
             World           pWorld;
             PlayerModelController     __model;
             HitBoxCenter    __hitbox;

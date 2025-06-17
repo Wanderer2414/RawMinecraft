@@ -224,7 +224,7 @@ namespace MyCraft {
             tmp.z = 0;
             tmp = glm::normalize(tmp);
             angle = glm::angle( tmp, __direction);
-            if (angle) {
+            if (angle>0.01) {
                 glm::vec3 axis = glm::cross(__direction, tmp);
                 head = glm::rotate(head,angle, axis);
             }
@@ -237,6 +237,7 @@ namespace MyCraft {
     }
 
     ResetCameraCommand::ResetCameraCommand(PlayerModelController* model): __model(model) {};
+    ResetCameraCommand::~ResetCameraCommand() {};
     MessageType ResetCameraCommand::getType() const {
         return MessageType::ResetCamera;
     }

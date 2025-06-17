@@ -63,17 +63,8 @@ namespace MyBase {
     bool Controller::contains(const glm::vec2& position) const {
         return false;
     }
-    glm::vec2 Controller::getPosition() const {
-        return {0, 0};
-    }
-    glm::vec2 Controller::getSize() const {
-        return {0, 0};
-    }
     void Controller::glDraw() const {
 
-    }
-    void Controller::setPosition(const float& x, const float& y) {
-        
     }
     
     void Controller::update() {

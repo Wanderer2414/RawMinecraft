@@ -54,6 +54,12 @@ namespace MyBase3D {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, __imageBlockIndices);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, blockIndices.size()*4,blockIndices.data(), GL_STATIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        std::vector<unsigned int> rectIndices = {0, 1,3, 3, 1, 2};
+        glGenBuffers(1, &__rectangleIndices);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, __rectangleIndices);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, rectIndices.size()*4, rectIndices.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     PointSet::~PointSet() {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -61,6 +67,7 @@ namespace MyBase3D {
         glDeleteBuffers(1, &__chunkSet);
         glDeleteBuffers(1, &__marginBlockIndices);
         glDeleteBuffers(1, &__imageBlockIndices);
+        glDeleteBuffers(1, &__rectangleIndices);
     }
     GLuint PointSet::getBlockSet() const {
         return __blockSet;
@@ -73,5 +80,8 @@ namespace MyBase3D {
     }
     GLuint PointSet::getMarginBlockIndices() const {
         return __marginBlockIndices;
+    }
+    GLuint PointSet::getRectangleIndices() const {
+        return __rectangleIndices;
     }
 }

@@ -1,5 +1,6 @@
 #include "World.h"
 #include "Block.h"
+#include "Camera.h"
 #include "Chunk.h"
 #include "Message.h"
 #include "GLFW/glfw3.h"
@@ -17,6 +18,7 @@ namespace MyCraft {
         pFrameAlarm.setDuration(150);
         add(new CheckFall(this));
         add(new CheckEmpty(this));
+        add(new CheckHoverCommand(this));
     }
     World::~World() {
     }
@@ -186,7 +188,7 @@ namespace MyCraft {
     }
 
     CheckEmpty::CheckEmpty(World* world): __world(world) {}
-    CheckEmpty::~CheckEmpty() {}
+    CheckEmpty::~CheckEmpty() {Command::~Command();}
     
     void CheckEmpty::execute(Port& mine, Port& source, Message* message) {
         RequestGoto* request = (RequestGoto*)message;
@@ -284,7 +286,7 @@ namespace MyCraft {
     }
     
     CheckFall::CheckFall(World* world): __world(world) {}
-    CheckFall::~CheckFall() {}
+    CheckFall::~CheckFall() {Command::~Command();}
         
     void CheckFall::execute(Port& mine, Port& source, Message* message) {
         RequestFall* request = (RequestFall*)message;
@@ -336,5 +338,14 @@ namespace MyCraft {
     }
     MessageType CheckFall::getType() const {
         return MessageType::RequestFallMessage;
+    }
+
+    CheckHoverCommand::CheckHoverCommand(World* world): __world(world) {}
+    CheckHoverCommand::~CheckHoverCommand() {}
+    MessageType CheckHoverCommand::getType() const {
+        return MessageType::RotateCamera;
+    };
+    void CheckHoverCommand::execute(Port& mine, Port& des, Message* message) {
+        RotateCameraMessage* package = (RotateCameraMessage*)message;
     }
 }

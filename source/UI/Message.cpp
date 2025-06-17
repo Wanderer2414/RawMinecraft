@@ -36,7 +36,6 @@ namespace MyCraft {
         if (__commands.find(Message->getType())!=__commands.end()) {
             __commands[Message->getType()]->execute(*this, source, Message);
         }
-        delete Message;
     }
 
 
@@ -50,7 +49,8 @@ namespace MyCraft {
     }
     void Network::receive(Port& source, Message* Message) {
         auto& ports = __ports[Message->getType()];
-        for (auto& port:ports) send(source, *port, Message);
+        for (auto& port:ports) receive(source, *port, Message);
+        delete Message;
     }
     void Network::receive(Port& source, Port& destination, Message* Message) {
         destination.receive(source, Message);
@@ -59,13 +59,11 @@ namespace MyCraft {
         destination.receive(source, Message);
     }
     
-
-    RequestGoto::RequestGoto(const glm::mat4x3& p, const glm::vec2& d): rectangleBox(p), direction(d) {
-
-    }
-    RequestGoto::~RequestGoto() {
-
-    }
+    Command::~Command() {};
+    Message::~Message() {};
+    
+    RequestGoto::RequestGoto(const glm::mat4x3& p, const glm::vec2& d): rectangleBox(p), direction(d) {}
+    RequestGoto::~RequestGoto() {Message::~Message();}
 
     RequestFall::RequestFall(const glm::mat4x3& rec, const float& z): rectangleBox(rec), zVelocity(z) {
     }
@@ -77,21 +75,13 @@ namespace MyCraft {
     MessageType RequestGoto::getType() const {
         return MessageType::RequestGotoMessage;
     }
-    Move::Move(const glm::vec3& d): direction(d) {
-
-    }
-    Move::~Move() {
-
-    }
+    Move::Move(const glm::vec3& d): direction(d) {}
+    Move::~Move() {Message::~Message();}
     MessageType Move::getType() const {
         return MessageType::MoveMessage;
     }
-    Fall::Fall(const float& z): zVelocity(z) {
-
-    }
-    Fall::~Fall() {
-
-    }
+    Fall::Fall(const float& z): zVelocity(z) {}
+    Fall::~Fall() {Message::~Message();}
     MessageType Fall::getType() const  {
         return MessageType::FallMessage;
     }
@@ -99,6 +89,8 @@ namespace MyCraft {
     MessageType StopFall::getType() const {
         return MessageType::StopFallMessage;
     }
+    StopFall::StopFall() {};
+    StopFall::~StopFall() {};
 }
 
 

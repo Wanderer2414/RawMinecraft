@@ -12,11 +12,13 @@ namespace MyBase3D {
 
             GLuint      getBlockSet() const,
                         getChunkSet() const,
+                        getRectangleIndices() const,
                         getMarginBlockIndices() const,
                         getImageBlockIndices() const;
         private:
             GLuint      __marginBlockIndices,
-                        __imageBlockIndices;
+                        __imageBlockIndices,
+                        __rectangleIndices;
             GLuint      __blockSet,
                         __chunkSet;
         };

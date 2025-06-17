@@ -1,10 +1,12 @@
 #include "Application.h"
 #include "Block.h"
+#include "GLFW/glfw3.h"
 #include "InfoCenter.h"
 #include "GameForm.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
 #include "ModelStorage.h"
+#include <ctime>
 
 MyBase3D::PointSet* MyBase3D::PointSet::Default;
 MyCraft::InfoCenter* MyCraft::InfoCenter::Default;
@@ -30,7 +32,7 @@ namespace MyCraft {
             exit(EXIT_FAILURE);
         }
         glfwMakeContextCurrent(__window);
-
+        glfwSwapInterval(0);
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             std::cout << "Failed to initialize GLAD" << std::endl;
             exit(EXIT_FAILURE);
@@ -59,6 +61,7 @@ namespace MyCraft {
 
     void Application::run() {
         int formIndex = 0;
+        std::cout << "Open time: " << 1.0f*clock()/CLOCKS_PER_SEC << std::endl;
         while (!glfwWindowShouldClose(__window)) {
             switch (formIndex) {
                 case 0: {

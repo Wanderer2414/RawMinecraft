@@ -22,5 +22,7 @@ namespace MyBase {
 }
 namespace MyCraft {
     void DrawCube(const unsigned char& blockType, const glm::vec3& position);
+    void DrawMargin(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& color, const float& linewidth = 2);
+    void DrawMargin(const glm::mat4& state, const glm::vec3& scale, const glm::vec3& color, const float& linewidth = 2);
 }
 #endif

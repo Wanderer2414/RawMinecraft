@@ -67,31 +67,6 @@ GLuint MyCraft::BlockCatogary::getTexCoord() const {
 
 // void MyCraft::Block::glDraw() const {
 //     if (__hoverPlane!=-1) {
-//         glUseProgram(MyBase3D::ShaderStorage::Default->GetMarginShader());
-//         glLineWidth(3);
-//         GLuint VAO;
-//         glGenVertexArrays(1, &VAO);
-//         glBindVertexArray(VAO);
-//         glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getBlockSet());
-//         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
-//         glEnableVertexAttribArray(0);
-
-//         glBindBufferBase(GL_UNIFORM_BUFFER, 1, originPoint);
-//         float buffer[8] = {
-//             1, 1, 1, 0,
-//             0, 0, 0, 1
-//         };
-//         GLuint margin;
-//         glGenBuffers(1, &margin);
-//         glBindBuffer(GL_UNIFORM_BUFFER, margin);
-//         glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*8, buffer, GL_STATIC_DRAW);
-//         glBindBufferBase(GL_UNIFORM_BUFFER, 2, margin);
-
-//         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MyBase3D::PointSet::Default->getMarginBlockIndices());
-//         glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_INT, 0);
-
-//         glDeleteVertexArrays(1, &VAO);
-//         glDeleteBuffers(1, &margin);
 //     }
 //     glDeleteVertexArrays(1, &VAO);
 //     glDeleteBuffers(1, &originPoint);

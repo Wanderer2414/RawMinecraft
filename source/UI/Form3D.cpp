@@ -1,14 +1,13 @@
 #include "Form3D.h"
 #include "Container.h"
 #include "Controller.h"
-#include "Font.h"
 #include "General.h"
 #include "Global.h"
 #include "spriv_extended.h"
 
 namespace MyBase3D {
 
-    Form3D::Form3D(const int& index): __formIndex(index), __returnValue(INT_MIN) {
+    Form3D::Form3D(const int& index): __formIndex(index), __returnValue(INT_MIN), __frameCount(0) {
         __sensitiveClock.setDuration(30);
     }
     Form3D::~Form3D() {}
@@ -31,6 +30,7 @@ namespace MyBase3D {
         return is_changed;
     }
     int Form3D::run(GLFWwindow* window) {
+        __startTime = GetTime();
         bool is_changed = true, is_catched = false;
         while (!glfwWindowShouldClose(window)) {
             Container::reset();
@@ -53,6 +53,7 @@ namespace MyBase3D {
             }
             if (__returnValue!=INT_MIN) return __returnValue;
             is_changed = 0;
+            __frameCount++;
         }
         return __formIndex;
     }
@@ -61,6 +62,10 @@ namespace MyBase3D {
     }
     int Form3D::getFormIndex() {
         return __formIndex;
+    }
+    float Form3D::getMaxFps() const {
+        float t = 1.0f*(GetTime()-__startTime)/__frameCount;
+        return 1000/t;
     }
     void Form3D::setReturnForm(const int& returnValue) {
         __returnValue = returnValue;
@@ -72,4 +77,10 @@ namespace MyBase3D {
         _camera.glDraw();
         Container::glDraw();
     }
+    glm::vec2 Form3D::getPosition() const {
+        return {-1, -1};
+    }
+    glm::vec2 Form3D::getSize() const {
+        return {2, 2};
+    };
 }

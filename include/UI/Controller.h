@@ -16,15 +16,11 @@ namespace MyBase {
                                 setHover(const bool& hover),
                                 setHover(const glm::vec2& position);
 
-        virtual glm::vec2       getPosition() const,
-                                getSize() const;
-        virtual void            setPosition(const float& x, const float& y),
-                                setFocus(const bool& focus),
+        virtual void            setFocus(const bool& focus),
                                 reset(),
                                 update();      
 
         friend Container;
-        virtual void    glDraw() const;
     protected:
         virtual bool    catchEvent(GLFWwindow* window);
         virtual bool    sensitiveHandle(GLFWwindow* window);
@@ -38,6 +34,7 @@ namespace MyBase {
                         __isDoubleClick,
                         __isReleased,
                         __isFocus;
+        virtual void    glDraw() const;
     };
 };
 #endif

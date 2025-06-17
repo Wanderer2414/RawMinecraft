@@ -1,18 +1,24 @@
 #include "GameForm.h"
 #include "Block.h"
+#include "Global.h"
 #include "HitBoxCenter.h"
 #include "InfoCenter.h"
 #include <GL/gl.h>
 
 namespace MyCraft {
-    GameForm::GameForm(GLFWwindow* window, const int& index): Form3D(index), pWorld(0, 0, 0) {
+    GameForm::GameForm(GLFWwindow* window, const int& index): Form3D(index), pWorld(0, 0, 0), __font("assets/fonts/Oswald-Regular.ttf"), __label(__font) {
         insert(&pWorld);
         insert(&__model);
         insert(&__hitbox);
+        insert(&__label);
         __hitbox.insert(&__model);
         __hitbox.match(&__model);
         __hitbox.match(&pWorld);
         __hitbox.match(&_camera);
+
+        __label.setText("Max fps:");
+        __label.setPosition(TransX(1100), TransY(0));
+        __label.setColor(glm::vec3(1,0,0));
         for (int i = -16; i<16; i++) {
             for (int j = -16; j<16; j++) {
                 pWorld.at(i, j, -1) = BlockCatogary::Grass;
@@ -137,8 +143,8 @@ namespace MyCraft {
     bool GameForm::handle(GLFWwindow* window) {
         bool is_changed = Form3D::handle(window);
     
-        if (pFrameAlarm.get()) {
-            pFrameAlarm.restart();
+        // if (pFrameAlarm.get()) {
+        //     pFrameAlarm.restart();
             // if (pZVelocity>-40) {
             //     if (glfwGetKey(
             // if (pZVelocity>-50 &&   pWorld.at(floor(_camera.getPosition().x-0.25), floor(_camera.getPosition().y-0.25), floor(_camera.getPosition().z-2)).getType() == BlockCatogary::Air &&
@@ -160,7 +166,8 @@ namespace MyCraft {
             //     };
             //     is_changed = true;
             // }
-        }
+        // }
+        __label.setText("Max fps: " + std::to_string(getMaxFps()));
         glm::vec3 dir = __model.getDirection();
         dir.z -=2;
         // _camedra.setPosition(__model.getPosition() - 3.f*dir);

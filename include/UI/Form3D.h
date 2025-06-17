@@ -12,6 +12,9 @@ namespace MyBase3D {
             virtual bool            contains(const glm::vec2& pos) const override;
             virtual int             run(GLFWwindow* window);
             virtual void            setSensitiveTime(const size_t& milisecond);
+            float                   getMaxFps() const;
+            virtual glm::vec2       getPosition() const                  override,
+                                    getSize() const                      override;
             using Container::insert;
             using Container::erase;
         protected:
@@ -26,6 +29,7 @@ namespace MyBase3D {
         private:
             int             __formIndex, 
                             __returnValue;
+            size_t          __startTime, __frameCount;
             MyBase::Clock   __sensitiveClock;
         };       
 }

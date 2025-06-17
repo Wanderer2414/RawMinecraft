@@ -89,9 +89,6 @@ namespace MyBase{
     void Container::clear() {
         children.clear();
     }
-    void Container::setPosition(const float& x, const float& y) {
-        Controller::setPosition(x, y);
-    }
     void Container::glDraw() const {
         for (int i = 0; i<children.size(); i++) 
             if (i!=__currentFocus) children[i].first->glDraw();
@@ -99,11 +96,5 @@ namespace MyBase{
     }
     void Container::update() {
         for (auto& [child, layer]:children) child->update();
-    }
-    glm::vec2 Container::getPosition() const {
-        return Controller::getPosition();
-    }
-    glm::vec2 Container::getSize() const {
-        return Controller::getSize();
     }
 }

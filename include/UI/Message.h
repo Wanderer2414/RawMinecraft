@@ -53,12 +53,14 @@ namespace MyCraft {
     class Message {
     public:
         virtual MessageType getType() const = 0;
+        virtual ~Message() = 0;
     private:
     };
     class Command {
     public:
         virtual MessageType getType()      const = 0;
         virtual void execute(Port& mine, Port& source, Message* message) = 0;
+        virtual ~Command() = 0;
     };
 
 
@@ -96,6 +98,8 @@ namespace MyCraft {
     };
     class StopFall: public Message {
     public:
+        StopFall();
+        ~StopFall();
         MessageType     getType() const override;
     };
 }
