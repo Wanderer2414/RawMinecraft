@@ -21,7 +21,9 @@ namespace MyBase {
     glm::vec2 getWindowSize();
 }
 namespace MyCraft {
-    void DrawCube(const unsigned char& blockType, const glm::vec3& position);
+    void BindCube(GLuint& VAO, GLuint& POS);
+    void DrawCube(const GLuint& POS, const unsigned char& blockType, const glm::vec3& position);
+    void FreeCube(GLuint& VAO, GLuint& POS);
     void DrawMargin(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& color, const float& linewidth = 2);
     void DrawMargin(const glm::mat4x3& box, const glm::vec3& color, const float& linewidth = 2);
 }

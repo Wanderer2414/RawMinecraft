@@ -21,48 +21,52 @@ namespace MyCraft {
         __label.setColor(glm::vec3(1,0,0));
         for (int i = -16; i<16; i++) {
             for (int j = -16; j<16; j++) {
-                pWorld.at(i, j, -1) = BlockCatogary::Grass;
+                for (int z=-1;z<0; z++)
+                    pWorld.set(i, j, z, BlockCatogary::Grass);
+
+                pWorld.set(i, j, -15, BlockCatogary::Grass);
+                pWorld.set(i, j, -10, BlockCatogary::Grass);
             }
         }
         for (int i = -16; i<0; i++) {
-            for (int j = -16; j<0; j++) pWorld.at(i,j,0) = BlockCatogary::Grass;
+            for (int j = -16; j<0; j++) pWorld.set(i,j,0, BlockCatogary::Grass);
         }
 
         for (int i = 16; i<32; i++) {
-            for (int j = 0; j<16; j++) pWorld.at(i,j,-8) = BlockCatogary::Grass;
+            for (int j = 0; j<16; j++) pWorld.set(i,j,-8, BlockCatogary::Grass);
         }
-        pWorld.at(5,5,0) = BlockCatogary::Grass;
-        pWorld.at(5,5,1) = BlockCatogary::Grass;
-        pWorld.at(5,6,0) = BlockCatogary::Grass;
-        pWorld.at(5,6,1) = BlockCatogary::Grass;
-        pWorld.at(5,7,0) = BlockCatogary::Grass;
-        pWorld.at(5,7,1) = BlockCatogary::Grass;
-        pWorld.at(4,7,2) = BlockCatogary::Grass;
+        pWorld.set(5,5,0, BlockCatogary::Grass);
+        pWorld.set(5,5,1, BlockCatogary::Grass);
+        pWorld.set(5,6,0, BlockCatogary::Grass);
+        pWorld.set(5,6,1, BlockCatogary::Grass);
+        pWorld.set(5,7,0, BlockCatogary::Grass);
+        pWorld.set(5,7,1, BlockCatogary::Grass);
+        pWorld.set(4,7,2, BlockCatogary::Grass);
 
-        pWorld.at(3,5,0)= BlockCatogary::Grass;
-        pWorld.at(3,5,1)= BlockCatogary::Grass;
-        pWorld.at(3,6,0)= BlockCatogary::Grass;
-        pWorld.at(3,6,1)= BlockCatogary::Grass;
-        pWorld.at(3,7,0)= BlockCatogary::Grass;
-        pWorld.at(3,7,1)= BlockCatogary::Grass;
+        pWorld.set(3,5,0, BlockCatogary::Grass);
+        pWorld.set(3,5,1, BlockCatogary::Grass);
+        pWorld.set(3,6,0, BlockCatogary::Grass);
+        pWorld.set(3,6,1, BlockCatogary::Grass);
+        pWorld.set(3,7,0, BlockCatogary::Grass);
+        pWorld.set(3,7,1, BlockCatogary::Grass);
 
-        pWorld.at(5,3,0) =BlockCatogary::Grass;
-        pWorld.at(5,3,1) =BlockCatogary::Grass;
-        pWorld.at(6,3,0) =BlockCatogary::Grass;
-        pWorld.at(6,3,1) =BlockCatogary::Grass;
-        pWorld.at(7,3,0) =BlockCatogary::Grass;
-        pWorld.at(7,3,1) =BlockCatogary::Grass;
+        pWorld.set(5,3,0, BlockCatogary::Grass);
+        pWorld.set(5,3,1, BlockCatogary::Grass);
+        pWorld.set(6,3,0, BlockCatogary::Grass);
+        pWorld.set(6,3,1, BlockCatogary::Grass);
+        pWorld.set(7,3,0, BlockCatogary::Grass);
+        pWorld.set(7,3,1, BlockCatogary::Grass);
 
-        pWorld.at(5,5,0) = BlockCatogary::Grass;
-        pWorld.at(5,5,1) = BlockCatogary::Grass;
-        pWorld.at(6,5,0) = BlockCatogary::Grass;
-        pWorld.at(6,5,1) = BlockCatogary::Grass;
-        pWorld.at(7,5,0) = BlockCatogary::Grass;
-        pWorld.at(7,5,1) = BlockCatogary::Grass;
+        pWorld.set(5,5,0, BlockCatogary::Grass);
+        pWorld.set(5,5,1, BlockCatogary::Grass);
+        pWorld.set(6,5,0, BlockCatogary::Grass);
+        pWorld.set(6,5,1, BlockCatogary::Grass);
+        pWorld.set(7,5,0, BlockCatogary::Grass);
+        pWorld.set(7,5,1, BlockCatogary::Grass);
 
-        pWorld.at(-5,-5,0) = BlockCatogary::Grass;
-        pWorld.at(-5,-5,1) = BlockCatogary::Grass;
-        pWorld.at(7,4,1) = BlockCatogary::Grass;
+        pWorld.set(-5,-5,0, BlockCatogary::Grass);
+        pWorld.set(-5,-5,1, BlockCatogary::Grass);
+        pWorld.set(7,4,1, BlockCatogary::Grass);
     
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glfwSetCursorPos(window, InfoCenter::Default->getWindowHalf().x, InfoCenter::Default->getWindowHalf().y);

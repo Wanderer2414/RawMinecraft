@@ -46,14 +46,24 @@ namespace MyCraft {
         }
         return is_changed;
     }
-    unsigned char& World::at(const int& x, const int& y, const int& z) {
+    const unsigned char& World::at(const int& x, const int& y, const int& z) const {
         int rX = (x-pPosition.x);
         int rY = (y-pPosition.y);
         int rZ = (z-pPosition.z);
         return pChunks[rX/16][rY/16][rZ/16].at(rX%16, rY%16, rZ%16);
     }
-    unsigned char& World::at(const glm::vec3& pos) {
+    const unsigned char& World::at(const glm::vec3& pos) const {
         return at(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z));
+    }
+
+    void World::set(const int& x, const int& y, const int& z, const BlockCatogary::Catogary& type) {
+        int rX = (x-pPosition.x);
+        int rY = (y-pPosition.y);
+        int rZ = (z-pPosition.z);
+        pChunks[rX/16][rY/16][rZ/16].set(rX%16, rY%16, rZ%16, type);
+    }
+    void World::set(const glm::vec3& pos, const BlockCatogary::Catogary& type) {
+        set(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z), type);
     }
     void World::setHoverBlock(const glm::vec3& pos, const glm::vec3& placePosition) {
         __hoverBlock = pos;
@@ -68,7 +78,7 @@ namespace MyCraft {
         for (int i = 0; i<world_side*2+1; i++) {
             for (int j = 0; j<world_side*2+1; j++) {
                 for (int k = 0; k<world_side*2+1; k++) {
-                    pChunks[i][j][k].glDraw();
+                    pChunks[i][j][k].glDraw(__cameraPosition, __cameraDir);
                 }
             }
         }
@@ -198,6 +208,7 @@ namespace MyCraft {
             shape[1] += shape[0];
             isFall = isFall && (__world->at(shape[1]+glm::vec3(0,0,z))==BlockCatogary::Air || 
                                 __world->at(shape[1])!=BlockCatogary::Air); 
+
             isFall = isFall && (__world->at(shape[0]+glm::vec3(0,0,z))==BlockCatogary::Air || 
                                 __world->at(shape[0])!=BlockCatogary::Air); 
             if (isFall) mine.send(source, new FallMessage(z));
@@ -211,12 +222,12 @@ namespace MyCraft {
             shape[0] += shape[3];
 
             shape[3] = shape[0] + shape[2];
-            shape[3][2]++;
+            shape[3][2]+=0.1;
             shape[2] += shape[0] + shape[1];
-            shape[2][2]++;
+            shape[2][2]+=0.1;
             shape[1] += shape[0];
-            shape[1][2]++;
-            shape[0][2]++;
+            shape[1][2]+=0.1;
+            shape[0][2]+=0.1;
             if (__world->at(shape[0])==BlockCatogary::Air && 
                 __world->at(shape[1])==BlockCatogary::Air && 
                 __world->at(shape[2])==BlockCatogary::Air && 
@@ -224,7 +235,7 @@ namespace MyCraft {
                     mine.send(source, new FallMessage(z-0.035));
             }
             else {
-                float delta = floor(shape[0][2]) - shape[0][2] + 1;
+                float delta = floor(shape[0][2]) - shape[0][2];
                 if (delta>=0.01) delta -= 0.01;
                 mine.send(source, new FallMessage(delta));
             }
@@ -241,8 +252,9 @@ namespace MyCraft {
     };
     void CheckHoverCommand::execute(Port& mine, Port& des, Message* message) {
         CheckHoverMessage* package = (CheckHoverMessage*)message;
-        glm::vec3 pos = package->position + glm::vec3(0,0,1.8);
-        auto q = rasterize(pos, pos+package->direction*4.f);
+        __world->__cameraPosition = package->position + glm::vec3(0,0,1.8);
+        __world->__cameraDir = package->direction;
+        auto q = rasterize(__world->__cameraPosition, __world->__cameraPosition+package->direction*4.f);
         bool hover = false;
         glm::vec3 placePosition;
         while (q.size() && !hover) {
@@ -270,7 +282,7 @@ namespace MyCraft {
         if (__world->__isHoverBlock && __world->__placePosition!=fpos) {
             fpos.z += 1;
             if (__world->__placePosition != fpos)
-                 __world->at(__world->__placePosition) = BlockCatogary::Grass;
+                __world->set(__world->__placePosition, BlockCatogary::Grass);
         }
     }
 }

@@ -2,6 +2,7 @@
 #define CHUNK_H
 #include "Block.h"
 #include "Ray.h"
+#include <bitset>
 namespace MyCraft {
     class World;
     class Chunk {
@@ -14,14 +15,21 @@ namespace MyCraft {
             virtual void    setPosition(const int& x, const int& y, const int& z),
                             setPosition(const glm::vec3& position);
                             
-            unsigned char   &at(const int& x, const int& y, const int& z);
+            const unsigned char   &at(const int& x, const int& y, const int& z) const;
+            void            set(const int& x, const int& y, const int& z, const BlockCatogary::Catogary& type);
             BlockCatogary::Catogary& getBlocks(const int& x, const int& y, const int& z);
             friend class World;
         protected:
-            virtual void    glDraw() const;
+            virtual void    glDraw(const glm::vec3& position, const glm::vec3& dir) const;
         private:
-            glm::vec3                    __position;
+            unsigned int                    __bitOn;
+            glm::vec3                       __position;
+            std::bitset<16>                 __bits[16][16];
             std::vector<std::vector<std::vector<unsigned char>>>  __blocks;
+            int                             __horizontalPlane[16];
+
+            void __enableBit(const int& x, const int& y, const int& z);
+            void __disableBit(const int& x, const int& y, const int& z);
     };
 };
 #endif

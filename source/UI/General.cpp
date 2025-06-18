@@ -66,34 +66,35 @@ namespace MyBase {
     }
 }
 namespace MyCraft {
-    void DrawCube(const unsigned char& blockType, const glm::vec3& position) {
+    void BindCube(GLuint& VAO, GLuint& POS) {
         glUseProgram(MyBase3D::ShaderStorage::Default->GetCubeShader());
-        GLuint VAO;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getBlockSet());
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
         glEnableVertexAttribArray(0);
-        
+
         glBindBuffer(GL_ARRAY_BUFFER, MyCraft::BlockCatogary::Default->getTexCoord());
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0);
         glEnableVertexAttribArray(1);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MyBase3D::PointSet::Default->getImageBlockIndices());
 
-        GLuint originPoint;
-        
-        glGenBuffers(1, &originPoint);
-        glBindBuffer(GL_UNIFORM_BUFFER, originPoint);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*3, &position[0], GL_STATIC_DRAW);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 1, originPoint);
+        glGenBuffers(1, &POS);
+        glBindBuffer(GL_UNIFORM_BUFFER, POS);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*3, 0, GL_DYNAMIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 1, POS);
 
         glActiveTexture(GL_TEXTURE0);
+    }
+    void DrawCube(const GLuint& POS, const unsigned char& blockType, const glm::vec3& position) {
         glBindTexture(GL_TEXTURE_2D, MyCraft::BlockCatogary::Default->getBlock(blockType));
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(GLfloat)*3, &position);
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)0);
+    }
+    void FreeCube(GLuint& VAO, GLuint& POS) {
+        glDeleteBuffers(1, &POS);
         glDeleteVertexArrays(1, &VAO);
-        glDeleteBuffers(1, &originPoint);
     }
     void DrawMargin(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& color, const float& linewidth) {
         glUseProgram(MyBase3D::ShaderStorage::Default->GetMarginShader());
