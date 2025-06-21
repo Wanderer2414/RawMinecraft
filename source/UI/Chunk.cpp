@@ -1,6 +1,10 @@
 #include "Chunk.h"
 #include "Block.h"
 #include "General.h"
+#include "Global.h"
+#include "PointSet.h"
+#include "ShaderStorage.h"
+#include <algorithm>
 namespace MyCraft {
 
 Chunk::Chunk(): __bitOn(0) {
@@ -101,20 +105,54 @@ void Chunk::setPosition(const glm::vec3& position) {
 
 void Chunk::glDraw(const glm::vec3& position, const glm::vec3& direction) const {
     if (!__bitOn) return ;
-    DrawMargin(__position, glm::vec3(16,16,16), glm::vec3(1,0,0));
-    GLuint VAO, POS;
-    BindCube(VAO, POS);
+    // DrawMargin(__position, glm::vec3(16,16,16), glm::vec3(1,0,0));
+    // GLuint VAO, POS;
+    // BindCube(VAO, POS);
+    std::vector<glm::vec4> poss;
     for (int k = 0; k<16; k++) {
         if (!__horizontalPlane[k]) continue;
         for (int i = 0; i<16; i++) {
             for (int j = 0; j<16; j++) {
                 if (!__bits[i][j].any()) continue;
                 if (__bits[i][j][k]) {
-                    DrawCube(POS, __blocks[i][j][k], __position+glm::vec3(i,j,k));
+                    poss.push_back(glm::vec4(i+__position.x,j+__position.y,k+__position.z,0));
+                    // DrawCube(POS, __blocks[i][j][k], __position+glm::vec3(i,j,k));
                 }
             }
         }
     }
-    FreeCube(VAO, POS);
+    // FreeCube(VAO, POS);
+
+    GLuint VAO, POS;
+    glUseProgram(MyBase3D::ShaderStorage::Default->GetCubeShader());
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getListIndicesInput());
+    glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBufferBase(GL_UNIFORM_BUFFER, 2, MyBase3D::PointSet::Default->getBlockSet());
+    glBindBufferBase(GL_UNIFORM_BUFFER, 3, MyCraft::BlockCatogary::Default->getTexCoord());
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MyBase3D::PointSet::Default->getImageBlockIndices());
+
+    glGenBuffers(1, &POS);
+    glBindBuffer(GL_UNIFORM_BUFFER, POS);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*4*32, 0, GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, POS);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, MyCraft::BlockCatogary::Default->getBlock(1));
+    // glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(GLfloat)*3, &position);
+    for (int i = 0; i<poss.size(); i+=32) {
+        int sz = std::min(32, (int)poss.size()-i);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sz*16, &poss[i]);
+        glDrawElements(GL_TRIANGLES, 36*sz, GL_UNSIGNED_INT, (void*)0);
+    }
+    // glDrawArrays(GL_LINE_STRIP, 0, 6);
+
+    glDeleteBuffers(1, &POS);
+    glDeleteVertexArrays(1, &VAO);
 }
 }

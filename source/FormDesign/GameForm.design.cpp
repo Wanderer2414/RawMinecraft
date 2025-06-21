@@ -21,7 +21,7 @@ namespace MyCraft {
         __label.setColor(glm::vec3(1,0,0));
         for (int i = -16; i<16; i++) {
             for (int j = -16; j<16; j++) {
-                for (int z=-1;z<0; z++)
+                for (int z=-16;z<0; z++)
                     pWorld.set(i, j, z, BlockCatogary::Grass);
 
                 pWorld.set(i, j, -15, BlockCatogary::Grass);
