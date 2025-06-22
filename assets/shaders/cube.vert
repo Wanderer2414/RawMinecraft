@@ -1,5 +1,5 @@
 # version 460 core
-layout(location = 0) in float index;
+layout(location = 0) in int i;
 
 layout(location = 0) out vec2 uv_out;
 layout(set=0, binding=0) uniform CameraBuffer{
@@ -15,7 +15,6 @@ layout(set=0, binding=3) uniform TexCoord {
     vec2 uv[14];
 };
 void main() {
-    int i = int(index);
     uv_out = uv[i%14];
     gl_Position = ClipPlane * (origin_point[i/14] + cube_corner[i%14]);
 }

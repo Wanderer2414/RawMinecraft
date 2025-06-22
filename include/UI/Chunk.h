@@ -3,6 +3,8 @@
 #include "Block.h"
 #include "Ray.h"
 #include <bitset>
+#include <unordered_map>
+#include <unordered_set>
 namespace MyCraft {
     class World;
     class Chunk {
@@ -15,7 +17,7 @@ namespace MyCraft {
             virtual void    setPosition(const int& x, const int& y, const int& z),
                             setPosition(const glm::vec3& position);
                             
-            const unsigned char   &at(const int& x, const int& y, const int& z) const;
+            const BlockCatogary::Catogary   &at(const int& x, const int& y, const int& z) const;
             void            set(const int& x, const int& y, const int& z, const BlockCatogary::Catogary& type);
             BlockCatogary::Catogary& getBlocks(const int& x, const int& y, const int& z);
             friend class World;
@@ -25,7 +27,8 @@ namespace MyCraft {
             unsigned int                    __bitOn;
             glm::vec3                       __position;
             std::bitset<16>                 __bits[16][16];
-            std::vector<std::vector<std::vector<unsigned char>>>  __blocks;
+            std::map<BlockCatogary::Catogary, std::vector<glm::vec4>> __list;
+            std::vector<std::vector<std::vector<BlockCatogary::Catogary>>>  __blocks;
             int                             __horizontalPlane[16];
 
             void __enableBit(const int& x, const int& y, const int& z);

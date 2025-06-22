@@ -8,12 +8,12 @@
 #include "Controller.h"
 namespace MyCraft {
 class World: public MyBase::Controller, public Port {
-    #define world_side 1
+    #define world_side 2
     public:
         World(const int& x, const int& y, const int& z);
         ~World();
-        const unsigned char&    at(const int& x, const int& y, const int& z) const;
-        const unsigned char&    at(const glm::vec3& pos) const;
+        const BlockCatogary::Catogary&    at(const int& x, const int& y, const int& z) const;
+        const BlockCatogary::Catogary&    at(const glm::vec3& pos) const;
         void                    set(const int& x, const int& y, const int& z, const BlockCatogary::Catogary& type);
         void                    set(const glm::vec3& pos, const BlockCatogary::Catogary& type);
         void                    setHoverBlock(const glm::vec3& pos, const glm::vec3& placePosition),
@@ -29,7 +29,7 @@ class World: public MyBase::Controller, public Port {
         MyCraft::Chunk          pChunks[world_side*2 + 1][world_side*2 + 1][world_side*2 + 1];
         glm::vec3               pPosition;
         MyBase::Clock           pFrameAlarm;
-
+        std::vector<glm::vec4>  __chunkPositions;
     };
 
     class CheckEmptyCommand: public Command {

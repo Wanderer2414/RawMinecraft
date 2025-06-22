@@ -11,6 +11,6 @@ layout(set=0, binding=2) uniform CubeCorner {
     vec4 cube_corner[14];
 };
 void main() {
-    gl_Position = ClipPlane * (cube_corner[i%14] + position[i/14]);
-    color = vec3(0,0,0);
+    gl_Position = ClipPlane * (cube_corner[i%14]*16 + position[i/14]);
+    color = vec3(1,0,0);
 }

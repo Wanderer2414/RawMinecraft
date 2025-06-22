@@ -96,38 +96,26 @@ namespace MyCraft {
         glDeleteBuffers(1, &POS);
         glDeleteVertexArrays(1, &VAO);
     }
-    void DrawMargin(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& color, const float& linewidth) {
+    void DrawMargin(const glm::vec4& position, const glm::vec3& scale, const glm::vec3& color, const float& linewidth) {
         glUseProgram(MyBase3D::ShaderStorage::Default->GetMarginShader());
         glLineWidth(linewidth);
-        GLuint VAO, originPoint;
-
+        GLuint VAO, POS;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getBlockSet());
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
+    
+        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getMarginBlockIndices());
+        glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
         glEnableVertexAttribArray(0);
-
-        glGenBuffers(1, &originPoint);
-        glBindBuffer(GL_UNIFORM_BUFFER, originPoint);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec3), &position, GL_STATIC_DRAW);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 1, originPoint);
-
-        float buffer[8] = {
-            scale.x, scale.y, scale.z, 0,
-            color.r, color.g, color.b, 1
-        };
-        GLuint margin;
-        glGenBuffers(1, &margin);
-        glBindBuffer(GL_UNIFORM_BUFFER, margin);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*8, buffer, GL_STATIC_DRAW);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 2, margin);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MyBase3D::PointSet::Default->getMarginBlockIndices());
-        glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_INT, 0);
-
+    
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, MyBase3D::PointSet::Default->getBlockSet());
+    
+        glGenBuffers(1, &POS);
+        glBindBuffer(GL_UNIFORM_BUFFER, POS);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*4, &position, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 1, POS);    
+        glDrawArrays(GL_LINE_STRIP, 0, 17);
+        glDeleteBuffers(1, &POS);
         glDeleteVertexArrays(1, &VAO);
-        glDeleteBuffers(1, &margin);
-        glDeleteBuffers(1, &originPoint);
     }
     void DrawMargin(const glm::mat4x3& mat, const glm::vec3& color, const float& linewidth) {
         glm::vec3 shape[8] = {mat[0], mat[0]+mat[1], mat[0] + mat[1]+ mat[2], mat[0] +mat[2]};

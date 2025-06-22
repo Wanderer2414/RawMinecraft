@@ -12,19 +12,19 @@ class ShaderStorage {
     
         GLuint  GetDefaultShader() const,
                 GetCubeShader() const,
+                GetChunkShader() const,
                 GetMarginShader() const,
                 getPoint2DShader() const,
                 getModelShader() const,
-                getFontShader() const,
-                getImage2DShader() const;
+                getFontShader() const;
     private:
         GLuint  __defaultShader,
                 __cubeShader,
                 __point2DShader,
                 __marginShader,
+                __chunkShader,
                 __modelShader,
-                __fontShader,
-                __image2DShader;
+                __fontShader;
     };
 }
 #endif

@@ -5,13 +5,18 @@
 #include "Message.h"
 #include "General.h"
 #include "PlayerModelController.h"
+#include "PointSet.h"
+#include "ShaderStorage.h"
 
 namespace MyCraft {
     World::World(const int& x, const int& y, const int& z): pPosition(x-world_side*16, y-world_side*16, z-world_side*16), __isHoverBlock(false) {
+        __chunkPositions.resize((world_side*2+1)*(world_side*2+1)*(world_side*2+1));
+        int curr = 0;
         for (int i = 0; i<world_side*2+1; i++) {
             for (int j = 0; j<world_side*2+1; j++) {
                 for (int k = 0; k<world_side*2+1; k++) {
                     pChunks[i][j][k].setPosition(pPosition.x+i*16, pPosition.y+j*16, pPosition.z+k*16);
+                    __chunkPositions[curr++] = {pPosition.x+i*16, pPosition.y+j*16, pPosition.z+k*16, 1};
                 }
             }
         }
@@ -20,6 +25,7 @@ namespace MyCraft {
         add(new CheckEmptyCommand(this));
         add(new CheckHoverCommand(this));
         add(new PlaceblockCommand(this));
+
     }
     World::~World() {
     }
@@ -46,13 +52,13 @@ namespace MyCraft {
         }
         return is_changed;
     }
-    const unsigned char& World::at(const int& x, const int& y, const int& z) const {
+    const BlockCatogary::Catogary& World::at(const int& x, const int& y, const int& z) const {
         int rX = (x-pPosition.x);
         int rY = (y-pPosition.y);
         int rZ = (z-pPosition.z);
         return pChunks[rX/16][rY/16][rZ/16].at(rX%16, rY%16, rZ%16);
     }
-    const unsigned char& World::at(const glm::vec3& pos) const {
+    const BlockCatogary::Catogary& World::at(const glm::vec3& pos) const {
         return at(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z));
     }
 
@@ -74,7 +80,32 @@ namespace MyCraft {
         __isHoverBlock = false;
     }
     void World::glDraw() const {
-        if (__isHoverBlock) DrawMargin(__hoverBlock, glm::vec3(1), glm::vec3(1,0,0));
+        GLuint VAO;
+        std::vector<GLuint> POS(3);
+        glUseProgram(MyBase3D::ShaderStorage::Default->GetChunkShader());
+        glGenVertexArrays(1, &VAO);
+        glBindVertexArray(VAO);
+    
+        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getMarginBlockIndices());
+        glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
+        glEnableVertexAttribArray(0);
+    
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, MyBase3D::PointSet::Default->getBlockSet());
+    
+        glGenBuffers(POS.size(), POS.data());
+        int curr = 0;
+        for (int i = 0; i<__chunkPositions.size(); i+=32) {
+            int sz = std::min(32, (int)__chunkPositions.size()-i);
+            glBindBuffer(GL_UNIFORM_BUFFER, POS[curr]);
+            glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*4*sz, &__chunkPositions[i], GL_STATIC_DRAW);
+            glBindBufferBase(GL_UNIFORM_BUFFER, 1, POS[curr]);    
+            for (int j = 0; j<sz*17; j+=17)
+                glDrawArrays(GL_LINE_STRIP, j, 17);
+            curr = (curr+1)%3;
+        }
+        glDeleteBuffers(POS.size(), POS.data());
+        glDeleteVertexArrays(1, &VAO);
+        if (__isHoverBlock) DrawMargin(glm::vec4(__hoverBlock,1), glm::vec3(1), glm::vec3(1,0,0));
         for (int i = 0; i<world_side*2+1; i++) {
             for (int j = 0; j<world_side*2+1; j++) {
                 for (int k = 0; k<world_side*2+1; k++) {
