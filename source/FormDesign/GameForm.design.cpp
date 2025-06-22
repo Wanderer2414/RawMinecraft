@@ -19,8 +19,8 @@ namespace MyCraft {
         __label.setText("Max fps:");
         __label.setPosition(TransX(1100), TransY(0));
         __label.setColor(glm::vec3(1,0,0));
-        for (int i = -16; i<16; i++) {
-            for (int j = -16; j<16; j++) {
+        for (int i = -32; i<48; i++) {
+            for (int j = -32; j<48; j++) {
                 for (int z=-16;z<0; z++)
                     pWorld.set(i, j, z, BlockCatogary::Grass);
 
@@ -28,6 +28,7 @@ namespace MyCraft {
                 pWorld.set(i, j, -10, BlockCatogary::Grass);
             }
         }
+        
         for (int i = -16; i<0; i++) {
             for (int j = -16; j<0; j++) pWorld.set(i,j,0, BlockCatogary::Grass);
         }
@@ -75,6 +76,7 @@ namespace MyCraft {
         pZVelocity = 0;
         pSpeed = 0.1;
         pFrameAlarm.setDuration(50);
+        std::cout << "Open time: " << 1.0f*clock()/CLOCKS_PER_SEC << std::endl;
     }
     GameForm::~GameForm() {        
     }

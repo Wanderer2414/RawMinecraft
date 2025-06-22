@@ -1,7 +1,7 @@
 #include "World.h"
 #include "Block.h"
 #include "Camera.h"
-#include "Chunk.h"
+#include "DrawingCenter.h"
 #include "Message.h"
 #include "General.h"
 #include "PlayerModelController.h"
@@ -9,17 +9,27 @@
 #include "ShaderStorage.h"
 
 namespace MyCraft {
-    World::World(const int& x, const int& y, const int& z): pPosition(x-world_side*16, y-world_side*16, z-world_side*16), __isHoverBlock(false) {
-        __chunkPositions.resize((world_side*2+1)*(world_side*2+1)*(world_side*2+1));
+    World::World(const int& x, const int& y, const int& z): __position(x-(world_side/2)*16, y-(world_side/2)*16, z-(world_side/2)*16), __isHoverBlock(false) {
+        __chunkPositions.resize(world_side*world_side*world_side);
+        __blockTypes = new BlockCatogary::Catogary**[16*world_side];
+        __bits = new std::bitset<16*world_side>*[16*world_side];
+        for (int i = 0; i<16*world_side; i++) {
+            __blockTypes[i] = new BlockCatogary::Catogary*[world_side*16];
+            __bits[i] = new std::bitset<16*world_side>[16*world_side];
+            for (int j =0; j<16*world_side; j++) {
+                __blockTypes[i][j] = new BlockCatogary::Catogary[16*world_side];
+                memset(__blockTypes[i][j], BlockCatogary::Air, 16*world_side);
+            }
+        }
         int curr = 0;
-        for (int i = 0; i<world_side*2+1; i++) {
-            for (int j = 0; j<world_side*2+1; j++) {
-                for (int k = 0; k<world_side*2+1; k++) {
-                    pChunks[i][j][k].setPosition(pPosition.x+i*16, pPosition.y+j*16, pPosition.z+k*16);
-                    __chunkPositions[curr++] = {pPosition.x+i*16, pPosition.y+j*16, pPosition.z+k*16, 1};
+        for (int i = 0; i<world_side; i++) {
+            for (int j = 0; j<world_side; j++) {
+                for (int k = 0; k<world_side; k++) {
+                    __chunkPositions[curr++] = {__position.x+i*16, __position.y+j*16, __position.z+k*16, 1};
                 }
             }
         }
+
         pFrameAlarm.setDuration(150);
         add(new CheckFallCommand(this));
         add(new CheckEmptyCommand(this));
@@ -28,6 +38,15 @@ namespace MyCraft {
 
     }
     World::~World() {
+        for (int i = 0; i<world_side*16; i++) {
+            for (int j = 0; j<world_side*16;j++) {
+                delete[] __blockTypes[i][j];
+            }
+            delete[] __blockTypes[i];
+            delete[] __bits[i];
+        }
+        delete[] __bits;
+        delete[] __blockTypes;
     }
     
     bool World::handle(GLFWwindow* window) {
@@ -53,21 +72,86 @@ namespace MyCraft {
         return is_changed;
     }
     const BlockCatogary::Catogary& World::at(const int& x, const int& y, const int& z) const {
-        int rX = (x-pPosition.x);
-        int rY = (y-pPosition.y);
-        int rZ = (z-pPosition.z);
-        return pChunks[rX/16][rY/16][rZ/16].at(rX%16, rY%16, rZ%16);
+        int rX = (x-__position.x);
+        int rY = (y-__position.y);
+        int rZ = (z-__position.z);
+        return __blockTypes[rX][rY][rZ];
     }
     const BlockCatogary::Catogary& World::at(const glm::vec3& pos) const {
         return at(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z));
     }
 
-    void World::set(const int& x, const int& y, const int& z, const BlockCatogary::Catogary& type) {
-        int rX = (x-pPosition.x);
-        int rY = (y-pPosition.y);
-        int rZ = (z-pPosition.z);
-        pChunks[rX/16][rY/16][rZ/16].set(rX%16, rY%16, rZ%16, type);
+    void World::set(const int& rx, const int& ry, const int& rz, const BlockCatogary::Catogary& type) {
+        int x = (rx-__position.x);
+        int y = (ry-__position.y);
+        int z = (rz-__position.z);
+        // pChunks[rX/16][rY/16][rZ/16].set(rX%16, rY%16, rZ%16, type);
+
+        if (!type) {
+            if (__blockTypes[x][y][z]) {
+                __disableBit(x, y, z);
+                __blockTypes[x][y][z] = BlockCatogary::Catogary::Air;
+                if (x>0 && !__bits[x-1][y][z] && __blockTypes[x-1][y][z]) __enableBit(x-1, y, z);
+                if (x<world_side*16-1 && !__bits[x+1][y][z] && __blockTypes[x+1][y][z]) __enableBit(x+1, y, z);
+
+                if (y>0 && !__bits[x][y-1][z] && __blockTypes[x][y-1][z]) __enableBit(x, y-1, z);
+                if (y<world_side*16-1 && !__bits[x][y+1][z] && __blockTypes[x][y+1][z]) __enableBit(x, y+1, z);
+                
+                if (z>0 && !__bits[x][y][z-1] && __blockTypes[x][y][z-1]) __enableBit(x, y, z-1);
+                if (z<world_side*16-1 && !__bits[x][y][z+1] && __blockTypes[x][y][z+1]) __enableBit(x, y, z+1);
+            }
+        }
+        else {
+            if (!__blockTypes[x][y][z]) {
+                __blockTypes[x][y][z] = type;
+                __enableBit(x, y, z);
+                if (x>0 && __bits[x-1][y][z]) __disableBit(x-1, y, z);
+                if (x<world_side*16-1 && __bits[x+1][y][z]) __disableBit(x+1, y, z);
+
+                if (y>0 && __bits[x][y-1][z]) __disableBit(x, y-1, z);
+                if (y<world_side*16-1 && __bits[x][y+1][z]) __disableBit(x, y+1, z);
+                
+                if (z>0 && __bits[x][y][z-1]) __disableBit(x, y, z-1);
+                if (z<world_side*16-1 && __bits[x][y][z+1]) __disableBit(x, y, z+1);
+            }
+            else {
+                glm::vec4 pos(x+__position.x, y+__position.y, z+__position.z ,1);
+                auto& tmp = __list[__blockTypes[x][y][z]];
+                int i = 0;
+                while (i<tmp.size() && tmp[i]!=pos) i++;
+                if (i<tmp.size()) {
+                    tmp.erase(tmp.begin()+i);
+                    __blockTypes[x][y][z] = type;
+                    __list[__blockTypes[x][y][z]].push_back(pos);
+                }
+            }
+        }
     }
+    
+    void World::__enableBit(const int& x, const int& y, const int& z) {
+        if (!__bits[x][y][z]) {
+            __list[__blockTypes[x][y][z]].push_back({x+__position.x,y+__position.y,z+__position.z,1});
+            __bits[x][y][z] = 1;
+        }
+    }
+    void World::__disableBit(const int& x, const int& y, const int& z) {
+        if (!__bits[x][y][z]) return;
+        if (x>0 && !__blockTypes[x-1][y][z]) ;
+        else if (x<world_side*16-2 && !__blockTypes[x+1][y][z]) ;
+        else if (y>0 && !__blockTypes[x][y-1][z]) ;
+        else if (y<world_side*16-2 && !__blockTypes[x][y+1][z]) ;
+        else if (z>0 && !__blockTypes[x][y][z-1]) ;
+        else if (z<world_side*16-2 && !__blockTypes[x][y][z+1]) ;
+        else if (z<world_side*16-1 && z>0 && x<world_side*16-1 && x>0 && y<world_side*16-1 && y>0) {
+            __bits[x][y][z] = 0;
+            glm::vec4 pos(x+__position.x, y+__position.y, z+__position.z ,1);
+            auto& tmp = __list[__blockTypes[x][y][z]];
+            int i = 0;
+            while (tmp[i]!=pos) i++;
+            tmp.erase(tmp.begin()+i);
+        }
+    }
+
     void World::set(const glm::vec3& pos, const BlockCatogary::Catogary& type) {
         set(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z), type);
     }
@@ -80,38 +164,16 @@ namespace MyCraft {
         __isHoverBlock = false;
     }
     void World::glDraw() const {
-        GLuint VAO;
-        std::vector<GLuint> POS(3);
-        glUseProgram(MyBase3D::ShaderStorage::Default->GetChunkShader());
-        glGenVertexArrays(1, &VAO);
-        glBindVertexArray(VAO);
-    
-        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getMarginBlockIndices());
-        glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
-        glEnableVertexAttribArray(0);
-    
-        glBindBufferBase(GL_UNIFORM_BUFFER, 2, MyBase3D::PointSet::Default->getBlockSet());
-    
-        glGenBuffers(POS.size(), POS.data());
-        int curr = 0;
-        for (int i = 0; i<__chunkPositions.size(); i+=32) {
-            int sz = std::min(32, (int)__chunkPositions.size()-i);
-            glBindBuffer(GL_UNIFORM_BUFFER, POS[curr]);
-            glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*4*sz, &__chunkPositions[i], GL_STATIC_DRAW);
-            glBindBufferBase(GL_UNIFORM_BUFFER, 1, POS[curr]);    
-            for (int j = 0; j<sz*17; j+=17)
-                glDrawArrays(GL_LINE_STRIP, j, 17);
-            curr = (curr+1)%3;
+        DrawingCenter::Default->BindChunk();
+        DrawingCenter::Default->DrawChunks((void*)__chunkPositions.data(), __chunkPositions.size());
+        if (__isHoverBlock) {
+            DrawingCenter::Default->BindMargin();
+            glm::vec4 vec = glm::vec4(__hoverBlock,1);
+            DrawingCenter::Default->DrawMargin((void*)&vec, 1, 2);
         }
-        glDeleteBuffers(POS.size(), POS.data());
-        glDeleteVertexArrays(1, &VAO);
-        if (__isHoverBlock) DrawMargin(glm::vec4(__hoverBlock,1), glm::vec3(1), glm::vec3(1,0,0));
-        for (int i = 0; i<world_side*2+1; i++) {
-            for (int j = 0; j<world_side*2+1; j++) {
-                for (int k = 0; k<world_side*2+1; k++) {
-                    pChunks[i][j][k].glDraw(__cameraPosition, __cameraDir);
-                }
-            }
+        DrawingCenter::Default->BindCube();
+        for (const auto& item: __list) {
+            DrawingCenter::Default->DrawCubes(item.first, (void*)item.second.data(), item.second.size());
         }
     }
 

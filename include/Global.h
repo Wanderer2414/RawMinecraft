@@ -14,6 +14,7 @@
 #include <stack>
 #include <queue>
 #include <limits>
+#include <bitset>
 
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"

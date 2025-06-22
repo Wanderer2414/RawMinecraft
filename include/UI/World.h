@@ -3,12 +3,12 @@
 
 #include "Block.h"
 #include "Clock.h"
-#include "Chunk.h"
 #include "Message.h"
 #include "Controller.h"
+#include "Global.h"
 namespace MyCraft {
 class World: public MyBase::Controller, public Port {
-    #define world_side 2
+    #define world_side 5
     public:
         World(const int& x, const int& y, const int& z);
         ~World();
@@ -26,10 +26,15 @@ class World: public MyBase::Controller, public Port {
     private:
         bool                    __isHoverBlock;
         glm::vec3               __hoverBlock, __placePosition, __cameraPosition, __cameraDir;
-        MyCraft::Chunk          pChunks[world_side*2 + 1][world_side*2 + 1][world_side*2 + 1];
-        glm::vec3               pPosition;
+        std::map<BlockCatogary::Catogary,std::vector<glm::vec4>>  __list;
+        BlockCatogary::Catogary                 ***__blockTypes;
+        std::bitset<16*world_side>              **__bits;
+        glm::vec3               __position;
         MyBase::Clock           pFrameAlarm;
         std::vector<glm::vec4>  __chunkPositions;
+
+        void __enableBit(const int& x, const int& y, const int& z);
+        void __disableBit(const int& x, const int& y, const int& z);
     };
 
     class CheckEmptyCommand: public Command {

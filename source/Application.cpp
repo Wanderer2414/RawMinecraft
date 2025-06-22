@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Block.h"
+#include "DrawingCenter.h"
 #include "GLFW/glfw3.h"
 #include "InfoCenter.h"
 #include "GameForm.h"
@@ -13,6 +14,7 @@ MyCraft::InfoCenter* MyCraft::InfoCenter::Default;
 MyBase3D::ShaderStorage* MyBase3D::ShaderStorage::Default;
 MyCraft::BlockCatogary* MyCraft::BlockCatogary::Default;
 MyCraft::ModelStorage* MyCraft::ModelStorage::Default;
+MyCraft::DrawingCenter* MyCraft::DrawingCenter::Default;
 namespace MyCraft {
     Application::Application(const float& width, const float& height) {
         
@@ -49,8 +51,10 @@ namespace MyCraft {
         MyBase3D::ShaderStorage::Default = new MyBase3D::ShaderStorage();
         MyCraft::BlockCatogary::Default = new MyCraft::BlockCatogary();
         MyCraft::ModelStorage::Default = new MyCraft::ModelStorage();
+        MyCraft::DrawingCenter::Default = new MyCraft::DrawingCenter();
     }
     Application::~Application() {
+        delete MyCraft::DrawingCenter::Default;
         delete InfoCenter::Default;
         delete MyBase3D::PointSet::Default;
         delete MyBase3D::ShaderStorage::Default;
@@ -61,7 +65,6 @@ namespace MyCraft {
 
     void Application::run() {
         int formIndex = 0;
-        std::cout << "Open time: " << 1.0f*clock()/CLOCKS_PER_SEC << std::endl;
         while (!glfwWindowShouldClose(__window)) {
             switch (formIndex) {
                 case 0: {
