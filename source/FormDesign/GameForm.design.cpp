@@ -17,7 +17,7 @@ namespace MyCraft {
         __hitbox.match(&_camera);
 
         __label.setText("Max fps:");
-        __label.setPosition(TransX(1100), TransY(0));
+        __label.setPosition(Trans_1366_X(1100), Trans_768_Y(0));
         __label.setColor(glm::vec3(1,0,0));
         for (int i = -32; i<48; i++) {
             for (int j = -32; j<48; j++) {

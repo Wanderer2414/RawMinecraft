@@ -82,8 +82,8 @@ namespace MyBase3D {
         update();
     }
 
-    void Camera::setPerpective(const float& angle, const float& aspect, const float& near, const float& far) {
-        __projection = glm::perspective(glm::radians(angle), aspect, near, far);
+    void Camera::setPerpective(const float& angle, const float& aspect, const float& nearPlane, const float& farPlane) {
+        __projection = glm::perspective(glm::radians(angle), aspect, nearPlane, farPlane);
         update();
     }
     void Camera::rotate(const float& vertical_angle, const float& horizontal_angle) {

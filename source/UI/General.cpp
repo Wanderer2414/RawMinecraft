@@ -61,7 +61,11 @@ namespace MyBase {
         #endif
 
         #ifdef _WIN32
-        return {1920, 1080};
+        SetProcessDPIAware();
+        int width = GetSystemMetrics(SM_CXSCREEN);
+        int height = GetSystemMetrics(SM_CYSCREEN);
+        std::cout << width << " " << height << std::endl;
+        return {width, height};
         #endif
     }
 }
