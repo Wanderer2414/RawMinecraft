@@ -176,11 +176,10 @@ namespace MyCraft {
             DrawingCenter::Default->DrawCubes(item.first, (void*)item.second.data(), item.second.size());
         }
     }
-
     CheckEmptyCommand::CheckEmptyCommand(World* world): __world(world) {}
     CheckEmptyCommand::~CheckEmptyCommand() {Command::~Command();}
     
-    void CheckEmptyCommand::execute(Port& mine, Port& source, Message* message) {
+    void CheckEmptyCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         RequestGotoMessage* request = (RequestGotoMessage*)message;
         bool below_result = true, above_result = true;
         auto shape = request->rectangleBox;
@@ -278,14 +277,14 @@ namespace MyCraft {
             mine.send(source, new MoveMessage(dir));
         }
     }
-    MessageType CheckEmptyCommand::getType() const {
-        return MessageType::RequestGoto;
+    MyBase::MessageType CheckEmptyCommand::getType() const {
+        return MyBase::MessageType::RequestGoto;
     }
     
     CheckFallCommand::CheckFallCommand(World* world): __world(world) {}
     CheckFallCommand::~CheckFallCommand() {}
         
-    void CheckFallCommand::execute(Port& mine, Port& source, Message* message) {
+    void CheckFallCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         RequestFallMessage* request = (RequestFallMessage*)message;
         float z = request->zVelocity;
         auto shape = request->rectangleBox;
@@ -334,16 +333,16 @@ namespace MyCraft {
             }
         }
     }
-    MessageType CheckFallCommand::getType() const {
-        return MessageType::RequestFall;
+    MyBase::MessageType CheckFallCommand::getType() const {
+        return MyBase::MessageType::RequestFall;
     }
 
     CheckHoverCommand::CheckHoverCommand(World* world): __world(world) {}
     CheckHoverCommand::~CheckHoverCommand() {}
-    MessageType CheckHoverCommand::getType() const {
-        return MessageType::CheckHover;
+    MyBase::MessageType CheckHoverCommand::getType() const {
+        return MyBase::MessageType::CheckHover;
     };
-    void CheckHoverCommand::execute(Port& mine, Port& des, Message* message) {
+    void CheckHoverCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
         CheckHoverMessage* package = (CheckHoverMessage*)message;
         __world->__cameraPosition = package->position + glm::vec3(0,0,1.8);
         __world->__cameraDir = package->direction;
@@ -366,10 +365,10 @@ namespace MyCraft {
     }
     PlaceblockCommand::PlaceblockCommand(World* world): __world(world) {}
     PlaceblockCommand::~PlaceblockCommand() {}
-    MessageType PlaceblockCommand::getType() const {
-        return MessageType::RightAttack;
+    MyBase::MessageType PlaceblockCommand::getType() const {
+        return MyBase::MessageType::RightAttack;
     }
-    void PlaceblockCommand::execute(Port& mine, Port& des, Message* message) {
+    void PlaceblockCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
         RightAttackMessage* package = (RightAttackMessage*)message;
         glm::vec3 fpos(floor(package->posistion.x), floor(package->posistion.y), floor(package->posistion.z));
         if (__world->__isHoverBlock && __world->__placePosition!=fpos) {

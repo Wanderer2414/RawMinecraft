@@ -178,7 +178,7 @@ namespace MyCraft {
     }
     void PlayerModelController::move(const glm::vec3& delta) {
         __position += delta;
-        send(new SetCameraMessage(__position, __eye_direction));
+        send(new MyBase::SetCameraMessage(__position, __eye_direction));
         send(new CheckHoverMessage(__position, __eye_direction));
         if (delta.x || delta.y) {
             __runCooldown.restart();
@@ -199,7 +199,7 @@ namespace MyCraft {
         __eye_direction = glm::rotate(__eye_direction, horizontal, glm::vec3(0, 0, 1));
         glm::vec3 axis = glm::cross(__eye_direction, glm::vec3(0,0,1));
         __eye_direction = glm::rotate(__eye_direction, vertical, axis);
-        send(new SetCameraMessage(__position, __eye_direction));
+        send(new MyBase::SetCameraMessage(__position, __eye_direction));
         send(new CheckHoverMessage(__position, __eye_direction));
     }
     void PlayerModelController::setDrawAble(const bool& drawable) {
@@ -244,33 +244,33 @@ namespace MyCraft {
     void PlayerModelController::update() {
     }
 
-    ResetCameraCommand::ResetCameraCommand(PlayerModelController* model): __model(model) {};
+    ResetCameraCommand::ResetCameraCommand(MyCraft::PlayerModelController* model): __model(model) {};
     ResetCameraCommand::~ResetCameraCommand() {};
-    MessageType ResetCameraCommand::getType() const {
-        return MessageType::ResetCamera;
+    MyBase::MessageType ResetCameraCommand::getType() const {
+        return MyBase::MessageType::ResetCamera;
     }
-    void ResetCameraCommand::execute(Port& mine, Port& source, Message* message) {
-        ResetCameraMessage* package = (ResetCameraMessage*)message;
+    void ResetCameraCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        MyBase::ResetCameraMessage* package = (MyBase::ResetCameraMessage*)message;
         if (package->isFirstCamera) __model->setDrawAble(false);
         else __model->setDrawAble(true);
-        __model->send(new SetCameraMessage(__model->getModelPosition(), __model->getDirection()));
+        __model->send(new MyBase::SetCameraMessage(__model->getModelPosition(), __model->getDirection()));
     }
 
 
     MoveMessage::MoveMessage(const glm::vec3& d): direction(d) {}
     MoveMessage::~MoveMessage() {Message::~Message();}
-    MessageType MoveMessage::getType() const {
-        return MessageType::Move;
+    MyBase::MessageType MoveMessage::getType() const {
+        return MyBase::MessageType::Move;
     }
 
     FallMessage::FallMessage(const float& z): zVelocity(z) {}
     FallMessage::~FallMessage() {Message::~Message();}
-    MessageType FallMessage::getType() const  {
-        return MessageType::Fall;
+    MyBase::MessageType FallMessage::getType() const  {
+        return MyBase::MessageType::Fall;
     }
 
-    MessageType StopFallMessage::getType() const {
-        return MessageType::StopFall;
+    MyBase::MessageType StopFallMessage::getType() const {
+        return MyBase::MessageType::StopFall;
     }
     StopFallMessage::StopFallMessage() {};
     StopFallMessage::~StopFallMessage() {};
@@ -282,38 +282,38 @@ namespace MyCraft {
     }
     RequestFallMessage::~RequestFallMessage() {
     }
-    MessageType RequestFallMessage::getType() const {
-        return MessageType::RequestFall;
+    MyBase::MessageType RequestFallMessage::getType() const {
+        return MyBase::MessageType::RequestFall;
     }
-    MessageType RequestGotoMessage::getType() const {
-        return MessageType::RequestGoto;
+    MyBase::MessageType RequestGotoMessage::getType() const {
+        return MyBase::MessageType::RequestGoto;
     }
 
     RightAttackMessage::RightAttackMessage(const glm::vec3& pos, const glm::vec3& dir): posistion(pos), direction(dir) {}
     RightAttackMessage::~RightAttackMessage() {}
-    MessageType RightAttackMessage::getType() const {
-        return MessageType::RightAttack;
+    MyBase::MessageType RightAttackMessage::getType() const {
+        return MyBase::MessageType::RightAttack;
     }
     
     LeftAttackMessage::LeftAttackMessage() {}
     LeftAttackMessage::~LeftAttackMessage() {}
-    MessageType LeftAttackMessage::getType() const{
-        return MessageType::LeftAttack;
+    MyBase::MessageType LeftAttackMessage::getType() const{
+        return MyBase::MessageType::LeftAttack;
     }
 
     CheckHoverMessage::CheckHoverMessage(const glm::vec3& pos, const glm::vec3& dir): position(pos), direction(dir) {}
     CheckHoverMessage::~CheckHoverMessage() {}
-    MessageType CheckHoverMessage::getType() const {
-        return MessageType::CheckHover;
+    MyBase::MessageType CheckHoverMessage::getType() const {
+        return MyBase::MessageType::CheckHover;
     }
 
-    PlayerMoveCommand::PlayerMoveCommand(PlayerModelController* model): __model(model) {}
+    PlayerMoveCommand::PlayerMoveCommand(MyCraft::PlayerModelController* model): __model(model) {}
     PlayerMoveCommand::~PlayerMoveCommand() {}
 
-    MessageType PlayerMoveCommand::getType() const {
-        return MessageType::Move;
+    MyBase::MessageType PlayerMoveCommand::getType() const {
+        return MyBase::MessageType::Move;
     }
-    void PlayerMoveCommand::execute(Port& mine, Port& source, Message* message)   {
+    void PlayerMoveCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   {
         MoveMessage* moveMessage = (MoveMessage*)message;
         if (__model->isCrounch()) {
             if (moveMessage->direction.z==0) 

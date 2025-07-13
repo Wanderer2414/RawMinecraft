@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(RawMinecraft VERSION 0.1 LANGUAGES CXX C)
+project(MyCraft VERSION 0.1 LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -10,6 +10,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/include/UI
     ${CMAKE_SOURCE_DIR}/include/Logic
     ${CMAKE_SOURCE_DIR}/include/Form
+    ${CMAKE_SOURCE_DIR}/include/MyCraft
     ${CMAKE_SOURCE_DIR}/include/Extended
     ${CMAKE_SOURCE_DIR}/glad/include
     ${CMAKE_SOURCE_DIR}/glm-master
@@ -17,6 +18,7 @@ include_directories(
 )
 file(GLOB SOURCES 
     ${CMAKE_SOURCE_DIR}/source/*
+    ${CMAKE_SOURCE_DIR}/source/MyCraft/*
     ${CMAKE_SOURCE_DIR}/source/UI/*
     ${CMAKE_SOURCE_DIR}/source/Logic/*
     ${CMAKE_SOURCE_DIR}/source/Extended/*

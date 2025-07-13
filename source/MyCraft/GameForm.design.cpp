@@ -3,7 +3,6 @@
 #include "Global.h"
 #include "HitBoxCenter.h"
 #include "InfoCenter.h"
-#include <GL/gl.h>
 
 namespace MyCraft {
     GameForm::GameForm(GLFWwindow* window, const int& index): Form3D(index), pWorld(0, 0, 0), __font("assets/fonts/Oswald-Regular.ttf"), __label(__font) {

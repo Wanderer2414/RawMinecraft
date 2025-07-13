@@ -1,11 +1,8 @@
 #include "Camera.h"
-#include "GLFW/glfw3.h"
 #include "Global.h"
 #include "InfoCenter.h"
 #include "Message.h"
 #include "ShaderStorage.h"
-#include "glm/ext/matrix_transform.hpp"
-#include "glm/geometric.hpp"
 
 namespace MyBase3D {
 
@@ -33,7 +30,7 @@ namespace MyBase3D {
         __view = glm::lookAt(__position, __position + __delta, glm::vec3(0, 0, 1));
         __projection = glm::perspective(glm::radians(60.f), MyCraft::InfoCenter::Default->getWindowRatio(), 0.1f, 100.f);
         __keyCooldown.setDuration(200);
-        add(new MyCraft::SetCameraCommand_ThirdPersonView(this));
+        add(new MyBase::SetCameraCommand_ThirdPersonView(this));
         update();
     }
     Camera::~Camera() {
@@ -122,13 +119,13 @@ namespace MyBase3D {
         if (__keyCooldown.get()) {
             if (glfwGetKey(window, GLFW_KEY_F5)) {
                 if (__isThirdCamera) {
-                    add(new MyCraft::SetCameraCommand_FirstPersonView(this));
-                    send(new MyCraft::ResetCameraMessage(true));
+                    add(new MyBase::SetCameraCommand_FirstPersonView(this));
+                    send(new MyBase::ResetCameraMessage(true));
                     __isThirdCamera = false;
                 }
                 else {
-                    add(new MyCraft::SetCameraCommand_ThirdPersonView(this));
-                    send(new MyCraft::ResetCameraMessage(false));
+                    add(new MyBase::SetCameraCommand_ThirdPersonView(this));
+                    send(new MyBase::ResetCameraMessage(false));
                     __isThirdCamera = true;
                 }
                 __keyCooldown.restart();
@@ -168,7 +165,7 @@ namespace MyBase3D {
     }
 }
 
-namespace MyCraft {
+namespace MyBase {
 
     SetCameraMessage::SetCameraMessage(const glm::vec3& pos, const glm::vec3& d): position(pos), direction(d) {}
     SetCameraMessage::~SetCameraMessage() {}

@@ -8,7 +8,7 @@
 namespace MyBase3D {
     class Form3D;
     #define CAMERA_DISTANCE 4.0f
-    class Camera: public MyBase::Controller, public MyCraft::Port {
+    class Camera: public MyBase::Controller, public MyBase::Port {
     public:
         Camera();
         ~Camera();
@@ -52,8 +52,8 @@ namespace MyBase3D {
         glm::vec2       transfer(const glm::vec3& vector) const;
     };
 };
-namespace MyCraft {
-    class SetCameraMessage: public MyCraft::Message {
+namespace MyBase {
+    class SetCameraMessage: public Message {
     public:
         SetCameraMessage(const glm::vec3& position, const glm::vec3& direction);
         ~SetCameraMessage();
@@ -61,7 +61,7 @@ namespace MyCraft {
         const glm::vec3 direction;
         const glm::vec3 position;
     };
-    class SetCameraCommand_ThirdPersonView: public MyCraft::Command {
+    class SetCameraCommand_ThirdPersonView: public Command {
     public:
         SetCameraCommand_ThirdPersonView(MyBase3D::Camera* camera);
         ~SetCameraCommand_ThirdPersonView();
@@ -70,7 +70,7 @@ namespace MyCraft {
     private:
         MyBase3D::Camera* __camera;
     };    
-    class SetCameraCommand_FirstPersonView: public MyCraft::Command {
+    class SetCameraCommand_FirstPersonView: public Command {
     public:
         SetCameraCommand_FirstPersonView(MyBase3D::Camera* camera);
         ~SetCameraCommand_FirstPersonView();

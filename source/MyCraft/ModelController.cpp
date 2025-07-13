@@ -21,10 +21,10 @@ namespace MyCraft {
     MoveCommand::MoveCommand(ModelController* model): __model(model) {}
     MoveCommand::~MoveCommand() {}
 
-    MessageType MoveCommand::getType() const {
-        return MessageType::Move;
+     MyBase::MessageType MoveCommand::getType() const {
+        return  MyBase::MessageType::Move;
     }
-    void MoveCommand::execute(Port& mine, Port& source, Message* message)   {
+    void MoveCommand::execute(MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message)   {
         MoveMessage* moveMessage = (MoveMessage*)message;
         __model->move(moveMessage->direction);
         if (!__model->isFall())
@@ -34,10 +34,10 @@ namespace MyCraft {
     FallCommand::FallCommand(ModelController* model): __model(model) {}
     FallCommand::~FallCommand() {}
 
-    MessageType FallCommand::getType() const {
-        return MessageType::Fall;
+     MyBase::MessageType FallCommand::getType() const {
+        return  MyBase::MessageType::Fall;
     }
-    void FallCommand::execute(Port& mine, Port& source, Message* message) {
+    void FallCommand::execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message) {
         FallMessage* fall = (FallMessage*)message;
         __model->setFall(true);
         __model->setZVelocity(fall->zVelocity);
@@ -46,10 +46,10 @@ namespace MyCraft {
     StopFallCommand::StopFallCommand(ModelController* model): __model(model) {}
     StopFallCommand::~StopFallCommand() {}
 
-    MessageType StopFallCommand::getType() const {
-        return MessageType::StopFall;
+     MyBase::MessageType StopFallCommand::getType() const {
+        return  MyBase::MessageType::StopFall;
     }
-    void StopFallCommand::execute(Port& mine, Port& source, Message* message) {
+    void StopFallCommand::execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message) {
         __model->setFall(false);
         __model->setZVelocity(0);
     }   

@@ -1,7 +1,6 @@
 #include "Application.h"
 #include "Block.h"
 #include "DrawingCenter.h"
-#include "GLFW/glfw3.h"
 #include "InfoCenter.h"
 #include "GameForm.h"
 #include "PointSet.h"

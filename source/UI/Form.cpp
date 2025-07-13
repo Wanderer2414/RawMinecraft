@@ -1,9 +1,7 @@
 #include "Form.h"
 #include "Container.h"
 #include "Controller.h"
-#include "GLFW/glfw3.h"
 #include "Global.h"
-#include <GL/gl.h>
 
 namespace MyBase {
     Form::Form(const int& index): __formIndex(index), __returnValue(INT_MIN) {

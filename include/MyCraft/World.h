@@ -5,9 +5,9 @@
 #include "Clock.h"
 #include "Message.h"
 #include "Controller.h"
-#include "Global.h"
+
 namespace MyCraft {
-class World: public MyBase::Controller, public Port {
+class World: public MyBase::Controller, public MyBase::Port {
     #define world_side 5
     public:
         World(const int& x, const int& y, const int& z);
@@ -36,45 +36,44 @@ class World: public MyBase::Controller, public Port {
         void __enableBit(const int& x, const int& y, const int& z);
         void __disableBit(const int& x, const int& y, const int& z);
     };
-
-    class CheckEmptyCommand: public Command {
+    class CheckEmptyCommand: public MyBase::Command {
     public:
-        CheckEmptyCommand(World* world);
+        CheckEmptyCommand(MyCraft::World* world);
         ~CheckEmptyCommand();
 
-        void execute(Port& mine, Port& source, Message* message) override;
-        MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+        MyBase::MessageType getType() const override;
     private:
         World*  __world;
     };
 
-    class CheckFallCommand: public Command {
+    class CheckFallCommand: public MyBase::Command {
     public:
-        CheckFallCommand(World* world);
+        CheckFallCommand(MyCraft::World* world);
         ~CheckFallCommand();
 
-        void execute(Port& mine, Port& des, Message* message) override;
-        MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
+        MyBase::MessageType getType() const override;
     private:
         World*  __world;
     };
 
-    class CheckHoverCommand: public Command {
+    class CheckHoverCommand: public MyBase::Command {
     public:
-        CheckHoverCommand(World* world);
+        CheckHoverCommand(MyCraft::World* world);
         ~CheckHoverCommand();
-        MessageType getType() const override;
-        void execute(Port& mine, Port& des, Message* message) override;
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
     private:
         World* __world;
     };
 
-    class PlaceblockCommand: public Command {
+    class PlaceblockCommand: public MyBase::Command {
     public:
-        PlaceblockCommand(World* world);
+        PlaceblockCommand(MyCraft::World* world);
         ~PlaceblockCommand();
-        MessageType getType() const override;
-        void execute(Port& mine, Port& des, Message* message) override;
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
     private:
         World* __world;
     };

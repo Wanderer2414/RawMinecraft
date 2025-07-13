@@ -5,7 +5,7 @@
 #include "Message.h"
 #include "ModelController.h"
 namespace MyCraft {
-    class PlayerModelController: public ModelController, public Port {
+    class PlayerModelController: public ModelController, public MyBase::Port {
     public: 
         PlayerModelController();
         ~PlayerModelController();
@@ -40,89 +40,88 @@ namespace MyCraft {
         glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
         void            update() override;
     };
-
-    class ResetCameraCommand: public Command {
+    class ResetCameraCommand: public MyBase::Command {
     public:
-        ResetCameraCommand(PlayerModelController* model);
+        ResetCameraCommand(MyCraft::PlayerModelController* model);
         ~ResetCameraCommand();
-        MessageType getType() const override;
-        void execute(Port& mine, Port& source, Message* message) override;
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
     private:
-        PlayerModelController* __model;
+        MyCraft::PlayerModelController* __model;
     };
-    class MoveMessage: public Message {
+    class MoveMessage: public MyBase::Message {
     public:
         MoveMessage(const glm::vec3& direction);
         ~MoveMessage();
-        MessageType     getType() const override;
+        MyBase::MessageType     getType() const override;
         const glm::vec3       direction;
     };
-    class FallMessage: public Message {
+    class FallMessage: public MyBase::Message {
     public:
         FallMessage(const float& zVelocity);
         ~FallMessage();
-        MessageType     getType() const override;
+        MyBase::MessageType     getType() const override;
 
         const float zVelocity;
     };
-    class StopFallMessage: public Message {
+    class StopFallMessage: public MyBase::Message {
     public:
         StopFallMessage();
         ~StopFallMessage();
-        MessageType     getType() const override;
+        MyBase::MessageType     getType() const override;
     };
     
-    class RequestGotoMessage: public Message {
+    class RequestGotoMessage: public MyBase::Message {
     public:
         RequestGotoMessage(const glm::mat4x3& rectangleBox, const glm::vec2& direction);
         ~RequestGotoMessage();
-        MessageType     getType() const override;
+        MyBase::MessageType     getType() const override;
         const glm::vec2       direction;
         const glm::mat4x3     rectangleBox;
     private:
     };
 
-    class RequestFallMessage: public Message {
+    class RequestFallMessage: public MyBase::Message {
     public:
         RequestFallMessage(const glm::mat4x3& rectangleBox, const float& zVelocity);
         ~RequestFallMessage();
-        MessageType     getType() const override;
+        MyBase::MessageType     getType() const override;
         const glm::mat4x3 rectangleBox;
         float zVelocity;
     };
 
-    class RightAttackMessage: public Message {
+    class RightAttackMessage: public MyBase::Message {
     public:
         RightAttackMessage(const glm::vec3& pos, const glm::vec3& dir);
         ~RightAttackMessage();
-        MessageType getType() const override;
+        MyBase::MessageType getType() const override;
         const glm::vec3 posistion, direction;
     };
 
-    class LeftAttackMessage: public Message {
+    class LeftAttackMessage: public MyBase::Message {
     public:
         LeftAttackMessage();
         ~LeftAttackMessage();
-        MessageType     getType() const override;
+        MyBase::MessageType     getType() const override;
     };
 
-    class CheckHoverMessage: public Message {
+    class CheckHoverMessage: public MyBase::Message {
     public:
         CheckHoverMessage(const glm::vec3& pos, const glm::vec3& dir);
         ~CheckHoverMessage();
-        MessageType     getType() const override;
+        MyBase::MessageType     getType() const override;
         const glm::vec3 position, direction;
     };
 
-    class PlayerMoveCommand: public Command {
+    class PlayerMoveCommand: public MyBase::Command {
     public:
-        PlayerMoveCommand(PlayerModelController* model);
+        PlayerMoveCommand(MyCraft::PlayerModelController* model);
         ~PlayerMoveCommand();
 
-        MessageType getType()                               const override;
-        void execute(Port& mine, Port& source, Message* message)   override;
+        MyBase::MessageType getType()                               const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
     private:
-        PlayerModelController*      __model;
+        MyCraft::PlayerModelController*      __model;
     };
 }
 #endif

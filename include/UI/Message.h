@@ -2,7 +2,7 @@
 #define Message_H
 #include "Global.h"
 
-namespace MyCraft {
+namespace MyBase {
     class Message;
     class Network;
     class World;

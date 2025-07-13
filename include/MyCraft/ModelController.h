@@ -28,35 +28,35 @@ namespace MyCraft {
             float   __zVelocity;
             void setFall(const bool& isFall);
     };
-    class MoveCommand: public Command {
+    class MoveCommand: public  MyBase::Command {
     public:
-        MoveCommand(ModelController* model);
+        MoveCommand(MyCraft::ModelController* model);
         ~MoveCommand();
 
-        MessageType getType()                               const override;
-        void execute(Port& mine, Port& source, Message* message)   override;
+         MyBase::MessageType getType()                               const override;
+        void execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message)   override;
     private:
-        ModelController*      __model;
+        MyCraft::ModelController*      __model;
     };
-    class FallCommand: public Command {
+    class FallCommand: public  MyBase::Command {
     public:
-        FallCommand(ModelController* model);
+        FallCommand(MyCraft::ModelController* model);
         ~FallCommand();
 
-        MessageType getType()                               const override;
-        void execute(Port& mine, Port& source, Message* message)   override;
+         MyBase::MessageType getType()                               const override;
+        void execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message)   override;
     private:
-        ModelController*      __model;
+        MyCraft::ModelController*      __model;
     };
-    class StopFallCommand: public Command {
+    class StopFallCommand: public  MyBase::Command {
     public:
-        StopFallCommand(ModelController* model);
+        StopFallCommand(MyCraft::ModelController* model);
         ~StopFallCommand();
 
-        MessageType getType()                               const override;
-        void execute(Port& mine, Port& source, Message* message)   override;
+         MyBase::MessageType getType()                               const override;
+        void execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message)   override;
     private:
-        ModelController*      __model;
+        MyCraft::ModelController*      __model;
     };
     
 }

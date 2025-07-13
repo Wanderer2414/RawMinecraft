@@ -1,7 +1,7 @@
 #include "Message.h"
 #include "PlayerModelController.h"
 
-namespace MyCraft {
+namespace MyBase {
     Port::Port(Network* network): __network(network) {}
     Port::~Port() {
         for (auto& command:__commands) delete command.second;
