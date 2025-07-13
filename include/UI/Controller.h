@@ -6,35 +6,17 @@ namespace MyBase {
 
     class Controller {
     public:
-        Controller();
-        ~Controller();
-        virtual bool            isHovered()         const,
-                                isReleased()        const,
-                                isDoubleClick()     const,
-                                isPressed()         const,
-                                isFocus()           const,
-                                setHover(const bool& hover),
-                                setHover(const glm::vec2& position);
-
-        virtual void            setFocus(const bool& focus),
-                                reset(),
-                                update();      
+        virtual void    update();      
 
         friend Container;
     protected:
+        Controller();
+        ~Controller();
         virtual bool    catchEvent(GLFWwindow* window);
         virtual bool    sensitiveHandle(GLFWwindow* window);
         virtual bool    handle(GLFWwindow* window);
-        virtual bool    contains(const glm::vec2& position) const;
-
+        virtual void    glDraw() const = 0;
     private:
-        unsigned int    __doubleClickCount;
-        bool            __isHovered,
-                        __isPressed,
-                        __isDoubleClick,
-                        __isReleased,
-                        __isFocus;
-        virtual void    glDraw() const;
     };
 };
 #endif

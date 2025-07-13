@@ -49,12 +49,13 @@ std::queue<glm::vec3> rasterize(const glm::mat3& rec) {
 namespace MyBase {
     glm::vec2 getWindowSize() {
         #ifdef __linux__
-        Display* display = XOpenDisplay(NULL);
+        XL::Display* display = XL::XOpenDisplay(NULL);
         if (!display) {
             std::cerr << "Cannot open display\n";
             exit(0);
         }
-        Screen* screen = ScreenOfDisplay(display, 0);
+        using namespace XL;
+        XL::Screen* screen = ScreenOfDisplay(display, 0);
         float x = screen->width, y = screen->height;
         XCloseDisplay(display);
         return {x, y};

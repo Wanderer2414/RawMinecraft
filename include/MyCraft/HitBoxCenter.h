@@ -4,7 +4,7 @@
 #include "Controller.h"
 #include "ModelController.h"
 namespace MyCraft {
-    class HitBoxCenter: public MyBase::Controller, public MyBase::Network {
+    class HitBoxCenter: public MyBase3D::Controller3D, public MyBase::Network {
         public:
             HitBoxCenter();
             ~HitBoxCenter();

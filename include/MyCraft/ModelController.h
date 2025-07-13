@@ -1,12 +1,12 @@
 #ifndef MODEL_H
 #define MODEL_H
 #include "Clock.h"
-#include "Controller.h"
+#include "Controller3D.h"
 #include "Message.h"
 
 namespace MyCraft {
     class HitBoxCenter;
-    class ModelController: public MyBase::Controller {
+    class ModelController: public MyBase3D::Controller3D {
         public:
             ModelController();
             ~ModelController();

@@ -1,14 +1,14 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 #include "Clock.h"
-#include "Controller.h"
+#include "Controller3D.h"
 #include "Global.h"
 #include "Message.h"
 #include "Ray.h"
 namespace MyBase3D {
     class Form3D;
     #define CAMERA_DISTANCE 4.0f
-    class Camera: public MyBase::Controller, public MyBase::Port {
+    class Camera: public MyBase3D::Controller3D, public MyBase::Port {
     public:
         Camera();
         ~Camera();

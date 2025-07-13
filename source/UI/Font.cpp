@@ -7,11 +7,9 @@
 namespace MyBase {
     Font::Font(const std::string& source) {
         if (source.size()) loadFont(source);
-        glGenVertexArrays(1, &__vertex);
     }
     Font::~Font() {
         glDeleteTextures(1, &__textmap);
-        glDeleteVertexArrays(1, &__vertex);
     }
     void Font::loadFont(const std::string& source) {
         std::ifstream fstream(source);
@@ -36,68 +34,53 @@ namespace MyBase {
         
         glBindTexture(GL_TEXTURE_2D, 0);
     }
-    void Font::DrawText(const std::string& text, const glm::vec2& position, const glm::vec3& color) const{
-        glUseProgram(MyBase3D::ShaderStorage::Default->getFontShader());
-        auto map = __utf8_to_codepoint(text);
+    void Font::Bind() const {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, __textmap);
-        
-        float x = position.x, y = position.y;
-        
-        glBindVertexArray(__vertex);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MyBase3D::PointSet::Default->getRectangleIndices());
-
-
-        GLuint COLOR;
-        glGenBuffers(1, &COLOR);
-        glBindBuffer(GL_UNIFORM_BUFFER, COLOR);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec3), &color, GL_STATIC_DRAW);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 1, COLOR);
+    }
+    glm::vec2 Font::MeasureText(const std::string& text) const {
+        auto map = __utf_to_codepoint(text);
+        glm::vec2 size = {0, 0};
+        float y = 0;
+        for (int i = 0; i<map.size(); i++) {
+            stbtt_aligned_quad q;
+            stbtt_GetBakedQuad(__data, 512, 512, map[i]-32, &size.x, &y, &q, 1);
+            size.y = std::max(size.y, (q.y0-q.y1)/512/32);
+        }
+        return size;
+    }
+    char* Font::getBuffer(const std::string& text, glm::vec2& size) const{
+        auto map = __utf_to_codepoint(text);
+        size = {0, 0};
+        float x = 0, y = 0, minY = 0;
+        char* buffer = new char[text.size()*(sizeof(glm::vec2)*2)*6];
+        glm::vec2* positions = (glm::vec2*)buffer;
+        glm::vec2* uvs = (glm::vec2*)(buffer + text.size()*sizeof(glm::vec2)*6);
         for (int i = 0; i<map.size(); i++) {
             stbtt_aligned_quad q;
             stbtt_GetBakedQuad(__data, 512, 512, map[i]-32, &x, &y, &q, 1);
-            q.x0=q.x0/512 + position.x; q.y0 = - (q.y0+32)/512 + position.y;
-            q.x1=q.x1/512 + position.x; q.y1 = - (q.y1+32)/512 + position.y;
-            float tmp[] = {q.x0, q.y0, q.s0, q.t0, q.x0, q.y1, q.s0, q.t1, q.x1, q.y1, q.s1, q.t1, q.x1, q.y0, q.s1, q.t0};
-            GLuint VBO;
-    
-            glGenBuffers(1, &VBO);
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(tmp), &tmp, GL_STATIC_DRAW);
-    
-            glEnableVertexArrayAttrib(__vertex, 0);
-            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 16, 0);
-            glEnableVertexArrayAttrib(__vertex, 1);
-            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 16, (void*)8);
-            
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-            glDeleteBuffers(1, &VBO);
+            q.x0=q.x0/512; q.y0 = - (q.y0+32.f)/512/32;
+            q.x1=q.x1/512; q.y1 = - (q.y1+32.f)/512/32;
+            size.y = std::max(size.y, q.y0-q.y1);
+            minY = std::min(minY, q.y1);
+            positions[6*i] = {q.x0, q.y0};   uvs[6*i] = {q.s0, q.t0};
+            positions[6*i+1] = {q.x0, q.y1}; uvs[6*i+1] = {q.s0, q.t1};
+            positions[6*i+2] = {q.x1, q.y1}; uvs[6*i+2] = {q.s1, q.t1};
+            positions[6*i+3] = {q.x0, q.y0}; uvs[6*i+3] = {q.s0, q.t0};
+            positions[6*i+4] = {q.x1, q.y1}; uvs[6*i+4] = {q.s1, q.t1};
+            positions[6*i+5] = {q.x1, q.y0}; uvs[6*i+5] = {q.s1, q.t0};
         }
-        glDeleteBuffers(1, &COLOR);
+        for (int i = 0; i<map.size()*6; i++) positions[i].y -= minY;
+        size.x = x/512;
+        return buffer;
     }
-    std::vector<int> Font::__utf8_to_codepoint(const std::string& text) const {
+    std::vector<int> Font::__utf_to_codepoint(const std::string& text) const {
         std::vector<int> ans;
         for (int i = 0; i<text.size();) {        
             unsigned char c = text[i];
             if (c < 128) {
                 i++;
                 ans.push_back(c);
-            } 
-            else if ((c >> 5) == 0x6) {
-                i+=2;
-                ans.push_back(((text[i] & 0x1F) << 6) | (text[i+1] & 0x3F));
-            } 
-            else if ((c >> 4) == 0xE) {
-                i+=3;
-                ans.push_back(((text[0] & 0x0F) << 12) | ((text[1] & 0x3F) << 6) | (text[2] & 0x3F));
-            } 
-            else if ((c >> 3) == 0x1E) {
-                i+=4;
-                ans.push_back(((text[0] & 0x07) << 18) |
-                       ((text[1] & 0x3F) << 12) |
-                       ((text[2] & 0x3F) << 6) |
-                       (text[3] & 0x3F));
             }
             else {
                 ans.push_back('?');

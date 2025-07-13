@@ -1,6 +1,6 @@
 #include "Camera.h"
 #include "Global.h"
-#include "InfoCenter.h"
+#include "ControlCenter.h"
 #include "Message.h"
 #include "ShaderStorage.h"
 
@@ -11,7 +11,7 @@ namespace MyBase3D {
         __position(4, 4, 2),
         __delta(-2, -2, 0),
         __verticalAngle(0),
-        __windowCenter(MyCraft::InfoCenter::Default->getWindowHalf()) {
+        __windowCenter(MyBase::ControlCenter::Default->getWindowHalf()) {
 
         __delta = __delta/glm::length(__delta)*CAMERA_DISTANCE;
 
@@ -28,7 +28,7 @@ namespace MyBase3D {
         glBindBufferBase(GL_UNIFORM_BUFFER, 0, __camera);
 
         __view = glm::lookAt(__position, __position + __delta, glm::vec3(0, 0, 1));
-        __projection = glm::perspective(glm::radians(60.f), MyCraft::InfoCenter::Default->getWindowRatio(), 0.1f, 100.f);
+        __projection = glm::perspective(glm::radians(60.f), MyBase::ControlCenter::Default->getWindowRatio(), 0.1f, 100.f);
         __keyCooldown.setDuration(200);
         add(new MyBase::SetCameraCommand_ThirdPersonView(this));
         update();
@@ -115,7 +115,7 @@ namespace MyBase3D {
         __direction[5].y = 0.05*cos(__verticalAngle);
     }
     bool Camera::handle(GLFWwindow* window) {
-        bool is_changed = Controller::handle(window);
+        bool is_changed = Controller3D::handle(window);
         if (__keyCooldown.get()) {
             if (glfwGetKey(window, GLFW_KEY_F5)) {
                 if (__isThirdCamera) {

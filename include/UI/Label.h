@@ -1,20 +1,18 @@
 #ifndef LABEL_H
 #define LABEL_H
-#include "Controller.h"
+#include "Controller2D.h"
 #include "Font.h"
+#include "Text.h"
 namespace MyBase {
-    class Label: public Controller {
+    class Label: public Text, public Controller2D {
     public:
-        Label(const Font& font);
+        Label();
         ~Label();
-        virtual void setText(const std::string& text);
-        virtual void setColor(const glm::vec3& color);
-        virtual void setPosition(const float& x, const float& y);
+        virtual glm::vec2       getPosition() const override,
+                                getSize() const override;
+        using  Text::setPosition;
+        virtual bool contains(const glm::vec2& position) const override;
     private:
-        std::string __text;
-        glm::vec3   __color;
-        glm::vec2   __position;
-        const MyBase::Font& __font;
         virtual void glDraw() const override;
     };
 }

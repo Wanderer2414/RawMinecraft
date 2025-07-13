@@ -1,18 +1,18 @@
 #include "Label.h"
 namespace MyBase {
 
-    Label::Label(const Font& font):__font(font) {}
+    Label::Label() {}
     Label::~Label() {}
-    void Label::setText(const std::string& text) {
-        __text = text;
+    bool Label::contains(const glm::vec2& position) const {
+        return false;
     }
-    void Label::setPosition(const float& x, const float& y) {
-        __position = {x, y};
+    glm::vec2 Label::getPosition() const {
+        return Text::getPosition();
     }
-    void Label::setColor(const glm::vec3& color) {
-        __color = color;
+    glm::vec2 Label::getSize() const {
+        return Text::getSize();
     }
     void Label::glDraw() const {
-        __font.DrawText(__text, __position, __color);
+        Text::draw();
     }
 }

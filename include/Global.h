@@ -25,11 +25,11 @@
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtx/vector_angle.hpp"
 #ifdef __linux__
+namespace XL {
 #include "X11/Xlib.h"
 #include "X11/Xutil.h"
+}
 #endif
-#define Trans_1366_X(X) 2.0f*X/1366-1
-#define Trans_768_Y(Y) 1-2.0*Y/768
 #ifdef _WIN32
 #include <windows.h>
 #endif

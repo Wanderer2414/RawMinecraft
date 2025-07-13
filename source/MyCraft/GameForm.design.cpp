@@ -2,10 +2,11 @@
 #include "Block.h"
 #include "Global.h"
 #include "HitBoxCenter.h"
-#include "InfoCenter.h"
+#include "ControlCenter.h"
 
 namespace MyCraft {
-    GameForm::GameForm(GLFWwindow* window, const int& index): Form3D(index), pWorld(0, 0, 0), __font("assets/fonts/Oswald-Regular.ttf"), __label(__font) {
+    GameForm::GameForm(GLFWwindow* window, const int& index): Form3D(index), pWorld(0, 0, 0) {
+        setBackgroundColor(BLACK);
         insert(&pWorld);
         insert(&__model);
         insert(&__hitbox);
@@ -13,11 +14,14 @@ namespace MyCraft {
         __hitbox.insert(&__model);
         __hitbox.match(&__model);
         __hitbox.match(&pWorld);
-        __hitbox.match(&_camera);
-
+        __hitbox.match(&camera);
+        __font.loadFont("assets/fonts/Oswald-Regular.ttf");
+        __label.setFont(__font);
         __label.setText("Max fps:");
-        __label.setPosition(Trans_1366_X(1100), Trans_768_Y(0));
-        __label.setColor(glm::vec3(1,0,0));
+        __label.setTextColor(RED);
+        __label.setScale({1, 32});
+        __label.setPosition({0.7f, 0.95f});
+
         for (int i = -32; i<48; i++) {
             for (int j = -32; j<48; j++) {
                 for (int z=-16;z<0; z++)
@@ -69,9 +73,9 @@ namespace MyCraft {
         pWorld.set(7,4,1, BlockCatogary::Grass);
     
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        glfwSetCursorPos(window, InfoCenter::Default->getWindowHalf().x, InfoCenter::Default->getWindowHalf().y);
+        glfwSetCursorPos(window, MyBase::ControlCenter::Default->getWindowHalf().x, MyBase::ControlCenter::Default->getWindowHalf().y);
     
-        _camera.setPosition({10, 10, 1.7});
+        camera.setPosition({10, 10, 1.7});
         pZVelocity = 0;
         pSpeed = 0.1;
         pFrameAlarm.setDuration(50);
@@ -80,9 +84,9 @@ namespace MyCraft {
     GameForm::~GameForm() {        
     }
     bool GameForm::move(const float& x, const float& y, const float& z) {
-        glm::vec3 delta = {0, 0, 0}, pos= _camera.getCameraPosition();
-        delta += x*_camera.getHorizontalVector();
-        glm::vec3 tmp = _camera.getDirection();
+        glm::vec3 delta = {0, 0, 0}, pos= camera.getCameraPosition();
+        delta += x*camera.getHorizontalVector();
+        glm::vec3 tmp = camera.getDirection();
         tmp.z = 0;
         tmp /= glm::length(tmp);
         delta.x += y*tmp.x;
@@ -181,10 +185,10 @@ namespace MyCraft {
         glm::vec<2, double> position;
         glfwGetCursorPos(window, &position.x, &position.y);
         glm::vec2 delta = position;
-        delta -= InfoCenter::Default->getWindowHalf();
+        delta -= MyBase::ControlCenter::Default->getWindowHalf();
     
         if (delta.x != 0 || delta.y != 0) {
-            glfwSetCursorPos(window, InfoCenter::Default->getWindowHalf().x, InfoCenter::Default->getWindowHalf().y);
+            glfwSetCursorPos(window, MyBase::ControlCenter::Default->getWindowHalf().x, MyBase::ControlCenter::Default->getWindowHalf().y);
             __model.seeRotate(-delta.x/1000, -delta.y/1000);
             is_changed = true;
         }

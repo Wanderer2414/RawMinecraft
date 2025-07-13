@@ -3,11 +3,12 @@
 
 #include "Block.h"
 #include "Clock.h"
+#include "Controller3D.h"
 #include "Message.h"
 #include "Controller.h"
 
 namespace MyCraft {
-class World: public MyBase::Controller, public MyBase::Port {
+class World: public MyBase3D::Controller3D, public MyBase::Port {
     #define world_side 5
     public:
         World(const int& x, const int& y, const int& z);

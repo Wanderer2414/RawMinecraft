@@ -1,19 +1,22 @@
 #include "Application.h"
 #include "Block.h"
+#include "ControlCenter.h"
 #include "DrawingCenter.h"
-#include "InfoCenter.h"
 #include "GameForm.h"
+#include "IntroForm.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
 #include "ModelStorage.h"
+#include "ShapeManager.h"
 #include <ctime>
 
 MyBase3D::PointSet* MyBase3D::PointSet::Default;
-MyCraft::InfoCenter* MyCraft::InfoCenter::Default;
+MyBase::ControlCenter* MyBase::ControlCenter::Default;
 MyBase3D::ShaderStorage* MyBase3D::ShaderStorage::Default;
 MyCraft::BlockCatogary* MyCraft::BlockCatogary::Default;
 MyCraft::ModelStorage* MyCraft::ModelStorage::Default;
 MyCraft::DrawingCenter* MyCraft::DrawingCenter::Default;
+MyBase::ShapeManager* MyBase::ShapeManager::Default;
 namespace MyCraft {
     Application::Application(const float& width, const float& height) {
         
@@ -45,16 +48,18 @@ namespace MyCraft {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        InfoCenter::Default = new InfoCenter(width, height);
+        MyBase::ControlCenter::Default = new MyBase::ControlCenter(width, height, "MyCraft");
         MyBase3D::PointSet::Default = new MyBase3D::PointSet();
         MyBase3D::ShaderStorage::Default = new MyBase3D::ShaderStorage();
         MyCraft::BlockCatogary::Default = new MyCraft::BlockCatogary();
         MyCraft::ModelStorage::Default = new MyCraft::ModelStorage();
         MyCraft::DrawingCenter::Default = new MyCraft::DrawingCenter();
+        MyBase::ShapeManager::Default = new MyBase::ShapeManager();
     }
     Application::~Application() {
         delete MyCraft::DrawingCenter::Default;
-        delete InfoCenter::Default;
+        delete MyBase::ControlCenter::Default;
+        delete MyBase::ShapeManager::Default;
         delete MyBase3D::PointSet::Default;
         delete MyBase3D::ShaderStorage::Default;
         delete MyCraft::BlockCatogary::Default;
@@ -67,8 +72,13 @@ namespace MyCraft {
         while (!glfwWindowShouldClose(__window)) {
             switch (formIndex) {
                 case 0: {
-                    GameForm gameForm(__window, 0);
-                    gameForm.run(__window);
+                    IntroForm introForm(__window, 0);
+                    formIndex = introForm.run(__window);
+                }
+                break;
+                case 1: {
+                    GameForm gameForm(__window, 1);
+                    formIndex = gameForm.run(__window);
                 }
                 break;
             }

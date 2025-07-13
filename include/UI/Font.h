@@ -8,13 +8,16 @@ namespace MyBase {
     public:
         Font(const std::string& source = "");
         ~Font();
-
+        glm::vec2 MeasureText(const std::string& text) const;
         void loadFont(const std::string& source);
-        void DrawText(const std::string& text, const glm::vec2& position, const glm::vec3& color) const;
+        friend class Text;
+    protected:
+        void Bind() const;
+        char* getBuffer(const std::string& text, glm::vec2& size) const;
     private:
-        GLuint              __textmap, __vertex;
+        GLuint              __textmap;
         stbtt_bakedchar     __data[96];
-        std::vector<int> __utf8_to_codepoint(const std::string& text) const;
+        std::vector<int> __utf_to_codepoint(const std::string& text) const;
     };
 };
 #endif

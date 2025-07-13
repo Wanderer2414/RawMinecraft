@@ -22,6 +22,7 @@ namespace MyCraft {
         private:
             float           pZVelocity;
             bool            handle(GLFWwindow* window) override;
+            MyBase::Font    __fontDefault;
             MyBase::Clock   pFrameAlarm;
             MyBase::Font    __font;
             MyBase::Label   __label;
