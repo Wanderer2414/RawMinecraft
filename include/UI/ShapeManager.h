@@ -7,11 +7,8 @@
 namespace MyBase {
     class ShapeManager {
     public:
-        ShapeManager();
-        ~ShapeManager();
-
-        static ShapeManager* Default;
-        
+        static ShapeManager& getInstance();
+        static void close();
         void createShape(Rectangle& rectangle, const glm::vec2& size);
         void removeShape(Rectangle& rectangle, const glm::vec2& size);
         void createShape(Ellipse& ellipse, const glm::vec2& size);
@@ -22,6 +19,10 @@ namespace MyBase {
         const GLuint& createColor(const Color& color);
         void removeColor(const Color& color);
     private:
+        ShapeManager();
+        ~ShapeManager();
+
+        static ShapeManager* Default;
         std::map<std::pair<float, float>, std::pair<Rectangle*, unsigned int>> __rectangles;
         std::map<std::pair<float, float>, std::pair<Ellipse*, unsigned int>> __ellipses;
         std::map<std::tuple<float, float, float>, std::pair<RoundedRectangle*, unsigned int>> __rrectangles;

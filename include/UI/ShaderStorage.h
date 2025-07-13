@@ -5,10 +5,8 @@ namespace MyBase3D {
 
 class ShaderStorage {
     public:
-        ShaderStorage();
-        ~ShaderStorage();
-    
-        static ShaderStorage* Default;
+        static ShaderStorage& getInstance();
+        static void close();
     
         GLuint  GetDefaultShader() const,
                 GetCubeShader() const,
@@ -18,6 +16,9 @@ class ShaderStorage {
                 getModelShader() const,
                 getFontShader() const;
     private:
+        ShaderStorage();
+        ~ShaderStorage();
+        static ShaderStorage* Default;
         GLuint  __defaultShader,
                 __cubeShader,
                 __point2DShader,

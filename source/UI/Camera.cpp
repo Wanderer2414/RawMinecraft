@@ -134,7 +134,7 @@ namespace MyBase3D {
         return is_changed;
     }
     void Camera::glDraw() const {
-        glUseProgram(MyBase3D::ShaderStorage::Default->getPoint2DShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().getPoint2DShader());
         GLuint VAO, Positions, Colors;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);

@@ -1,6 +1,5 @@
 #include "GameForm.h"
 #include "Block.h"
-#include "Global.h"
 #include "HitBoxCenter.h"
 #include "ControlCenter.h"
 

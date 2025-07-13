@@ -17,7 +17,7 @@ namespace MyBase {
         glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec2), &__scale, GL_DYNAMIC_DRAW);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
         
-        __COLOR = ShapeManager::Default->createColor(__color);
+        __COLOR = ShapeManager::getInstance().createColor(__color);
     }
     Text::Text(const Text& text): __color(WHITE), __position(text.__position), __scale(text.__scale) {
         glGenVertexArrays(1, &__VAO);
@@ -32,7 +32,7 @@ namespace MyBase {
         glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec2), &__scale, GL_DYNAMIC_DRAW);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-        __COLOR = ShapeManager::Default->createColor(__color);
+        __COLOR = ShapeManager::getInstance().createColor(__color);
         setTextColor(text.__color);
         setFont(*text.__font);
     }
@@ -40,7 +40,7 @@ namespace MyBase {
         glDeleteVertexArrays(1, &__VAO);
         glDeleteBuffers(1, &__POSITION);
         glDeleteBuffers(1, &__SCALE);
-        ShapeManager::Default->removeColor(__color);
+        ShapeManager::getInstance().removeColor(__color);
     }
     Text& Text::operator=(const Text& text) {
         setPosition(text.__position);
@@ -64,9 +64,9 @@ namespace MyBase {
     }
     void Text::setTextColor(const Color& color) {
         if (__color != color) {
-            ShapeManager::Default->removeColor(__color);
+            ShapeManager::getInstance().removeColor(__color);
             __color = color;
-            __COLOR = ShapeManager::Default->createColor(__color);
+            __COLOR = ShapeManager::getInstance().createColor(__color);
         }
     }
     void Text::setFont(const Font& font) {
@@ -113,7 +113,7 @@ namespace MyBase {
     }
     void Text::draw() const {
         if (!__font) return ;
-        glUseProgram(MyBase3D::ShaderStorage::Default->getFontShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().getFontShader());
         glBindVertexArray(__VAO);
         __font->Bind();
         glBindBuffer(GL_ARRAY_BUFFER, __VBO);

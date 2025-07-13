@@ -6,12 +6,14 @@
 namespace MyCraft {
     class ModelStorage {
     public:
-        ModelStorage();
-        ~ModelStorage();
-        static ModelStorage* Default;
+        static ModelStorage& getInstance();
+        static void close();
         void DrawModel(std::vector<glm::mat4>& state, const ModelLoader& model);
         ModelLoader                             &getPlayerModel();
     private:
+        ModelStorage();
+        ~ModelStorage();
+        static ModelStorage* Default;
         ModelLoader                             __playerModel;
         
         GLuint                                  __nodeState;

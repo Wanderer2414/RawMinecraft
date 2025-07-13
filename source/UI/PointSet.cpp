@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "tiny_gltf.h"
 namespace MyBase3D {
+    PointSet* PointSet::Default;
     PointSet::PointSet() {
 
         glm::vec4 vertices[14];
@@ -55,6 +56,17 @@ namespace MyBase3D {
         glDeleteBuffers(1, &__marginBlockIndices);
         glDeleteBuffers(1, &__imageBlockIndices);
         glDeleteBuffers(1, &__rectangleIndices);
+    }
+
+    PointSet& PointSet::getInstance() {
+        if (!Default) Default = new PointSet();
+        return *Default;
+    }
+    void PointSet::close() {
+        if (Default) {
+            delete Default;
+            Default = 0;
+        }
     }
     GLuint PointSet::getBlockSet() const {
         return __blockSet;

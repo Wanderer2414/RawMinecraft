@@ -34,7 +34,7 @@ namespace MyBase {
     }
     void Shape::draw() const {
         glBindVertexArray(__VAO);
-        glUseProgram(MyBase3D::ShaderStorage::Default->getPoint2DShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().getPoint2DShader());
         glDrawArrays(GL_TRIANGLE_FAN, 0, getPointCount());
         glBindVertexArray(0);
     }
@@ -44,10 +44,10 @@ namespace MyBase {
         glBindBuffer(GL_UNIFORM_BUFFER, __positionCode);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec2), &__position, GL_DYNAMIC_DRAW);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        __colorCode = ShapeManager::Default->createColor(__color);
+        __colorCode = ShapeManager::getInstance().createColor(__color);
     }
     ShapeContainer::~ShapeContainer() {
-        ShapeManager::Default->removeColor(__color);
+        ShapeManager::getInstance().removeColor(__color);
         glDeleteBuffers(1, &__positionCode);
     }
     
@@ -71,14 +71,14 @@ namespace MyBase {
     }
     void ShapeContainer::setFillColor(const Color& color) {
         if (color != __color) {
-            ShapeManager::Default->removeColor(__color);
+            ShapeManager::getInstance().removeColor(__color);
             __color = color;
-            __colorCode = ShapeManager::Default->createColor(__color);
+            __colorCode = ShapeManager::getInstance().createColor(__color);
         }
     }
     
     void ShapeContainer::draw(const Shape& shape) const {
-        glUseProgram(MyBase3D::ShaderStorage::Default->getPoint2DShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().getPoint2DShader());
         glBindVertexArray(shape.__VAO);
         glBindBuffer(GL_ARRAY_BUFFER, shape.__VBO);
         

@@ -9,20 +9,21 @@
 
 namespace MyBase3D {
     Form3D::Form3D(const int& index): __formIndex(index), __returnValue(INT_MIN), __backgroundColor(WHITE), __frameCount(0) {
+        __startClock = clock();
         __sensitiveClock.setDuration(10);
-        MyBase::ShapeManager::Default->createShape(__pauseScreen, {2,2});
+        MyBase::ShapeManager::getInstance().createShape(__pauseScreen, {2,2});
         setFillColor({0,0,0, 120});
         ShapeContainer::setPosition({-1,-1});
         __sensitiveClock.setDuration(30);
     }
     Form3D::~Form3D() {
-        MyBase::ShapeManager::Default->removeShape(__pauseScreen, {2,2});
+        MyBase::ShapeManager::getInstance().removeShape(__pauseScreen, {2,2});
     }
     bool Form3D::contains(const glm::vec2& position) const {
         return true;
     }
     float Form3D::getMaxFps() const {
-        return 1.0f*CLOCKS_PER_SEC*__frameCount/clock();
+        return 1.0f*(CLOCKS_PER_SEC)*__frameCount/(clock()-__startClock);
     }
     int Form3D::run(GLFWwindow* window) {
         bool is_changed = true;

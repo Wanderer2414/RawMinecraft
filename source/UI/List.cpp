@@ -10,7 +10,7 @@ namespace MyBase {
         insertPermanent(&__verticalBar);
     }
     List::~List() {
-        ShapeManager::Default->removeShape(__rectangle, __size, 0.01);
+        ShapeManager::getInstance().removeShape(__rectangle, __size, 0.01);
         clear();
     }
     bool List::contains(const glm::vec2& position) const {
@@ -110,9 +110,9 @@ namespace MyBase {
     }
     void List::setSize(const glm::vec2& size) {
         if (__size!=size) {
-            ShapeManager::Default->removeShape(__rectangle, __size, 0.01);
+            ShapeManager::getInstance().removeShape(__rectangle, __size, 0.01);
             __size = size;
-            ShapeManager::Default->createShape(__rectangle, __size, 0.01);
+            ShapeManager::getInstance().createShape(__rectangle, __size, 0.01);
             __subSize = glm::vec2(size.x - __subPadding.x*3, 40.0/384);
             __verticalBar.setHeight(size.y - 0.1);
             __verticalBar.setMaxValue(__childrenHeight-size.y);

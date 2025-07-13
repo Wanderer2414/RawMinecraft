@@ -164,16 +164,16 @@ namespace MyCraft {
         __isHoverBlock = false;
     }
     void World::glDraw() const {
-        DrawingCenter::Default->BindChunk();
-        DrawingCenter::Default->DrawChunks((void*)__chunkPositions.data(), __chunkPositions.size());
+        DrawingCenter::getInstance().BindChunk();
+        DrawingCenter::getInstance().DrawChunks((void*)__chunkPositions.data(), __chunkPositions.size());
         if (__isHoverBlock) {
-            DrawingCenter::Default->BindMargin();
+            DrawingCenter::getInstance().BindMargin();
             glm::vec4 vec = glm::vec4(__hoverBlock,1);
-            DrawingCenter::Default->DrawMargin((void*)&vec, 1, 2);
+            DrawingCenter::getInstance().DrawMargin((void*)&vec, 1, 2);
         }
-        DrawingCenter::Default->BindCube();
+        DrawingCenter::getInstance().BindCube();
         for (const auto& item: __list) {
-            DrawingCenter::Default->DrawCubes(item.first, (void*)item.second.data(), item.second.size());
+            DrawingCenter::getInstance().DrawCubes(item.first, (void*)item.second.data(), item.second.size());
         }
     }
     CheckEmptyCommand::CheckEmptyCommand(World* world): __world(world) {}

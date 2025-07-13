@@ -5,7 +5,7 @@
 
 namespace MyBase {
     VerticalBar::VerticalBar(): __height(0), __maxValues(1), __value(0), __isScrollDown(false) {
-        ShapeManager::Default->createShape(__rectangle, {width, __height});
+        ShapeManager::getInstance().createShape(__rectangle, {width, __height});
         ShapeContainer::setFillColor({200, 200, 200, 255});
         __scrollButton.setNormalColor(WHITE);
         __scrollButton.setHoverColor({100,100,100,255});
@@ -14,7 +14,7 @@ namespace MyBase {
         insert(&__scrollButton);
     }
     VerticalBar::~VerticalBar() {
-        ShapeManager::Default->removeShape(__rectangle, {width, __height});
+        ShapeManager::getInstance().removeShape(__rectangle, {width, __height});
     }
     bool VerticalBar::contains(const glm::vec2& position) const {
         return __rectangle.contains(position-getPosition());
@@ -60,9 +60,9 @@ namespace MyBase {
     }
     void VerticalBar::setHeight(const float& height) {
         if (height != __height) {
-            ShapeManager::Default->removeShape(__rectangle, {width, __height});
+            ShapeManager::getInstance().removeShape(__rectangle, {width, __height});
             __height = height;
-            ShapeManager::Default->createShape(__rectangle, {width, __height});
+            ShapeManager::getInstance().createShape(__rectangle, {width, __height});
         }
     }
     void VerticalBar::glDraw() const {

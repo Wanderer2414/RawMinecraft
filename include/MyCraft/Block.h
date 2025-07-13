@@ -7,14 +7,15 @@ namespace MyCraft {
             enum Catogary: unsigned char {
                 Air, Dirt, Grass
             };
-
-            BlockCatogary();
-            ~BlockCatogary();
+            static BlockCatogary& getInstance();
+            static void close();
         
             GLuint      getBlock(const int& index) const,
                         getTexCoord() const;
-            static BlockCatogary* Default;
         private:
+            BlockCatogary();
+            ~BlockCatogary();
+            static BlockCatogary* Default;
             std::vector<GLuint> __ptr;
             GLuint              __blockTexture;
         };

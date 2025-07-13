@@ -7,12 +7,12 @@
 namespace MyBase {
     Form::Form(const int& index): __formIndex(index), __returnValue(INT_MIN), __backgroundColor(WHITE) {
         __sensitiveClock.setDuration(10);
-        ShapeManager::Default->createShape(__pauseScreen, {2,2});
+        ShapeManager::getInstance().createShape(__pauseScreen, {2,2});
         setFillColor({0,0,0, 120});
         ShapeContainer::setPosition({-1,-1});
     }
     Form::~Form() {
-        ShapeManager::Default->removeShape(__pauseScreen, {2,2});
+        ShapeManager::getInstance().removeShape(__pauseScreen, {2,2});
     }
     bool Form::contains(const glm::vec2& position) const {
         return true;

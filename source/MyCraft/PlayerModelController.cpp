@@ -8,9 +8,9 @@
 #include "World.h"
 namespace MyCraft {
     PlayerModelController::PlayerModelController(): __position(0), __direction(0, -1, 0), __runTime(0), __handTime(0),
-        __isLeftAttack(0), __isRightAttack(0), __animation(ModelStorage::Default->getPlayerModel().getNodeCount(), 1), __eye_direction(0, -1, 0),
+        __isLeftAttack(0), __isRightAttack(0), __animation(ModelStorage::getInstance().getPlayerModel().getNodeCount(), 1), __eye_direction(0, -1, 0),
         __isCrouch(false), __isDrawable(true) {
-        ModelStorage::Default->getPlayerModel().apply(__animation, "walk", __runTime);
+        ModelStorage::getInstance().getPlayerModel().apply(__animation, "walk", __runTime);
         __animationClock.setDuration(30);
         __attack__cooldown.setDuration(250);
         __isRun = false;
@@ -92,7 +92,7 @@ namespace MyCraft {
             __animationClock.restart();
             std::fill(__animation.begin(), __animation.end(), glm::mat4(1));
             if (__isCrouch) {
-                ModelStorage::Default->getPlayerModel().apply(__animation, "crouch", 0);
+                ModelStorage::getInstance().getPlayerModel().apply(__animation, "crouch", 0);
                 __speed = 0.05;
                 is_changed = true;
             }
@@ -104,7 +104,7 @@ namespace MyCraft {
                 }
                 else __runTime+=0.1;
                 if (__runTime>=1) __runTime -= 1;
-                ModelStorage::Default->getPlayerModel().apply(__animation, "walk", __runTime);
+                ModelStorage::getInstance().getPlayerModel().apply(__animation, "walk", __runTime);
                 is_changed = true;
             }
             if (__isRightAttack) {
@@ -113,7 +113,7 @@ namespace MyCraft {
                     __handTime = 0;
                 }
                 else __handTime += 0.03;
-                ModelStorage::Default->getPlayerModel().apply(__animation, "right_attack", __handTime);
+                ModelStorage::getInstance().getPlayerModel().apply(__animation, "right_attack", __handTime);
                 is_changed = true;
             }
             if (__isLeftAttack) {
@@ -122,7 +122,7 @@ namespace MyCraft {
                     __handTime = 0;
                 }
                 else __handTime += 0.03;
-                ModelStorage::Default->getPlayerModel().apply(__animation, "left_attack", __handTime);
+                ModelStorage::getInstance().getPlayerModel().apply(__animation, "left_attack", __handTime);
                 is_changed = true;
             }
         }
@@ -211,7 +211,7 @@ namespace MyCraft {
             GLuint VAO;
             glGenVertexArrays(1, &VAO);
             glBindVertexArray(VAO);
-            const ModelLoader& model = ModelStorage::Default->getPlayerModel();
+            const ModelLoader& model = ModelStorage::getInstance().getPlayerModel();
             auto state = __animation;
             state.back() = glm::translate(state.back(), __position);
             float angle = glm::angle(__direction, glm::vec3(0, -1, 0));
@@ -219,7 +219,7 @@ namespace MyCraft {
             state.back() = glm::rotate(state.back(), angle, glm::vec3(0, 0, 1));
     
             glm::vec3 tmp;
-            auto& head = state[ModelStorage::Default->getPlayerModel().getHead()];
+            auto& head = state[ModelStorage::getInstance().getPlayerModel().getHead()];
             // tmp = __eye_direction;
             // tmp.z = 0;
             // tmp = glm::normalize(tmp);
@@ -237,7 +237,7 @@ namespace MyCraft {
                 head = glm::rotate(head,angle, axis);
             }
     
-            ModelStorage::Default->DrawModel(state, model);
+            ModelStorage::getInstance().DrawModel(state, model);
             glDeleteVertexArrays(1, &VAO);
         }
     }

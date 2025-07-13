@@ -40,7 +40,7 @@ namespace MyBase3D {
         Camera                  camera;
     private:
         MyBase::Rectangle       __pauseScreen;
-        size_t                  __frameCount;
+        size_t                  __startClock, __frameCount;
         int                     __formIndex,
                                 __returnValue;
         MyBase::Color           __backgroundColor;

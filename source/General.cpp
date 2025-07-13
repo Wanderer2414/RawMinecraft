@@ -91,8 +91,8 @@ namespace MyCraft {
         glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec3), &color, GL_STATIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, 1, COLOR);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MyBase3D::PointSet::Default->getMarginBlockIndices());
-        glUseProgram(MyBase3D::ShaderStorage::Default->GetDefaultShader());
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MyBase3D::PointSet::getInstance().getMarginBlockIndices());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDefaultShader());
         
         glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_INT, 0);
 

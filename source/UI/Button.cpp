@@ -1,5 +1,4 @@
 #include "Button.h"
-#include "Global.h"
 #include "RoundedRectangle.h"
 #include "Shape.h"
 #include "ShapeManager.h"
@@ -102,17 +101,17 @@ namespace MyBase {
     }
 
     RectangleButton::RectangleButton(): __size(0,0) {
-        ShapeManager::Default->createShape(getShape(), __size);
+        ShapeManager::getInstance().createShape(getShape(), __size);
     }
     RectangleButton::~RectangleButton()  {
-        ShapeManager::Default->removeShape(getShape(), __size);
+        ShapeManager::getInstance().removeShape(getShape(), __size);
     };
 
     void RectangleButton::setSize(const glm::vec2& size) {
         if (size!=__size) {
-            ShapeManager::Default->removeShape(getShape(), __size);
+            ShapeManager::getInstance().removeShape(getShape(), __size);
             __size = size;
-            ShapeManager::Default->createShape(getShape(), size);
+            ShapeManager::getInstance().createShape(getShape(), size);
             update();
         }
     }
@@ -125,17 +124,17 @@ namespace MyBase {
     };
 
     RoundedRectangleButton::RoundedRectangleButton(): __size(0,0), __radius(0) {
-        ShapeManager::Default->createShape(__shape, __size, __radius);
+        ShapeManager::getInstance().createShape(__shape, __size, __radius);
     }
     RoundedRectangleButton::~RoundedRectangleButton() {
-        ShapeManager::Default->removeShape(getShape(), __size, __radius);
+        ShapeManager::getInstance().removeShape(getShape(), __size, __radius);
     }
     void RoundedRectangleButton::setSize(const glm::vec2& size, const float& radius) {
         if (__size!=size || __radius != radius) {
-            ShapeManager::Default->removeShape(getShape(), __size, __radius);
+            ShapeManager::getInstance().removeShape(getShape(), __size, __radius);
             __size = size;
             __radius = radius;
-            ShapeManager::Default->createShape(__shape, __size, __radius);
+            ShapeManager::getInstance().createShape(__shape, __size, __radius);
             update();
         }
     }
@@ -147,16 +146,16 @@ namespace MyBase {
     }
 
     EllipseButton::EllipseButton():__size(0,0) {
-        ShapeManager::Default->createShape(__shape, __size);
+        ShapeManager::getInstance().createShape(__shape, __size);
     }
     EllipseButton::~EllipseButton() {
-        ShapeManager::Default->removeShape(getShape(), __size);
+        ShapeManager::getInstance().removeShape(getShape(), __size);
     }
     void EllipseButton::setSize(const glm::vec2& size) {
         if (size!=__size) {
-            ShapeManager::Default->removeShape(getShape(), __size);
+            ShapeManager::getInstance().removeShape(getShape(), __size);
             __size = size;
-            ShapeManager::Default->createShape(__shape, __size);
+            ShapeManager::getInstance().createShape(__shape, __size);
             update();
         }
     }

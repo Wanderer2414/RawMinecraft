@@ -3,6 +3,7 @@
 #include "Global.h"
 #include "Rectangle.h"
 namespace MyBase {
+    ShapeManager* ShapeManager::Default;
     ShapeManager::ShapeManager() {}
     ShapeManager::~ShapeManager() {
         std::cout<<"Rectangle remains: " << __rectangles.size() << std::endl;
@@ -10,7 +11,16 @@ namespace MyBase {
         std::cout<<"Ellipse remains: " << __ellipses.size() << std::endl;
         std::cout<<"Color remains: " << __colors.size() << std::endl;
     }
-
+    ShapeManager& ShapeManager::getInstance() {
+        if (!Default) Default = new ShapeManager();
+        return *Default;
+    }
+    void ShapeManager::close() {
+        if (Default) {
+            delete Default;
+            Default = 0;
+        }
+    }
     void ShapeManager::createShape(Rectangle& rectangle, const glm::vec2& size) {
         std::pair<float, float> pairs = {size.x, size.y};
         if (__rectangles.find(pairs)==__rectangles.end()) {

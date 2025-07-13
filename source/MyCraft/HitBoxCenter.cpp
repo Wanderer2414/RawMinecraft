@@ -2,9 +2,8 @@
 #include "General.h"
 #include "Global.h"
 #include "ModelController.h"
-#include "PointSet.h"
 #include "ShaderStorage.h"
-#include "glm/geometric.hpp"
+
 namespace MyCraft {
     
     HitBoxCenter::HitBoxCenter() {
@@ -18,7 +17,7 @@ namespace MyCraft {
     void HitBoxCenter::erase(ModelController* model) {
     }
     void HitBoxCenter::glDraw() const {
-        glUseProgram(MyBase3D::ShaderStorage::Default->GetDefaultShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDefaultShader());
         for (auto& model: __models) {
             glm::mat4x3 mat = model->getShape();
             DrawMargin(mat, __colors);

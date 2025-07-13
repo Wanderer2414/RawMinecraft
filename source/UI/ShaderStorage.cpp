@@ -2,7 +2,7 @@
 #include "Global.h"
 #include "spriv_extended.h"
 namespace MyBase3D {
-
+    ShaderStorage* ShaderStorage::Default;
     ShaderStorage::ShaderStorage() {
         __defaultShader = createProgram("assets/shaders/shader.vert.spv", "assets/shaders/shader.frag.spv");
         __cubeShader = createProgram("assets/shaders/cube.vert.spv", "assets/shaders/cube.frag.spv");
@@ -20,6 +20,17 @@ namespace MyBase3D {
         glDeleteProgram(__modelShader);
         glDeleteProgram(__fontShader);
         glDeleteProgram(__chunkShader);
+    }
+
+    ShaderStorage& ShaderStorage::getInstance() {
+        if (!ShaderStorage::Default) ShaderStorage::Default = new ShaderStorage();
+        return *ShaderStorage::Default;
+    }
+    void ShaderStorage::close() {
+        if (ShaderStorage::Default) {
+            delete ShaderStorage::Default;
+            ShaderStorage::Default = 0;
+        }
     }
     GLuint ShaderStorage::GetDefaultShader() const {
         return __defaultShader;

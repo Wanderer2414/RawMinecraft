@@ -4,7 +4,7 @@
 #include "PointSet.h"
 #include "ShaderStorage.h"
 namespace MyCraft {
-
+    DrawingCenter* DrawingCenter::Default;
     DrawingCenter::DrawingCenter() {
         glGenVertexArrays(1, &__vertexArray);
         glGenBuffers(SWAP_BUFFER, __positionBuffer);
@@ -20,27 +20,37 @@ namespace MyCraft {
         glDeleteBuffers(SWAP_BUFFER, __positionBuffer);
         glDeleteVertexArrays(1, &__vertexArray);
     }
+    DrawingCenter& DrawingCenter::getInstance() {
+        if (!Default) Default = new DrawingCenter();
+        return *Default;
+    }
+    void DrawingCenter::close() {
+        if (Default) {
+            delete Default;
+            Default = 0;
+        }
+    }
     void DrawingCenter::BindCube() {
-        glUseProgram(MyBase3D::ShaderStorage::Default->GetCubeShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetCubeShader());
         glBindVertexArray(__vertexArray);
-        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getImageBlockIndices());
+        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::getInstance().getImageBlockIndices());
         glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
         glEnableVertexAttribArray(0);
     
-        glBindBufferBase(GL_UNIFORM_BUFFER, 2, MyBase3D::PointSet::Default->getBlockSet());
-        glBindBufferBase(GL_UNIFORM_BUFFER, 3, MyCraft::BlockCatogary::Default->getTexCoord());
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, MyBase3D::PointSet::getInstance().getBlockSet());
+        glBindBufferBase(GL_UNIFORM_BUFFER, 3, MyCraft::BlockCatogary::getInstance().getTexCoord());
     
         glActiveTexture(GL_TEXTURE0);
     }
     void DrawingCenter::BindChunk() {
-        glUseProgram(MyBase3D::ShaderStorage::Default->GetChunkShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetChunkShader());
     
         glBindVertexArray(__vertexArray);
-        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getMarginBlockIndices());
+        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::getInstance().getMarginBlockIndices());
         glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
         glEnableVertexAttribArray(0);
     
-        glBindBufferBase(GL_UNIFORM_BUFFER, 2, MyBase3D::PointSet::Default->getBlockSet());
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, MyBase3D::PointSet::getInstance().getBlockSet());
     }
     void DrawingCenter::DrawChunks(void* data, const int& size) {
         for (int i = 0; i<size; i+=32) {
@@ -55,7 +65,7 @@ namespace MyCraft {
         }
     }
     void DrawingCenter::DrawCubes(const MyCraft::BlockCatogary::Catogary& type, void* data, const int& size) {    
-        glBindTexture(GL_TEXTURE_2D, MyCraft::BlockCatogary::Default->getBlock(type));
+        glBindTexture(GL_TEXTURE_2D, MyCraft::BlockCatogary::getInstance().getBlock(type));
         for (int i = 0; i<size; i+=32) {
             int sz = std::min(32, size-i);
             glBindBuffer(GL_UNIFORM_BUFFER, __positionBuffer[__positionBufferPointer]);
@@ -67,14 +77,14 @@ namespace MyCraft {
         }
     }
     void DrawingCenter::BindMargin() {
-        glUseProgram(MyBase3D::ShaderStorage::Default->GetMarginShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetMarginShader());
         glBindVertexArray(__vertexArray);
     
-        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::Default->getMarginBlockIndices());
+        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::getInstance().getMarginBlockIndices());
         glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
         glEnableVertexAttribArray(0);
     
-        glBindBufferBase(GL_UNIFORM_BUFFER, 2, MyBase3D::PointSet::Default->getBlockSet());
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, MyBase3D::PointSet::getInstance().getBlockSet());
     
     }
     void DrawingCenter::DrawMargin(void* data, const int& size, const int& lineWidth) {

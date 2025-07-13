@@ -3,6 +3,7 @@
 #include "ModelLoader.h"
 #include "ShaderStorage.h"
 namespace MyCraft {
+    ModelStorage* ModelStorage::Default;
     ModelStorage::ModelStorage(): __playerModel("assets/models/Playermodel.gltf") {
         glGenBuffers(1, &__nodeState);
         glBindBuffer(GL_UNIFORM_BUFFER, __nodeState);
@@ -12,8 +13,21 @@ namespace MyCraft {
     ModelStorage::~ModelStorage() {
         glDeleteBuffers(1, &__nodeState);
     }
+
+    ModelStorage& ModelStorage::getInstance() {
+        if (!Default) Default = new ModelStorage();
+        return *Default;
+    }
+
+    void ModelStorage::close() {
+        if (Default) {
+            delete Default;
+            Default = 0;
+        }
+    }
+
     void ModelStorage::DrawModel(std::vector<glm::mat4>& state, const ModelLoader& model) {
-        glUseProgram(MyBase3D::ShaderStorage::Default->getModelShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().getModelShader());
         const tinygltf::Scene& scene = model.__model.scenes[model.__model.defaultScene];
         __drawNode(scene.nodes.back(), state, model);
     }
