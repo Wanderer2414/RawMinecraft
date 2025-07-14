@@ -1,24 +1,24 @@
 #include "World.h"
 #include "Block.h"
-#include "Camera.h"
 #include "DrawingCenter.h"
 #include "Message.h"
 #include "General.h"
 #include "PlayerModelController.h"
-#include "PointSet.h"
-#include "ShaderStorage.h"
 
 namespace MyCraft {
     World::World(const int& x, const int& y, const int& z): __position(x-(world_side/2)*16, y-(world_side/2)*16, z-(world_side/2)*16), __isHoverBlock(false) {
         __chunkPositions.resize(world_side*world_side*world_side);
         __blockTypes = new BlockCatogary::Catogary**[16*world_side];
         __bits = new std::bitset<16*world_side>*[16*world_side];
+        __tableIndexes.resize(16*world_side);
         for (int i = 0; i<16*world_side; i++) {
             __blockTypes[i] = new BlockCatogary::Catogary*[world_side*16];
             __bits[i] = new std::bitset<16*world_side>[16*world_side];
+            __tableIndexes[i].resize(16*world_side);
             for (int j =0; j<16*world_side; j++) {
+                __tableIndexes[i][j].resize(16*world_side, -1);
                 __blockTypes[i][j] = new BlockCatogary::Catogary[16*world_side];
-                memset(__blockTypes[i][j], BlockCatogary::Air, 16*world_side);
+                memset(__blockTypes[i][j], 0, 16*world_side*sizeof(BlockCatogary::Catogary));
             }
         }
         int curr = 0;
@@ -53,20 +53,6 @@ namespace MyCraft {
         bool is_changed = Controller::handle(window);
         if (pFrameAlarm.get()) {
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
-                // if (isHovered()) {
-                //     Block& pCurrentBlock = at(hX, hY, hZ);
-                //     float nX = hX, nY = hY, nZ = hZ;
-                //     switch (pCurrentBlock.getHoverPlane()) {
-                //         case 0: nX--; break;
-                //         case 1: nX++; break;
-                //         case 2: nY--; break;
-                //         case 3: nY++; break;
-                //         case 4: nZ--; break;
-                //         case 5: nZ++; break;
-                //     }
-                //     at(nX, nY, nZ).setType(BlockCatogary::Dirt);
-                //     is_changed = true;
-                // }
             }
         }
         return is_changed;
@@ -117,12 +103,17 @@ namespace MyCraft {
             else {
                 glm::vec4 pos(x+__position.x, y+__position.y, z+__position.z ,1);
                 auto& tmp = __list[__blockTypes[x][y][z]];
-                int i = 0;
-                while (i<tmp.size() && tmp[i]!=pos) i++;
-                if (i<tmp.size()) {
-                    tmp.erase(tmp.begin()+i);
+                int i = __tableIndexes[x][y][z];
+                if (i!=-1) {
+                    //Swap
+                    tmp[i] = tmp.back();
+                    __tableIndexes[tmp.back().x-__position.x][tmp.back().y - __position.y][tmp.back().z - __position.z] = i;
+                    tmp.pop_back();
+                    //Change type and push again
                     __blockTypes[x][y][z] = type;
-                    __list[__blockTypes[x][y][z]].push_back(pos);
+                    auto& vecs = __list[type];
+                    __tableIndexes[x][y][z] = vecs.size();
+                    vecs.push_back(pos);
                 }
             }
         }
@@ -130,7 +121,9 @@ namespace MyCraft {
     
     void World::__enableBit(const int& x, const int& y, const int& z) {
         if (!__bits[x][y][z]) {
-            __list[__blockTypes[x][y][z]].push_back({x+__position.x,y+__position.y,z+__position.z,1});
+            auto& vecs = __list[__blockTypes[x][y][z]];
+            __tableIndexes[x][y][z] = vecs.size();
+            vecs.push_back({x+__position.x,y+__position.y,z+__position.z,1});
             __bits[x][y][z] = 1;
         }
     }
@@ -144,11 +137,13 @@ namespace MyCraft {
         else if (z<world_side*16-2 && !__blockTypes[x][y][z+1]) ;
         else if (z<world_side*16-1 && z>0 && x<world_side*16-1 && x>0 && y<world_side*16-1 && y>0) {
             __bits[x][y][z] = 0;
-            glm::vec4 pos(x+__position.x, y+__position.y, z+__position.z ,1);
             auto& tmp = __list[__blockTypes[x][y][z]];
-            int i = 0;
-            while (tmp[i]!=pos) i++;
-            tmp.erase(tmp.begin()+i);
+            int i = __tableIndexes[x][y][z];
+            __tableIndexes[x][y][z] = -1;
+            //Swap
+            tmp[i] = tmp.back();
+            __tableIndexes[tmp.back().x-__position.x][tmp.back().y - __position.y][tmp.back().z - __position.z] = i;
+            tmp.pop_back();
         }
     }
 

@@ -55,21 +55,25 @@ namespace MyBase3D {
         return __formIndex;
     }
     bool Form3D::sensitiveHandle(GLFWwindow* window) {
-        bool is_changed = Container2D::sensitiveHandle(window);
+        bool is_changed = camera.sensitiveHandle(window);
+        is_changed = Container2D::sensitiveHandle(window) || is_changed;
         is_changed = Container3D::sensitiveHandle(window) || is_changed;
         return is_changed;
     }
     bool Form3D::catchEvent(GLFWwindow* window) {
-        bool is_changed = Container2D::catchEvent(window);
+        bool is_changed = camera.catchEvent(window);
+        is_changed = Container2D::catchEvent(window) || is_changed;
         is_changed = Container3D::catchEvent(window) || is_changed;
         return is_changed;
     }
     bool Form3D::handle(GLFWwindow* window) {
-        bool is_changed = Container2D::handle(window);
+        bool is_changed = camera.handle(window);
+        is_changed = Container2D::handle(window) || is_changed;
         is_changed = Container3D::handle(window) || is_changed;
         return is_changed;
     }
     void Form3D::glDraw() const {
+        camera.glDraw();
         MyBase::ControlCenter::Default->disable3DMode();
         MyBase::Container2D::glDraw();
         MyBase::ControlCenter::Default->enable3DMode();

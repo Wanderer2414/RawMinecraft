@@ -5,7 +5,6 @@
 #include "Clock.h"
 #include "Controller3D.h"
 #include "Message.h"
-#include "Controller.h"
 
 namespace MyCraft {
 class World: public MyBase3D::Controller3D, public MyBase::Port {
@@ -29,6 +28,7 @@ class World: public MyBase3D::Controller3D, public MyBase::Port {
         glm::vec3               __hoverBlock, __placePosition, __cameraPosition, __cameraDir;
         std::map<BlockCatogary::Catogary,std::vector<glm::vec4>>  __list;
         BlockCatogary::Catogary                 ***__blockTypes;
+        std::vector<std::vector<std::vector<int>>> __tableIndexes;
         std::bitset<16*world_side>              **__bits;
         glm::vec3               __position;
         MyBase::Clock           pFrameAlarm;
