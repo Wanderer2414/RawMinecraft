@@ -7,15 +7,17 @@
 #include "PlayerModelController.h"
 
 namespace MyCraft {
-    World::World(const int& x, const int& y, const int& z): __position(x-(world_side/2)*16, y-(world_side/2)*16, z-(world_side/2)*16), __isHoverBlock(false) {
+    World::World(const int& x, const int& y, const int& z): __isHoverBlock(false) {
         // __worldRender.createPlaneWorld();
-
-        // pFrameAlarm.setDuration(150);
-        // add(new CheckFallCommand(this));
-        // add(new CheckEmptyCommand(this));
-        // add(new CheckHoverCommand(this));
-        // add(new PlaceblockCommand(this));
-
+        // exit(0);
+        __worldRender.load({-16*3,-16*3,-16*2});
+        insert(&__worldRender);
+        pFrameAlarm.setDuration(150);
+        add(new CheckFallCommand(this));
+        add(new CheckEmptyCommand(this));
+        add(new CheckHoverCommand(this));
+        add(new PlaceblockCommand(this));
+        add(new WorldMoveCommand(this));
     }
     World::~World() {
     }
@@ -28,11 +30,8 @@ namespace MyCraft {
         }
         return is_changed;
     }
-    const BlockCatogary::Catogary& World::at(const int& x, const int& y, const int& z) const {
-        return __worldRender.at({x,y,z});
-    }
     const BlockCatogary::Catogary& World::at(const glm::vec3& pos) const {
-        return at(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z));
+        return __worldRender.at(pos);
     }
 
     void World::set(const int& rx, const int& ry, const int& rz, const BlockCatogary::Catogary& type) {
@@ -49,6 +48,10 @@ namespace MyCraft {
     }
     void World::unHoverBlock() {
         __isHoverBlock = false;
+    }
+    void World::playerAt(const glm::vec3& pos) {
+        glm::vec3 position = pos - glm::vec3(16,16,16)*2.f;
+        __worldRender.load(position);
     }
     void World::glDraw() const {
         MyBase3D::Container3D::glDraw();
@@ -259,4 +262,21 @@ namespace MyCraft {
                 __world->set(__world->__placePosition, BlockCatogary::Grass);
         }
     }
+
+
+    WorldMoveMessage::WorldMoveMessage(const glm::vec3& pos): position(pos) {}
+    WorldMoveMessage::~WorldMoveMessage() {}
+    MyBase::MessageType WorldMoveMessage::getType() const {
+        return MyBase::WorldMove;
+    }
+
+    WorldMoveCommand::WorldMoveCommand(MyCraft::World* world): __world(world) {}
+    WorldMoveCommand::~WorldMoveCommand() {}
+    MyBase::MessageType WorldMoveCommand::getType() const {
+        return MyBase::WorldMove;
+    }
+    void WorldMoveCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
+        WorldMoveMessage& package = *(WorldMoveMessage*)message;
+        __world->playerAt(package.position);
+    };
 }

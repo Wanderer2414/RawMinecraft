@@ -14,14 +14,12 @@ namespace MyCraft {
         void save();
         void load(const glm::vec3& position);
 
-        BlockCatogary::Catogary&            at(const glm::vec3& posistion);
         const BlockCatogary::Catogary&      at(const glm::vec3& posistion) const;
 
         void place(const glm::vec3& pos, const BlockCatogary::Catogary& type);
     protected:
         void glDraw() const override;
     private:
-        glm::vec3 __position;
         void __enableBit(const glm::vec3& pos);
         void __disableBit(const glm::vec3& pos);
         ChunkLoader __chunkLoader;

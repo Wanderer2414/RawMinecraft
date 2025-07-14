@@ -7,7 +7,7 @@ namespace MyCraft {
     public:
         Chunk();
         ~Chunk();
-        BlockCatogary::Catogary& getType(const glm::vec3& pos) const;
+        const BlockCatogary::Catogary& getType(const glm::vec3& pos) const;
         void save(const std::string& file);
         void setType(const glm::vec3& pos, const BlockCatogary::Catogary& type);
         std::bitset<16>::reference getBit(const glm::vec3& pos);
@@ -19,9 +19,9 @@ namespace MyCraft {
         void glDraw() const override;
         std::map<BlockCatogary::Catogary, std::vector<glm::vec4>>  __list;
         glm::vec3                   __position;
-        BlockCatogary::Catogary     ***__blockTypes;
-        std::bitset<16>             **__bits;
-        std::vector<std::vector<std::vector<int>>> __tableIndexes;
+        BlockCatogary::Catogary     __blockTypes[16][16][16];
+        std::bitset<16>             __bits[16][16];
+        int                         __tableIndexes[16][16][16];
     };
 }
 #endif

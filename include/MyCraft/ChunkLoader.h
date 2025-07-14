@@ -1,9 +1,10 @@
 #ifndef CHUNK_LOADER_H
 #define CHUNK_LOADER_H
 #include "Chunk.h"
+#include "Container3D.h"
 #include "Controller3D.h"
 namespace MyCraft {
-    class ChunkLoader: public MyBase3D::Controller3D {
+    class ChunkLoader: public MyBase3D::Container3D {
     public:
         ChunkLoader();
         ~ChunkLoader();

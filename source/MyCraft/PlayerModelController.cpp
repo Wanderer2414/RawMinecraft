@@ -5,6 +5,7 @@
 #include "ModelController.h"
 #include "ModelLoader.h"
 #include "ModelStorage.h"
+#include "World.h"
 namespace MyCraft {
     PlayerModelController::PlayerModelController(): __position(0), __direction(0, -1, 0), __runTime(0), __handTime(0),
         __isLeftAttack(0), __isRightAttack(0), __animation(ModelStorage::getInstance().getPlayerModel().getNodeCount(), 1), __eye_direction(0, -1, 0),
@@ -179,6 +180,7 @@ namespace MyCraft {
         __position += delta;
         send(new MyBase::SetCameraMessage(__position, __eye_direction));
         send(new CheckHoverMessage(__position, __eye_direction));
+        send( new WorldMoveMessage(__position+delta));
         if (delta.x || delta.y) {
             __runCooldown.restart();
             __isRun = true;

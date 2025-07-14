@@ -20,56 +20,6 @@ namespace MyCraft {
         __label.setTextColor(RED);
         __label.setScale({1, 32});
         __label.setPosition({0.7f, 0.95f});
-
-        for (int i = -32; i<48; i++) {
-            for (int j = -32; j<48; j++) {
-                for (int z=-16;z<0; z++)
-                    pWorld.set(i, j, z, BlockCatogary::Grass);
-
-                pWorld.set(i, j, -15, BlockCatogary::Grass);
-                pWorld.set(i, j, -10, BlockCatogary::Grass);
-            }
-        }
-        
-        for (int i = -16; i<0; i++) {
-            for (int j = -16; j<0; j++) pWorld.set(i,j,0, BlockCatogary::Grass);
-        }
-
-        for (int i = 16; i<32; i++) {
-            for (int j = 0; j<16; j++) pWorld.set(i,j,-8, BlockCatogary::Grass);
-        }
-        pWorld.set(5,5,0, BlockCatogary::Grass);
-        pWorld.set(5,5,1, BlockCatogary::Grass);
-        pWorld.set(5,6,0, BlockCatogary::Grass);
-        pWorld.set(5,6,1, BlockCatogary::Grass);
-        pWorld.set(5,7,0, BlockCatogary::Grass);
-        pWorld.set(5,7,1, BlockCatogary::Grass);
-        pWorld.set(4,7,2, BlockCatogary::Grass);
-
-        pWorld.set(3,5,0, BlockCatogary::Grass);
-        pWorld.set(3,5,1, BlockCatogary::Grass);
-        pWorld.set(3,6,0, BlockCatogary::Grass);
-        pWorld.set(3,6,1, BlockCatogary::Grass);
-        pWorld.set(3,7,0, BlockCatogary::Grass);
-        pWorld.set(3,7,1, BlockCatogary::Grass);
-
-        pWorld.set(5,3,0, BlockCatogary::Grass);
-        pWorld.set(5,3,1, BlockCatogary::Grass);
-        pWorld.set(6,3,0, BlockCatogary::Grass);
-        pWorld.set(6,3,1, BlockCatogary::Grass);
-        pWorld.set(7,3,0, BlockCatogary::Grass);
-        pWorld.set(7,3,1, BlockCatogary::Grass);
-
-        pWorld.set(5,5,0, BlockCatogary::Grass);
-        pWorld.set(5,5,1, BlockCatogary::Grass);
-        pWorld.set(6,5,0, BlockCatogary::Grass);
-        pWorld.set(6,5,1, BlockCatogary::Grass);
-        pWorld.set(7,5,0, BlockCatogary::Grass);
-        pWorld.set(7,5,1, BlockCatogary::Grass);
-
-        pWorld.set(-5,-5,0, BlockCatogary::Grass);
-        pWorld.set(-5,-5,1, BlockCatogary::Grass);
-        pWorld.set(7,4,1, BlockCatogary::Grass);
     
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glfwSetCursorPos(window, MyBase::ControlCenter::Default->getWindowHalf().x, MyBase::ControlCenter::Default->getWindowHalf().y);

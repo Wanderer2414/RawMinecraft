@@ -12,12 +12,8 @@ namespace MyCraft {
     void WorldRender::save() {}
     void WorldRender::load(const glm::vec3& position) {
         __chunkLoader.load(position);
-        __position = position;
     }
 
-    BlockCatogary::Catogary& WorldRender::at(const glm::vec3& posistion) {
-        return __chunkLoader[posistion].getType(posistion);
-    }
     const BlockCatogary::Catogary& WorldRender::at(const glm::vec3& posistion) const {
         return __chunkLoader[posistion].getType(posistion);
     }

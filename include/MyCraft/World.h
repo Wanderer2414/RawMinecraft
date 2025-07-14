@@ -13,10 +13,10 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
     public:
         World(const int& x, const int& y, const int& z);
         ~World();
-        const BlockCatogary::Catogary&    at(const int& x, const int& y, const int& z) const;
         const BlockCatogary::Catogary&    at(const glm::vec3& pos) const;
         void                    set(const int& x, const int& y, const int& z, const BlockCatogary::Catogary& type);
         void                    set(const glm::vec3& pos, const BlockCatogary::Catogary& type);
+        void                    playerAt(const glm::vec3& pos);
         void                    setHoverBlock(const glm::vec3& pos, const glm::vec3& placePosition),
                                 unHoverBlock();
         friend class PlaceblockCommand;
@@ -28,7 +28,6 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
         WorldRender             __worldRender;
         bool                    __isHoverBlock;
         glm::vec3               __hoverBlock, __placePosition, __cameraPosition, __cameraDir;
-        glm::vec3               __position;
         MyBase::Clock           pFrameAlarm;
 
     };
@@ -73,7 +72,22 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
     private:
         World* __world;
     };
-
-    
+    class WorldMoveMessage: public MyBase::Message {
+    public:
+        WorldMoveMessage(const glm::vec3& position);
+        ~WorldMoveMessage();
+        glm::vec3 position;
+        MyBase::MessageType getType() const override;
+    private:
+    };
+    class WorldMoveCommand: public MyBase::Command {
+    public:
+        WorldMoveCommand(MyCraft::World* world);
+        ~WorldMoveCommand();
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
+    private:
+        World* __world;
+    };
 }
 #endif
