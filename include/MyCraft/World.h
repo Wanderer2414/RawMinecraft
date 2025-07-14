@@ -5,9 +5,10 @@
 #include "Clock.h"
 #include "Controller3D.h"
 #include "Message.h"
+#include "WorldRender.h"
 
 namespace MyCraft {
-class World: public MyBase3D::Controller3D, public MyBase::Port {
+class World: public MyBase3D::Container3D, public MyBase::Port {
     #define world_side 5
     public:
         World(const int& x, const int& y, const int& z);
@@ -24,18 +25,12 @@ class World: public MyBase3D::Controller3D, public MyBase::Port {
         bool handle(GLFWwindow* window) override;
         virtual void glDraw() const override;
     private:
+        WorldRender             __worldRender;
         bool                    __isHoverBlock;
         glm::vec3               __hoverBlock, __placePosition, __cameraPosition, __cameraDir;
-        std::map<BlockCatogary::Catogary,std::vector<glm::vec4>>  __list;
-        BlockCatogary::Catogary                 ***__blockTypes;
-        std::vector<std::vector<std::vector<int>>> __tableIndexes;
-        std::bitset<16*world_side>              **__bits;
         glm::vec3               __position;
         MyBase::Clock           pFrameAlarm;
-        std::vector<glm::vec4>  __chunkPositions;
 
-        void __enableBit(const int& x, const int& y, const int& z);
-        void __disableBit(const int& x, const int& y, const int& z);
     };
     class CheckEmptyCommand: public MyBase::Command {
     public:

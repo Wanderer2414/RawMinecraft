@@ -1,5 +1,6 @@
 #include "World.h"
 #include "Block.h"
+#include "Container3D.h"
 #include "DrawingCenter.h"
 #include "Message.h"
 #include "General.h"
@@ -7,46 +8,16 @@
 
 namespace MyCraft {
     World::World(const int& x, const int& y, const int& z): __position(x-(world_side/2)*16, y-(world_side/2)*16, z-(world_side/2)*16), __isHoverBlock(false) {
-        __chunkPositions.resize(world_side*world_side*world_side);
-        __blockTypes = new BlockCatogary::Catogary**[16*world_side];
-        __bits = new std::bitset<16*world_side>*[16*world_side];
-        __tableIndexes.resize(16*world_side);
-        for (int i = 0; i<16*world_side; i++) {
-            __blockTypes[i] = new BlockCatogary::Catogary*[world_side*16];
-            __bits[i] = new std::bitset<16*world_side>[16*world_side];
-            __tableIndexes[i].resize(16*world_side);
-            for (int j =0; j<16*world_side; j++) {
-                __tableIndexes[i][j].resize(16*world_side, -1);
-                __blockTypes[i][j] = new BlockCatogary::Catogary[16*world_side];
-                memset(__blockTypes[i][j], 0, 16*world_side*sizeof(BlockCatogary::Catogary));
-            }
-        }
-        int curr = 0;
-        for (int i = 0; i<world_side; i++) {
-            for (int j = 0; j<world_side; j++) {
-                for (int k = 0; k<world_side; k++) {
-                    __chunkPositions[curr++] = {__position.x+i*16, __position.y+j*16, __position.z+k*16, 1};
-                }
-            }
-        }
+        // __worldRender.createPlaneWorld();
 
-        pFrameAlarm.setDuration(150);
-        add(new CheckFallCommand(this));
-        add(new CheckEmptyCommand(this));
-        add(new CheckHoverCommand(this));
-        add(new PlaceblockCommand(this));
+        // pFrameAlarm.setDuration(150);
+        // add(new CheckFallCommand(this));
+        // add(new CheckEmptyCommand(this));
+        // add(new CheckHoverCommand(this));
+        // add(new PlaceblockCommand(this));
 
     }
     World::~World() {
-        for (int i = 0; i<world_side*16; i++) {
-            for (int j = 0; j<world_side*16;j++) {
-                delete[] __blockTypes[i][j];
-            }
-            delete[] __blockTypes[i];
-            delete[] __bits[i];
-        }
-        delete[] __bits;
-        delete[] __blockTypes;
     }
     
     bool World::handle(GLFWwindow* window) {
@@ -58,93 +29,14 @@ namespace MyCraft {
         return is_changed;
     }
     const BlockCatogary::Catogary& World::at(const int& x, const int& y, const int& z) const {
-        int rX = (x-__position.x);
-        int rY = (y-__position.y);
-        int rZ = (z-__position.z);
-        return __blockTypes[rX][rY][rZ];
+        return __worldRender.at({x,y,z});
     }
     const BlockCatogary::Catogary& World::at(const glm::vec3& pos) const {
         return at(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z));
     }
 
     void World::set(const int& rx, const int& ry, const int& rz, const BlockCatogary::Catogary& type) {
-        int x = (rx-__position.x);
-        int y = (ry-__position.y);
-        int z = (rz-__position.z);
-        // pChunks[rX/16][rY/16][rZ/16].set(rX%16, rY%16, rZ%16, type);
-
-        if (!type) {
-            if (__blockTypes[x][y][z]) {
-                __disableBit(x, y, z);
-                __blockTypes[x][y][z] = BlockCatogary::Catogary::Air;
-                if (x>0 && !__bits[x-1][y][z] && __blockTypes[x-1][y][z]) __enableBit(x-1, y, z);
-                if (x<world_side*16-1 && !__bits[x+1][y][z] && __blockTypes[x+1][y][z]) __enableBit(x+1, y, z);
-
-                if (y>0 && !__bits[x][y-1][z] && __blockTypes[x][y-1][z]) __enableBit(x, y-1, z);
-                if (y<world_side*16-1 && !__bits[x][y+1][z] && __blockTypes[x][y+1][z]) __enableBit(x, y+1, z);
-                
-                if (z>0 && !__bits[x][y][z-1] && __blockTypes[x][y][z-1]) __enableBit(x, y, z-1);
-                if (z<world_side*16-1 && !__bits[x][y][z+1] && __blockTypes[x][y][z+1]) __enableBit(x, y, z+1);
-            }
-        }
-        else {
-            if (!__blockTypes[x][y][z]) {
-                __blockTypes[x][y][z] = type;
-                __enableBit(x, y, z);
-                if (x>0 && __bits[x-1][y][z]) __disableBit(x-1, y, z);
-                if (x<world_side*16-1 && __bits[x+1][y][z]) __disableBit(x+1, y, z);
-
-                if (y>0 && __bits[x][y-1][z]) __disableBit(x, y-1, z);
-                if (y<world_side*16-1 && __bits[x][y+1][z]) __disableBit(x, y+1, z);
-                
-                if (z>0 && __bits[x][y][z-1]) __disableBit(x, y, z-1);
-                if (z<world_side*16-1 && __bits[x][y][z+1]) __disableBit(x, y, z+1);
-            }
-            else {
-                glm::vec4 pos(x+__position.x, y+__position.y, z+__position.z ,1);
-                auto& tmp = __list[__blockTypes[x][y][z]];
-                int i = __tableIndexes[x][y][z];
-                if (i!=-1) {
-                    //Swap
-                    tmp[i] = tmp.back();
-                    __tableIndexes[tmp.back().x-__position.x][tmp.back().y - __position.y][tmp.back().z - __position.z] = i;
-                    tmp.pop_back();
-                    //Change type and push again
-                    __blockTypes[x][y][z] = type;
-                    auto& vecs = __list[type];
-                    __tableIndexes[x][y][z] = vecs.size();
-                    vecs.push_back(pos);
-                }
-            }
-        }
-    }
-    
-    void World::__enableBit(const int& x, const int& y, const int& z) {
-        if (!__bits[x][y][z]) {
-            auto& vecs = __list[__blockTypes[x][y][z]];
-            __tableIndexes[x][y][z] = vecs.size();
-            vecs.push_back({x+__position.x,y+__position.y,z+__position.z,1});
-            __bits[x][y][z] = 1;
-        }
-    }
-    void World::__disableBit(const int& x, const int& y, const int& z) {
-        if (!__bits[x][y][z]) return;
-        if (x>0 && !__blockTypes[x-1][y][z]) ;
-        else if (x<world_side*16-2 && !__blockTypes[x+1][y][z]) ;
-        else if (y>0 && !__blockTypes[x][y-1][z]) ;
-        else if (y<world_side*16-2 && !__blockTypes[x][y+1][z]) ;
-        else if (z>0 && !__blockTypes[x][y][z-1]) ;
-        else if (z<world_side*16-2 && !__blockTypes[x][y][z+1]) ;
-        else if (z<world_side*16-1 && z>0 && x<world_side*16-1 && x>0 && y<world_side*16-1 && y>0) {
-            __bits[x][y][z] = 0;
-            auto& tmp = __list[__blockTypes[x][y][z]];
-            int i = __tableIndexes[x][y][z];
-            __tableIndexes[x][y][z] = -1;
-            //Swap
-            tmp[i] = tmp.back();
-            __tableIndexes[tmp.back().x-__position.x][tmp.back().y - __position.y][tmp.back().z - __position.z] = i;
-            tmp.pop_back();
-        }
+        __worldRender.place({rx,ry,rz}, type);
     }
 
     void World::set(const glm::vec3& pos, const BlockCatogary::Catogary& type) {
@@ -159,16 +51,11 @@ namespace MyCraft {
         __isHoverBlock = false;
     }
     void World::glDraw() const {
-        DrawingCenter::getInstance().BindChunk();
-        DrawingCenter::getInstance().DrawChunks((void*)__chunkPositions.data(), __chunkPositions.size());
+        MyBase3D::Container3D::glDraw();
         if (__isHoverBlock) {
             DrawingCenter::getInstance().BindMargin();
             glm::vec4 vec = glm::vec4(__hoverBlock,1);
             DrawingCenter::getInstance().DrawMargin((void*)&vec, 1, 2);
-        }
-        DrawingCenter::getInstance().BindCube();
-        for (const auto& item: __list) {
-            DrawingCenter::getInstance().DrawCubes(item.first, (void*)item.second.data(), item.second.size());
         }
     }
     CheckEmptyCommand::CheckEmptyCommand(World* world): __world(world) {}
