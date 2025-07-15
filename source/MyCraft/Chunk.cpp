@@ -1,7 +1,7 @@
 #include "Chunk.h"
 #include "Block.h"
 #include "DrawingCenter.h"
-#include "General.h"
+
 namespace MyCraft {
     Chunk::Chunk(): __isChange(false) {}
     Chunk::~Chunk() {}

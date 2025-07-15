@@ -26,19 +26,20 @@ namespace MyCraft {
                 chunk.setType(pos, BlockCatogary::Catogary::Air);
                 glm::vec3 position = pos;
                 position.x--;
-                if (!chunk.getBit(position) && chunk.getType(position)) __enableBit(position);
+                if (!__chunkLoader[position].getBit(position) && __chunkLoader[position].getType(position)) __enableBit(position);
                 position.x += 2;
-                if (!chunk.getBit(position) && chunk.getType(position)) __enableBit(position);
+                if (!__chunkLoader[position].getBit(position) && __chunkLoader[position].getType(position)) __enableBit(position);
 
                 position -= glm::vec3(1, 1, 0);
-                if (!chunk.getBit(position) && chunk.getType(position)) __enableBit(position);
-                position += 2;
-                if (!chunk.getBit(position) && chunk.getType(position)) __enableBit(position);
+                if (!__chunkLoader[position].getBit(position) && __chunkLoader[position].getType(position)) __enableBit(position);
+                position.y += 2;
+                if (!__chunkLoader[position].getBit(position) && __chunkLoader[position].getType(position)) __enableBit(position);
                 
                 position -= glm::vec3(0, 1, 1);
-                if (!chunk.getBit(position) && chunk.getType(position)) __enableBit(position);
-                position += 2;
-                if (!chunk.getBit(position) && chunk.getType(position)) __enableBit(position);
+                if (!__chunkLoader[position].getBit(position) && __chunkLoader[position].getType(position)) __enableBit(position);
+
+                position.z += 2;
+                if (!__chunkLoader[position].getBit(position) && __chunkLoader[position].getType(position)) __enableBit(position);
             }
         }
         else {
@@ -46,19 +47,19 @@ namespace MyCraft {
                 chunk.setType(pos, type);
                 __enableBit(pos);
                 glm::vec3 position = pos - glm::vec3(1,0,0);
-                if (chunk.getBit(position)) __disableBit(position);
+                __disableBit(position);
                 position.x += 2;
-                if (chunk.getBit(position)) __disableBit(position);
+                __disableBit(position);
 
                 position -= glm::vec3(1, 1, 0);
-                if (chunk.getBit(position)) __disableBit(position);
+                __disableBit(position);
                 position.y += 2;
-                if (chunk.getBit(position)) __disableBit(position);
+                __disableBit(position);
                 
                 position -= glm::vec3(0, 1, 1);
-                if (chunk.getBit(position)) __disableBit(position);
+                __disableBit(position);
                 position.z += 2;
-                if (chunk.getBit(position)) __disableBit(position);
+                __disableBit(position);
             }
             else {
                 chunk.disableBit(pos);
@@ -76,14 +77,24 @@ namespace MyCraft {
         __chunkLoader[pos].enableBit(pos);
     }
     void WorldRender::__disableBit(const glm::vec3& pos) {
-        Chunk& chunk = __chunkLoader[pos];
-        if (!chunk.getBit(pos)) return;
-        if ((chunk.getType(pos-glm::vec3(1,0,0))) && 
-            (chunk.getType(pos+glm::vec3(1,0,0))) &&
-            (chunk.getType(pos-glm::vec3(0,1,0))) &&
-            (chunk.getType(pos+glm::vec3(0,1,0))) &&
-            (chunk.getType(pos-glm::vec3(0,0,1))) &&
-            (chunk.getType(pos+glm::vec3(0,0,1))))
-                chunk.disableBit(pos);
+        if (!__chunkLoader[pos].getBit(pos)) return;
+        glm::vec3 posistion = pos;
+        posistion.x -= 1;
+        if (__chunkLoader[pos].getType(posistion)) return;
+        
+        posistion.x += 2;
+        if (__chunkLoader[posistion].getType(posistion)) return ;
+        
+        posistion -= glm::vec3(1, 1, 0);
+        if (__chunkLoader[posistion].getType(posistion)) return ;
+        posistion.y += 2;
+        if (__chunkLoader[posistion].getType(posistion)) return ;
+
+        posistion -= glm::vec3(0, 1, 1);
+        if (__chunkLoader[posistion].getType(posistion)) return ;
+        posistion.z += 2;
+        if (__chunkLoader[posistion].getType(posistion)) return ;
+
+        __chunkLoader[pos].disableBit(pos);
     }
 }

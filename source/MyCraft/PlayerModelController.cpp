@@ -167,6 +167,7 @@ namespace MyCraft {
             __isLeftAttack = true;
             send(new DestroyBlockMessage());
             send(new CheckHoverMessage(__position, __eye_direction));
+            send(new RequestFallMessage(getShape(), getZVelocity()));
         } 
     }
     void PlayerModelController::rightAttack() {
@@ -202,7 +203,12 @@ namespace MyCraft {
     void PlayerModelController::seeRotate(const float& horizontal, const float& vertical) {
         __eye_direction = glm::rotate(__eye_direction, horizontal, glm::vec3(0, 0, 1));
         glm::vec3 axis = glm::cross(__eye_direction, glm::vec3(0,0,1));
-        __eye_direction = glm::rotate(__eye_direction, vertical, axis);
+        glm::vec3 eye_direction = glm::rotate(__eye_direction, vertical, axis);
+
+        float angle = glm::angle(eye_direction, glm::vec3(0,0,-1));
+        if (angle>M_PI/20 && angle < M_PI*0.95) {
+            __eye_direction = eye_direction;
+        }
         send(new MyBase::SetCameraMessage(__position, __eye_direction));
         send(new CheckHoverMessage(__position, __eye_direction));
     }
