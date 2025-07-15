@@ -26,6 +26,9 @@ namespace MyCraft {
         int                     __chunkIndices[world_side][world_side][world_side];
         std::string getFileName(const glm::ivec3& position) const;
         void __loadDefault();
+        void __movePositiveX(), __moveNegativeX();
+        void __movePositiveY(), __moveNegativeY();
+        void __movePositiveZ(), __moveNegativeZ();
         void glDraw() const override;
 
     };

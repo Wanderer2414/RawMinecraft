@@ -180,7 +180,7 @@ namespace MyCraft {
         __position += delta;
         send(new MyBase::SetCameraMessage(__position, __eye_direction));
         send(new CheckHoverMessage(__position, __eye_direction));
-        send( new WorldMoveMessage(__position+delta));
+        send( new WorldMoveMessage(__position));
         if (delta.x || delta.y) {
             __runCooldown.restart();
             __isRun = true;

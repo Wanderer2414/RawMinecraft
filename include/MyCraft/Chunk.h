@@ -3,7 +3,7 @@
 #include "Block.h"
 #include "Controller3D.h"
 namespace MyCraft {
-    class Chunk: public MyBase3D::Controller3D {
+    class Chunk {
     public:
         ~Chunk();
         const BlockCatogary::Catogary& getType(const glm::vec3& pos) const;
@@ -14,11 +14,11 @@ namespace MyCraft {
         void disableBit(const glm::vec3& pos);
         glm::vec3 getPosition() const;
         static Chunk* Load(const std::string& file);
+        void glDraw() const;
     protected:
     private:
         Chunk();
         bool    __isChange;
-        void glDraw() const override;
         std::map<BlockCatogary::Catogary, std::vector<glm::vec4>>  __list;
         glm::vec3                   __position;
         BlockCatogary::Catogary     __blockTypes[16][16][16];
