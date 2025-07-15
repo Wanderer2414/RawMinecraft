@@ -60,7 +60,7 @@ namespace MyCraft {
                         file.write((char*)&buffer[0], 256*sizeof(int));
 
                         BlockCatogary::Catogary types[16];
-                        memset(types, 0, sizeof(BlockCatogary::Catogary)*16);
+                        memset(types, 1, sizeof(BlockCatogary::Catogary)*15);
                         types[15] = BlockCatogary::Grass;
                         for (int z = 0; z<256; z++)
                             file.write((char*)&types, sizeof(BlockCatogary::Catogary)*16);

@@ -1,4 +1,5 @@
 #include "PlayerModelController.h"
+#include "Block.h"
 #include "Camera.h"
 #include "Message.h"
 #include "Global.h"
@@ -164,6 +165,8 @@ namespace MyCraft {
             __handTime = 0;
             __isRightAttack = false;
             __isLeftAttack = true;
+            send(new DestroyBlockMessage());
+            send(new CheckHoverMessage(__position, __eye_direction));
         } 
     }
     void PlayerModelController::rightAttack() {
@@ -172,7 +175,7 @@ namespace MyCraft {
             __handTime = 0;
             __isRightAttack = false;
             __isRightAttack = true;
-            send(new RightAttackMessage(__position, __eye_direction));
+            send(new PlaceBlockMessage(getShape(), BlockCatogary::Grass));
             send(new CheckHoverMessage(__position, __eye_direction));
         }
     }

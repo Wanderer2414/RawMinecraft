@@ -20,6 +20,7 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
         void                    setHoverBlock(const glm::vec3& pos, const glm::vec3& placePosition),
                                 unHoverBlock();
         friend class PlaceblockCommand;
+        friend class DestroyblockCommand;
         friend class CheckHoverCommand;
     protected:
         bool handle(GLFWwindow* window) override;
@@ -63,11 +64,34 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
     private:
         World* __world;
     };
-
+    class PlaceBlockMessage: public MyBase::Message {
+    public:
+        PlaceBlockMessage(const glm::mat4x3& model, const BlockCatogary::Catogary& type);;
+        ~PlaceBlockMessage();
+        glm::mat4x3 shape;
+        BlockCatogary::Catogary type;
+        MyBase::MessageType getType() const override;
+    };
     class PlaceblockCommand: public MyBase::Command {
     public:
         PlaceblockCommand(MyCraft::World* world);
         ~PlaceblockCommand();
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
+    private:
+        World* __world;
+    };
+    class DestroyBlockMessage: public MyBase::Message {
+    public:
+        DestroyBlockMessage();
+        ~DestroyBlockMessage();
+        BlockCatogary::Catogary type;
+        MyBase::MessageType getType() const override;
+    };
+    class DestroyblockCommand: public MyBase::Command {
+    public:
+        DestroyblockCommand(World* world);
+        ~DestroyblockCommand();
         MyBase::MessageType getType() const override;
         void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
     private:

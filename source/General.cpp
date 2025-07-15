@@ -28,8 +28,8 @@ std::ostream& operator<<(std::ostream& cout, const glm::vec3& pos) {
     cout << "(" << pos.x << ", "<<pos.y << ", " << pos.z << ") ";
     return cout;
 }
-std::queue<glm::vec3> rasterize(const glm::vec3& a, const glm::vec3& b) {
-    std::queue<glm::vec3> ans;
+std::queue<glm::ivec3> rasterize(const glm::vec3& a, const glm::vec3& b) {
+    std::queue<glm::ivec3> ans;
     glm::vec3 delta = (b-a);
     glm::vec3 curr = a;
     ans.push({floor(a.x), floor(a.y), floor(a.z)});
@@ -38,13 +38,10 @@ std::queue<glm::vec3> rasterize(const glm::vec3& a, const glm::vec3& b) {
     delta = glm::normalize(delta)*0.1f;
     for (int i = 0; i<n; i++) {
         curr+=delta;
-        glm::vec3 tmp(floor(curr.x), floor(curr.y), floor(curr.z));
+        glm::ivec3 tmp(floor(curr.x), floor(curr.y), floor(curr.z));
         if (tmp!=ans.back()) ans.push(tmp);
     }
     return ans;
-}
-std::queue<glm::vec3> rasterize(const glm::mat3& rec) {
-    return {};
 }
 
 std::tuple<int,int,int> to_tuple(const glm::ivec3& vec) {

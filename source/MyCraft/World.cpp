@@ -16,6 +16,7 @@ namespace MyCraft {
         add(new CheckEmptyCommand(this));
         add(new CheckHoverCommand(this));
         add(new PlaceblockCommand(this));
+        add(new DestroyblockCommand(this));
         add(new WorldMoveCommand(this));
     }
     World::~World() {
@@ -69,7 +70,7 @@ namespace MyCraft {
         glm::vec3 dir = glm::vec3(request->direction, 0);
         //Below check
         glm::vec3 npos = shape[0] + dir, epos = npos + shape[1];
-        std::queue<glm::vec3> q = rasterize(npos, epos);
+        std::queue<glm::ivec3> q = rasterize(npos, epos);
         while (q.size() && below_result) {
             if (__world->at(q.front()) != BlockCatogary::Air) below_result = false;
             q.pop();
@@ -246,21 +247,71 @@ namespace MyCraft {
         }
         else __world->unHoverBlock();
     }
+
+    PlaceBlockMessage::PlaceBlockMessage(const glm::mat4x3& s, const BlockCatogary::Catogary& t): shape(s), type(t) {}
+    PlaceBlockMessage::~PlaceBlockMessage() {}
+    MyBase::MessageType PlaceBlockMessage::getType() const {
+        return MyBase::PlaceBlock;
+    }
+
     PlaceblockCommand::PlaceblockCommand(World* world): __world(world) {}
     PlaceblockCommand::~PlaceblockCommand() {}
     MyBase::MessageType PlaceblockCommand::getType() const {
-        return MyBase::MessageType::RightAttack;
+        return MyBase::MessageType::PlaceBlock;
     }
     void PlaceblockCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
-        RightAttackMessage* package = (RightAttackMessage*)message;
-        glm::ivec3 fpos(floor(package->posistion.x), floor(package->posistion.y), floor(package->posistion.z));
-        if (__world->__isHoverBlock && __world->__placePosition!=fpos) {
-            fpos.z += 1;
-            if (__world->__placePosition != fpos)
-                __world->set(__world->__placePosition, BlockCatogary::Grass);
+        PlaceBlockMessage* package = (PlaceBlockMessage*)message;
+        bool below_result = true, above_result = true;
+        std::queue<glm::ivec3> q = rasterize(package->shape[0], package->shape[0]+package->shape[1]);
+        while (q.size() && below_result) {
+            if (q.front() == __world->__placePosition) below_result = false;
+            q.pop();
+        }
+        if (below_result) {
+            q = rasterize(package->shape[0]+package->shape[2], package->shape[0]+package->shape[1] + package->shape[2]);
+            while (q.size() && below_result) {
+                if (q.front() == __world->__placePosition) below_result = false;
+                q.pop();
+            }
+        }
+        if (below_result) {
+            q = rasterize(package->shape[0]+package->shape[3], package->shape[0]+package->shape[1]+package->shape[3]);
+            while (q.size() && above_result) {
+                if (q.front() == __world->__placePosition) above_result = false;
+                q.pop();
+            }
+            if (above_result) {
+                q = rasterize(package->shape[0]+package->shape[2] + package->shape[3], package->shape[0]+package->shape[1]+ package->shape[2] + package->shape[3]);
+                while (q.size() && above_result) {
+                    if (q.front() == __world->__placePosition) above_result = false;
+                    q.pop();
+                }
+            }
+        }
+
+        if (__world->__isHoverBlock && below_result && above_result) {
+            __world->set(__world->__placePosition, package->type);
         }
     }
 
+    
+    DestroyBlockMessage::DestroyBlockMessage() {}
+    DestroyBlockMessage::~DestroyBlockMessage() {}
+    MyBase::MessageType DestroyBlockMessage::getType() const {
+        return MyBase::DestroyBlock;
+    }
+
+    DestroyblockCommand::DestroyblockCommand(World* world): __world(world) {}
+    DestroyblockCommand::~DestroyblockCommand() {}
+    MyBase::MessageType DestroyblockCommand::getType() const {
+        return MyBase::DestroyBlock;
+    }
+    void DestroyblockCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
+        DestroyBlockMessage* package = (DestroyBlockMessage*)message;
+        if (__world->__isHoverBlock) {
+            __world->set(__world->__hoverBlock, BlockCatogary::Air);
+        }
+    }
 
     WorldMoveMessage::WorldMoveMessage(const glm::vec3& pos): position(pos) {}
     WorldMoveMessage::~WorldMoveMessage() {}

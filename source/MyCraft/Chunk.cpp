@@ -91,15 +91,6 @@ namespace MyCraft {
         int z = std::floor(pos.z - __position.z);
         if (__blockTypes[x][y][z] == type) return;
         __isChange = true;
-        if (__blockTypes[x][y][z]) {
-            auto& vecs = __list[__blockTypes[x][y][z]];
-            int index = __tableIndexes[x][y][z];
-            vecs[index] = vecs.back();
-            vecs.pop_back();
-            auto& new_vecs = __list[type];
-            __tableIndexes[x][y][z] = new_vecs.size();
-            new_vecs.push_back(glm::vec4(pos,1));
-        }
         __blockTypes[x][y][z] = type;
     }
     std::bitset<16>::reference Chunk::getBit(const glm::vec3& pos) {
@@ -129,8 +120,17 @@ namespace MyCraft {
             __isChange = true;
             auto& vecs = __list[__blockTypes[x][y][z]];
             int index = __tableIndexes[x][y][z];
-            vecs[index] = vecs.back();
-            vecs.pop_back();
+            __tableIndexes[x][y][z] = -1;
+            if (index < vecs.size()-1) {
+                vecs[index] = vecs.back();
+                vecs.pop_back();
+
+                glm::ivec3 origin = glm::vec3(vecs[index]) - __position;
+                __tableIndexes[origin.x][origin.y][origin.z] = index;
+            }
+            else vecs.pop_back();
+            if (vecs.empty()) __list.erase(__blockTypes[x][y][z]);
+
             __bits[x][y][z] = 0;
         }
     }

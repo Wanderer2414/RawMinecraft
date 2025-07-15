@@ -22,9 +22,10 @@ namespace MyCraft {
         Chunk& chunk = __chunkLoader[pos];
         if (!type) {
             if (chunk.getType(pos)) {
-                __disableBit(pos);
+                chunk.disableBit(pos);
                 chunk.setType(pos, BlockCatogary::Catogary::Air);
-                glm::vec3 position = pos-glm::vec3(1,0,0);
+                glm::vec3 position = pos;
+                position.x--;
                 if (!chunk.getBit(position) && chunk.getType(position)) __enableBit(position);
                 position.x += 2;
                 if (!chunk.getBit(position) && chunk.getType(position)) __enableBit(position);
@@ -77,12 +78,12 @@ namespace MyCraft {
     void WorldRender::__disableBit(const glm::vec3& pos) {
         Chunk& chunk = __chunkLoader[pos];
         if (!chunk.getBit(pos)) return;
-        if (!chunk.getType(pos-glm::vec3(1,0,0))) ;
-        else if (!chunk.getType(pos+glm::vec3(1,0,0))) ;
-        else if (!chunk.getType(pos-glm::vec3(0,1,0))) ;
-        else if (!chunk.getType(pos+glm::vec3(0,1,0))) ;
-        else if (!chunk.getType(pos-glm::vec3(0,0,1))) ;
-        else if (!chunk.getType(pos+glm::vec3(0,0,1))) ;
-        else chunk.disableBit(pos);
+        if ((chunk.getType(pos-glm::vec3(1,0,0))) && 
+            (chunk.getType(pos+glm::vec3(1,0,0))) &&
+            (chunk.getType(pos-glm::vec3(0,1,0))) &&
+            (chunk.getType(pos+glm::vec3(0,1,0))) &&
+            (chunk.getType(pos-glm::vec3(0,0,1))) &&
+            (chunk.getType(pos+glm::vec3(0,0,1))))
+                chunk.disableBit(pos);
     }
 }

@@ -13,8 +13,7 @@ std::size_t GetTime();
 
 glm::vec3 det(const glm::vec3& a, const glm::vec3& b);
 
-std::queue<glm::vec3> rasterize(const glm::vec3& a, const glm::vec3& b);
-std::queue<glm::vec3> rasterize(const glm::mat3& rec);
+std::queue<glm::ivec3> rasterize(const glm::vec3& a, const glm::vec3& b);
 
 std::ostream& operator<<(std::ostream& cout, const glm::vec3& pos);
 std::tuple<int,int,int> to_tuple(const glm::ivec3& vec);
