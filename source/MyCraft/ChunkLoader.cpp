@@ -1,10 +1,14 @@
 #include "ChunkLoader.h"
 #include "Block.h"
 namespace MyCraft {
-    ChunkLoader::ChunkLoader(): __position(0, 0, -1) {
-        __chunks.resize(125);
-        __chunkPositions.resize(125);
-        load(glm::vec3(0,0,0));
+    ChunkLoader::ChunkLoader(): __isLoaded(false) {
+        __chunks.resize(world_side*world_side*world_side, 0);
+        __chunkPositions.resize(world_side*world_side*world_side);
+        for (int i = 0; i<world_side; i++)
+            for (int j = 0; j<world_side; j++) 
+                for (int k = 0; k<world_side; k++) 
+                    __chunkIndices[i][j][k] = i*world_side*world_side + j*world_side + k;
+        playerAt({0,0,0});
     }
     ChunkLoader::~ChunkLoader() {
         for (auto& chunk:__chunks) delete chunk;
@@ -12,8 +16,8 @@ namespace MyCraft {
     const std::vector<glm::vec4>& ChunkLoader::getChunks() const {
         return __chunkPositions;
     }
-    std::string ChunkLoader::getFileName(const glm::vec3& position) const {
-        size_t index = (floor(position.x)+500)*1000*100 + (floor(position.y)+500)*100 + (50 + floor(position.z));
+    std::string ChunkLoader::getFileName(const glm::ivec3& position) const {
+        size_t index = (position.x+500)*1000*100 + (position.y+500)*100 + (50 + position.z);
         return "bin/"+std::to_string(index)+".bin";
     }
     void ChunkLoader::create() const {
@@ -71,34 +75,64 @@ namespace MyCraft {
             }
         }
     }
-    void ChunkLoader::load(const glm::vec3& pos) {
-        int x = floor(pos.x/16), y = floor(pos.y/16), z= floor(pos.z/16);
-        if (x != floor(__position.x)/16 || y != floor(__position.y)/16  || y != floor(__position.y)/16 ) {
-            for (auto& chunk: __chunks) delete chunk;
-            clear();
-            for (int i = 0; i<5; i++) {
-                for (int j = 0; j<5; j++) {
-                    for (int k = 0; k<5; k++) {
-                        int index = i*25+j*5+k;
-                        __chunks[index] = Chunk::Load(getFileName(glm::vec3(x+i,y+j,z+k)));
-                        __chunkIndices[i][j][k] = index;
-                        __chunkPositions[index] = glm::vec4(16.f*glm::vec3(x+i,y+j,z+k),1);
-                        insert(__chunks[index]);
+    void ChunkLoader::playerAt(const glm::vec3& pos) {
+        glm::ivec3 position(floor(pos.x/16)-floor(world_side/2.f), floor(pos.y/16)-floor(world_side/2.f),  floor(pos.z/16) - floor(world_side/2.f));
+        if (__isLoaded) {
+            if (position != __position) {
+                clear();
+                int sub_buffer[world_side][world_side][world_side];
+                memcpy(sub_buffer, __chunkIndices, world_side*world_side*world_side*sizeof(int));
+                glm::ivec3 delta = position - __position;
+                for (int i = 0; i<world_side; i++) {
+                    for (int j = 0; j<world_side; j++) {
+                        for (int k = 0; k<world_side; k++) {
+                            glm::ivec3 old_pos = glm::ivec3(i,j,k)+delta;
+                            if (old_pos.x < 0 || old_pos.x >= world_side || 
+                                old_pos.y < 0 || old_pos.y >= world_side || 
+                                old_pos.z < 0 || old_pos.z >= world_side) 
+                            {
+                                old_pos.x = (old_pos.x+world_side)%world_side;
+                                old_pos.y = (old_pos.y+world_side)%world_side;
+                                old_pos.z = (old_pos.z+world_side)%world_side;
+                                __chunkIndices[i][j][k] = sub_buffer[old_pos.x][old_pos.y][old_pos.z];
+                                __chunks[__chunkIndices[i][j][k]]->save();
+                                delete __chunks[__chunkIndices[i][j][k]];
+                                glm::ivec3 origin = position+glm::ivec3(i,j,k);
+                                __chunks[__chunkIndices[i][j][k]] = Chunk::Load(getFileName(origin));
+                                __chunkPositions[__chunkIndices[i][j][k]] = glm::vec4(origin*16, 1);
+                            }
+                            else {
+                                __chunkIndices[i][j][k] = sub_buffer[old_pos.x][old_pos.y][old_pos.z];
+                            }
+                            insert(__chunks[__chunkIndices[i][j][k]]);
+                        }
+                    }
+                }
+                __position = position;
+            }
+        }
+        else {
+            __isLoaded = true;
+            __position = position;
+            for (int i = 0; i<world_side; i++) {
+                for (int j = 0; j<world_side; j++) {
+                    for (int k = 0; k<world_side; k++) {
+                        glm::ivec3 origin = __position + glm::ivec3(i,j,k);
+                        __chunks[__chunkIndices[i][j][k]] = Chunk::Load(getFileName(origin));
+                        __chunkPositions[__chunkIndices[i][j][k]] = glm::vec4(origin*16, 1);
+                        insert(__chunks[__chunkIndices[i][j][k]]);
                     }
                 }
             }
-            __position = glm::vec3(x,y,z)*16.f;
         }
     }
 
     Chunk& ChunkLoader::operator[](const glm::vec3& pos) {
-        int x = floor((pos.x-__position.x)/16), y = floor((pos.y-__position.y)/16), z= floor((pos.z-__position.z)/16);
-        
+        int x = floor(pos.x/16-__position.x), y = floor(pos.y/16-__position.y), z= floor(pos.z/16-__position.z);
         return *__chunks[__chunkIndices[x][y][z]];
     }
     const Chunk& ChunkLoader::operator[](const glm::vec3& pos) const {
-        int x = floor((pos.x-__position.x)/16), y = floor((pos.y-__position.y)/16), z= floor((pos.z-__position.z)/16);
-        
+        int x = floor(pos.x/16 -__position.x), y = floor(pos.y/16 - __position.y), z= floor(pos.z/16-__position.z);
         return *__chunks[__chunkIndices[x][y][z]];
     }
     void ChunkLoader::glDraw() const {

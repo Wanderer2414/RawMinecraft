@@ -46,6 +46,10 @@ std::queue<glm::vec3> rasterize(const glm::vec3& a, const glm::vec3& b) {
 std::queue<glm::vec3> rasterize(const glm::mat3& rec) {
     return {};
 }
+
+std::tuple<int,int,int> to_tuple(const glm::ivec3& vec) {
+    return {vec.x, vec.y, vec.z};
+}
 namespace MyBase {
     glm::vec2 getWindowSize() {
         #ifdef __linux__

@@ -3,7 +3,7 @@
 #include "DrawingCenter.h"
 #include "General.h"
 namespace MyCraft {
-    Chunk::Chunk() {
+    Chunk::Chunk(): __isChange(false) {
         for (int i = 0; i<16; i++) {
             for (int j = 0; j<16; j++) {
                 for (int k = 0; k<16; k++) {
@@ -14,8 +14,7 @@ namespace MyCraft {
             }
         }
     }
-    Chunk::~Chunk() {
-    }
+    Chunk::~Chunk() {}
     Chunk* Chunk::Load(const std::string& src) {
         Chunk* new_chunk = new Chunk();
         std::ifstream file(src, std::ios::in | std::ios::binary);
@@ -48,11 +47,16 @@ namespace MyCraft {
                 }
             }
         }
+        new_chunk->__source = src;
         file.close();
         return new_chunk;
     }
-    void Chunk::save(const std::string& src) {
-        std::ofstream file(src, std::ios::binary | std::ios::out);
+    glm::vec3 Chunk::getPosition() const {
+        return __position;
+    }
+    void Chunk::save() {
+        if (!__isChange) return ;
+        std::ofstream file(__source, std::ios::binary | std::ios::out);
         file.write((char*)&__position, sizeof(glm::vec3));
         unsigned int sz = __list.size();
         file.write((char*)&sz, sizeof(int));
@@ -67,7 +71,8 @@ namespace MyCraft {
                 file.write((char*)&__blockTypes[i][j], sizeof(BlockCatogary::Catogary)*16);
             }
         }
-
+        __isChange = false;
+        file.close();
     }
     const BlockCatogary::Catogary& Chunk::getType(const glm::vec3& pos) const {
         int x = std::floor(pos.x - __position.x);
@@ -80,6 +85,8 @@ namespace MyCraft {
         int x = std::floor(pos.x-__position.x);
         int y = std::floor(pos.y - __position.y);
         int z = std::floor(pos.z - __position.z);
+        if (__blockTypes[x][y][z] == type) return;
+        __isChange = true;
         if (__blockTypes[x][y][z]) {
             auto& vecs = __list[__blockTypes[x][y][z]];
             int index = __tableIndexes[x][y][z];
@@ -102,6 +109,7 @@ namespace MyCraft {
         int y = std::floor(pos.y - __position.y);
         int z = std::floor(pos.z - __position.z);
         if (!__bits[x][y][z]) {
+            __isChange = true;
             auto& vecs = __list[__blockTypes[x][y][z]];
             __tableIndexes[x][y][z] = vecs.size();
             vecs.push_back(glm::vec4(pos, 1));
@@ -114,6 +122,7 @@ namespace MyCraft {
         int y = std::floor(pos.y - __position.y);
         int z = std::floor(pos.z - __position.z);
         if (__bits[x][y][z]) {
+            __isChange = true;
             auto& vecs = __list[__blockTypes[x][y][z]];
             int index = __tableIndexes[x][y][z];
             vecs[index] = vecs.back();

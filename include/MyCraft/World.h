@@ -6,10 +6,10 @@
 #include "Controller3D.h"
 #include "Message.h"
 #include "WorldRender.h"
+#include "glm/fwd.hpp"
 
 namespace MyCraft {
 class World: public MyBase3D::Container3D, public MyBase::Port {
-    #define world_side 5
     public:
         World(const int& x, const int& y, const int& z);
         ~World();
@@ -27,7 +27,8 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
     private:
         WorldRender             __worldRender;
         bool                    __isHoverBlock;
-        glm::vec3               __hoverBlock, __placePosition, __cameraPosition, __cameraDir;
+        glm::ivec3              __hoverBlock, __placePosition;
+        glm::vec3               __cameraPosition, __cameraDir;
         MyBase::Clock           pFrameAlarm;
 
     };

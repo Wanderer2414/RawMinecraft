@@ -12,7 +12,7 @@ namespace MyCraft {
         ~WorldRender();
         void createPlaneWorld() const;
         void save();
-        void load(const glm::vec3& position);
+        void playerAt(const glm::vec3& position);
 
         const BlockCatogary::Catogary&      at(const glm::vec3& posistion) const;
 

@@ -17,6 +17,7 @@ std::queue<glm::vec3> rasterize(const glm::vec3& a, const glm::vec3& b);
 std::queue<glm::vec3> rasterize(const glm::mat3& rec);
 
 std::ostream& operator<<(std::ostream& cout, const glm::vec3& pos);
+std::tuple<int,int,int> to_tuple(const glm::ivec3& vec);
 namespace MyBase {
     glm::vec2 getWindowSize();
 }

@@ -10,7 +10,6 @@ namespace MyCraft {
     World::World(const int& x, const int& y, const int& z): __isHoverBlock(false) {
         // __worldRender.createPlaneWorld();
         // exit(0);
-        __worldRender.load({-16*3,-16*3,-16*2});
         insert(&__worldRender);
         pFrameAlarm.setDuration(150);
         add(new CheckFallCommand(this));
@@ -50,8 +49,7 @@ namespace MyCraft {
         __isHoverBlock = false;
     }
     void World::playerAt(const glm::vec3& pos) {
-        glm::vec3 position = pos - glm::vec3(16,16,16)*2.f;
-        __worldRender.load(position);
+        __worldRender.playerAt(pos);
     }
     void World::glDraw() const {
         MyBase3D::Container3D::glDraw();
@@ -255,7 +253,7 @@ namespace MyCraft {
     }
     void PlaceblockCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
         RightAttackMessage* package = (RightAttackMessage*)message;
-        glm::vec3 fpos(floor(package->posistion.x), floor(package->posistion.y), floor(package->posistion.z));
+        glm::ivec3 fpos(floor(package->posistion.x), floor(package->posistion.y), floor(package->posistion.z));
         if (__world->__isHoverBlock && __world->__placePosition!=fpos) {
             fpos.z += 1;
             if (__world->__placePosition != fpos)

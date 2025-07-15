@@ -10,8 +10,8 @@ namespace MyCraft {
         __chunkLoader.create();
     }
     void WorldRender::save() {}
-    void WorldRender::load(const glm::vec3& position) {
-        __chunkLoader.load(position);
+    void WorldRender::playerAt(const glm::vec3& position) {
+        __chunkLoader.playerAt(position);
     }
 
     const BlockCatogary::Catogary& WorldRender::at(const glm::vec3& posistion) const {
