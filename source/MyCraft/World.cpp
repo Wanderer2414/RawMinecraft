@@ -61,7 +61,7 @@ namespace MyCraft {
         }
     }
     CheckEmptyCommand::CheckEmptyCommand(World* world): __world(world) {}
-    CheckEmptyCommand::~CheckEmptyCommand() {Command::~Command();}
+    CheckEmptyCommand::~CheckEmptyCommand() {}
     
     void CheckEmptyCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         RequestGotoMessage* request = (RequestGotoMessage*)message;

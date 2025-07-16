@@ -57,6 +57,7 @@ namespace MyBase {
     };
     class Command {
     public:
+        Command();
         virtual MessageType getType()      const = 0;
         virtual void execute(Port& mine, Port& source, Message* message) = 0;
         virtual ~Command() = 0;
