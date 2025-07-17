@@ -268,13 +268,13 @@ namespace MyCraft {
 
 
     MoveMessage::MoveMessage(const glm::vec3& d): direction(d) {}
-    MoveMessage::~MoveMessage() {Message::~Message();}
+    MoveMessage::~MoveMessage() {}
     MyBase::MessageType MoveMessage::getType() const {
         return MyBase::MessageType::Move;
     }
 
     FallMessage::FallMessage(const float& z): zVelocity(z) {}
-    FallMessage::~FallMessage() {Message::~Message();}
+    FallMessage::~FallMessage() {}
     MyBase::MessageType FallMessage::getType() const  {
         return MyBase::MessageType::Fall;
     }
@@ -286,7 +286,7 @@ namespace MyCraft {
     StopFallMessage::~StopFallMessage() {};
 
     RequestGotoMessage::RequestGotoMessage(const glm::mat4x3& p, const glm::vec2& d): rectangleBox(p), direction(d) {}
-    RequestGotoMessage::~RequestGotoMessage() {Message::~Message();}
+    RequestGotoMessage::~RequestGotoMessage() {}
 
     RequestFallMessage::RequestFallMessage(const glm::mat4x3& rec, const float& z): rectangleBox(rec), zVelocity(z) {
     }
