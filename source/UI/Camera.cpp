@@ -153,6 +153,7 @@ namespace MyBase3D {
 
         glDrawArrays(GL_LINES, 0, 6);
         glBindVertexArray(0);
+        glDeleteVertexArrays(1, &VAO);
         glDeleteBuffers(1, &Positions);
         glDeleteBuffers(1, &Colors);
     }
