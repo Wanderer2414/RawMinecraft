@@ -1,7 +1,10 @@
 #include "raylib.h"
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <cstring>
 #include <ctime>
+#include <exception>
 #include <iostream>
 #include <math.h>
 #include <vector>
@@ -33,13 +36,13 @@ public:
     }
 };
 
-class HeightRound {
+class Tectonic {
 private:
     std::vector<PorlarVector2> vertices;
     Vector2 origin;
-    float __size;
+    Vector2 size;
 public:
-    HeightRound(const size_t& n, const float& size): origin({0,0}), __size(size) {
+    Tectonic(const size_t& n, const Vector2& s): origin({0,0}), size(s) {
         float remain = 100;
         for (int i = 0; i<n; i++) {
             float pecent = rand()%50+10;
@@ -48,19 +51,27 @@ public:
             remain = 100-angle;
             angle *= M_PI*2/100;
             float length = rand()%25+75;
-            length = length/100*size;
+            length = length/100*(size.x*abs(cos(angle)) + size.y*abs(sin(angle)))/2/sqrt(2);
             vertices.push_back({length, angle});
         }
         if (n && remain>25) {
             float percent = rand()%50+25;
             percent = (remain*percent/100 + 100 -remain)*M_PI*2/100;
             float length = rand()%25+75;
-            length = length/100*size;
+            length = length/100*(size.x*abs(cos(percent)) + size.y*abs(sin(percent)))/2;
             vertices.push_back({length, percent});
         }
     }
-    HeightRound(): HeightRound(0, 0) {};
-    HeightRound(const float& size): HeightRound(rand()%10+5, size) {}
+    Tectonic(): Tectonic(0, {0,}) {};
+    Tectonic(const Vector2& size): Tectonic(rand()%10+5, size) {}
+    Tectonic(const Tectonic& tectonic) {
+        vertices = tectonic.vertices;
+        origin = tectonic.origin;
+        size = tectonic.size;
+    }
+    bool empty() const {
+        return vertices.empty();
+    }
     float operator[](float angle) const {
         while (angle<0) angle += M_PI*2;
         while (angle>M_PI*2) angle -= M_PI*2;
@@ -86,12 +97,20 @@ public:
 
         return 1.f/dem;
     }
-    HeightRound operator+(const float& max_width) const {
+    Tectonic& operator=(const Tectonic& tectonic) {
+        if (&tectonic != this) {
+            vertices = tectonic.vertices;
+            origin = tectonic.origin;
+            size = tectonic.size;
+        }
+        return *this;
+    }
+    Tectonic operator+(const float& max_width) const {
         if (max_width<0) return operator-(max_width);
-        HeightRound heightRound;
-        heightRound.vertices.resize(vertices.size());
-        heightRound.origin = origin;
-        heightRound.__size = __size+max_width;
+        Tectonic Tectonic;
+        Tectonic.vertices.resize(vertices.size());
+        Tectonic.origin = origin;
+        Tectonic.size = {size.x+max_width*2, size.y+max_width*2};
         float width = 1.0f*(rand()%50+25)/100*max_width;
         for (int i = 0; i<vertices.size(); i++) {
             float angle = M_PI*2*(i+1)/vertices.size();
@@ -99,16 +118,16 @@ public:
                 width = width*(rand()%40-20+100)/100;
             else width = width*(rand()%20+100)/100;
             if (width>max_width) width = max_width;
-            heightRound.vertices[i] = {operator[](angle) + width, angle};
+            Tectonic.vertices[i] = {operator[](angle) + width, angle};
         }
-        return  heightRound;
+        return  Tectonic;
     }
-    HeightRound operator-(const float& max_width) const {
+    Tectonic operator-(const float& max_width) const {
         if (max_width<0) return operator+(max_width);
-        HeightRound heightRound;
-        heightRound.vertices.resize(vertices.size());
-        heightRound.origin = origin;
-        heightRound.__size = __size - max_width;
+        Tectonic Tectonic;
+        Tectonic.vertices.resize(vertices.size());
+        Tectonic.origin = origin;
+        Tectonic.size = {size.x-max_width*2, size.y - max_width*2};
         float width = 1.0f*(rand()%50+25)/100*max_width;
         for (int i = 0; i<vertices.size(); i++) {
             float angle = M_PI*2*(i+1)/vertices.size();
@@ -116,66 +135,21 @@ public:
                 width = width*(rand()%40-20+100)/100;
             else width = width*(rand()%20+100)/100;
             if (width>max_width) width = max_width;
-            heightRound.vertices[i] = {operator[](angle) - width, angle};
+            Tectonic.vertices[i] = {operator[](angle) - width, angle};
         }
-        return heightRound;
+        return Tectonic;
     }
-    HeightRound operator+(const HeightRound& round) const {
-
-        std::vector<Vector2> ans;
-        __merge(ans, round);
-        round.__merge(ans, *this);
-        Vector2 centroid = {0,0}, TopLeft={0,0}, BottomRight={0,0};
-        for (auto& vec:ans) {
-            centroid=centroid+vec;
-            TopLeft.x = std::min(vec.x, TopLeft.x);
-            TopLeft.y = std::min(vec.y, TopLeft.y);
-            BottomRight.x = std::max(vec.x, BottomRight.x);
-            BottomRight.y = std::max(vec.y, BottomRight.y);
+    bool intersect(const Tectonic& Tectonic) const {
+        for (Vector2 position: Tectonic.vertices) {
+            position =position + Tectonic.origin;
+            Vector2 delta = position - origin;
+            float angle = atan(delta.y/delta.x);
+            if (delta.x<0) angle+=M_PI;
+            float distance = length(delta);
+            if (operator[](angle)>distance) 
+                return true;
         }
-        centroid = {centroid.x/ans.size(), centroid.y/ans.size()};
-        HeightRound roundans;
-        roundans.setPosition(centroid);
-        roundans.__size = std::max(BottomRight.x-TopLeft.x, BottomRight.y-TopLeft.y)/2;
-        for (auto& vec:ans) {
-            PorlarVector2 pVec(vec-centroid);
-            if (roundans.vertices.empty()) roundans.vertices.push_back(pVec);
-            else {
-                int i = 0; 
-                while (i<roundans.vertices.size() && roundans.vertices[i].angle<pVec.angle) i++;
-                if (i==roundans.vertices.size()) roundans.vertices.push_back(pVec);
-                else roundans.vertices.insert(roundans.vertices.begin()+i, pVec);
-            }
-        }
-        return roundans;
-    }
-    HeightRound operator-(const HeightRound& round) const {
-        std::vector<Vector2> vecs;
-        __intersect(vecs, round);
-        round.__intersect(vecs, *this);
-        Vector2 centroid = {0,0}, TopLeft={0,0}, BottomRight={0,0};
-        for (auto& vec:vecs) {
-            centroid=centroid+vec;
-            TopLeft.x = std::min(vec.x, TopLeft.x);
-            TopLeft.y = std::min(vec.y, TopLeft.y);
-            BottomRight.x = std::max(vec.x, BottomRight.x);
-            BottomRight.y = std::max(vec.y, BottomRight.y);
-        }
-        centroid = {centroid.x/vecs.size(), centroid.y/vecs.size()};
-        HeightRound ans;
-        ans.origin = centroid;
-        ans.__size = std::max(BottomRight.x-TopLeft.x, BottomRight.y-TopLeft.y)/2;
-        for (auto& vec:vecs) {
-            PorlarVector2 pVec(vec-centroid);
-            if (ans.vertices.empty()) ans.vertices.push_back(pVec);
-            else {
-                int i = 0; 
-                while (i<ans.vertices.size() && ans.vertices[i].angle<pVec.angle) i++;
-                if (i==ans.vertices.size()) ans.vertices.emplace_back(pVec);
-                else ans.vertices.emplace(ans.vertices.begin()+i, pVec);
-            }
-        }
-        return ans;
+        return false;
     }
     void setPosition(const Vector2& p) {
         origin = p;
@@ -206,10 +180,63 @@ public:
         DrawLineEx(vertices[0]+origin, vertices.back()+origin, 2, WHITE); 
         DrawCircleV(origin, 5, RED);
     }
+    void draw(unsigned char** board) const {
+        Tectonic outside = *this;
+        outside.setRoundness(50);
+        for (int i = 0; i<16; i++) {
+            outside = outside + 20;
+            std::vector<Vector2> bounds((int)outside.size.x, {outside.size.y/2, -outside.size.y/2});
+            for (int i = 0; i<outside.vertices.size(); i++) {
+                Vector2 a, b = outside.vertices[i], delta;
+                if (i) a = outside.vertices[i-1];
+                else a = outside.vertices.back();
+                delta = b-a;
+                delta.y /= delta.x;
+                delta.x = 1;
+                if (a.x > b.x) std::swap(a , b);
+                for (Vector2 vec = {floor(a.x), a.y}; vec.x < floor(b.x); vec = vec + delta) {
+                    int index = vec.x + outside.size.x/2;
+                    bounds[index].x = std::min(vec.y, bounds[index].x);
+                    bounds[index].y = std::max(vec.y, bounds[index].y);
+                }
+            }
+            for (int i = 0; i<outside.size.x; i++) {
+                if (bounds[i].x < bounds[i].y)
+                    for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) 
+                        board[int(i-outside.size.x/2+ outside.origin.x)][j]++;
+            }
+        }
+
+        {
+            Tectonic inside = *this;
+            inside.setRoundness(50);
+            inside = inside - 50;
+            std::vector<Vector2> bounds((int)inside.size.x, {inside.size.y/2, -inside.size.y/2});
+            for (int i = 0; i<inside.vertices.size(); i++) {
+                Vector2 a, b = inside.vertices[i], delta;
+                if (i) a = inside.vertices[i-1];
+                else a = inside.vertices.back();
+                delta = b-a;
+                delta.y /= delta.x;
+                delta.x = 1;
+                if (a.x > b.x) std::swap(a , b);
+                for (Vector2 vec = {floor(a.x), a.y}; vec.x < floor(b.x); vec = vec + delta) {
+                    int index = vec.x + inside.size.x/2;
+                    bounds[index].x = std::min(vec.y, bounds[index].x);
+                    bounds[index].y = std::max(vec.y, bounds[index].y);
+                }
+            }
+            for (int i = 0; i<inside.size.x; i++) {
+                if (bounds[i].x < bounds[i].y)
+                    for (int j = bounds[i].x + inside.origin.y; j < bounds[i].y + inside.origin.y; j++) 
+                        board[int(i-inside.size.x/2+ inside.origin.x)][j]++;
+            }
+        }
+    }
 private:
-    void __intersect(std::vector<Vector2>& vecs, const HeightRound& round) const {
-        for (Vector2 position: round.vertices) {
-            position =position + round.origin;
+    void __intersect(std::vector<Vector2>& vecs, const Tectonic& Tectonic) const {
+        for (Vector2 position: Tectonic.vertices) {
+            position =position + Tectonic.origin;
             Vector2 delta = position - origin;
             float angle = atan(delta.y/delta.x);
             if (delta.x<0) angle+=M_PI;
@@ -218,9 +245,9 @@ private:
                 vecs.push_back(position);
         }
     }
-    void __merge(std::vector<Vector2>& vecs, const HeightRound& round) const {
-        for (Vector2 position: round.vertices) {
-            position =position + round.origin;
+    void __merge(std::vector<Vector2>& vecs, const Tectonic& Tectonic) const {
+        for (Vector2 position: Tectonic.vertices) {
+            position =position + Tectonic.origin;
             Vector2 delta = position - origin;
             float angle = atan(delta.y/delta.x);
             if (delta.x<0) angle+=M_PI;
@@ -230,23 +257,88 @@ private:
         }
     }
 };
-
+class Area {
+    Vector2 size, origin;
+    std::vector<Tectonic*> Tectonics;
+    std::vector<Tectonic*> specials;
+public:
+    Area() {
+        srand(clock());
+    }
+    Area(const int& n, const Vector2& org, const Vector2& s): origin(org), size(s) {
+        Tectonics.resize(n);
+        float remain = 1;
+        for (int i = 0; i<n; i++) {
+            float percent = 1.0f*(rand()%70)/100 + 0.25;
+            Vector2 subsize =  {1.5f*percent*s.y, percent*s.y};
+            Tectonics[i] = new Tectonic(20, subsize);
+            Vector2 position;
+            percent = 1.0f*(rand()%30)/100;
+            percent = percent*remain + 1 - remain;
+            remain = (1 - percent)*0.7;
+            position.x = (size.x-subsize.x)*percent+subsize.x/2 + origin.x;
+            percent = 1.0f*(rand()%100)/100;
+            position.y = (size.y-subsize.y)*percent + subsize.y/2 + origin.y;
+            Tectonics[i]->setPosition(position);
+        }
+    }
+    Area(const Area&) = delete;
+    ~Area() {
+        for (auto& Tectonic: Tectonics) delete Tectonic;
+        for (auto& Tectonic: specials) delete Tectonic;
+        Tectonics.clear();
+        specials.clear();
+    }
+    Area& operator=(const Area&) const = delete;
+    void draw(unsigned char** board) const {
+        for (auto& Tectonic: Tectonics) Tectonic->draw(board);
+    }
+};
 int main() {
-    InitWindow(1000, 1000, "World Render");
+    InitWindow(2500, 1500, "World Render");
     srand(clock());
-    HeightRound roundA(5, 500), roundB(5, 500);
-    roundA.setPosition({500,500});
-    roundB.setPosition({750, 500});
-    HeightRound roundC = roundA-roundB;
+    Area area(10, {250,250}, {2500, 1000});
+    unsigned char** board;
+    
+    board = new unsigned char*[3000];
+    for (int i = 0; i<3000; i++) {
+        board[i] = new unsigned char[1500];
+        std::memset(board[i], 0, 1500);
+    }
+    Image image = GenImageColor(3000, 1500, WHITE);
+    Color* colors = (Color*)image.data;
+
+    unsigned char max_height = 0;
+    float average_height = 0;
+    size_t count = 0;
+    area.draw(board);
+    for (int y = 0; y<image.height; y++) {
+        for (int x = 0; x<image.width; x++) {
+            int index = y*image.width + x;
+            unsigned char color = board[x][y]*2;
+            max_height = std::max(max_height, board[x][y]);
+            if (color) {
+                average_height += board[x][y];
+                count++;
+            }
+            colors[index] = {color, color, color, 255};
+        }
+    }
+    std::cout << (int)max_height << std::endl;
+    std::cout << average_height/count << std::endl;
+
+    for (int i = 0; i<3000; i++) delete[] board[i];
+    delete[] board;
+
+    Texture2D Texture2D = LoadTextureFromImage(image);
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
-        roundB.draw();
-        roundA.draw();
-        roundC.draw();
+        DrawTexture(Texture2D, -250, -250, WHITE);
         EndDrawing();
     }
+    UnloadTexture(Texture2D);
+    UnloadImage(image);
     CloseWindow();
-
     return 0;
 }
