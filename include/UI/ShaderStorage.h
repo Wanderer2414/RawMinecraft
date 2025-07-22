@@ -14,7 +14,8 @@ class ShaderStorage {
                 GetMarginShader() const,
                 getPoint2DShader() const,
                 getModelShader() const,
-                getFontShader() const;
+                getFontShader() const,
+                getImage2DShader() const;
     private:
         ShaderStorage();
         ~ShaderStorage();
@@ -25,6 +26,7 @@ class ShaderStorage {
                 __marginShader,
                 __chunkShader,
                 __modelShader,
+                __imageShader,
                 __fontShader;
     };
 }

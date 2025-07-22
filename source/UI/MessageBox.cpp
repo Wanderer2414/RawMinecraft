@@ -1,17 +1,21 @@
 #include "MessageBox.h"
 #include "ControlCenter.h"
 #include "Global.h"
+#include "Shape.h"
+#include "ShapeManager.h"
 namespace MyBase {
-    MessageBox::MessageBox(): __isOpen(true), __position(-1, -1), __size(2,2) {
+    MessageBox::MessageBox(): __isOpen(true), __size(2,2), __roundness(0) {
         ShapeContainer::setPosition({-1,-1});
         ShapeContainer::setFillColor({0,0,0,120});
         __sensitiveClock.setDuration(10);
+        ShapeManager::getInstance().createShape(__background, __size, __roundness);
     }
     MessageBox::~MessageBox() {
+        ShapeManager::getInstance().removeShape(__background, __size, __roundness);
     }
 
     glm::vec2 MessageBox::getPosition() const {
-        return __position;
+        return ShapeContainer::getPosition();
     };
     glm::vec2 MessageBox::getSize() const {
         return __size;
@@ -21,11 +25,13 @@ namespace MyBase {
         if (isPressed() && __getCurrentHover() == -1) close();
         return is_changed;
     }
-    void MessageBox::setPosition(const glm::vec2& position) {
-        __position = position;
-    }
-    void MessageBox::setSize(const glm::vec2& size) {
-        __size = size;
+    void MessageBox::setSize(const glm::vec2& size, const float& roundness) {
+        if (size!=__size || __roundness != roundness) {
+            ShapeManager::getInstance().removeShape(__background, __size, __roundness);
+            __size = size;
+            __roundness = roundness;
+            ShapeManager::getInstance().createShape(__background, __size, __roundness);
+        }
     }
     void MessageBox::open(GLFWwindow* window) {
         __isOpen = true;
@@ -42,11 +48,10 @@ namespace MyBase {
             }
             is_changed = handle(window) || is_changed;
             if (is_changed) {
-                ControlCenter::Default->enableScissorMode(__position, __size);
                 glClearColor(0,0,0, 1);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                ControlCenter::Default->DrawSavedScreen();
                 glDraw();
-                ControlCenter::Default->disableScissorMode();
                 glfwSwapBuffers(window);
             }
             if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -63,6 +68,7 @@ namespace MyBase {
         return __isOpen;
     }
     void MessageBox::glDraw() const {
+        ShapeContainer::draw(__background);
         Container2D::glDraw();
     }
 }

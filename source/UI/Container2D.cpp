@@ -1,4 +1,6 @@
 #include "Container2D.h"
+#include "Block.h"
+#include "General.h"
 namespace MyBase{
 
     Container2D::Container2D(): __currentFocus(-1), __currentHover(-1), __previosFocus(-1) {

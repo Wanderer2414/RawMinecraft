@@ -19,17 +19,21 @@ namespace MyBase {
             void enable3DMode();
             void disable3DMode();
             void enableScissorMode(const glm::vec2& position, const glm::vec2& size) const;
-            void disableScissorMode() const;
+            void disableScissorMode()   const;
+            void BindSubScreen()        const;
+            void UnbindSubScreen()      const;
+            void DrawSavedScreen()      const;
             glm::vec2 getCursorPos(GLFWwindow* window) const;
             glm::vec2 getScroll() const;
             const glm::vec2& getWindowSize() const;
             const glm::vec2& getWindowHalf() const;
             friend void scroll_callback(GLFWwindow*, double, double);
         private: 
-            size_t          __clock;
-            glm::vec2       __scrollPosition;
             unsigned char   __majorVerson, __minorVerson;
             float           __fpsInterval;
+            GLuint          __screenTexture, __screenBuffer;
+            size_t          __clock;
+            glm::vec2       __scrollPosition;
             glm::vec2       __windowSize, __windowHalfSize;
             std::string     __programName;
     };

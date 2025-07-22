@@ -6,6 +6,8 @@
 namespace MyBase {
     class Font {
     public:
+        #define font_height 100
+        #define font_resolution 2048
         Font(const std::string& source = "");
         ~Font();
         glm::vec2 MeasureText(const std::string& text) const;

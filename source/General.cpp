@@ -1,5 +1,4 @@
 #include "General.h"
-#include "Block.h"
 #include "Global.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
@@ -72,6 +71,53 @@ namespace MyBase {
     }
 }
 namespace MyCraft {
+    void DrawTexture(GLuint texture, const glm::vec2& position, const glm::vec2& size, const glm::vec2& subposition, const glm::vec2& subsize) {
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().getImage2DShader());
+        GLuint POS, SIZE, SPOS, SSIZE, VAO;
+
+        glGenVertexArrays(1, &VAO);
+        glBindVertexArray(VAO);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
+
+        glGenBuffers(1, &POS);
+        glBindBuffer(GL_UNIFORM_BUFFER, POS);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*2, &position, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 0, POS);
+
+        glGenBuffers(1, &SIZE);
+        glBindBuffer(GL_UNIFORM_BUFFER, SIZE);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*2, &size, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 1, SIZE);
+
+        glGenBuffers(1, &SPOS);
+        glBindBuffer(GL_UNIFORM_BUFFER, SPOS);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*2, &subposition, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, SPOS);
+
+
+        glGenBuffers(1, &SSIZE);
+        glBindBuffer(GL_UNIFORM_BUFFER, SSIZE);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*2, &subsize, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 3, SSIZE);
+
+        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::getInstance().getRectangle2DSet());
+        glEnableVertexArrayAttrib(VAO, 0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::getInstance().getRectangle2DUV());
+        glEnableVertexArrayAttrib(VAO, 1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0);
+
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+        glDeleteVertexArrays(1, &VAO);
+        glDeleteBuffers(1, &POS);
+        glDeleteBuffers(1, &SIZE);
+        glDeleteBuffers(1, &SPOS);
+        glDeleteBuffers(1, &SSIZE);
+    }
     void DrawMargin(const glm::mat4x3& mat, const glm::vec3& color, const float& linewidth) {
         glm::vec3 shape[8] = {mat[0], mat[0]+mat[1], mat[0] + mat[1]+ mat[2], mat[0] +mat[2]};
         for (int i = 4; i<8; i++) shape[i] = shape[i-4]+mat[3];

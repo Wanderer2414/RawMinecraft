@@ -72,11 +72,4 @@ namespace MyCraft {
     GLuint MyCraft::BlockCatogary::getTexCoord() const {
         return __blockTexture;
     }
-
-    // void MyCraft::Block::glDraw() const {
-    //     if (__hoverPlane!=-1) {
-    //     }
-    //     glDeleteVertexArrays(1, &VAO);
-    //     glDeleteBuffers(1, &originPoint);
-    // }
 }

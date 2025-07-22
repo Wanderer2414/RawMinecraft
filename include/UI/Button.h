@@ -12,7 +12,6 @@ namespace MyBase  {
     public:
         Button();
         ~Button();
-        bool setHover(const bool& hover) override;
         glm::vec2 getSize() const override;
         glm::vec2 getPosition() const override;
         void setPosition(const glm::vec2& position);
@@ -25,11 +24,14 @@ namespace MyBase  {
         void setScale(const glm::vec2& scale);
     protected:
         void update() override;
+        virtual bool    __mouseDown() override,
+                        __hover() override,
+                        __lostHover() override,
+                        __mouseRelease() override;
     private:
         virtual T&          getShape() = 0;
         virtual const T&    getShape() const = 0;
         virtual void        glDraw() const override;
-        virtual bool        catchEvent(GLFWwindow* window) override;
         bool                contains(const glm::vec2& position) const override;
         Color   __hoverColor, __clickColor, __normalColor;
     };

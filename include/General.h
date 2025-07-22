@@ -21,6 +21,7 @@ namespace MyBase {
     glm::vec2 getWindowSize();
 }
 namespace MyCraft {
+    void DrawTexture(GLuint texture, const glm::vec2& position, const glm::vec2& size, const glm::vec2& subposition, const glm::vec2& subsize);
     void DrawMargin(const glm::mat4x3& box, const glm::vec3& color, const float& linewidth = 2);
 }
 #endif

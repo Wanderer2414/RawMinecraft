@@ -20,11 +20,11 @@ namespace MyCraft {
     const std::vector<glm::vec4>& ChunkLoader::getChunks() const {
         return __chunkPositions;
     }
-    std::string ChunkLoader::getFileName(const glm::ivec3& position) const {
+    std::string ChunkLoader::getFileName(const glm::ivec3& position) {
         size_t index = (position.x+500)*1000*100 + (position.y+500)*100 + (50 + position.z);
         return "bin/"+std::to_string(index)+".bin";
     }
-    void ChunkLoader::create() const {
+    void ChunkLoader::create() {
         for (int i = -10; i<10; i++) {
             for (int j = -10; j<10; j++) {
                 for (int k = -5; k<5; k++) {

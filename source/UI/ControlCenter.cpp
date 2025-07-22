@@ -1,10 +1,13 @@
 #include "ControlCenter.h" 
+#include "Block.h"
+#include "General.h"
+#include "Global.h"
 #include <ctime>
 namespace MyBase {
     ControlCenter::ControlCenter(const float& width, const float& height, const std::string& program):
          __windowSize(width, height), __windowHalfSize(__windowSize/2.f), __programName(program), __fpsInterval(100), __majorVerson(3), __minorVerson(3),
          __scrollPosition(0, 0), __clock(clock()) {
-        
+
     }
     ControlCenter::~ControlCenter() {
     }
@@ -51,10 +54,26 @@ namespace MyBase {
             std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
         }
         glfwSetScrollCallback(window, scroll_callback);
+
+        glGenTextures(1, &__screenTexture);
+        glBindTexture(GL_TEXTURE_2D, __screenTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, __windowSize.x, __windowSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, 0);    
+
+        glGenFramebuffers(1, &__screenBuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, __screenBuffer);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, __screenTexture, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         return window;
     }
     
     void ControlCenter::CloseWindow() {
+        glDeleteTextures(1, &__screenTexture);
+        glDeleteFramebuffers(1, &__screenBuffer);
         glfwTerminate();
     }
     void ControlCenter::enable3DMode() {
@@ -89,6 +108,16 @@ namespace MyBase {
     }
     void ControlCenter::disableScissorMode() const {
         glDisable(GL_SCISSOR_TEST);
+    }
+
+    void ControlCenter::BindSubScreen() const{
+        glBindFramebuffer(GL_FRAMEBUFFER, __screenBuffer);
+    }
+    void ControlCenter::UnbindSubScreen() const{
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+    void ControlCenter::DrawSavedScreen() const{
+        MyCraft::DrawTexture(__screenTexture, {-1,-1}, {2, 2}, {0,0}, {1,1});
     }
     glm::vec2 ControlCenter::getCursorPos(GLFWwindow* window) const {
         double x,y;

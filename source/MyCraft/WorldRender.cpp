@@ -6,9 +6,6 @@ namespace MyCraft {
         insert(&__chunkLoader);
     }
     WorldRender::~WorldRender() {}
-    void WorldRender::createPlaneWorld() const {
-        __chunkLoader.create();
-    }
     void WorldRender::save() {}
     void WorldRender::playerAt(const glm::vec3& position) {
         __chunkLoader.playerAt(position);

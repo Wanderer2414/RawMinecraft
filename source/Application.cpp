@@ -4,6 +4,7 @@
 #include "DrawingCenter.h"
 #include "GameForm.h"
 #include "IntroForm.h"
+#include "MediateForm.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
 #include "ModelStorage.h"
@@ -40,7 +41,12 @@ namespace MyCraft {
                 }
                 break;
                 case 1: {
-                    GameForm gameForm(__window, 1);
+                    MediateForm mediateForm(__window, 1);
+                    formIndex = mediateForm.run(__window);
+                }
+                break;
+                case 2: {
+                    GameForm gameForm(__window, 2);
                     formIndex = gameForm.run(__window);
                 }
                 break;

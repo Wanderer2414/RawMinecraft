@@ -11,6 +11,7 @@ namespace MyBase3D {
         __point2DShader = createProgram("assets/shaders/Point2D.vert.spv", "assets/shaders/Point2D.frag.spv");
         __modelShader = createProgram("assets/shaders/model.vert.spv", "assets/shaders/shader.frag.spv");
         __fontShader = createProgram("assets/shaders/font2D.vert.spv", "assets/shaders/font2D.frag.spv");
+        __imageShader = createProgram("assets/shaders/image2D.vert.spv", "assets/shaders/image2D.frag.spv");
     }
     ShaderStorage::~ShaderStorage() {
         glDeleteProgram(__defaultShader);
@@ -19,6 +20,7 @@ namespace MyBase3D {
         glDeleteProgram(__point2DShader);
         glDeleteProgram(__modelShader);
         glDeleteProgram(__fontShader);
+        glDeleteProgram(__imageShader);
         glDeleteProgram(__chunkShader);
     }
 
@@ -52,5 +54,8 @@ namespace MyBase3D {
     }
     GLuint ShaderStorage::GetChunkShader() const {
         return __chunkShader;
+    }
+    GLuint ShaderStorage::getImage2DShader() const {
+        return __imageShader;
     }
 }

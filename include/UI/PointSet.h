@@ -9,6 +9,8 @@ namespace MyBase3D {
             static void close();
             GLuint      getBlockSet() const,
                         getChunkSet() const,
+                        getRectangle2DSet() const,
+                        getRectangle2DUV() const,
                         getRectangleIndices() const,
                         getMarginBlockIndices() const,
                         getImageBlockIndices() const;
@@ -17,6 +19,7 @@ namespace MyBase3D {
             ~PointSet();
             GLuint      __marginBlockIndices,
                         __imageBlockIndices,
+                        __rectangle2DSet, __rectangle2DUV,
                         __rectangleIndices;
             GLuint      __blockSet;
             static PointSet* Default;

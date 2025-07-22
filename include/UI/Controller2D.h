@@ -25,6 +25,9 @@ namespace MyBase {
     protected:
         virtual bool    contains(const glm::vec2& position) const = 0;
         virtual bool    catchEvent(GLFWwindow* window) override;
+        virtual bool    __lostFocus(), __getFocus(), __onFocus(),
+                        __clicked(), __mouseDown(), __mouseRelease(), 
+                        __hover(), __lostHover();
     private:
         bool            __isVisible;
         unsigned int    __clickCount;

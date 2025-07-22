@@ -63,14 +63,10 @@ namespace MyBase {
         return {2, 2};
     }
     void Form::pauseScreen(GLFWwindow* window) {
-        draw(__pauseScreen);
-
-        glfwSwapBuffers(window);
-        glm::vec4 color = __backgroundColor.getColor();
-        glClearColor(color.r, color.g, color.b, color.a);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        ControlCenter::Default->BindSubScreen();
         glDraw();
         draw(__pauseScreen);
+        ControlCenter::Default->UnbindSubScreen();
     }
     void Form::setBackgroundColor(const Color& color) {
         __backgroundColor = color;

@@ -10,7 +10,6 @@ namespace MyCraft {
     public:
         WorldRender();
         ~WorldRender();
-        void createPlaneWorld() const;
         void save();
         void playerAt(const glm::vec3& position);
 

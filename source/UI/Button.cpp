@@ -12,15 +12,6 @@ namespace MyBase {
     Button<T>::~Button() {}
 
     template <typename T>
-    bool Button<T>::setHover(const bool& hover) {
-        if (Controller2D::setHover(hover) && !hover) {
-            setFillColor(__normalColor);
-        return true;
-        }
-        return false;
-    }
-
-    template <typename T>
     bool Button<T>::contains(const glm::vec2& position) const {
         return getShape().contains(position - getPosition());
     }
@@ -76,23 +67,28 @@ namespace MyBase {
         return ShapeContainer::getPosition();
     }
     template <typename T>
-    bool Button<T>::catchEvent(GLFWwindow* window) {
-        bool isChanged = Controller2D::catchEvent(window);
-        if (isMouseDown()) {
-            if (getColor() != __clickColor) {
-                setFillColor(__clickColor);
-                isChanged = true;
-            }
-        }
-        else if (isHovered()) {
-            if (getColor() != __hoverColor) {
-                setFillColor(__hoverColor);
-                isChanged = true;
-            }
-        } 
-        return isChanged;
+    bool Button<T>::__lostHover() {
+        setFillColor(__normalColor);
+        return true;
     }
 
+    template <typename T>
+    bool Button<T>::__hover() {
+        setFillColor(__hoverColor);
+        return true;
+    }
+
+    template <typename T>
+    bool Button<T>::__mouseDown() {
+        setFillColor(__clickColor);
+        return true;
+    }
+
+    template <typename T>
+    bool Button<T>::__mouseRelease() {
+        setFillColor(__hoverColor);
+        return true;
+    }
 
     template <typename T>
     void Button<T>::glDraw() const {

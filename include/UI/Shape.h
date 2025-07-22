@@ -25,17 +25,20 @@ namespace MyBase {
         ~ShapeContainer();
         Color getColor() const;
         glm::vec2 getPosition() const;
-        
+        float getMarginWidth() const;
         void move(const glm::vec2& offset);
+        void setMarginWidth(const float& width);
+        void setMarginColor(const Color& color);
         void setPosition(const glm::vec2& position);
         void setFillColor(const Color& color);
 
     protected:
         void draw(const Shape& shape) const;
     private:
+        float       __marginWidth;
         glm::vec2   __position;
-        Color       __color;
-        GLuint      __colorCode, __positionCode;
+        Color       __color, __marginColor;
+        GLuint      __colorCode, __positionCode, __marginColorCode;
     };
 }
 #endif

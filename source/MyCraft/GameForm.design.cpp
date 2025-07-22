@@ -14,11 +14,11 @@ namespace MyCraft {
         __hitbox.match(&__model);
         __hitbox.match(&pWorld);
         __hitbox.match(&camera);
-        __font.loadFont("assets/fonts/Oswald-Regular.ttf");
+        __font.loadFont("assets/fonts/SyneMono-Regular.ttf");
         __label.setFont(__font);
         __label.setText("Max fps:");
         __label.setTextColor(RED);
-        __label.setScale({1, 32});
+        __label.setScale({0.3, 0.05});
         __label.setPosition({0.7f, 0.95f});
     
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
