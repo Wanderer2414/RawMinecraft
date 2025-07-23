@@ -24,10 +24,10 @@ namespace MyBase  {
         void setScale(const glm::vec2& scale);
     protected:
         void update() override;
-        virtual bool    __mouseDown() override,
+        virtual bool    __mouseDown(GLFWwindow*) override,
                         __hover() override,
                         __lostHover() override,
-                        __mouseRelease() override;
+                        __mouseRelease(GLFWwindow*) override;
     private:
         virtual T&          getShape() = 0;
         virtual const T&    getShape() const = 0;

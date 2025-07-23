@@ -7,7 +7,7 @@ namespace MyBase {
     MessageBox::MessageBox(): __isOpen(true), __size(2,2), __roundness(0) {
         ShapeContainer::setPosition({-1,-1});
         ShapeContainer::setFillColor({0,0,0,120});
-        __sensitiveClock.setDuration(10);
+        __sensitiveClock.setDuration(50);
         ShapeManager::getInstance().createShape(__background, __size, __roundness);
     }
     MessageBox::~MessageBox() {
@@ -22,14 +22,13 @@ namespace MyBase {
     };
     bool MessageBox::catchEvent(GLFWwindow* window) {
         bool is_changed = Container2D::catchEvent(window);
-        if (isPressed() && __getCurrentHover() == -1) close();
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) && !isHovered()) close();
         return is_changed;
     }
     void MessageBox::setSize(const glm::vec2& size, const float& roundness) {
         if (size!=__size || __roundness != roundness) {
             ShapeManager::getInstance().removeShape(__background, __size, __roundness);
-            __size = size;
-            __roundness = roundness;
+            __size = size; __roundness = roundness;
             ShapeManager::getInstance().createShape(__background, __size, __roundness);
         }
     }
@@ -38,9 +37,10 @@ namespace MyBase {
         bool is_changed = true;
         glDisable(GL_DEPTH_TEST);
         while (!glfwWindowShouldClose(window) && __isOpen) {
+            ControlCenter::getInstance().Reset();
             Container2D::reset();
             glfwPollEvents();
-            is_changed = Container2D::setHover(ControlCenter::Default->getCursorPos(window)) || is_changed;
+            is_changed = Container2D::setHover(ControlCenter::getInstance().getCursorPos(window)) || is_changed;
             is_changed = catchEvent(window) || is_changed;
             if (__sensitiveClock.get()) {
                 __sensitiveClock.restart();
@@ -50,12 +50,12 @@ namespace MyBase {
             if (is_changed) {
                 glClearColor(0,0,0, 1);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                ControlCenter::Default->DrawSavedScreen();
+                ControlCenter::getInstance().DrawSavedScreen();
                 glDraw();
                 glfwSwapBuffers(window);
             }
-            if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-                glfwSetWindowShouldClose(window, true);
+            if (ControlCenter::getInstance().IsKeyPressed() && glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+                close();
             }
             is_changed = 0;
         }
@@ -65,7 +65,7 @@ namespace MyBase {
     }
        
     bool MessageBox::contains(const glm::vec2& position) const {
-        return __isOpen;
+        return __background.contains(position-getPosition());
     }
     void MessageBox::glDraw() const {
         ShapeContainer::draw(__background);

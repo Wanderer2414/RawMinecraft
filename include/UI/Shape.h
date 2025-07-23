@@ -32,8 +32,8 @@ namespace MyBase {
         void setPosition(const glm::vec2& position);
         void setFillColor(const Color& color);
 
-    protected:
         void draw(const Shape& shape) const;
+    protected:
     private:
         float       __marginWidth;
         glm::vec2   __position;

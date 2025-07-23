@@ -79,13 +79,13 @@ namespace MyBase {
     }
 
     template <typename T>
-    bool Button<T>::__mouseDown() {
+    bool Button<T>::__mouseDown(GLFWwindow*) {
         setFillColor(__clickColor);
         return true;
     }
 
     template <typename T>
-    bool Button<T>::__mouseRelease() {
+    bool Button<T>::__mouseRelease(GLFWwindow*) {
         setFillColor(__hoverColor);
         return true;
     }

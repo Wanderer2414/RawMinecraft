@@ -42,6 +42,7 @@ namespace MyBase {
             }
             else return __hover();
         }
+        else if (hover) __onHover();
         return false;
     }
     bool Controller2D::setHover(const glm::vec2& position) {
@@ -59,34 +60,35 @@ namespace MyBase {
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
             if (__isHovered) {
                 if (!__clickCount) {
-                    if (!__isFocus) is_changed = __getFocus() || is_changed;
+                    if (!__isFocus) is_changed = __focus(window) || is_changed;
                     __isFocus = __isPressed = true;
-                    is_changed = __clicked() || is_changed;
+                    is_changed = __mouseClicked(window) || is_changed;
                 }
                 else if (__clickCount<90) __isFocus = __isDoubleClick = true;
                 __clickCount = 100;
                 __isMouseDown = true;
-                is_changed = __mouseDown() || is_changed;
+                is_changed = __mouseDown(window) || is_changed;
             }
             else {
                 __isFocus = false;
-                is_changed = __lostFocus() || is_changed;
+                is_changed = __lostFocus(window) || is_changed;
             }
         }
         else if (__isMouseDown) {
             __isReleased = true;
             __isMouseDown = false;
-            is_changed = __mouseRelease() || is_changed;
+            is_changed = __mouseRelease(window) || is_changed;
         }
-        if (__isFocus) __onFocus();
+        if (__isFocus) is_changed = __onFocus(window) || is_changed;
         return is_changed;
     }
-    bool Controller2D::__lostFocus() { return false;};
-    bool Controller2D::__getFocus() { return false;};
-    bool Controller2D::__onFocus() { return false;};
-    bool Controller2D::__clicked() { return false;};
-    bool Controller2D::__mouseDown() { return false;};
-    bool Controller2D::__mouseRelease() { return false;};
+    bool Controller2D::__lostFocus(GLFWwindow*) { return false;};
+    bool Controller2D::__focus(GLFWwindow*) { return false;};
+    bool Controller2D::__onFocus(GLFWwindow*) { return false;};
+    bool Controller2D::__mouseClicked(GLFWwindow*) { return false;};
+    bool Controller2D::__mouseDown(GLFWwindow*) { return false;};
+    bool Controller2D::__mouseRelease(GLFWwindow*) { return false;};
     bool Controller2D::__hover() { return false;};
+    bool Controller2D::__onHover() { return false;};
     bool Controller2D::__lostHover() { return false;};
 } ;

@@ -7,7 +7,7 @@ namespace MyCraft {
 
         __programmeName.setFont(font);
         __programmeName.setText("My Craft");
-        __programmeName.setScale({0.15,0.25});
+        __programmeName.setScale({0.2,0.3});
         __programmeName.setPosition({-__programmeName.getSize().x/2, 0.5});
         __programmeName.setTextColor(WHITE);
 
@@ -19,7 +19,7 @@ namespace MyCraft {
         __startButton.setText("Start");
         __startButton.setSize({0.6, 0.12}, 0.01);
         __startButton.setPosition({-0.3, 0});
-        __startButton.setScale({0.04, 0.04});
+        __startButton.setScale({0.06, 0.06});
 
         __settingButton.setFont(font);
         __settingButton.setTextColor(WHITE);
@@ -29,7 +29,7 @@ namespace MyCraft {
         __settingButton.setText("Settings");
         __settingButton.setSize({0.6, 0.12}, 0.01);
         __settingButton.setPosition({-0.3,-0.17});
-        __settingButton.setScale({0.04, 0.04});
+        __settingButton.setScale({0.06, 0.06});
 
         __aboutusButton.setFont(font);
         __aboutusButton.setTextColor(WHITE);
@@ -39,7 +39,7 @@ namespace MyCraft {
         __aboutusButton.setText("About us");
         __aboutusButton.setSize({0.6, 0.12}, 0.01);
         __aboutusButton.setPosition({-0.3,-0.34});
-        __aboutusButton.setScale({0.04, 0.04});
+        __aboutusButton.setScale({0.06, 0.06});
 
         __exitButton.setFont(font);
         __exitButton.setTextColor(WHITE);
@@ -49,7 +49,7 @@ namespace MyCraft {
         __exitButton.setText("Exit");
         __exitButton.setSize({0.6, 0.12}, 0.01);
         __exitButton.setPosition({-0.3,-0.51});
-        __exitButton.setScale({0.04, 0.04});
+        __exitButton.setScale({0.06, 0.06});
 
         insert(&__programmeName);
         insert(&__startButton);

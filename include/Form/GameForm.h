@@ -14,13 +14,14 @@ namespace MyCraft {
 
     class GameForm: public MyBase3D::Form3D {
         public:
-            GameForm(GLFWwindow* window, const int& index);
+            GameForm(GLFWwindow* window, const int& index, const std::string& src);
             ~GameForm();
         
             bool move(const float& x, const float& y, const float& z);
         protected:
         private:
             float           pZVelocity;
+            bool            catchEvent(GLFWwindow* window) override;
             bool            handle(GLFWwindow* window) override;
             MyBase::Font    __fontDefault;
             MyBase::Clock   pFrameAlarm;

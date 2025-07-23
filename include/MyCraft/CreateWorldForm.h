@@ -12,8 +12,14 @@ namespace MyBase {
         CreateWorldForm(const CreateWorldForm&) = delete;
         ~CreateWorldForm();
         CreateWorldForm& operator=(const CreateWorldForm&) const = delete; 
+        bool isSubmit() const;
+        void clear();
+        std::string getName() const;
+        Date getDate() const;
     protected:
+        bool __mouseClicked(GLFWwindow*) override;
     private:
+        bool                    __isSubmit;
         Date                    __date;
         RoundedRectangleButton  __createButton;
         Label                   __nameLabel, __dateLabel;

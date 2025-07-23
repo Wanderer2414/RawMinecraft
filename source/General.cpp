@@ -2,27 +2,15 @@
 #include "Global.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
-#include "glm/geometric.hpp"
+#include <filesystem>
+#include <stdexcept>
 
-float abs(const glm::vec2& v) {
-    return sqrt(v.x*v.x + v.y*v.y);
-}
 
-float operator*(const glm::vec3& a, const glm::vec3& b) {
-    return a.x*b.x + a.y*b.y + a.z*b.z;
-}
-glm::vec2 getMousePosition(GLFWwindow* window) {
-    double x, y;
-    glfwGetCursorPos(window, &x, &y);
-    return {x, y};
-}
 std::size_t GetTime() {
     auto now = std::chrono::system_clock::now();
     return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 }
-glm::vec3 det(const glm::vec3& a, const glm::vec3& b) {
-    return {a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x};
-}
+
 std::ostream& operator<<(std::ostream& cout, const glm::vec3& pos) {
     cout << "(" << pos.x << ", "<<pos.y << ", " << pos.z << ") ";
     return cout;
@@ -46,6 +34,7 @@ std::queue<glm::ivec3> rasterize(const glm::vec3& a, const glm::vec3& b) {
 std::tuple<int,int,int> to_tuple(const glm::ivec3& vec) {
     return {vec.x, vec.y, vec.z};
 }
+
 namespace MyBase {
     glm::vec2 getWindowSize() {
         #ifdef __linux__
@@ -69,8 +58,6 @@ namespace MyBase {
         return {width, height};
         #endif
     }
-}
-namespace MyCraft {
     void DrawTexture(GLuint texture, const glm::vec2& position, const glm::vec2& size, const glm::vec2& subposition, const glm::vec2& subsize) {
         glUseProgram(MyBase3D::ShaderStorage::getInstance().getImage2DShader());
         GLuint POS, SIZE, SPOS, SSIZE, VAO;
@@ -118,6 +105,13 @@ namespace MyCraft {
         glDeleteBuffers(1, &SPOS);
         glDeleteBuffers(1, &SSIZE);
     }
+    void CreateFolder(const std::string& src) {
+        if (!std::filesystem::create_directory(src)) {
+            throw std::runtime_error("Failted to create folder: " + src);
+        }
+    }
+}
+namespace MyCraft {
     void DrawMargin(const glm::mat4x3& mat, const glm::vec3& color, const float& linewidth) {
         glm::vec3 shape[8] = {mat[0], mat[0]+mat[1], mat[0] + mat[1]+ mat[2], mat[0] +mat[2]};
         for (int i = 4; i<8; i++) shape[i] = shape[i-4]+mat[3];

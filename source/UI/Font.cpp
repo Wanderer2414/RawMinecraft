@@ -1,8 +1,5 @@
 #include "Font.h"
-#include "ControlCenter.h"
 #include "Global.h"
-#include "PointSet.h"
-#include "ShaderStorage.h"
 #include "stb_truetype.h"
 
 namespace MyBase {
@@ -46,25 +43,24 @@ namespace MyBase {
         for (int i = 0; i<map.size(); i++) {
             stbtt_aligned_quad q;
             stbtt_GetBakedQuad(__data, font_resolution, font_resolution, map[i]-32, &x, &y, &q, 1);
-            size.y = std::max(size.y, (q.y0-q.y1)/ControlCenter::Default->getWindowHalf().y);
+            size.y = std::max(size.y, (q.y0 - q.y1)/font_height);
         }
-        size.x = x/ControlCenter::Default->getWindowHalf().y/size.y;
-        size.y = 1;
+        size.x = x/font_height;
         return size;
     }
     char* Font::getBuffer(const std::string& text, glm::vec2& size) const{
         auto map = __utf_to_codepoint(text);
         size = {0, 0};
-        float x = 0, y = 0, minY = 1;
+        float x = 0, y = 0;
         char* buffer = new char[text.size()*(sizeof(glm::vec2)*2)*6];
         glm::vec2* positions = (glm::vec2*)buffer;
         glm::vec2* uvs = (glm::vec2*)(buffer + text.size()*sizeof(glm::vec2)*6);
         for (int i = 0; i<map.size(); i++) {
             stbtt_aligned_quad q;
             stbtt_GetBakedQuad(__data, font_resolution, font_resolution, map[i]-32, &x, &y, &q, 1);
-            q.y0 = - q.y0/ControlCenter::Default->getWindowHalf().y;
-            q.y1 = - q.y1/ControlCenter::Default->getWindowHalf().y;
-            size.y = std::max(size.y, q.y0-q.y1);
+            q.y0 = - q.y0;
+            q.y1 = - q.y1;
+            size.y = std::max(size.y, q.y0 - q.y1);
             positions[6*i] = {q.x0, q.y0};   uvs[6*i] = {q.s0, q.t0};
             positions[6*i+1] = {q.x0, q.y1}; uvs[6*i+1] = {q.s0, q.t1};
             positions[6*i+2] = {q.x1, q.y1}; uvs[6*i+2] = {q.s1, q.t1};
@@ -72,12 +68,9 @@ namespace MyBase {
             positions[6*i+4] = {q.x1, q.y1}; uvs[6*i+4] = {q.s1, q.t1};
             positions[6*i+5] = {q.x1, q.y0}; uvs[6*i+5] = {q.s1, q.t0};
         }
-        size.x = x/ControlCenter::Default->getWindowHalf().y/size.y;
-        for (int i = 0; i<map.size()*6; i++) {
-            positions[i].y = positions[i].y/size.y;
-            positions[i].x /= ControlCenter::Default->getWindowHalf().y*size.y;
-        }
-        size.y = 1;
+        for (int i = 0; i<6*map.size(); i++) positions[i]/=font_height;
+        size.x = x/font_height;
+        size.y /= font_height;
         return buffer;
     }
     std::vector<int> Font::__utf_to_codepoint(const std::string& text) const {

@@ -139,10 +139,10 @@ namespace MyBase {
         return is_changed;
     }
     void List::glDraw() const {
-        ControlCenter::Default->enableScissorMode(getPosition(), getSize());
+        ControlCenter::getInstance().EnableScissorMode(getPosition(), getSize());
         ShapeContainer::draw(__rectangle);
         Container2D::glDraw();
-        ControlCenter::Default->disableScissorMode();
+        ControlCenter::getInstance().DisableScissorMode();
     }
     glm::vec2 List::getSize() const {
         return __size;

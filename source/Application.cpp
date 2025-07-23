@@ -2,7 +2,6 @@
 #include "Block.h"
 #include "ControlCenter.h"
 #include "DrawingCenter.h"
-#include "GameForm.h"
 #include "IntroForm.h"
 #include "MediateForm.h"
 #include "PointSet.h"
@@ -10,14 +9,12 @@
 #include "ModelStorage.h"
 #include "ShapeManager.h"
 
-MyBase::ControlCenter* MyBase::ControlCenter::Default;
 namespace MyCraft {
     Application::Application(const float& width, const float& height) {
-        auto& Default = MyBase::ControlCenter::Default = new MyBase::ControlCenter(width, height, "MyCraft");
-        Default->OpenGLrequire(4, 6);
-        Default->LimitFPS(0);
-        __window = Default->InitWindow();
-        Default->EnableTransparent();
+        MyBase::ControlCenter::getInstance().OpenGLrequire(4, 6);
+        MyBase::ControlCenter::getInstance().LimitFPS(0);
+        __window = MyBase::ControlCenter::getInstance().InitWindow(width, height, "MyCraft");
+        MyBase::ControlCenter::getInstance().EnableTransparent();
 
     }
     Application::~Application() {
@@ -27,8 +24,8 @@ namespace MyCraft {
         MyBase3D::ShaderStorage::close();
         MyCraft::BlockCatogary::close();
         MyCraft::ModelStorage::close();
-        MyBase::ControlCenter::Default->CloseWindow();
-        delete MyBase::ControlCenter::Default;
+        MyBase::ControlCenter::getInstance().CloseWindow();
+        MyBase::ControlCenter::close();
     }
 
     void Application::run() {
@@ -43,11 +40,6 @@ namespace MyCraft {
                 case 1: {
                     MediateForm mediateForm(__window, 1);
                     formIndex = mediateForm.run(__window);
-                }
-                break;
-                case 2: {
-                    GameForm gameForm(__window, 2);
-                    formIndex = gameForm.run(__window);
                 }
                 break;
             }

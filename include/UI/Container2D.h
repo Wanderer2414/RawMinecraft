@@ -14,14 +14,13 @@ class Container2D: public Controller2D {
         const int&      getCurrentFocusIndex() const;
         std::size_t     size()                                      const;
         virtual void    setFocus(const bool& focus)                 override;
-        virtual void    clear();
         const glm::vec2&       getChildrenPosition() const;
         Controller2D* operator[](const std::size_t& index);
     protected:
+        void            clear();
         virtual void    insert(Controller2D* controller, const int& layer = 0),
                         erase(Controller2D* controller),
                         insertPermanent(Controller2D* controller),
-                        erasePermanent(Controller2D* controller),
                         update()                                    override;
         virtual bool    sensitiveHandle(GLFWwindow* window)         override;
         virtual bool    catchEvent(GLFWwindow* window)              override;

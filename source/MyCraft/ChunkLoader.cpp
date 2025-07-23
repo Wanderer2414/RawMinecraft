@@ -1,8 +1,7 @@
 #include "ChunkLoader.h"
 #include "Block.h"
-#include "glm/geometric.hpp"
 namespace MyCraft {
-    ChunkLoader::ChunkLoader(): __isLoaded(false) {
+    ChunkLoader::ChunkLoader(const std::string& src): __isLoaded(false), __sourceFolder(src) {
         __chunks.resize(world_side*world_side*world_side, 0);
         __chunkPositions.resize(world_side*world_side*world_side);
         for (int i = 0; i<world_side; i++)
@@ -20,11 +19,11 @@ namespace MyCraft {
     const std::vector<glm::vec4>& ChunkLoader::getChunks() const {
         return __chunkPositions;
     }
-    std::string ChunkLoader::getFileName(const glm::ivec3& position) {
+    std::string ChunkLoader::getFileName(const std::string& src, const glm::ivec3& position) {
         size_t index = (position.x+500)*1000*100 + (position.y+500)*100 + (50 + position.z);
-        return "bin/"+std::to_string(index)+".bin";
+        return src + std::to_string(index)+".bin";
     }
-    void ChunkLoader::create() {
+    void ChunkLoader::create(const std::string& src) {
         for (int i = -10; i<10; i++) {
             for (int j = -10; j<10; j++) {
                 for (int k = -5; k<5; k++) {
@@ -32,7 +31,7 @@ namespace MyCraft {
                     index = 100*index/(1000*1000*100);
                     std::cout << index << std::endl;
                     glm::vec3 position = glm::vec3(i,j,k);
-                    std::ofstream file(getFileName(position), std::ios::out | std::ios::binary);
+                    std::ofstream file(getFileName(src, position), std::ios::out | std::ios::binary);
                     position *= 16;
                     file.write((char*)&position, sizeof(glm::vec3));
                     unsigned int size = 0;
@@ -115,7 +114,7 @@ namespace MyCraft {
             for (int j = 0; j<world_side; j++) {
                 for (int k = 0; k<world_side; k++) {
                     glm::ivec3 origin = __position + glm::ivec3(i,j,k);
-                    __chunks[__chunkIndices[i][j][k]] = Chunk::Load(getFileName(origin));
+                    __chunks[__chunkIndices[i][j][k]] = Chunk::Load(getFileName(__sourceFolder, origin));
                     __chunkPositions[__chunkIndices[i][j][k]] = glm::vec4(origin*16, 1);
                 }
             }
@@ -135,7 +134,7 @@ namespace MyCraft {
                 __chunkIndices[world_side-1][j][k] = tmp;
                 //Load new chunk
                 glm::ivec3  origin =  __position + glm::ivec3(world_side-1, j,k);
-                __chunks[tmp] = Chunk::Load(getFileName(origin));
+                __chunks[tmp] = Chunk::Load(getFileName(__sourceFolder, origin));
                 __chunkPositions[tmp] = glm::vec4(16*origin, 1);
             }
         }
@@ -154,7 +153,7 @@ namespace MyCraft {
                 __chunkIndices[0][j][k] = tmp;
                 //Load new chunk
                 glm::ivec3 origin =  __position + glm::ivec3(0, j,k);
-                __chunks[tmp] = Chunk::Load(getFileName(origin));
+                __chunks[tmp] = Chunk::Load(getFileName(__sourceFolder, origin));
                 __chunkPositions[tmp] = glm::vec4(16*origin, 1);
             }
         }
@@ -173,7 +172,7 @@ namespace MyCraft {
                 __chunkIndices[i][world_side-1][k] = tmp;
                 //Load new chunk
                 glm::ivec3  origin =  __position + glm::ivec3(i, world_side-1,k);
-                __chunks[tmp] = Chunk::Load(getFileName(origin));
+                __chunks[tmp] = Chunk::Load(getFileName(__sourceFolder, origin));
                 __chunkPositions[tmp] = glm::vec4(16*origin, 1);
             }
         }
@@ -194,7 +193,7 @@ namespace MyCraft {
 
                 //Load new chunk
                 glm::ivec3  origin =  __position + glm::ivec3(i, 0,k);
-                __chunks[index] = Chunk::Load(getFileName(origin));
+                __chunks[index] = Chunk::Load(getFileName(__sourceFolder, origin));
                 __chunkPositions[index] = glm::vec4(16*origin, 1);
             }
         }
@@ -213,7 +212,7 @@ namespace MyCraft {
                 __chunkIndices[i][j][world_side-1] = tmp;
                 //Load new chunk
                 glm::ivec3  origin =  __position + glm::ivec3(i, j,world_side-1);
-                __chunks[tmp] = Chunk::Load(getFileName(origin));
+                __chunks[tmp] = Chunk::Load(getFileName(__sourceFolder, origin));
                 __chunkPositions[tmp] = glm::vec4(16*origin, 1);
             }
         }
@@ -232,7 +231,7 @@ namespace MyCraft {
                 __chunkIndices[i][j][0] = tmp;
                 //Load new chunk
                 glm::ivec3  origin =  __position + glm::ivec3(i, j,0);
-                __chunks[tmp] = Chunk::Load(getFileName(origin));
+                __chunks[tmp] = Chunk::Load(getFileName(__sourceFolder, origin));
                 __chunkPositions[tmp] = glm::vec4(16*origin, 1);
             }
         }

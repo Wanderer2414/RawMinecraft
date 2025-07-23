@@ -21,9 +21,10 @@ namespace MyBase {
         bool is_changed = true;
         glDisable(GL_DEPTH_TEST);
         while (!glfwWindowShouldClose(window)) {
+            ControlCenter::getInstance().Reset();
             Container2D::reset();
             glfwPollEvents();
-            is_changed = Container2D::setHover(ControlCenter::Default->getCursorPos(window)) || is_changed;
+            is_changed = Container2D::setHover(ControlCenter::getInstance().getCursorPos(window)) || is_changed;
             is_changed = catchEvent(window) || is_changed;
             if (__sensitiveClock.get()) {
                 __sensitiveClock.restart();
@@ -36,9 +37,6 @@ namespace MyBase {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glDraw();
                 glfwSwapBuffers(window);
-            }
-            if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-                glfwSetWindowShouldClose(window, true);
             }
             if (__returnValue!=INT_MIN) return __returnValue;
             is_changed = 0;
@@ -63,10 +61,10 @@ namespace MyBase {
         return {2, 2};
     }
     void Form::pauseScreen(GLFWwindow* window) {
-        ControlCenter::Default->BindSubScreen();
+        ControlCenter::getInstance().BindSubScreen();
         glDraw();
         draw(__pauseScreen);
-        ControlCenter::Default->UnbindSubScreen();
+        ControlCenter::getInstance().UnbindSubScreen();
     }
     void Form::setBackgroundColor(const Color& color) {
         __backgroundColor = color;

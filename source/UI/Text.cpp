@@ -52,11 +52,12 @@ namespace MyBase {
     glm::vec2 Text::getPosition() const {
         return __position;
     }
+    const std::string& Text::getText() const {
+        return __text;
+    }
     void Text::setScale(const glm::vec2& scale) {
         if (__scale!=scale) {
-            __size /= __scale;
             __scale = scale;
-            __size *= __scale;
             glBindBuffer(GL_UNIFORM_BUFFER, __SCALE);
             glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec2), &__scale);
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -99,7 +100,6 @@ namespace MyBase {
         glBindVertexArray(__VAO);
         glBindBuffer(GL_ARRAY_BUFFER, __VBO);
         char* buffer = __font->getBuffer(__text, __size);
-        __size *= __scale;
         glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2)*2*6*__text.size(), buffer, GL_STATIC_DRAW);
         glEnableVertexArrayAttrib(__VAO, 0);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
@@ -124,6 +124,6 @@ namespace MyBase {
         glBindVertexArray(0);
     }
     glm::vec2 Text::getSize() const {
-        return __size;
+        return __size*__scale;
     }
 }

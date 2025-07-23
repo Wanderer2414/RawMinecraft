@@ -241,7 +241,7 @@ private:
             float angle = atan(delta.y/delta.x);
             if (delta.x<0) angle+=M_PI;
             float distance = length(delta);
-            if (operator[](angle)>distance) 
+            if (operator[](angle)>distance)
                 vecs.push_back(position);
         }
     }

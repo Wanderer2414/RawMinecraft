@@ -2,26 +2,27 @@
 #define GENERAL_H
 #include "Ray.h"
 #include "Rect3D.h"
+#include <istream>
 #include <ostream>
 
 bool isIntersect(const MyBase3D::Ray3f& ray, const MyBase3D::Rect3f& rectangle);
 
-float abs(const glm::vec2& vector);
-float operator*(const glm::vec3& a, const glm::vec3& b);
-glm::vec2 getMousePosition(GLFWwindow* window);
 std::size_t GetTime();
-
-glm::vec3 det(const glm::vec3& a, const glm::vec3& b);
 
 std::queue<glm::ivec3> rasterize(const glm::vec3& a, const glm::vec3& b);
 
 std::ostream& operator<<(std::ostream& cout, const glm::vec3& pos);
 std::tuple<int,int,int> to_tuple(const glm::ivec3& vec);
+
+
 namespace MyBase {
     glm::vec2 getWindowSize();
 }
 namespace MyCraft {
-    void DrawTexture(GLuint texture, const glm::vec2& position, const glm::vec2& size, const glm::vec2& subposition, const glm::vec2& subsize);
     void DrawMargin(const glm::mat4x3& box, const glm::vec3& color, const float& linewidth = 2);
+}
+namespace MyBase {
+    void CreateFolder(const std::string& src);
+    void DrawTexture(GLuint texture, const glm::vec2& position, const glm::vec2& size, const glm::vec2& subposition, const glm::vec2& subsize);
 }
 #endif

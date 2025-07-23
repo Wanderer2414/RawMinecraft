@@ -6,6 +6,7 @@
 #include "Container2D.h"
 #include "Container3D.h"
 #include "Global.h"
+#include "MessageBox.h"
 #include "Rectangle.h"
 #include "Shape.h"
 namespace MyBase3D {
@@ -22,11 +23,11 @@ namespace MyBase3D {
                         getSize()       const override;
         void            setBackgroundColor(const MyBase::Color& color);
         void            pauseScreen(GLFWwindow* window);
+        void            update() override;
         using MyBase::Container2D::insert;
         using MyBase::Container2D::insertPermanent;
         using Container3D::insert;
         using MyBase::Container2D::erase;
-        using MyBase::Container2D::erasePermanent;
         using Container3D::erase;
     protected:
         int                     getReturnForm() const;

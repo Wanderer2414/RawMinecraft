@@ -2,7 +2,7 @@
 #include "DrawingCenter.h"
 
 namespace MyCraft {
-    WorldRender::WorldRender() {
+    WorldRender::WorldRender(const std::string& src): __chunkLoader(src) {
         insert(&__chunkLoader);
     }
     WorldRender::~WorldRender() {}

@@ -37,27 +37,23 @@ namespace MyBase {
         File& operator>>(MyBase::FileTransferElement& file);
         
         File& operator=(const File&) = delete;
+        bool isNew() const;
         unsigned int size() const;
         void readAt(const unsigned int& position);
         void writeAt(const unsigned int& position);
-        void write_on_buffer(const char*, const unsigned int& sz);
-        void read_from_buffer(char*, const unsigned int& sz);
 
         const std::string& getFileName() const;
         void connect(const std::string& file);
         void close();
+        void read(char* data, const unsigned int& size);
+        void write(const char* data, const unsigned int& size);
     private:
-        #define buffer_size 64
-        unsigned int __offset_read, __offset_write;
-        char __buffer_read[buffer_size], __buffer_write[buffer_size];
+        bool __isNew;
         unsigned int __read_position, __write_position;
         std::fstream __file;
         unsigned int __file_size;
         std::string __source;
 
-        void __write_on_file();
-        void __sync_read_and_write();
-        void __read_from_file();
     };
 }
 #endif

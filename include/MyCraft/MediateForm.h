@@ -5,6 +5,7 @@
 #include "Font.h"
 #include "Form.h"
 #include "MapMenu.h"
+#include "WorldsManage.h"
 namespace MyCraft {
     class MediateForm: public MyBase::Form {
     public:
@@ -14,12 +15,13 @@ namespace MyCraft {
         MediateForm& operator=(const MediateForm&) const = delete; 
     protected:
     private:
+        WorldsManage                    __worldsManage;
         MapMenu                         __menu;
         MyBase::Font                    __font;
         MyBase::CreateWorldForm         __createWorldForm;
         MyBase::RoundedRectangleButton  __createWorldButton, __clearWorldButton, __joinWorldButton, __connectWorldButton;
 
-        bool catchEvent(GLFWwindow* window) override;
+        bool __mouseRelease(GLFWwindow*) override;
     };
 }
 #endif

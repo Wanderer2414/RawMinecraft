@@ -12,10 +12,10 @@ namespace MyBase3D {
     }
     float Plane::distance(const glm::vec3& position) const {
         glm::vec3 delta = position-__origin;
-        return delta*__normal/glm::length(__normal);
+        return glm::dot(delta,__normal)/glm::length(__normal);
     }
     glm::vec3 Plane::isIntersect(const Ray3f& ray) const {
-        float normalSide = ray*__normal/glm::length(__normal);
+        float normalSide = glm::dot((glm::vec3)ray,__normal)/glm::length(__normal);
         float times = distance(ray.getOrigin())/normalSide;
         return ray.getOrigin() + times*(glm::vec3)ray;
     }

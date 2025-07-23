@@ -9,7 +9,6 @@
 
 namespace MyBase3D {
     Form3D::Form3D(const int& index): __formIndex(index), __returnValue(INT_MIN), __backgroundColor(WHITE), __frameCount(0) {
-        __startClock = clock();
         __sensitiveClock.setDuration(10);
         MyBase::ShapeManager::getInstance().createShape(__pauseScreen, {2,2});
         setFillColor({0,0,0, 120});
@@ -26,12 +25,14 @@ namespace MyBase3D {
         return 1.0f*(CLOCKS_PER_SEC)*__frameCount/(clock()-__startClock);
     }
     int Form3D::run(GLFWwindow* window) {
+        __startClock = clock();
         bool is_changed = true;
         glDisable(GL_DEPTH_TEST);
         while (!glfwWindowShouldClose(window)) {
+            MyBase::ControlCenter::getInstance().Reset();
             Container2D::reset();
             glfwPollEvents();
-            is_changed = setHover(MyBase::ControlCenter::Default->getCursorPos(window)) || is_changed;
+            is_changed = setHover(MyBase::ControlCenter::getInstance().getCursorPos(window)) || is_changed;
             is_changed = catchEvent(window) || is_changed;
             if (__sensitiveClock.get()) {
                 __sensitiveClock.restart();
@@ -44,9 +45,6 @@ namespace MyBase3D {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glDraw();
                 glfwSwapBuffers(window);
-            }
-            if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-                glfwSetWindowShouldClose(window, true);
             }
             if (__returnValue!=INT_MIN) return __returnValue;
             is_changed = 0;
@@ -74,11 +72,14 @@ namespace MyBase3D {
     }
     void Form3D::glDraw() const {
         camera.glDraw();
-        MyBase::ControlCenter::Default->disable3DMode();
+        MyBase::ControlCenter::getInstance().Disable3DMode();
         MyBase::Container2D::glDraw();
-        MyBase::ControlCenter::Default->enable3DMode();
+        MyBase::ControlCenter::getInstance().Enable3DMode();
         Container3D::glDraw();
     };
+    void Form3D::update() {
+        camera.update();
+    }
     glm::vec2 Form3D::getPosition()   const {
         return {-1,-1};
     }
@@ -86,14 +87,10 @@ namespace MyBase3D {
         return {2, 2};
     }
     void Form3D::pauseScreen(GLFWwindow* window) {
-        draw(__pauseScreen);
-
-        glfwSwapBuffers(window);
-        glm::vec4 color = __backgroundColor.getColor();
-        glClearColor(color.r, color.g, color.b, color.a);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        MyBase::ControlCenter::getInstance().BindSubScreen();
         glDraw();
         draw(__pauseScreen);
+        MyBase::ControlCenter::getInstance().UnbindSubScreen();
     }
     void Form3D::setBackgroundColor(const MyBase::Color& color) {
         __backgroundColor = color;

@@ -7,7 +7,7 @@
 #include "PlayerModelController.h"
 
 namespace MyCraft {
-    World::World(const int& x, const int& y, const int& z): __isHoverBlock(false) {
+    World::World(const int& x, const int& y, const int& z, const std::string& src): __isHoverBlock(false), __worldRender(src) {
         // __worldRender.createPlaneWorld();
         // exit(0);
         insert(&__worldRender);

@@ -11,6 +11,7 @@ namespace MyBase {
         virtual glm::vec2       getPosition() const override,
                                 getSize() const override;
         using  Text::setPosition;
+        using  Text::move;
         virtual bool contains(const glm::vec2& position) const override;
     private:
         virtual void glDraw() const override;

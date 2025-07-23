@@ -1,6 +1,4 @@
 #include "Container2D.h"
-#include "Block.h"
-#include "General.h"
 namespace MyBase{
 
     Container2D::Container2D(): __currentFocus(-1), __currentHover(-1), __previosFocus(-1) {
@@ -93,16 +91,17 @@ namespace MyBase{
         for (auto& i:__children) i.first->reset();
     }
     bool Container2D::sensitiveHandle(GLFWwindow* window) {
-        bool is_changed = Controller::sensitiveHandle(window);
+        bool is_changed = false;
         for (auto& child:__permanentChildren) is_changed = child->sensitiveHandle(window) || is_changed;
         for (int i = 0; i<__children.size(); i++) { 
             is_changed = __children[i].first->sensitiveHandle(window) || is_changed;
             if (__children[i].first->isFocus()) __currentFocus = i;
         }
+        is_changed = Controller::sensitiveHandle(window) || is_changed;
         return is_changed;
     }
     bool Container2D::catchEvent(GLFWwindow* window) {
-        bool is_changed = Controller2D::catchEvent(window);
+        bool is_changed = false;
         for (auto& i:__permanentChildren) is_changed = i->catchEvent(window) || is_changed;
         if (__currentFocus>=0) {
             is_changed = __children[__currentFocus].first->catchEvent(window) || is_changed;
@@ -112,15 +111,17 @@ namespace MyBase{
             is_changed = __children[__currentHover].first->catchEvent(window) || is_changed;
             if (__children[__currentHover].first->isFocus()) __currentFocus = __currentHover;
         }
+        is_changed = Controller2D::catchEvent(window) || is_changed;
         return is_changed;
     }
     bool Container2D::handle(GLFWwindow* window) {
-        bool is_changed = Controller::handle(window);
+        bool is_changed = false;
         for (auto& i: __permanentChildren) is_changed = i->handle(window) || is_changed;
         for (int i = 0; i<__children.size(); i++)  {
             __children[i].first->handle(window) || is_changed;
             if (__children[i].first->isFocus()) __currentFocus = i;
         }
+        is_changed = Controller::handle(window) || is_changed;
         return is_changed;
     }
     std::size_t Container2D::size() const {
@@ -154,11 +155,6 @@ namespace MyBase{
 
     void Container2D::insertPermanent(Controller2D* controller) {
         __permanentChildren.push_back(controller);
-    }
-    void Container2D::erasePermanent(Controller2D* controller) {
-        int i = 0;
-        while (i<__permanentChildren.size() && __permanentChildren[i] != controller) i++;
-        if (i<__permanentChildren.size()) __permanentChildren.erase(__permanentChildren.begin()+i);
     }
     void Container2D::clear() {
         __children.clear();

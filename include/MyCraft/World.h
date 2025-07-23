@@ -11,7 +11,7 @@
 namespace MyCraft {
 class World: public MyBase3D::Container3D, public MyBase::Port {
     public:
-        World(const int& x, const int& y, const int& z);
+        World(const int& x, const int& y, const int& z, const std::string& src);
         ~World();
         const BlockCatogary::Catogary&    at(const glm::vec3& pos) const;
         void                    set(const int& x, const int& y, const int& z, const BlockCatogary::Catogary& type);

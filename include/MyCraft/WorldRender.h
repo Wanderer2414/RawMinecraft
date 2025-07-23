@@ -8,7 +8,7 @@
 namespace MyCraft {
     class WorldRender: public MyBase3D::Container3D {
     public:
-        WorldRender();
+        WorldRender(const std::string& src);
         ~WorldRender();
         void save();
         void playerAt(const glm::vec3& position);
