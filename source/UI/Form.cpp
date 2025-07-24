@@ -1,11 +1,13 @@
 #include "Form.h"
 #include "ControlCenter.h"
+#include "Controller2D.h"
+#include "General.h"
 #include "Global.h"
 #include "Shape.h"
 #include "ShapeManager.h"
 
 namespace MyBase {
-    Form::Form(const int& index): __formIndex(index), __returnValue(INT_MIN), __backgroundColor(WHITE) {
+    Form::Form(const int& index): __formIndex(index), __returnValue(-1), __backgroundColor(WHITE), __isOpen(false) {
         __sensitiveClock.setDuration(10);
         ShapeManager::getInstance().createShape(__pauseScreen, {2,2});
         setFillColor({0,0,0, 120});
@@ -18,9 +20,9 @@ namespace MyBase {
         return true;
     }
     int Form::run(GLFWwindow* window) {
+        __isOpen = true;
         bool is_changed = true;
-        glDisable(GL_DEPTH_TEST);
-        while (!glfwWindowShouldClose(window)) {
+        while (!glfwWindowShouldClose(window) && __isOpen) {
             ControlCenter::getInstance().Reset();
             Container2D::reset();
             glfwPollEvents();
@@ -32,25 +34,28 @@ namespace MyBase {
             }
             is_changed = handle(window) || is_changed;
             if (is_changed) {
+                ControlCenter::getInstance().Disable3DMode();
                 glm::vec4 color = __backgroundColor.getColor();
                 glClearColor(color.r, color.g, color.b, color.a);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glDraw();
                 glfwSwapBuffers(window);
             }
-            if (__returnValue!=INT_MIN) return __returnValue;
             is_changed = 0;
         }
-        return __formIndex;
+        return __returnValue;
     }
 
-    int Form::getReturnForm() const {
+    int Form::getReturnValue() const {
         return __returnValue;
     }
     int Form::getFormIndex() {
         return __formIndex;
     }
-    void Form::setReturnForm(const int& returnValue) {
+    void Form::close() {
+        __isOpen = false;
+    }
+    void Form::setReturnValue(const int& returnValue) {
         __returnValue = returnValue;
     }
 
@@ -61,6 +66,7 @@ namespace MyBase {
         return {2, 2};
     }
     void Form::pauseScreen(GLFWwindow* window) {
+        ControlCenter::getInstance().Disable3DMode();
         ControlCenter::getInstance().BindSubScreen();
         glDraw();
         draw(__pauseScreen);

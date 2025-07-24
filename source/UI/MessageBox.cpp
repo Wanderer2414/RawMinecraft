@@ -1,10 +1,11 @@
 #include "MessageBox.h"
 #include "ControlCenter.h"
+#include "Controller2D.h"
 #include "Global.h"
 #include "Shape.h"
 #include "ShapeManager.h"
 namespace MyBase {
-    MessageBox::MessageBox(): __isOpen(true), __size(2,2), __roundness(0) {
+    MessageBox::MessageBox(): __isOpen(false), __size(2,2), __roundness(0), __returnValue(-1) {
         ShapeContainer::setPosition({-1,-1});
         ShapeContainer::setFillColor({0,0,0,120});
         __sensitiveClock.setDuration(50);
@@ -22,7 +23,7 @@ namespace MyBase {
     };
     bool MessageBox::catchEvent(GLFWwindow* window) {
         bool is_changed = Container2D::catchEvent(window);
-        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) && !isHovered()) close();
+        if (ControlCenter::getInstance().IsMouseClicked() && !isHovered()) close();
         return is_changed;
     }
     void MessageBox::setSize(const glm::vec2& size, const float& roundness) {
@@ -32,10 +33,9 @@ namespace MyBase {
             ShapeManager::getInstance().createShape(__background, __size, __roundness);
         }
     }
-    void MessageBox::open(GLFWwindow* window) {
+    int MessageBox::open(GLFWwindow* window) {
         __isOpen = true;
         bool is_changed = true;
-        glDisable(GL_DEPTH_TEST);
         while (!glfwWindowShouldClose(window) && __isOpen) {
             ControlCenter::getInstance().Reset();
             Container2D::reset();
@@ -48,22 +48,26 @@ namespace MyBase {
             }
             is_changed = handle(window) || is_changed;
             if (is_changed) {
+                ControlCenter::getInstance().Disable3DMode();
                 glClearColor(0,0,0, 1);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 ControlCenter::getInstance().DrawSavedScreen();
                 glDraw();
                 glfwSwapBuffers(window);
             }
-            if (ControlCenter::getInstance().IsKeyPressed() && glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+            if (ControlCenter::getInstance().IsKeyPressed() && glfwGetKey(window, GLFW_KEY_ESCAPE)) {
                 close();
             }
             is_changed = 0;
         }
+        return __returnValue;
+    }
+    void MessageBox::setReturnValue(const int& value) {
+        __returnValue = value;
     }
     void MessageBox::close() {
         __isOpen = false;
     }
-       
     bool MessageBox::contains(const glm::vec2& position) const {
         return __background.contains(position-getPosition());
     }

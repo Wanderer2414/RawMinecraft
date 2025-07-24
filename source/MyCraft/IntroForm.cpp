@@ -1,5 +1,8 @@
 #include "IntroForm.h"
+#include "Color.h"
+#include "ControlCenter.h"
 #include "Form.h"
+#include "GLFW/glfw3.h"
 
 namespace MyCraft {
     IntroForm::IntroForm(GLFWwindow* window, const int& index): MyBase::Form(index), font("assets/fonts/SyneMono-Regular.ttf") {
@@ -13,9 +16,9 @@ namespace MyCraft {
 
         __startButton.setFont(font);
         __startButton.setTextColor(WHITE);
-        __startButton.setNormalColor({100, 100, 100, 255});
-        __startButton.setHoverColor({50, 50, 50, 255});
-        __startButton.setClickColor(RED);
+        __startButton.setNormalColor(GRAY);
+        __startButton.setHoverColor(DARKGRAY);
+        __startButton.setClickColor(GRAY);
         __startButton.setText("Start");
         __startButton.setSize({0.6, 0.12}, 0.01);
         __startButton.setPosition({-0.3, 0});
@@ -23,9 +26,9 @@ namespace MyCraft {
 
         __settingButton.setFont(font);
         __settingButton.setTextColor(WHITE);
-        __settingButton.setNormalColor({100, 100, 100, 255});
-        __settingButton.setHoverColor({50, 50, 50, 255});
-        __settingButton.setClickColor(RED);
+        __settingButton.setNormalColor(GRAY);
+        __settingButton.setHoverColor(DARKGRAY);
+        __settingButton.setClickColor(GRAY);
         __settingButton.setText("Settings");
         __settingButton.setSize({0.6, 0.12}, 0.01);
         __settingButton.setPosition({-0.3,-0.17});
@@ -33,9 +36,9 @@ namespace MyCraft {
 
         __aboutusButton.setFont(font);
         __aboutusButton.setTextColor(WHITE);
-        __aboutusButton.setNormalColor({100, 100, 100, 255});
-        __aboutusButton.setHoverColor({50, 50, 50, 255});
-        __aboutusButton.setClickColor(RED);
+        __aboutusButton.setNormalColor(GRAY);
+        __aboutusButton.setHoverColor(DARKGRAY);
+        __aboutusButton.setClickColor(GRAY);
         __aboutusButton.setText("About us");
         __aboutusButton.setSize({0.6, 0.12}, 0.01);
         __aboutusButton.setPosition({-0.3,-0.34});
@@ -43,9 +46,9 @@ namespace MyCraft {
 
         __exitButton.setFont(font);
         __exitButton.setTextColor(WHITE);
-        __exitButton.setNormalColor({100, 100, 100, 255});
-        __exitButton.setHoverColor({50, 50, 50, 255});
-        __exitButton.setClickColor(RED);
+        __exitButton.setNormalColor(GRAY);
+        __exitButton.setHoverColor(DARKGRAY);
+        __exitButton.setClickColor(GRAY);
         __exitButton.setText("Exit");
         __exitButton.setSize({0.6, 0.12}, 0.01);
         __exitButton.setPosition({-0.3,-0.51});
@@ -60,9 +63,24 @@ namespace MyCraft {
     IntroForm::~IntroForm() {
 
     }
+    bool IntroForm::__mouseClicked(GLFWwindow*) {
+        if (__startButton.isPressed()) {
+            setReturnValue(1);
+            close();
+        }
+        if (__exitButton.isPressed()) {
+            setReturnValue(-1);
+            close();
+        }
+        return false;
+    }
     bool IntroForm::catchEvent(GLFWwindow* window) {
         bool is_changed = MyBase::Form::catchEvent(window);
-        if (__startButton.isPressed()) setReturnForm(1);
+        if (MyBase::ControlCenter::getInstance().IsKeyPressed() && glfwGetKey(window, GLFW_KEY_ESCAPE)) {
+            is_changed = false;
+            setReturnValue(-1);
+            close();
+        }
         return is_changed;
     }
 }

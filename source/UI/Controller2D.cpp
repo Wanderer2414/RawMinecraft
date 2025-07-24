@@ -1,10 +1,10 @@
 #include "Controller2D.h"
+#include "ControlCenter.h"
 namespace MyBase {
 
     Controller2D::Controller2D():
         __isDoubleClick(false), __isFocus(false), __isPressed(false), __isMouseDown(false),
         __isHovered(false), __isReleased(false), __isVisible(true) {
-        __clickCount =  0;
     }
     Controller2D::~Controller2D() {
     
@@ -53,19 +53,19 @@ namespace MyBase {
     }
     void Controller2D::reset() {
         __isDoubleClick = __isReleased = __isPressed = false;
-        if (__clickCount) __clickCount--;
     }
     bool Controller2D::catchEvent(GLFWwindow* window) {
         bool is_changed = false;
-        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
             if (__isHovered) {
-                if (!__clickCount) {
+                if (ControlCenter::getInstance().IsMouseClicked()) {
                     if (!__isFocus) is_changed = __focus(window) || is_changed;
                     __isFocus = __isPressed = true;
                     is_changed = __mouseClicked(window) || is_changed;
                 }
-                else if (__clickCount<90) __isFocus = __isDoubleClick = true;
-                __clickCount = 100;
+                if (ControlCenter::getInstance().IsDoubleClicked()) {
+                    __isDoubleClick = true;
+                }
                 __isMouseDown = true;
                 is_changed = __mouseDown(window) || is_changed;
             }

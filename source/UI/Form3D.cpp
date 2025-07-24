@@ -8,7 +8,7 @@
 #include "ShapeManager.h"
 
 namespace MyBase3D {
-    Form3D::Form3D(const int& index): __formIndex(index), __returnValue(INT_MIN), __backgroundColor(WHITE), __frameCount(0) {
+    Form3D::Form3D(const int& index): __formIndex(index), __returnValue(-1), __isOpen(false), __backgroundColor(WHITE), __frameCount(0) {
         __sensitiveClock.setDuration(10);
         MyBase::ShapeManager::getInstance().createShape(__pauseScreen, {2,2});
         setFillColor({0,0,0, 120});
@@ -27,8 +27,8 @@ namespace MyBase3D {
     int Form3D::run(GLFWwindow* window) {
         __startClock = clock();
         bool is_changed = true;
-        glDisable(GL_DEPTH_TEST);
-        while (!glfwWindowShouldClose(window)) {
+        __isOpen = true;
+        while (!glfwWindowShouldClose(window) && __isOpen) {
             MyBase::ControlCenter::getInstance().Reset();
             Container2D::reset();
             glfwPollEvents();
@@ -46,11 +46,10 @@ namespace MyBase3D {
                 glDraw();
                 glfwSwapBuffers(window);
             }
-            if (__returnValue!=INT_MIN) return __returnValue;
             is_changed = 0;
             __frameCount++;
         }
-        return __formIndex;
+        return __returnValue;
     }
     bool Form3D::sensitiveHandle(GLFWwindow* window) {
         bool is_changed = camera.sensitiveHandle(window);
@@ -79,6 +78,12 @@ namespace MyBase3D {
     };
     void Form3D::update() {
         camera.update();
+    }
+    void Form3D::setReturnValue(const int& returnValue) {
+        __returnValue = returnValue;
+    }
+    void Form3D::close() {
+        __isOpen = false;
     }
     glm::vec2 Form3D::getPosition()   const {
         return {-1,-1};

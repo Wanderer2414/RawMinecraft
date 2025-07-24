@@ -2,8 +2,6 @@
 #include "Global.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
-#include <filesystem>
-#include <stdexcept>
 
 
 std::size_t GetTime() {
@@ -71,23 +69,23 @@ namespace MyBase {
         glGenBuffers(1, &POS);
         glBindBuffer(GL_UNIFORM_BUFFER, POS);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*2, &position, GL_STATIC_DRAW);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 0, POS);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 1, POS);
 
         glGenBuffers(1, &SIZE);
         glBindBuffer(GL_UNIFORM_BUFFER, SIZE);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*2, &size, GL_STATIC_DRAW);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 1, SIZE);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, SIZE);
 
         glGenBuffers(1, &SPOS);
         glBindBuffer(GL_UNIFORM_BUFFER, SPOS);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*2, &subposition, GL_STATIC_DRAW);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 2, SPOS);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 3, SPOS);
 
 
         glGenBuffers(1, &SSIZE);
         glBindBuffer(GL_UNIFORM_BUFFER, SSIZE);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*2, &subsize, GL_STATIC_DRAW);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 3, SSIZE);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 4, SSIZE);
 
         glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::getInstance().getRectangle2DSet());
         glEnableVertexArrayAttrib(VAO, 0);
@@ -105,10 +103,58 @@ namespace MyBase {
         glDeleteBuffers(1, &SPOS);
         glDeleteBuffers(1, &SSIZE);
     }
+    void DrawRectangle(const glm::vec2& position, const glm::vec2& size, const Color& c) {
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().getPoint2DShader());
+        GLuint VAO, VBO, ORI, COLOR;
+        glGenVertexArrays(1, &VAO);
+        glBindVertexArray(VAO);
+
+        glm::vec2 positions[4] = {position, position+glm::vec2(size.x,0), position + size, position + glm::vec2(0, size.y)};
+        glm::vec2 origin = {0,0};
+        glm::vec4 color = c.getColor();
+
+        glGenBuffers(1, &VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2)*4, &positions[0], GL_STATIC_DRAW);
+        glEnableVertexArrayAttrib(VAO, 0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
+
+        glGenBuffers(1, &ORI);
+        glBindBuffer(GL_UNIFORM_BUFFER, ORI);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec2), &origin, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 1, COLOR);
+
+        glGenBuffers(1, &COLOR);
+        glBindBuffer(GL_UNIFORM_BUFFER, COLOR);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec4), &color, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, COLOR);
+
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+        glDeleteVertexArrays(1, &VAO);
+        glDeleteBuffers(1, &VBO);
+        glDeleteBuffers(1, &ORI);
+        glDeleteBuffers(1, &COLOR);
+    }
     void CreateFolder(const std::string& src) {
         if (!std::filesystem::create_directory(src)) {
             throw std::runtime_error("Failted to create folder: " + src);
         }
+    }
+    GLuint LoadTexture(const std::string& src) {
+        GLuint texture;
+        int width, height, nrChannels;
+        unsigned char* data = stbi_load(src.c_str(), &width, &height, &nrChannels, 0);
+        if (!data) {
+            throw std::runtime_error("Failed to load texture: " + src);
+        }
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width,height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        stbi_image_free(data);
+        return texture;
     }
 }
 namespace MyCraft {

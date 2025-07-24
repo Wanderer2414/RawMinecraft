@@ -1,9 +1,8 @@
 #ifndef GENERAL_H
 #define GENERAL_H
+#include "Color.h"
 #include "Ray.h"
 #include "Rect3D.h"
-#include <istream>
-#include <ostream>
 
 bool isIntersect(const MyBase3D::Ray3f& ray, const MyBase3D::Rect3f& rectangle);
 
@@ -24,5 +23,7 @@ namespace MyCraft {
 namespace MyBase {
     void CreateFolder(const std::string& src);
     void DrawTexture(GLuint texture, const glm::vec2& position, const glm::vec2& size, const glm::vec2& subposition, const glm::vec2& subsize);
+    void DrawRectangle(const glm::vec2& position, const glm::vec2& size, const Color& color);
+    GLuint LoadTexture(const std::string& src);
 }
 #endif

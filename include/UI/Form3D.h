@@ -30,22 +30,24 @@ namespace MyBase3D {
         using MyBase::Container2D::erase;
         using Container3D::erase;
     protected:
-        int                     getReturnForm() const;
+        int                     getReturnValue() const;
         int                     getFormIndex();
         float                   getMaxFps() const;
-        void                    setReturnForm(const int& returnValue);
+        void                    setReturnValue(const int& returnValue);
+        void                    close();
         virtual bool            sensitiveHandle(GLFWwindow* window)         override;
         virtual bool            catchEvent(GLFWwindow* window)              override;
         virtual bool            handle(GLFWwindow* window)                  override;
         virtual void            glDraw() const override;
         Camera                  camera;
     private:
-        MyBase::Rectangle       __pauseScreen;
-        size_t                  __startClock, __frameCount;
+        bool                    __isOpen;
         int                     __formIndex,
                                 __returnValue;
+        size_t                  __startClock, __frameCount;
         MyBase::Color           __backgroundColor;
         MyBase::Clock           __sensitiveClock;
+        MyBase::Rectangle       __pauseScreen;
     };
     
 };

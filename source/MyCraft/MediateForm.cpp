@@ -1,8 +1,10 @@
 #include "MediateForm.h"
 #include "ChunkLoader.h"
 #include "Color.h"
+#include "ControlCenter.h"
 #include "Date.h"
 #include "Form.h"
+#include "GLFW/glfw3.h"
 #include "GameForm.h"
 #include "General.h"
 
@@ -12,9 +14,9 @@ namespace MyCraft {
 
         __createWorldButton.setFont(__font);
         __createWorldButton.setTextColor(WHITE);
-        __createWorldButton.setNormalColor({100, 100, 100, 255});
-        __createWorldButton.setHoverColor({50, 50, 50, 255});
-        __createWorldButton.setClickColor(RED);
+        __createWorldButton.setNormalColor(GRAY);
+        __createWorldButton.setHoverColor(DARKGRAY);
+        __createWorldButton.setClickColor(GRAY);
         __createWorldButton.setText("Create");
         __createWorldButton.setSize({0.3, 0.12}, 0.01);
         __createWorldButton.setPosition({0.6, -0.48});
@@ -23,9 +25,9 @@ namespace MyCraft {
 
         __clearWorldButton.setFont(__font);
         __clearWorldButton.setTextColor(WHITE);
-        __clearWorldButton.setNormalColor({100, 100, 100, 255});
-        __clearWorldButton.setHoverColor({50, 50, 50, 255});
-        __clearWorldButton.setClickColor(RED);
+        __clearWorldButton.setNormalColor(GRAY);
+        __clearWorldButton.setHoverColor(DARKGRAY);
+        __clearWorldButton.setClickColor(GRAY);
         __clearWorldButton.setText("Clear");
         __clearWorldButton.setSize({0.3, 0.12}, 0.01);
         __clearWorldButton.setPosition({0.6, -0.62});
@@ -34,9 +36,9 @@ namespace MyCraft {
 
         __connectWorldButton.setFont(__font);
         __connectWorldButton.setTextColor(WHITE);
-        __connectWorldButton.setNormalColor({100, 100, 100, 255});
-        __connectWorldButton.setHoverColor({50, 50, 50, 255});
-        __connectWorldButton.setClickColor(RED);
+        __connectWorldButton.setNormalColor(GRAY);
+        __connectWorldButton.setHoverColor(DARKGRAY);
+        __connectWorldButton.setClickColor(GRAY);
         __connectWorldButton.setText("Connect");
         __connectWorldButton.setSize({0.3, 0.12}, 0.01);
         __connectWorldButton.setPosition({0.6, -0.76});
@@ -45,9 +47,9 @@ namespace MyCraft {
 
         __joinWorldButton.setFont(__font);
         __joinWorldButton.setTextColor(WHITE);
-        __joinWorldButton.setNormalColor({100, 100, 100, 255});
-        __joinWorldButton.setHoverColor({50, 50, 50, 255});
-        __joinWorldButton.setClickColor(RED);
+        __joinWorldButton.setNormalColor(GRAY);
+        __joinWorldButton.setHoverColor(DARKGRAY);
+        __joinWorldButton.setClickColor(GRAY);
         __joinWorldButton.setText("Join");
         __joinWorldButton.setSize({0.3, 0.12}, 0.01);
         __joinWorldButton.setPosition({0.6, -0.9});
@@ -62,6 +64,17 @@ namespace MyCraft {
         __menu.setMarginColor(WHITE);
         insert(&__menu);
 
+        __returnButton.setSize({0.2, 0.1}, 0.01);
+        __returnButton.setPosition({-0.9, 0.85});
+        __returnButton.setNormalColor(GRAY);
+        __returnButton.setHoverColor(DARKGRAY);
+        __returnButton.setClickColor(GRAY);
+        __returnButton.setTexture("arrow_back.png");
+        __returnButton.setTextureExportSize({0.08,0.08});
+        __returnButton.setTextureOrigin({0,0});
+        __returnButton.setTextureImportSize({1.0/3,1});
+        insert(&__returnButton);
+
         auto& list = __worldsManage.getWorld();
         for (const auto& info: list) {
             __menu.add(info->getWorldName(), info->getCreatedDate());
@@ -70,8 +83,8 @@ namespace MyCraft {
 
     MediateForm::~MediateForm() {}
 
-    bool MediateForm::__mouseRelease(GLFWwindow* window) {
-        if (__createWorldButton.isReleased()) {
+    bool MediateForm::__mouseClicked(GLFWwindow* window) {
+        if (__createWorldButton.isPressed()) {
             pauseScreen(window);
             __createWorldForm.open(window);
             if (__createWorldForm.isSubmit()) {
@@ -85,15 +98,29 @@ namespace MyCraft {
                 ChunkLoader::create(file);
             }
         }
-        if (__joinWorldButton.isReleased()) {
+        if (__joinWorldButton.isPressed()) {
             int index = __menu.getChoice();
-            if (index >= 0) {
+            if (index != -1) {
                 std::string file = "bin/"+std::to_string(index)+"/";
                 GameForm gameForm(window, 0, file);
-                int form_index = gameForm.run(window);
-                setReturnForm(form_index);
+                gameForm.run(window);
+                setReturnValue(1);
+                close();
             }
         }
+        if (__returnButton.isPressed()) {
+            setReturnValue(0);
+            close();
+        }
         return false;
+    }
+    bool MediateForm::catchEvent(GLFWwindow* window) {
+        bool is_changed = MyBase::Form::catchEvent(window);
+        if (MyBase::ControlCenter::getInstance().IsKeyPressed() && glfwGetKey(window, GLFW_KEY_ESCAPE)) {
+            setReturnValue(0);
+            close();
+            is_changed = false;
+        }
+        return is_changed;
     }
 }

@@ -5,6 +5,7 @@
 #include "Rectangle.h"
 #include "RoundedRectangle.h"
 #include "Text.h"
+#include "Texture.h"
 
 namespace MyBase  {
     template<typename T>
@@ -23,15 +24,15 @@ namespace MyBase  {
         void setText(const std::string& text);
         void setScale(const glm::vec2& scale);
     protected:
-        void update() override;
+        virtual void update() override;
         virtual bool    __mouseDown(GLFWwindow*) override,
                         __hover() override,
                         __lostHover() override,
                         __mouseRelease(GLFWwindow*) override;
+        virtual void        glDraw() const override;
     private:
         virtual T&          getShape() = 0;
         virtual const T&    getShape() const = 0;
-        virtual void        glDraw() const override;
         bool                contains(const glm::vec2& position) const override;
         Color   __hoverColor, __clickColor, __normalColor;
     };
@@ -73,6 +74,23 @@ namespace MyBase  {
         Ellipse& getShape() override;
         const Ellipse& getShape() const override;
         Ellipse __shape;
+    };
+
+    class TextureButton: public RoundedRectangleButton, private TextureContainer {
+    public:
+        TextureButton();
+        ~TextureButton();
+        void setTexture(const std::string& texture);
+        using TextureContainer::setTextureImportSize;
+        using TextureContainer::setTextureExportSize;
+        void setTextureOrigin(const glm::vec2& position);
+    protected:
+        virtual void update() override;
+        virtual bool __hover() override, __lostHover() override, __mouseClicked(GLFWwindow* window) override, __mouseRelease(GLFWwindow* window) override;
+    private:
+        std::string     __src;
+        glm::vec2       __textureOrigin;
+        void glDraw() const override;
     };
 }
 #endif

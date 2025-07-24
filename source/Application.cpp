@@ -8,6 +8,7 @@
 #include "ShaderStorage.h"
 #include "ModelStorage.h"
 #include "ShapeManager.h"
+#include "TextureStorage.h"
 
 namespace MyCraft {
     Application::Application(const float& width, const float& height) {
@@ -26,11 +27,12 @@ namespace MyCraft {
         MyCraft::ModelStorage::close();
         MyBase::ControlCenter::getInstance().CloseWindow();
         MyBase::ControlCenter::close();
+        MyBase::TextureStorage::close();
     }
 
     void Application::run() {
         int formIndex = 0;
-        while (!glfwWindowShouldClose(__window)) {
+        while (!glfwWindowShouldClose(__window) && formIndex>-1) {
             switch (formIndex) {
                 case 0: {
                     IntroForm introForm(__window, 0);

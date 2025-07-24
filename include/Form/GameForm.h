@@ -4,6 +4,7 @@
 #include "Clock.h"
 #include "Font.h"
 #include "Form3D.h"
+#include "GamePauseForm.h"
 #include "HitBoxCenter.h"
 #include "Label.h"
 #include "ModelController.h"
@@ -31,6 +32,7 @@ namespace MyCraft {
             PlayerModelController     __model;
             HitBoxCenter    __hitbox;
             float           pSpeed;
+            GamePauseForm   __pauseForm;
         };
 }
 #endif

@@ -9,8 +9,9 @@ namespace MyCraft {
     public:
         IntroForm(GLFWwindow* window, const int& index);
         ~IntroForm();
-        bool catchEvent(GLFWwindow* window) override;
     private:
+        bool __mouseClicked(GLFWwindow*) override;
+        bool catchEvent(GLFWwindow*) override;
         MyBase::Label                   __programmeName;
         MyBase::RoundedRectangleButton  __startButton, __settingButton, __aboutusButton, __exitButton;
         MyBase::Font font;

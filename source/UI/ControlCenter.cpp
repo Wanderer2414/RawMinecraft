@@ -2,10 +2,11 @@
 #include "GLFW/glfw3.h"
 #include "General.h"
 #include "Global.h"
+#include <stdexcept>
 namespace MyBase {
     ControlCenter* ControlCenter::Default = 0;
     ControlCenter::ControlCenter():
-         __fpsInterval(100), __majorVerson(3), __minorVerson(3), 
+         __fpsInterval(100), __majorVerson(3), __minorVerson(3), __clickCount(0),
          __scrollPosition(0, 0), __clock(clock()), __charInput(-1), __isKeyPressed(false) {
 
     }
@@ -43,8 +44,28 @@ namespace MyBase {
             ControlCenter::getInstance().__charInput = -1;
         }
     }
+
+    void mouse_callback(GLFWwindow* window, int buttons, int actions, int mods) {
+        if (actions) {
+            ControlCenter::Default->__isMouseClicked = true;
+            if (ControlCenter::Default->__clickCount) ControlCenter::Default->__isDoubleClick = true;
+        }
+        else ControlCenter::Default->__clickCount = 100;
+    }
+
+    void scroll_callback(GLFWwindow* window, double x, double y) {
+        ControlCenter::getInstance().__clock = clock();
+        ControlCenter::getInstance().__scrollPosition = {x,y};
+    }
+
     bool ControlCenter::IsKeyPressed() const {
         return __isKeyPressed;
+    }
+    bool ControlCenter::IsMouseClicked() const {
+        return __isMouseClicked;
+    }
+    bool ControlCenter::IsDoubleClicked() const {
+        return __isDoubleClick;
     }
     char ControlCenter::GetCharInput() const {
         return __charInput;
@@ -59,12 +80,9 @@ namespace MyBase {
         return __windowHalfSize;    
     }
     void ControlCenter::Reset() {
-        __isKeyPressed = false;
+        __isKeyPressed = __isMouseClicked = __isDoubleClick = false;
+        if (__clickCount) __clickCount--;
         __charInput = 0;
-    }
-    void scroll_callback(GLFWwindow* window, double x, double y) {
-        ControlCenter::getInstance().__clock = clock();
-        ControlCenter::getInstance().__scrollPosition = {x,y};
     }
     glm::vec2 ControlCenter::getScroll() const {
         if (clock()-__clock>CLOCKS_PER_SEC*0.001) return {0,0};
@@ -75,8 +93,7 @@ namespace MyBase {
         __windowHalfSize = __windowSize/2.f;
         __programName = program;
         if (!glfwInit()) {
-                std::cout << "Failed to initialize GLFW" << std::endl;
-            exit(EXIT_FAILURE);
+            throw std::runtime_error( "Failed to initialize GLFW");
         }
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, __majorVerson);
@@ -85,20 +102,18 @@ namespace MyBase {
         glfwMakeContextCurrent(window);
         glfwSwapInterval(__fpsInterval);
         if (!window) {
-            std::cout << "Failed to create GLFW window" << std::endl;
-            glfwTerminate();
-            exit(EXIT_FAILURE);
+            throw std::runtime_error("Failed to create GLFW window");
         }
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-            std::cout << "Failed to initialize GLAD" << std::endl;
-            exit(EXIT_FAILURE);
+            throw std::runtime_error("Failed to initialize GLAD");
         }
         else {
             std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
         }
         glfwSetScrollCallback(window, scroll_callback);
         glfwSetKeyCallback(window, key_callback);
+        glfwSetMouseButtonCallback(window, mouse_callback);
 
         glGenTextures(1, &__screenTexture);
         glBindTexture(GL_TEXTURE_2D, __screenTexture);

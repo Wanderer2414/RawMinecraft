@@ -30,7 +30,6 @@ namespace MyBase {
                         __hover(), __lostHover(), __onHover();
     private:
         bool            __isVisible;
-        unsigned int    __clickCount;
         bool            __isHovered,
                         __isPressed, __isMouseDown,
                         __isDoubleClick,

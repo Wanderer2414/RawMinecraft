@@ -5,7 +5,9 @@
 #include "ControlCenter.h"
 
 namespace MyCraft {
-    GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src): Form3D(index), pWorld(0, 0, 0, src) {
+    GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src): 
+        Form3D(index), pWorld(0, 0, 0, src), __pauseForm(__font), __font("assets/fonts/SyneMono-Regular.ttf") 
+    {
         setBackgroundColor(BLACK);
         insert(&pWorld);
         insert(&__model);
@@ -15,7 +17,6 @@ namespace MyCraft {
         __hitbox.match(&__model);
         __hitbox.match(&pWorld);
         __hitbox.match(&camera);
-        __font.loadFont("assets/fonts/SyneMono-Regular.ttf");
         __label.setFont(__font);
         __label.setText("Max fps:");
         __label.setTextColor(RED);
@@ -49,11 +50,15 @@ namespace MyCraft {
             if (glfwGetKey(window, GLFW_KEY_ESCAPE)) {
                 pauseScreen(window);
                 MyBase::ControlCenter::getInstance().EnableMouse(window);
-                GamePauseForm form;
-                form.open(window);
-                MyBase::ControlCenter::getInstance().DisableMouse(window);
-                is_changed = true;
-                update();
+                int value = __pauseForm.open(window);
+                if (!value) {
+                    MyBase::ControlCenter::getInstance().DisableMouse(window);
+                    is_changed = true;
+                    update();
+                }
+                else if (value == 1) {
+                    close();
+                }
             }
         }
         return is_changed;

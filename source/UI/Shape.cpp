@@ -96,8 +96,7 @@ namespace MyBase {
     void ShapeContainer::draw(const Shape& shape) const {
         glUseProgram(MyBase3D::ShaderStorage::getInstance().getPoint2DShader());
         glBindVertexArray(shape.__VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, shape.__VBO);
-        
+
         glBindBufferBase(GL_UNIFORM_BUFFER, 1, __positionCode);
         glBindBufferBase(GL_UNIFORM_BUFFER, 2, __colorCode);
 

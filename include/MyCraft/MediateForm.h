@@ -15,13 +15,15 @@ namespace MyCraft {
         MediateForm& operator=(const MediateForm&) const = delete; 
     protected:
     private:
+        MyBase::TextureButton           __returnButton;
         WorldsManage                    __worldsManage;
         MapMenu                         __menu;
         MyBase::Font                    __font;
         MyBase::CreateWorldForm         __createWorldForm;
         MyBase::RoundedRectangleButton  __createWorldButton, __clearWorldButton, __joinWorldButton, __connectWorldButton;
 
-        bool __mouseRelease(GLFWwindow*) override;
+        bool __mouseClicked(GLFWwindow*) override;
+        bool catchEvent(GLFWwindow* window) override;
     };
 }
 #endif

@@ -4,17 +4,17 @@ layout(location = 0) in vec2 pos;
 layout(location = 1) in vec2 iUv;
 layout(location = 0) out vec2 oUv;
 
-layout(set = 0, binding = 0) uniform OriginBuffer {
+layout(set = 0, binding = 1) uniform OriginBuffer {
     vec2 origin;
 };
-layout(set = 0, binding = 1) uniform OriginSizeBuffer {
+layout(set = 0, binding = 2) uniform OriginSizeBuffer {
     vec2 size;
 };
-layout(set = 0, binding = 2) uniform TexturePosBuffer {
+layout(set = 0, binding = 3) uniform TexturePosBuffer {
     vec2 iposition;
 };
 
-layout(set = 0, binding = 3) uniform TextureSizeBuffer {
+layout(set = 0, binding = 4) uniform TextureSizeBuffer {
     vec2 isize;
 };
 

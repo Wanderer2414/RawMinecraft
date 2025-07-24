@@ -16,21 +16,23 @@ namespace MyBase {
         virtual bool    contains(const glm::vec2& position) const override;
         virtual void    setSensitiveTime(const size_t& milisecond);
         int             run(GLFWwindow* window);
+        void            close();
 
         glm::vec2       getPosition()   const override, 
                         getSize()       const override;
         void            setBackgroundColor(const Color& color);
         void            pauseScreen(GLFWwindow* window);
     protected:
-        int             getReturnForm() const;
+        int             getReturnValue() const;
         int             getFormIndex();
-        void            setReturnForm(const int& returnValue);
+        void            setReturnValue(const int& returnValue);
     private:
-        Rectangle       __pauseScreen;
+        bool            __isOpen;
         int             __formIndex,
                         __returnValue;
         Color           __backgroundColor;
         Clock           __sensitiveClock;
+        Rectangle       __pauseScreen;
     };
     
 };

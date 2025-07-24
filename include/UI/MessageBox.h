@@ -16,16 +16,17 @@ namespace MyBase {
                         getSize() const override;
         void setSize(const glm::vec2& size, const float& roundness);
 
-       void open(GLFWwindow* window);
+       int open(GLFWwindow* window);
        void close();
-       
     protected:
+        void setReturnValue(const int& returnValue);
     private:
-        RoundedRectangle    __background;
-        Clock               __sensitiveClock;
+        bool                __isOpen;
+        int                 __returnValue;
         float               __roundness;
         glm::vec2           __size;
-        bool                __isOpen;
+        RoundedRectangle    __background;
+        Clock               __sensitiveClock;
         bool contains(const glm::vec2& position) const override;
         bool catchEvent(GLFWwindow* window) override;
         void glDraw() const override;

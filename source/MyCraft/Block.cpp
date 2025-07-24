@@ -1,33 +1,13 @@
 #include "Block.h"
+#include "General.h"
 #include "Global.h"
 namespace MyCraft {
     BlockCatogary* BlockCatogary::Default;
     BlockCatogary::BlockCatogary() {
         __ptr.resize(3, 0);
         __ptr[0] = 0;
-        int width, height, nrChannels;
-        unsigned char* data = stbi_load("assets/images/Dirt.png", &width, &height, &nrChannels, 0);
-        if (!data) {
-            std::cout << "Failed to load texture" << std::endl;
-            exit(0);
-        }
-        glGenTextures(1, &__ptr[1]);
-        glBindTexture(GL_TEXTURE_2D, __ptr[1]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width,height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        stbi_image_free(data);
-        data = stbi_load("assets/images/Grass.png", &width, &height, &nrChannels, 0);
-        if (!data) {
-            std::cout << "Failed to load texture" << std::endl;
-            exit(0);
-        }
-        glGenTextures(1, &__ptr[2]);
-        glBindTexture(GL_TEXTURE_2D, __ptr[2]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        stbi_image_free(data);
+        __ptr[1] = MyBase::LoadTexture("assets/images/Dirt.png");
+        __ptr[2] = MyBase::LoadTexture("assets/images/Grass.png");
 
         glm::vec4 tex_coord[14];
         tex_coord[0] = {1.0/3, 0, 0,0};

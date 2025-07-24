@@ -2,6 +2,9 @@
 #include "RoundedRectangle.h"
 #include "Shape.h"
 #include "ShapeManager.h"
+#include "Text.h"
+#include "Texture.h"
+#include "TextureStorage.h"
 
 namespace MyBase {
 
@@ -30,8 +33,8 @@ namespace MyBase {
     }
     template <typename T>
     void Button<T>::setPosition(const glm::vec2& position) {
-        Text::move(position-getPosition());
         ShapeContainer::setPosition(position);
+        update();
     }
     template <typename T>
     void Button<T>::setText(const std::string& text) {
@@ -46,7 +49,7 @@ namespace MyBase {
     template <typename T>
     void Button<T>::move(const glm::vec2& offset) {
         ShapeContainer::move(offset);
-        Text::move(offset);
+        update();
     }
     template <typename T>
     void Button<T>::setFont(const Font& font) {
@@ -160,5 +163,54 @@ namespace MyBase {
     }
     const Ellipse& EllipseButton::getShape() const {
         return __shape;
+    }
+
+    TextureButton::TextureButton() {}
+    TextureButton::~TextureButton() {
+
+    }
+    void TextureButton::update() {
+        RoundedRectangleButton::update();
+        TextureContainer::update();
+        TextureContainer::setTextureExportPosition(getPosition() + getSize()/2.f - getTextureExportSize()/2.f);
+        if (isPressed()) __mouseClicked(0);
+        else if (isHovered()) __hover();
+        else __lostHover();
+    }
+    void TextureButton::setTexture(const std::string& src) {
+        if (__src != src) {
+            if (__src.size()) TextureStorage::getInstance().removeTexture(__src);
+            __src = src;
+            GLuint texture = TextureStorage::getInstance().getTexture(__src);
+            TextureContainer::setTexture(texture);
+        }
+    }
+    void TextureButton::setTextureOrigin(const glm::vec2& origin) {
+        __textureOrigin = origin;
+        update();
+    }
+    bool TextureButton::__hover() {
+        RoundedRectangleButton::__hover();
+        TextureContainer::setTextureImportPosition(__textureOrigin + glm::vec2(TextureContainer::getTextureImportSize().x, 0));
+        return true;
+    }
+    bool TextureButton::__lostHover() {
+        RoundedRectangleButton::__lostHover();
+        TextureContainer::setTextureImportPosition(__textureOrigin);
+        return true;
+    }
+    bool TextureButton::__mouseClicked(GLFWwindow* window) {
+        RoundedRectangleButton::__mouseClicked(window);
+        TextureContainer::setTextureImportPosition(__textureOrigin + glm::vec2(TextureContainer::getTextureImportSize().x*2, 0));
+        return true;
+    }
+    bool TextureButton::__mouseRelease(GLFWwindow* window) {
+        RoundedRectangleButton::__mouseRelease(window);
+        TextureContainer::setTextureImportPosition(__textureOrigin + glm::vec2(TextureContainer::getTextureImportSize().x, 0));
+        return true;
+    }
+    void TextureButton::glDraw() const {
+        RoundedRectangleButton::glDraw();
+        TextureContainer::draw();
     }
 }
