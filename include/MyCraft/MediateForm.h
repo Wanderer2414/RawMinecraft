@@ -5,6 +5,8 @@
 #include "Font.h"
 #include "Form.h"
 #include "MapMenu.h"
+#include "ProgressWaitingForm.h"
+#include "WaitingWorldCreateForm.h"
 #include "WorldsManage.h"
 namespace MyCraft {
     class MediateForm: public MyBase::Form {
@@ -20,6 +22,7 @@ namespace MyCraft {
         MapMenu                         __menu;
         MyBase::Font                    __font;
         MyBase::CreateWorldForm         __createWorldForm;
+        WaitingWorldCreateForm          __waitingCreateMap;
         MyBase::RoundedRectangleButton  __createWorldButton, __clearWorldButton, __joinWorldButton, __connectWorldButton;
 
         bool __mouseClicked(GLFWwindow*) override;

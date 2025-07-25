@@ -27,7 +27,7 @@ namespace MyCraft {
             MyBase::Font    __fontDefault;
             MyBase::Clock   pFrameAlarm;
             MyBase::Font    __font;
-            MyBase::Label   __label;
+            MyBase::Label   __label, __positionLabel;
             World           pWorld;
             PlayerModelController     __model;
             HitBoxCenter    __hitbox;

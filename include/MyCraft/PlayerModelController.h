@@ -10,6 +10,7 @@ namespace MyCraft {
         PlayerModelController();
         ~PlayerModelController();
         bool        isCrounch() const;
+        bool        isRun() const;
         bool        sensitiveHandle(GLFWwindow* window) override;
         bool        handle(GLFWwindow* window) override;
         glm::vec3   getModelPosition() const override,

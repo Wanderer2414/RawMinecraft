@@ -15,6 +15,8 @@
 #include <queue>
 #include <limits>
 #include <bitset>
+#include <mutex>
+#include <thread>
 #include <filesystem>
 #include <stdexcept>
 

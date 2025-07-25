@@ -66,10 +66,13 @@ namespace MyBase{
         if (Controller2D::setHover(hover)) {
             if (!hover) {
                 for (auto& child:__permanentChildren) child->setHover(false);
-                if (__currentHover!=-1) __children[__currentHover].first->setHover(false);
+                if (__currentHover!=-1) {
+                    __children[__currentHover].first->setHover(false);
+                }
                 return true;
             }
             else for (auto& child:__permanentChildren) child->setHover(true);
+            __currentHover = -1;
         }
         return false;
     }
@@ -116,7 +119,8 @@ namespace MyBase{
     }
     bool Container2D::handle(GLFWwindow* window) {
         bool is_changed = false;
-        for (auto& i: __permanentChildren) is_changed = i->handle(window) || is_changed;
+        for (auto& i: __permanentChildren) 
+            is_changed = i->handle(window) || is_changed;
         for (int i = 0; i<__children.size(); i++)  {
             __children[i].first->handle(window) || is_changed;
             if (__children[i].first->isFocus()) __currentFocus = i;

@@ -7,9 +7,9 @@ namespace MyBase {
     class Text {
     public:
         Text();
-        Text(const Text& text);
+        Text(const Text& text) = delete;
         ~Text();
-        Text& operator=(const Text& text);
+        Text& operator=(const Text& text) = delete;
         const std::string& getText() const;
         void setTextColor(const Color& color);
         void setFont(const Font& font);

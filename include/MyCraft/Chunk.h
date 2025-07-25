@@ -13,18 +13,19 @@ namespace MyCraft {
         void enableBit(const glm::vec3& pos);
         void disableBit(const glm::vec3& pos);
         glm::vec3 getPosition() const;
-        static Chunk* Load(const std::string& file);
+        static Chunk* Load(const std::string& src, const glm::ivec3& position);
         void glDraw() const;
     protected:
     private:
         Chunk();
-        bool    __isChange;
-        std::map<BlockCatogary::Catogary, std::vector<glm::vec4>>  __list;
+        bool                        __isChange;
+        unsigned int                __numBlock;
+        int                         __tableIndexes[16][16][16];
         glm::vec3                   __position;
         BlockCatogary::Catogary     __blockTypes[16][16][16];
         std::bitset<16>             __bits[16][16];
-        int                         __tableIndexes[16][16][16];
         std::string                 __source;
+        std::map<BlockCatogary::Catogary, std::vector<glm::vec4>>  __list;
     };
 }
 #endif

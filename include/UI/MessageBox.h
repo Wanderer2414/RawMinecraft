@@ -3,6 +3,7 @@
 #include "Clock.h"
 #include "Container2D.h"
 #include "RoundedRectangle.h"
+#include "Global.h"
 #include "Shape.h"
 namespace MyBase {
     class MessageBox: public Container2D, public ShapeContainer {
@@ -19,7 +20,10 @@ namespace MyBase {
        int open(GLFWwindow* window);
        void close();
     protected:
+        virtual void __open(GLFWwindow*), __close(GLFWwindow*);
         void setReturnValue(const int& returnValue);
+        virtual bool catchEvent(GLFWwindow* window) override;
+        virtual void glDraw() const override;
     private:
         bool                __isOpen;
         int                 __returnValue;
@@ -28,8 +32,6 @@ namespace MyBase {
         RoundedRectangle    __background;
         Clock               __sensitiveClock;
         bool contains(const glm::vec2& position) const override;
-        bool catchEvent(GLFWwindow* window) override;
-        void glDraw() const override;
     };
 }
 #endif

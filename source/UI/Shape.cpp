@@ -4,32 +4,33 @@
 #include "ShapeManager.h"
 
 namespace MyBase {
-    Shape::Shape(): __VBO(0) {
-        glGenVertexArrays(1, &__VAO);
-    }
+    Shape::Shape(): __VBO(0), __VAO(0) {}
     Shape::~Shape() {
-        if (__VBO) glDeleteBuffers(1, &__VBO);
-        glDeleteVertexArrays(1, &__VAO);
+        if (__VAO) {
+            glDeleteBuffers(1, &__VBO);
+            glDeleteVertexArrays(1, &__VAO);
+        }
     }
     void Shape::update() {
         if (!__VBO) {
-            glGenBuffers(1, &__VBO);
-        }
-        glBindBuffer(GL_ARRAY_BUFFER, __VBO);
-        char *buffer = new char[sizeof(glm::vec2)*getPointCount()];
-        glm::vec2 *positions = (glm::vec2*)buffer;
-        for (int i = 0; i<getPointCount(); i++) {
-            positions[i] = getPoint(i);
-        }
-        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2)*getPointCount(), buffer, GL_STATIC_DRAW);
-        glBindVertexArray(__VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, __VBO);
-        glEnableVertexArrayAttrib(__VAO, 0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
+            glGenVertexArrays(1, &__VAO);
+            glBindVertexArray(__VAO);
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-        delete[] buffer;
+            glGenBuffers(1, &__VBO);
+            glBindBuffer(GL_ARRAY_BUFFER, __VBO);
+            char *buffer = new char[sizeof(glm::vec2)*getPointCount()];
+            glm::vec2 *positions = (glm::vec2*)buffer;
+            for (int i = 0; i<getPointCount(); i++) {
+                positions[i] = getPoint(i);
+            }
+            glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2)*getPointCount(), buffer, GL_STATIC_DRAW);
+            glEnableVertexArrayAttrib(__VAO, 0);
+            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindVertexArray(0);
+            delete[] buffer;
+        }
     }
     void Shape::draw() const {
         glBindVertexArray(__VAO);
@@ -109,6 +110,5 @@ namespace MyBase {
         }
 
         glBindVertexArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 }

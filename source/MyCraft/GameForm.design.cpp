@@ -23,13 +23,20 @@ namespace MyCraft {
         __label.setScale({0.03, 0.06});
         __label.setPosition({0.7f, 0.95f});
 
-        MyBase::ControlCenter::getInstance().DisableMouse(window);
+        MyBase::ControlCenter::DisableMouse(window);
+        MyBase::ControlCenter::CenteringMouse(window);
     
         camera.setPosition({10, 10, 1.7});
         pZVelocity = 0;
         pSpeed = 0.1;
         pFrameAlarm.setDuration(50);
         std::cout << "Open time: " << 1.0f*clock()/CLOCKS_PER_SEC << std::endl;
+
+        __positionLabel.setFont(__font);
+        __positionLabel.setPosition({-0.9, 0.9});
+        __positionLabel.setTextColor(RED);
+        __positionLabel.setScale({0.04, 0.06});
+        insert(&__positionLabel);
     }
     GameForm::~GameForm() {        
     }
@@ -49,16 +56,15 @@ namespace MyCraft {
         if (MyBase::ControlCenter::getInstance().IsKeyPressed()) {
             if (glfwGetKey(window, GLFW_KEY_ESCAPE)) {
                 pauseScreen(window);
-                MyBase::ControlCenter::getInstance().EnableMouse(window);
+                MyBase::ControlCenter::EnableMouse(window);
                 int value = __pauseForm.open(window);
                 if (!value) {
-                    MyBase::ControlCenter::getInstance().DisableMouse(window);
+                    MyBase::ControlCenter::DisableMouse(window);
+                    MyBase::ControlCenter::CenteringMouse(window);
                     is_changed = true;
                     update();
                 }
-                else if (value == 1) {
-                    close();
-                }
+                else if (value == 1) close();
             }
         }
         return is_changed;
@@ -66,17 +72,16 @@ namespace MyCraft {
     bool GameForm::handle(GLFWwindow* window) {
         bool is_changed = Form3D::handle(window);
         __label.setText("Max fps: " + std::to_string(getMaxFps()));
-        glm::vec3 dir = __model.getDirection();
-        dir.z -=2;
     
-        glm::vec<2, double> position;
-        glfwGetCursorPos(window, &position.x, &position.y);
-        glm::vec2 delta = position;
-        delta -= MyBase::ControlCenter::getInstance().getWindowHalf();
+        glm::vec2 delta = MyBase::ControlCenter::getInstance().getCursorPos(window);
     
         if (delta.x != 0 || delta.y != 0) {
-            glfwSetCursorPos(window, MyBase::ControlCenter::getInstance().getWindowHalf().x, MyBase::ControlCenter::getInstance().getWindowHalf().y);
-            __model.seeRotate(-delta.x/1000, -delta.y/1000);
+            MyBase::ControlCenter::CenteringMouse(window);
+            __model.seeRotate(-delta.x, delta.y);
+            is_changed = true;
+        }
+        if (__model.isRun()) {
+            __positionLabel.setText(std::format("Position: ({}, {}, {})", (int)__model.getModelPosition().x, (int)__model.getModelPosition().y, (int)__model.getModelPosition().z));
             is_changed = true;
         }
         return is_changed;

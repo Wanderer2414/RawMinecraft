@@ -22,6 +22,8 @@ namespace MyCraft {
 }
 namespace MyBase {
     void CreateFolder(const std::string& src);
+    void DeleteFile(const std::string& src);
+    void DeleteFolder(const std::string& src);
     void DrawTexture(GLuint texture, const glm::vec2& position, const glm::vec2& size, const glm::vec2& subposition, const glm::vec2& subsize);
     void DrawRectangle(const glm::vec2& position, const glm::vec2& size, const Color& color);
     GLuint LoadTexture(const std::string& src);

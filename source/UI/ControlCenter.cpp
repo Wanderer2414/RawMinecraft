@@ -190,9 +190,11 @@ namespace MyBase {
     void ControlCenter::EnableMouse(GLFWwindow* window) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
+    void ControlCenter::CenteringMouse(GLFWwindow* window) {
+        glfwSetCursorPos(window, MyBase::ControlCenter::getInstance().getWindowHalf().x, MyBase::ControlCenter::getInstance().getWindowHalf().y);
+    }
     void ControlCenter::DisableMouse(GLFWwindow* window) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        glfwSetCursorPos(window, MyBase::ControlCenter::getInstance().getWindowHalf().x, MyBase::ControlCenter::getInstance().getWindowHalf().y);
     }
     glm::vec2 ControlCenter::getCursorPos(GLFWwindow* window) const {
         double x,y;

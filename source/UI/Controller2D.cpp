@@ -38,11 +38,12 @@ namespace MyBase {
             __isHovered = hover;
             if (!hover) {
                 __isMouseDown = __isPressed = __isDoubleClick = false;
-                return __lostHover();
+                __lostHover();
             }
-            else return __hover();
+            else __hover();
+            return true;
         }
-        else if (hover) __onHover();
+        else if (hover) return __onHover();
         return false;
     }
     bool Controller2D::setHover(const glm::vec2& position) {

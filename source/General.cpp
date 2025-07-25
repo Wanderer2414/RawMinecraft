@@ -2,6 +2,8 @@
 #include "Global.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
+#include <filesystem>
+#include <stdexcept>
 
 
 std::size_t GetTime() {
@@ -138,8 +140,16 @@ namespace MyBase {
     }
     void CreateFolder(const std::string& src) {
         if (!std::filesystem::create_directory(src)) {
-            throw std::runtime_error("Failted to create folder: " + src);
+            throw std::runtime_error("Failed to create folder: " + src);
         }
+    }
+    void DeleteFolder(const std::string& src) {
+        if (!std::filesystem::remove_all(src)) {
+            throw std::runtime_error("Failed to delete folder: " + src);
+        }
+    }
+    void DeleteFile(const std::string& src) {
+        remove(src.c_str());
     }
     GLuint LoadTexture(const std::string& src) {
         GLuint texture;

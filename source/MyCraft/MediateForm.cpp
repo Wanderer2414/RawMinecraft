@@ -1,5 +1,4 @@
 #include "MediateForm.h"
-#include "ChunkLoader.h"
 #include "Color.h"
 #include "ControlCenter.h"
 #include "Date.h"
@@ -7,11 +6,14 @@
 #include "GLFW/glfw3.h"
 #include "GameForm.h"
 #include "General.h"
+#include "MapCreator.h"
 
 namespace MyCraft {
-    MediateForm::MediateForm(GLFWwindow* window, const int& index): Form(index), __font("assets/fonts/SyneMono-Regular.ttf"), __createWorldForm(__font) {
+    MediateForm::MediateForm(GLFWwindow* window, const int& index): 
+        Form(index), __font("assets/fonts/SyneMono-Regular.ttf"),
+        __createWorldForm(__font), __waitingCreateMap(__font)
+        {
         setBackgroundColor(BLACK);
-
         __createWorldButton.setFont(__font);
         __createWorldButton.setTextColor(WHITE);
         __createWorldButton.setNormalColor(GRAY);
@@ -95,7 +97,7 @@ namespace MyCraft {
                 int index = __worldsManage.createWorld(world_name, date);
                 std::string file = "bin/"+std::to_string(index)+"/";
                 MyBase::CreateFolder(file);
-                ChunkLoader::create(file);
+                __waitingCreateMap.open(file, window);
             }
         }
         if (__joinWorldButton.isPressed()) {

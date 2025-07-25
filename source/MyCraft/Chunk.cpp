@@ -1,13 +1,17 @@
 #include "Chunk.h"
 #include "Block.h"
+#include "ChunkLoader.h"
 #include "DrawingCenter.h"
+#include "General.h"
+#include "MapCreator.h"
 
 namespace MyCraft {
-    Chunk::Chunk(): __isChange(false) {}
+    Chunk::Chunk(): __isChange(false), __numBlock(0) {}
     Chunk::~Chunk() {}
-    Chunk* Chunk::Load(const std::string& src) {
+    Chunk* Chunk::Load(const std::string& src, const glm::ivec3& position) {
         Chunk* new_chunk = new Chunk();
-        std::ifstream file(src, std::ios::in | std::ios::binary);
+        new_chunk->__source = MapCreator::getFileName(src, position);
+        std::ifstream file(new_chunk->__source, std::ios::in | std::ios::binary);
         if (file.is_open()) {
             file.read((char*)&new_chunk->__position, sizeof(glm::vec3));
             unsigned int sz;
@@ -21,16 +25,20 @@ namespace MyCraft {
                 vecs.resize(size);
                 vecs.back().x = 0;
             }
-            unsigned int buffer[16][16];
-            file.read((char*)&buffer[0], 256*sizeof(int));
-            for (int i = 0; i<16; i++)
+            unsigned int buffer[128];
+            file.read((char*)&buffer[0], 128*sizeof(int));
+            file.read((char*)&new_chunk->__numBlock, sizeof(int));
+            for (int i = 0; i<16; i++) {
                 for (int j = 0; j<16; j++) {
                     file.read((char*)&new_chunk->__blockTypes[i][j], sizeof(BlockCatogary::Catogary)*16);
                 }
+            }
             if (new_chunk->__list.size()) {
                 for (int i = 0; i<16; i++)
                     for (int j = 0; j<16; j++) {
-                        unsigned int& data = buffer[i][j];
+                        unsigned int data = buffer[i*8+j/2];
+                        if (j%2) data >>= 16;
+                        else data = data & 0xFFFF;
                         new_chunk->__bits[i][j] = data;
                         while (data) {
                             int k = std::log2(data);
@@ -44,9 +52,12 @@ namespace MyCraft {
                         }
                     }
             }
+            file.close();
         }
-        new_chunk->__source = src;
-        file.close();
+        else {
+            new_chunk->__position = position*16;
+            memset(new_chunk->__blockTypes, 0, sizeof(BlockCatogary::Catogary)*4096);
+        }
         return new_chunk;
     }
     glm::vec3 Chunk::getPosition() const {
@@ -54,42 +65,49 @@ namespace MyCraft {
     }
     void Chunk::save() {
         if (!__isChange) return ;
-        std::ofstream file(__source, std::ios::binary | std::ios::out);
-        file.write((char*)&__position, sizeof(glm::vec3));
-        unsigned int sz = __list.size();
-        file.write((char*)&sz, sizeof(int));
-        for (auto& [type, vecs]:__list) {
-            file.write((char*)&type, sizeof(type));
-            unsigned int size = vecs.size();
-            file.write((char*)&size, sizeof(int));
-        }
-        unsigned int buffer[256];
-        for (int i = 0; i<16; i++) {
-            for (int j = 0; j<16; j++) {
-                buffer[i*16+j] = __bits[i][j].to_ulong();
+        if (__numBlock) {
+            std::ofstream file(__source, std::ios::binary | std::ios::out);
+            file.write((char*)&__position, sizeof(glm::vec3));
+            unsigned int sz = __list.size();
+            file.write((char*)&sz, sizeof(int));
+            for (auto& [type, vecs]:__list) {
+                file.write((char*)&type, sizeof(type));
+                unsigned int size = vecs.size();
+                file.write((char*)&size, sizeof(int));
             }
-        }
-        file.write((char*)&buffer[0], sizeof(int)*256);
-        for (int i = 0; i<16; i++) {
-            for (int j  = 0; j<16; j++) {
-                file.write((char*)&__blockTypes[i][j], sizeof(BlockCatogary::Catogary)*16);
+            unsigned int buffer[128];
+            for (int i = 0; i<16; i++) {
+                for (int j = 0; j<8; j++) {
+                    buffer[i*8+j] = __bits[i][j*2].to_ulong() | __bits[i][j*2+1].to_ulong() << 16;
+                }
             }
+            file.write((char*)&buffer[0], sizeof(int)*128);
+            file.write((char*)&__numBlock, sizeof(int));
+            for (int i = 0; i<16; i++) {
+                for (int j  = 0; j<16; j++) {
+                    file.write((char*)&__blockTypes[i][j], sizeof(BlockCatogary::Catogary)*16);
+                }
+            }
+            __isChange = false;
+            file.close();
         }
-        __isChange = false;
-        file.close();
+        else {
+            MyBase::DeleteFile(__source);
+        }
     }
     const BlockCatogary::Catogary& Chunk::getType(const glm::vec3& pos) const {
         int x = std::floor(pos.x - __position.x);
         int y = std::floor(pos.y - __position.y);
         int z = std::floor(pos.z - __position.z);
-
         return __blockTypes[x][y][z];
     }
     void Chunk::setType(const glm::vec3& pos, const BlockCatogary::Catogary& type) {
-        int x = std::floor(pos.x-__position.x);
-        int y = std::floor(pos.y - __position.y);
-        int z = std::floor(pos.z - __position.z);
+        int x = (int)std::floor(pos.x-__position.x);
+        int y = (int)std::floor(pos.y - __position.y);
+        int z = (int)std::floor(pos.z - __position.z);
         if (__blockTypes[x][y][z] == type) return;
+        if (type && !__blockTypes[x][y][z]) __numBlock++;
+        else __numBlock--;
         __isChange = true;
         __blockTypes[x][y][z] = type;
     }

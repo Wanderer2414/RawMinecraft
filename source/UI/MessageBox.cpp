@@ -33,9 +33,13 @@ namespace MyBase {
             ShapeManager::getInstance().createShape(__background, __size, __roundness);
         }
     }
+    void MessageBox::__open(GLFWwindow*) {}
+    void MessageBox::__close(GLFWwindow*) {}
     int MessageBox::open(GLFWwindow* window) {
         __isOpen = true;
         bool is_changed = true;
+        __open(window);
+        setHover(0);
         while (!glfwWindowShouldClose(window) && __isOpen) {
             ControlCenter::getInstance().Reset();
             Container2D::reset();
@@ -60,6 +64,7 @@ namespace MyBase {
             }
             is_changed = 0;
         }
+        __close(window);
         return __returnValue;
     }
     void MessageBox::setReturnValue(const int& value) {

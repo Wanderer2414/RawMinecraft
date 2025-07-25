@@ -87,6 +87,9 @@ namespace MyCraft {
 
         return is_changed;
     }
+    bool PlayerModelController::isRun() const {
+        return __isRun;
+    }
     bool PlayerModelController::handle(GLFWwindow* window) {
         bool is_changed = ModelController::handle(window);
         if (__animationClock.get()) {

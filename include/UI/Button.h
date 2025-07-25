@@ -25,7 +25,7 @@ namespace MyBase  {
         void setScale(const glm::vec2& scale);
     protected:
         virtual void update() override;
-        virtual bool    __mouseDown(GLFWwindow*) override,
+        virtual bool    __mouseClicked(GLFWwindow*) override,
                         __hover() override,
                         __lostHover() override,
                         __mouseRelease(GLFWwindow*) override;

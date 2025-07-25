@@ -8,11 +8,13 @@ namespace MyBase {
 
         __nameLabel.setPosition({-0.35, 0.01});
         __nameLabel.setFont(font);
+        __nameLabel.setTextColor(BLACK);
         __nameLabel.setScale({0.04,0.08});
         __nameLabel.setText("Name: ");
         insert(&__nameLabel);
-
+ 
         __nameInput.setFont(font);
+        __nameInput.setTextColor(BLACK);
         __nameInput.setPosition({-0.23, -0.01});
         __nameInput.setScale({0.051,0.08});
         __nameInput.setSize({0.61, 0.1}, 0.01);
@@ -28,9 +30,9 @@ namespace MyBase {
 
         __createButton.setPosition({0.15, -0.13});
         __createButton.setSize({0.23, 0.1}, 0.01);
-        __createButton.setNormalColor({200, 200, 200, 255});
-        __createButton.setHoverColor({150, 150, 150, 255});
-        __createButton.setClickColor({200, 200, 200, 100});
+        __createButton.setNormalColor(LIGHTGRAY);
+        __createButton.setHoverColor(GRAY);
+        __createButton.setClickColor(LIGHTGRAY);
         __createButton.setFont(font);
         __createButton.setTextColor(BLACK);
         __createButton.setText("Create");

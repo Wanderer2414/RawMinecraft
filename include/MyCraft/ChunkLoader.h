@@ -10,7 +10,6 @@ namespace MyCraft {
         ChunkLoader(const std::string& src);
         ~ChunkLoader();
         const std::vector<glm::vec4>& getChunks() const;
-        static void create(const std::string& src);
         void playerAt(const glm::vec3& position);
 
         Chunk& operator[](const glm::vec3& posistion);
@@ -25,7 +24,6 @@ namespace MyCraft {
         std::queue<Chunk*>      __storageQueue;
         int                     __chunkIndices[world_side][world_side][world_side];
         std::string             __sourceFolder;
-        static std::string getFileName(const std::string& src, const glm::ivec3& position);
         void __loadDefault();
         void __movePositiveX(), __moveNegativeX();
         void __movePositiveY(), __moveNegativeY();

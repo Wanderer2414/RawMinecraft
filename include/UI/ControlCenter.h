@@ -9,22 +9,23 @@ namespace MyBase {
             void CloseWindow();
             void OpenGLrequire(const unsigned char& majorVersion, const unsigned char& minorVerson);
 
-            void EnableResizable();
-            void DisableResizable();
+            static void EnableResizable();
+            static void DisableResizable();
 
-            void EnableTransparent();
-            void DisableTransparent();
+            static void EnableTransparent();
+            static void DisableTransparent();
 
             void LimitFPS(const unsigned int& interval);
 
-            void Enable3DMode();
-            void Disable3DMode();
+            static void Enable3DMode();
+            static void Disable3DMode();
 
             void EnableScissorMode(const glm::vec2& position, const glm::vec2& size) const;
             void DisableScissorMode()   const;
 
-            void EnableMouse(GLFWwindow*);
-            void DisableMouse(GLFWwindow*);
+            static void EnableMouse(GLFWwindow*);
+            static void CenteringMouse(GLFWwindow*);
+            static void DisableMouse(GLFWwindow*);
             
             void BindSubScreen()        const;
             void UnbindSubScreen()      const;
