@@ -15,6 +15,7 @@ namespace MyCraft {
         glm::vec3 getPosition() const;
         static Chunk* Load(const std::string& src, const glm::ivec3& position);
         void glDraw() const;
+        friend class MapCreator;
     protected:
     private:
         Chunk();

@@ -18,9 +18,6 @@ namespace MyBase3D {
         __direction[0] = __direction[1] = {0, 0};
         __direction[2] = __direction[3] = {0, 0};
         __direction[4] = __direction[5] = {0, 0};
-        __direction_color[0] = __direction_color[1] = {1, 0, 0, 1};
-        __direction_color[2] = __direction_color[3] = {0, 1, 0, 1};
-        __direction_color[4] = __direction_color[5] = {0, 0, 1, 1};
 
         glGenBuffers(1, &__camera);
         glBindBuffer(GL_UNIFORM_BUFFER, __camera);
@@ -146,11 +143,11 @@ namespace MyBase3D {
         glEnableVertexAttribArray(0);
 
         glGenBuffers(1, &Colors);
-        glBindBuffer(GL_ARRAY_BUFFER, Colors);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4)*6, &__direction_color[0], GL_STATIC_DRAW);
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(1);
-
+        glBindBuffer(GL_UNIFORM_BUFFER, Colors);
+        glm::vec4 color(1,0,0, 1);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec4)*6, &color, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, Colors);
+        glLineWidth(2);
         glDrawArrays(GL_LINES, 0, 6);
         glBindVertexArray(0);
         glDeleteVertexArrays(1, &VAO);

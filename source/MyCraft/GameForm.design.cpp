@@ -37,6 +37,8 @@ namespace MyCraft {
         __positionLabel.setTextColor(RED);
         __positionLabel.setScale({0.04, 0.06});
         insert(&__positionLabel);
+
+        __fpsClock.setDuration(500);
     }
     GameForm::~GameForm() {        
     }
@@ -71,7 +73,11 @@ namespace MyCraft {
     }
     bool GameForm::handle(GLFWwindow* window) {
         bool is_changed = Form3D::handle(window);
-        __label.setText("Max fps: " + std::to_string(getMaxFps()));
+        if (__fpsClock.get()) {
+            __fpsClock.restart();
+            __label.setText(std::format("Fps: {}", (int)getCurrentFps()));
+            is_changed = true;
+        }
     
         glm::vec2 delta = MyBase::ControlCenter::getInstance().getCursorPos(window);
     

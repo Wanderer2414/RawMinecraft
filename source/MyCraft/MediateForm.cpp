@@ -104,8 +104,10 @@ namespace MyCraft {
             int index = __menu.getChoice();
             if (index != -1) {
                 std::string file = "bin/"+std::to_string(index)+"/";
+
                 GameForm gameForm(window, 0, file);
                 gameForm.run(window);
+                
                 setReturnValue(1);
                 close();
             }

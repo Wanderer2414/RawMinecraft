@@ -32,7 +32,7 @@ namespace MyBase3D {
     protected:
         int                     getReturnValue() const;
         int                     getFormIndex();
-        float                   getMaxFps() const;
+        float                   getAverageFps() const, getCurrentFps() const;
         void                    setReturnValue(const int& returnValue);
         void                    close();
         virtual bool            sensitiveHandle(GLFWwindow* window)         override;
@@ -44,7 +44,7 @@ namespace MyBase3D {
         bool                    __isOpen;
         int                     __formIndex,
                                 __returnValue;
-        size_t                  __startClock, __frameCount;
+        size_t                  __startClock, __frameCount, __currentClock, __deltaClock;
         MyBase::Color           __backgroundColor;
         MyBase::Clock           __sensitiveClock;
         MyBase::Rectangle       __pauseScreen;

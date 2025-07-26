@@ -77,20 +77,20 @@ namespace MyCraft {
         if (!__chunkLoader[pos].getBit(pos)) return;
         glm::vec3 posistion = pos;
         posistion.x -= 1;
-        if (__chunkLoader[pos].getType(posistion)) return;
+        if (!__chunkLoader[posistion].getType(posistion)) return;
         
         posistion.x += 2;
-        if (__chunkLoader[posistion].getType(posistion)) return ;
+        if (!__chunkLoader[posistion].getType(posistion)) return ;
         
         posistion -= glm::vec3(1, 1, 0);
-        if (__chunkLoader[posistion].getType(posistion)) return ;
+        if (!__chunkLoader[posistion].getType(posistion)) return ;
         posistion.y += 2;
-        if (__chunkLoader[posistion].getType(posistion)) return ;
+        if (!__chunkLoader[posistion].getType(posistion)) return ;
 
         posistion -= glm::vec3(0, 1, 1);
-        if (__chunkLoader[posistion].getType(posistion)) return ;
+        if (!__chunkLoader[posistion].getType(posistion)) return ;
         posistion.z += 2;
-        if (__chunkLoader[posistion].getType(posistion)) return ;
+        if (!__chunkLoader[posistion].getType(posistion)) return ;
 
         __chunkLoader[pos].disableBit(pos);
     }

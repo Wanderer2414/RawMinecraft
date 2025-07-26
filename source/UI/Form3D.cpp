@@ -6,9 +6,10 @@
 #include "Global.h"
 #include "Shape.h"
 #include "ShapeManager.h"
+#include <ctime>
 
 namespace MyBase3D {
-    Form3D::Form3D(const int& index): __formIndex(index), __returnValue(-1), __isOpen(false), __backgroundColor(WHITE), __frameCount(0) {
+    Form3D::Form3D(const int& index): __formIndex(index), __returnValue(-1), __isOpen(false), __backgroundColor(WHITE), __frameCount(0), __deltaClock(1) {
         __sensitiveClock.setDuration(10);
         MyBase::ShapeManager::getInstance().createShape(__pauseScreen, {2,2});
         setFillColor({0,0,0, 120});
@@ -21,11 +22,14 @@ namespace MyBase3D {
     bool Form3D::contains(const glm::vec2& position) const {
         return true;
     }
-    float Form3D::getMaxFps() const {
+    float Form3D::getAverageFps() const {
         return 1.0f*(CLOCKS_PER_SEC)*__frameCount/(clock()-__startClock);
     }
+    float Form3D::getCurrentFps() const {
+        return 1.0f*CLOCKS_PER_SEC/__deltaClock;
+    }
     int Form3D::run(GLFWwindow* window) {
-        __startClock = clock();
+        __currentClock = __startClock = clock();
         bool is_changed = true;
         __isOpen = true;
         while (!glfwWindowShouldClose(window) && __isOpen) {
@@ -47,6 +51,8 @@ namespace MyBase3D {
                 glfwSwapBuffers(window);
             }
             is_changed = 0;
+            __deltaClock = clock() - __currentClock;
+            __currentClock = clock();
             __frameCount++;
         }
         return __returnValue;
@@ -70,11 +76,11 @@ namespace MyBase3D {
         return is_changed;
     }
     void Form3D::glDraw() const {
+        MyBase::ControlCenter::getInstance().Enable3DMode();
+        Container3D::glDraw();
         camera.glDraw();
         MyBase::ControlCenter::getInstance().Disable3DMode();
         MyBase::Container2D::glDraw();
-        MyBase::ControlCenter::getInstance().Enable3DMode();
-        Container3D::glDraw();
     };
     void Form3D::update() {
         camera.update();

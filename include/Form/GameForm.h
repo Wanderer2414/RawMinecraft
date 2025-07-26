@@ -25,7 +25,7 @@ namespace MyCraft {
             bool            catchEvent(GLFWwindow* window) override;
             bool            handle(GLFWwindow* window) override;
             MyBase::Font    __fontDefault;
-            MyBase::Clock   pFrameAlarm;
+            MyBase::Clock   pFrameAlarm, __fpsClock;
             MyBase::Font    __font;
             MyBase::Label   __label, __positionLabel;
             World           pWorld;

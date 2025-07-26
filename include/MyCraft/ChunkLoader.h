@@ -25,8 +25,14 @@ namespace MyCraft {
         int                     __chunkIndices[world_side][world_side][world_side];
         std::string             __sourceFolder;
         void __loadDefault();
+        static void __moveSubPositiveX(ChunkLoader*, const int& y, const int& z);
+        static void __moveSubNegativeX(ChunkLoader*, const int& y, const int& z);
         void __movePositiveX(), __moveNegativeX();
+        static void __moveSubPositiveY(ChunkLoader*, const int& x, const int& z);
+        static void __moveSubNegativeY(ChunkLoader*, const int& x, const int& z);
         void __movePositiveY(), __moveNegativeY();
+        static void __moveSubPositiveZ(ChunkLoader*, const int& x, const int& z);
+        static void __moveSubNegativeZ(ChunkLoader*, const int& x, const int& z);
         void __movePositiveZ(), __moveNegativeZ();
         void glDraw() const override;
 

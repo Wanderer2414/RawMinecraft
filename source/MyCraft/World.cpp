@@ -5,6 +5,7 @@
 #include "Message.h"
 #include "General.h"
 #include "PlayerModelController.h"
+#include <algorithm>
 
 namespace MyCraft {
     World::World(const int& x, const int& y, const int& z, const std::string& src): __isHoverBlock(false), __worldRender(src) {
@@ -181,13 +182,13 @@ namespace MyCraft {
             shape[2] += shape[0] + shape[1];
             isFall = isFall && (__world->at(shape[2]+glm::vec3(0,0,z))==BlockCatogary::Air || 
                                 __world->at(shape[2])!=BlockCatogary::Air); 
-            shape[1] += shape[0];
+            shape[1] += shape[0];   
             isFall = isFall && (__world->at(shape[1]+glm::vec3(0,0,z))==BlockCatogary::Air || 
                                 __world->at(shape[1])!=BlockCatogary::Air); 
 
             isFall = isFall && (__world->at(shape[0]+glm::vec3(0,0,z))==BlockCatogary::Air || 
                                 __world->at(shape[0])!=BlockCatogary::Air); 
-            if (isFall) mine.send(source, new FallMessage(z));
+            if (isFall) mine.send(source, new FallMessage(std::max(float(z), -1.f)));
             else {
                 float delta = shape[0][2] - floor(shape[0][2]);
                 mine.send(source, new FallMessage(-delta));
