@@ -13,9 +13,9 @@ namespace MyCraft {
         void save();
         void playerAt(const glm::vec3& position);
 
-        const BlockCatogary::Catogary&      at(const glm::vec3& posistion) const;
+        const BlockCatogary&      at(const glm::vec3& posistion) const;
 
-        void place(const glm::vec3& pos, const BlockCatogary::Catogary& type);
+        void place(const glm::vec3& pos, const BlockCatogary& type);
     protected:
         void glDraw() const override;
     private:

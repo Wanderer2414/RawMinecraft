@@ -6,9 +6,9 @@ namespace MyCraft {
     class Chunk {
     public:
         ~Chunk();
-        const BlockCatogary::Catogary& getType(const glm::vec3& pos) const;
+        const BlockCatogary& getType(const glm::vec3& pos) const;
         void save();
-        void setType(const glm::vec3& pos, const BlockCatogary::Catogary& type);
+        void setType(const glm::vec3& pos, const BlockCatogary& type);
         std::bitset<16>::reference getBit(const glm::vec3& pos);
         void enableBit(const glm::vec3& pos);
         void disableBit(const glm::vec3& pos);
@@ -22,11 +22,11 @@ namespace MyCraft {
         bool                        __isChange;
         unsigned int                __numBlock;
         int                         __tableIndexes[16][16][16];
-        glm::vec3                   __position;
-        BlockCatogary::Catogary     __blockTypes[16][16][16];
+        glm::ivec3                  __position;
+        BlockCatogary               __blockTypes[16][16][16];
         std::bitset<16>             __bits[16][16];
         std::string                 __source;
-        std::map<BlockCatogary::Catogary, std::vector<glm::vec4>>  __list;
+        std::vector<glm::ivec4>      __list;
     };
 }
 #endif

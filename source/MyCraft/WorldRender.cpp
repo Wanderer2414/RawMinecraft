@@ -11,16 +11,16 @@ namespace MyCraft {
         __chunkLoader.playerAt(position);
     }
 
-    const BlockCatogary::Catogary& WorldRender::at(const glm::vec3& posistion) const {
+    const BlockCatogary& WorldRender::at(const glm::vec3& posistion) const {
         return __chunkLoader[posistion].getType(posistion);
     }
 
-    void WorldRender::place(const glm::vec3& pos, const BlockCatogary::Catogary& type) {
+    void WorldRender::place(const glm::vec3& pos, const BlockCatogary& type) {
         Chunk& chunk = __chunkLoader[pos];
         if (!type) {
             if (chunk.getType(pos)) {
                 chunk.disableBit(pos);
-                chunk.setType(pos, BlockCatogary::Catogary::Air);
+                chunk.setType(pos, BlockCatogary::Air);
                 glm::vec3 position = pos;
                 position.x--;
                 if (!__chunkLoader[position].getBit(position) && __chunkLoader[position].getType(position)) __enableBit(position);

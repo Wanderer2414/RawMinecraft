@@ -31,15 +31,15 @@ namespace MyCraft {
         }
         return is_changed;
     }
-    const BlockCatogary::Catogary& World::at(const glm::vec3& pos) const {
+    const BlockCatogary& World::at(const glm::vec3& pos) const {
         return __worldRender.at(pos);
     }
 
-    void World::set(const int& rx, const int& ry, const int& rz, const BlockCatogary::Catogary& type) {
+    void World::set(const int& rx, const int& ry, const int& rz, const BlockCatogary& type) {
         __worldRender.place({rx,ry,rz}, type);
     }
 
-    void World::set(const glm::vec3& pos, const BlockCatogary::Catogary& type) {
+    void World::set(const glm::vec3& pos, const BlockCatogary& type) {
         set(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z), type);
     }
     void World::setHoverBlock(const glm::vec3& pos, const glm::vec3& placePosition) {
@@ -249,7 +249,7 @@ namespace MyCraft {
         else __world->unHoverBlock();
     }
 
-    PlaceBlockMessage::PlaceBlockMessage(const glm::mat4x3& s, const BlockCatogary::Catogary& t): shape(s), type(t) {}
+    PlaceBlockMessage::PlaceBlockMessage(const glm::mat4x3& s, const BlockCatogary& t): shape(s), type(t) {}
     PlaceBlockMessage::~PlaceBlockMessage() {}
     MyBase::MessageType PlaceBlockMessage::getType() const {
         return MyBase::PlaceBlock;

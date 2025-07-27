@@ -33,17 +33,17 @@ namespace MyCraft {
             for (int y = yBound.x; y<yBound.y; y++) {
                 glm::ivec3 origin(x,y,height);
                 std::ofstream file(getFileName(src, origin), std::ios::out | std::ios::binary);
-                glm::vec3 position = origin*16;
-                file.write((char*)&position, sizeof(glm::vec3));
+                glm::ivec3 position = origin*16;
+                file.write((char*)&position, sizeof(glm::ivec3));
                 unsigned int size = 0;
                 file.write((char*)&size, sizeof(int));
 
                 size = 256;
                 file.write((char*)&size, sizeof(int));
-                BlockCatogary::Catogary types[4096];
-                memset(&types[0], 0, sizeof(BlockCatogary::Catogary)*4096);
+                BlockCatogary types[4096];
+                memset(&types[0], 0, sizeof(BlockCatogary)*4096);
                 for (int i = 0; i<256; i++) types[i*16 + 15] = BlockCatogary::Grass;
-                file.write((char*)&types, sizeof(BlockCatogary::Catogary)*4096);
+                file.write((char*)&types, sizeof(BlockCatogary)*4096);
                 file.close();
                 std::lock_guard<std::mutex> lock(*mtx);
                 *percent += one_part*total;
@@ -74,26 +74,22 @@ namespace MyCraft {
             for (int y = yBound.x; y<yBound.y; y++) {
                 glm::ivec3 origin(x,y,height);
                 std::ofstream file(getFileName(src, origin), std::ios::out | std::ios::binary);
-                glm::vec3 position = origin*16;
-                file.write((char*)&position, sizeof(glm::vec3));
-                unsigned int size = 1;
+                glm::ivec3 position = origin*16;
+                file.write((char*)&position, sizeof(glm::ivec3));
+                unsigned int size = 512;
                 file.write((char*)&size, sizeof(int));
 
-                BlockCatogary::Catogary type = BlockCatogary::Catogary::Dirt;
-                file.write((char*)&type, sizeof(BlockCatogary::Catogary));
-                size = 512;
-                file.write((char*)&size, sizeof(int));
                 unsigned int bits[128];
                 for (int i = 0; i<128; i++) bits[i] = 34<<16 | 34;
                 file.write((char*)&bits[0], 128*sizeof(int));
                 size = 3328;
                 file.write((char*)&size, sizeof(int));
-                BlockCatogary::Catogary types[4096];
-                memset(&types[0], BlockCatogary::Dirt, sizeof(BlockCatogary::Catogary)*4096);
+                BlockCatogary types[4096];
+                memset(&types[0], BlockCatogary::Dirt, sizeof(BlockCatogary)*4096);
                 for (int i = 0; i<256; i++) {
                     types[i*16+2] = types[i*16+3] = types[i*16+4] = BlockCatogary::Air;
                 }
-                file.write((char*)&types, sizeof(BlockCatogary::Catogary)*4096);
+                file.write((char*)&types, sizeof(BlockCatogary)*4096);
                 file.close();
                 std::lock_guard<std::mutex> lock(*mtx);
                 *percent += one_part*total;
@@ -125,14 +121,9 @@ namespace MyCraft {
                 for (int z = zBound.x; z < zBound.y; z++) {
                     glm::ivec3 origin(x,y,z);
                     std::ofstream file(getFileName(src, origin), std::ios::out | std::ios::binary);
-                    glm::vec3 position = origin*16;
-                    file.write((char*)&position, sizeof(glm::vec3));
-                    unsigned int size = 1;
-                    file.write((char*)&size, sizeof(int));
-
-                    BlockCatogary::Catogary type = BlockCatogary::Catogary::Dirt;
-                    file.write((char*)&type, sizeof(BlockCatogary::Catogary));
-                    size = 256;
+                    glm::ivec3 position = origin*16;
+                    file.write((char*)&position, sizeof(glm::ivec3));
+                    unsigned int size = 256;
                     file.write((char*)&size, sizeof(int));
 
                     unsigned int bits[128];
@@ -141,10 +132,10 @@ namespace MyCraft {
 
                     size = 4096;
                     file.write((char*)&size, sizeof(int));
-                    BlockCatogary::Catogary types[4096];
-                    memset(&types[0], BlockCatogary::Dirt, sizeof(BlockCatogary::Catogary)*4096);
+                    BlockCatogary types[4096];
+                    memset(&types[0], BlockCatogary::Dirt, sizeof(BlockCatogary)*4096);
 
-                    file.write((char*)&types, sizeof(BlockCatogary::Catogary)*4096);
+                    file.write((char*)&types, sizeof(BlockCatogary)*4096);
                     file.close();
                     std::lock_guard<std::mutex> lock(*mtx);
                     *percent += one_part*total;
@@ -157,7 +148,7 @@ namespace MyCraft {
         for (int x = xBound.x; x<xBound.y; x++) {
             for (int y = yBound.x; y<yBound.y; y++) {
                 int maxHeight = 0;
-                glm::vec3 position(x + origin.x,y + origin.y, origin.z);
+                glm::ivec3 position(x + origin.x,y + origin.y, origin.z);
                 bool isTaller = true;
                 float averageHeight = 0;
                 while (isTaller) {
@@ -166,8 +157,8 @@ namespace MyCraft {
                     chunk.__isChange = true;
                     position.z = origin.z + maxHeight/16.f;
                     chunk.__source = getFileName(src, position);
-                    memset(chunk.__blockTypes, BlockCatogary::Air, 4096*sizeof(BlockCatogary::Catogary));
-                    chunk.__position = 16.f*position;
+                    memset(chunk.__blockTypes, BlockCatogary::Air, 4096*sizeof(BlockCatogary));
+                    chunk.__position = 16*position;
                     for (int i = 0; i<16; i++) {
                         for (int j = 0; j<16; j++) {
                             int mX = x*16+i, mY = y*16+j;
@@ -176,19 +167,19 @@ namespace MyCraft {
                                 if (mZ>=16) isTaller = true;
                                 else {
                                     chunk.__bits[i][j][mZ] = 1;
-                                    chunk.__list[BlockCatogary::Grass].push_back(glm::vec4(chunk.__position+glm::vec3(i,j,mZ),1));
-                                    chunk.__blockTypes[i][j][mZ] = BlockCatogary::Grass;
+                                    chunk.__list.push_back(glm::vec4(chunk.__position+glm::ivec3(i,j,mZ),Grass));
+                                    chunk.__blockTypes[i][j][mZ] = Grass;
                                     chunk.__numBlock++;
                                     averageHeight += 1.0f*(mZ+maxHeight+1)/256;
                                 }
                                 for (int z = 0; z<=std::min(mZ, 15); z++) {
                                     if (mX==0 || mX==bound.x-1 || mX == 0 || mY ==bound.y-1) {
                                         chunk.__bits[i][j][z] = 1;
-                                        chunk.__list[BlockCatogary::Grass].push_back(glm::vec4(chunk.__position+glm::vec3(i,j,z),1));
+                                        chunk.__list.push_back(glm::vec4(chunk.__position+glm::ivec3(i,j,z),Grass));
                                     }
                                     else if (board[mX-1][mY]<z+maxHeight+1 || board[mX+1][mY]<z+maxHeight+1 || board[mX][mY-1]<z+maxHeight+1 || board[mX][mY+1]<z+maxHeight+1) {
                                         chunk.__bits[i][j][z] = 1;
-                                        chunk.__list[BlockCatogary::Grass].push_back(glm::vec4(chunk.__position+glm::vec3(i,j,z),1));
+                                        chunk.__list.push_back(glm::vec4(chunk.__position+glm::ivec3(i,j,z),Grass));
                                     }
                                     chunk.__numBlock++;
                                     chunk.__blockTypes[i][j][z] = BlockCatogary::Grass;

@@ -23,7 +23,6 @@ namespace MyCraft {
         MyBase::ShapeManager::close();
         MyBase3D::PointSet::close();
         MyBase3D::ShaderStorage::close();
-        MyCraft::BlockCatogary::close();
         MyCraft::ModelStorage::close();
         MyBase::ControlCenter::getInstance().CloseWindow();
         MyBase::ControlCenter::close();

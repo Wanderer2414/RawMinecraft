@@ -13,9 +13,9 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
     public:
         World(const int& x, const int& y, const int& z, const std::string& src);
         ~World();
-        const BlockCatogary::Catogary&    at(const glm::vec3& pos) const;
-        void                    set(const int& x, const int& y, const int& z, const BlockCatogary::Catogary& type);
-        void                    set(const glm::vec3& pos, const BlockCatogary::Catogary& type);
+        const BlockCatogary&    at(const glm::vec3& pos) const;
+        void                    set(const int& x, const int& y, const int& z, const BlockCatogary& type);
+        void                    set(const glm::vec3& pos, const BlockCatogary& type);
         void                    playerAt(const glm::vec3& pos);
         void                    setHoverBlock(const glm::vec3& pos, const glm::vec3& placePosition),
                                 unHoverBlock();
@@ -66,10 +66,10 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
     };
     class PlaceBlockMessage: public MyBase::Message {
     public:
-        PlaceBlockMessage(const glm::mat4x3& model, const BlockCatogary::Catogary& type);;
+        PlaceBlockMessage(const glm::mat4x3& model, const BlockCatogary& type);;
         ~PlaceBlockMessage();
         glm::mat4x3 shape;
-        BlockCatogary::Catogary type;
+        BlockCatogary type;
         MyBase::MessageType getType() const override;
     };
     class PlaceblockCommand: public MyBase::Command {
@@ -85,7 +85,7 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
     public:
         DestroyBlockMessage();
         ~DestroyBlockMessage();
-        BlockCatogary::Catogary type;
+        BlockCatogary type;
         MyBase::MessageType getType() const override;
     };
     class DestroyblockCommand: public MyBase::Command {

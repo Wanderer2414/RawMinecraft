@@ -5,7 +5,7 @@ namespace MyBase3D {
     PointSet* PointSet::Default;
     PointSet::PointSet() {
 
-        glm::vec4 vertices[14];
+        glm::ivec4 vertices[18];
         vertices[0] = {0, 0, 0, 0};
         vertices[1] = {1, 0, 0, 0};
         vertices[2] = {1, 1, 0, 0};
@@ -16,17 +16,22 @@ namespace MyBase3D {
         vertices[6] = {1, 1, 1, 0};
         vertices[7] = {0, 1, 1, 0};
 
-        vertices[8] = {0, 0, 0, 0};
-        vertices[9] = {1, 0, 0, 0};
-        vertices[10] = {0, 0, 0, 0};
-        vertices[11] = {1, 0, 0, 0};
+        vertices[8] = {0, 0, 1, 0};
+        vertices[9] = {0, 1, 1, 0};
 
-        vertices[12] = {1, 1, 0, 0};
-        vertices[13] = {0, 1, 0, 0};
+        vertices[10] = {0, 1, 0, 0};
+        vertices[11] = {1, 1, 0, 0};
+        vertices[12] = {1, 1, 1, 0};
+        vertices[13] = {0, 1, 1, 0};
+
+        vertices[14] = {0, 0, 0, 0};
+        vertices[15] = {1, 0, 0, 0};
+        vertices[16] = {1, 0, 1, 0};
+        vertices[17] = {0, 0, 1, 0};
         {
             glGenBuffers(1, &__blockSet);
             glBindBuffer(GL_UNIFORM_BUFFER, __blockSet);
-            glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*14*4, &vertices[0], GL_STATIC_DRAW);
+            glBufferData(GL_UNIFORM_BUFFER, sizeof(int)*18*4, &vertices[0], GL_STATIC_DRAW);
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
         }
         {
@@ -39,9 +44,9 @@ namespace MyBase3D {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
         {
-            std::vector<int> ImageBlockIndices = {0, 1, 4, 4, 1, 5, 4, 5, 7,7, 5, 6, 7, 6, 3, 3, 6, 2, 3, 2, 8, 8, 2, 9, 6, 5, 12,12, 5, 11,4,7,10,10,7,13};
+            std::vector<int> ImageBlockIndices = {7, 4, 6, 6, 4, 5, 6, 5, 2,2, 5, 1, 2, 1, 3, 3, 1, 0, 3, 0, 9, 9, 0, 8, 10, 13, 11, 11, 13, 12, 15, 16, 14, 14, 16, 17};
             ImageBlockIndices.resize(36*32);
-            for (int i = 36; i<ImageBlockIndices.size() ;i++) ImageBlockIndices[i] = ImageBlockIndices[i-36]+14;
+            for (int i = 36; i<ImageBlockIndices.size() ;i++) ImageBlockIndices[i] = ImageBlockIndices[i-36]+18;
             glGenBuffers(1, &__imageBlockIndices);
             glBindBuffer(GL_ARRAY_BUFFER, __imageBlockIndices);
             glBufferData(GL_ARRAY_BUFFER, ImageBlockIndices.size()*4,ImageBlockIndices.data(), GL_STATIC_DRAW);
@@ -66,9 +71,23 @@ namespace MyBase3D {
             glBufferData(GL_ARRAY_BUFFER, rectSet.size()*sizeof(glm::vec2), rectSet.data(), GL_STATIC_DRAW);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
+        {
+            glm::vec2 tex_coord[19] = {{3.0/18, 0},{2.0/18, 0},{2.0/18, 1.0/4},
+                                        {3.0/18, 1.0/4},{0, 0},{1.0/18, 0},
+                                        {1.0/18, 1.0/4},{0, 1.0/4},{4.0/18, 0},
+                                        {4.0/18, 1.0/4},{4.0/18, 1.0/4},{5.0/18, 1.0/4},
+                                        {5.0/18, 0},{4.0/18, 0},{6.0/18, 1.0/4},
+                                        {5.0/18, 1.0/4},{5.0/18, 0},{6.0/18, 0}};
+            tex_coord[18] = {1.0/3, 1.0/4};
+            glGenBuffers(1, &__blockUVS);
+            glBindBuffer(GL_UNIFORM_BUFFER, __blockUVS);
+            glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*19*2, &tex_coord[0], GL_STATIC_DRAW);
+            glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        }
     }
     PointSet::~PointSet() {
         glDeleteBuffers(1, &__blockSet);
+        glDeleteBuffers(1, &__blockUVS);
         glDeleteBuffers(1, &__marginBlockIndices);
         glDeleteBuffers(1, &__imageBlockIndices);
         glDeleteBuffers(1, &__rectangleIndices);
@@ -85,6 +104,9 @@ namespace MyBase3D {
             delete Default;
             Default = 0;
         }
+    }
+    GLuint PointSet::getBlockUVS() const {
+        return __blockUVS;
     }
     GLuint PointSet::getBlockSet() const {
         return __blockSet;

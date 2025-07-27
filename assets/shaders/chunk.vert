@@ -8,7 +8,7 @@ layout(set=0, binding=1) uniform Origin {
     vec4 position[32];
 };
 layout(set=0, binding=2) uniform CubeCorner {
-    vec4 cube_corner[14];
+    ivec4 cube_corner[14];
 };
 void main() {
     gl_Position = ClipPlane * (cube_corner[i%14]*16 + position[i/14]);
