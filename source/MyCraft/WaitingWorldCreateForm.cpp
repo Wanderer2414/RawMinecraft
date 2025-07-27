@@ -15,4 +15,7 @@ namespace MyCraft {
         thread->join();
         delete thread;
     }
+    bool WaitingWorldCreateForm::__exitCondition() {
+        return std::round(progress*100) == 100;
+    }
 }

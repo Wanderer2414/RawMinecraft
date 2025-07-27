@@ -23,7 +23,7 @@ namespace MyBase {
     };
     bool MessageBox::catchEvent(GLFWwindow* window) {
         bool is_changed = Container2D::catchEvent(window);
-        if (ControlCenter::getInstance().IsMouseClicked() && !isHovered()) close();
+        if (__exitCondition() && ControlCenter::getInstance().IsMouseClicked() && !isHovered()) close();
         return is_changed;
     }
     void MessageBox::setSize(const glm::vec2& size, const float& roundness) {
@@ -59,13 +59,16 @@ namespace MyBase {
                 glDraw();
                 glfwSwapBuffers(window);
             }
-            if (ControlCenter::getInstance().IsKeyPressed() && glfwGetKey(window, GLFW_KEY_ESCAPE)) {
+            if (__exitCondition() && ControlCenter::getInstance().IsKeyPressed() && glfwGetKey(window, GLFW_KEY_ESCAPE)) {
                 close();
             }
             is_changed = 0;
         }
         __close(window);
         return __returnValue;
+    }
+    bool MessageBox::__exitCondition() {
+        return true;
     }
     void MessageBox::setReturnValue(const int& value) {
         __returnValue = value;

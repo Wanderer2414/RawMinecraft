@@ -1,11 +1,11 @@
 #include "Texture.h"
-#include "General.h"
 #include "Global.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
+#include "TextureStorage.h"
 
 namespace MyBase {
-    TextureContainer::TextureContainer(): __size(0,0), __position(0,0),__texturePosition(0,0), __textureSize(0,0) {
+    TextureContainer::TextureContainer(): __size(0,0), __position(0,0),__texturePosition(0,0), __textureSize(0,0), __texture(0) {
         glGenVertexArrays(1, &__VAO);
         glBindVertexArray(__VAO);
         
@@ -90,6 +90,7 @@ namespace MyBase {
     }
     void TextureContainer::update() {};
     void TextureContainer::draw() const {
+        if (!__texture) return;
         glUseProgram(MyBase3D::ShaderStorage::getInstance().getImage2DShader());
 
         glBindVertexArray(__VAO);
@@ -112,5 +113,30 @@ namespace MyBase {
 
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
+    }
+
+    
+    Texture::Texture() {}
+    Texture::~Texture() {
+        if (__src.size()) TextureStorage::getInstance().removeTexture(__src);
+    }
+    void Texture::setTexture(const std::string& texture) {
+        if (__src != texture) {
+            if (__src.size()) TextureStorage::getInstance().removeTexture(__src);
+            __src = texture;
+            TextureContainer::setTexture(TextureStorage::getInstance().getTexture(__src));
+        }
+    }
+    void Texture::glDraw() const {
+        TextureContainer::draw();
+    }
+    glm::vec2 Texture::getPosition() const {
+        return getTextureExportPosition();
+    }
+    glm::vec2 Texture::getSize() const {
+        return getTextureExportSize();
+    }
+    bool Texture::contains(const glm::vec2& posistion) const {
+        return false;
     }
 }

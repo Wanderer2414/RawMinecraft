@@ -13,6 +13,7 @@ namespace MyCraft {
         int open(const std::string& file, GLFWwindow* window);
     protected:
         void __close(GLFWwindow*) override;
+        bool __exitCondition() override;
     private:
         std::thread* thread;
     };

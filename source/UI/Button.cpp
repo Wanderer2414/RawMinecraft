@@ -167,7 +167,7 @@ namespace MyBase {
 
     TextureButton::TextureButton() {}
     TextureButton::~TextureButton() {
-
+        if (__src.size()) TextureStorage::getInstance().removeTexture(__src);
     }
     void TextureButton::update() {
         RoundedRectangleButton::update();

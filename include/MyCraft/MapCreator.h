@@ -1,5 +1,6 @@
 #ifndef MAP_CREATOR_H
 #define MAP_CREATOR_H
+#include "Color.h"
 #include "Global.h"
 namespace MyCraft {
     class MapCreator {
@@ -17,9 +18,11 @@ namespace MyCraft {
         static void createTopSoilLayer(std::mutex* mtx, double* percent, const double& total, const std::string& src, const glm::ivec2& zBound);
         static void createSubTopSoilLayer(std::mutex* mtx, double* percent, const double& total, const std::string& src, const glm::ivec2& xBound, const glm::ivec2& yBound, const glm::ivec2& zBound);
 
-        static void createSubTemperateZone(std::mutex* mtx, double* percent, const double& total, const std::string& src, const glm::vec2& bound, unsigned char** board, const glm::vec2& xBound, const glm::vec2& yBound, const glm::vec3& origin);
+        static void RenderToMap(MyBase::Color* texture, unsigned char** map, const glm::ivec2& xBound, const glm::ivec2& yBound, const glm::ivec2& origin);
+        static void createSubTemperateZone(std::mutex* mtx, double* percent, const double& total, const std::string& src, const glm::vec2& bound, unsigned char** board, const glm::vec2& xBound, const glm::vec2& yBound, const glm::ivec3& origin);
+        static void createTemperateZone(std::mutex* mtx, double* percent, const double& total, MyBase::Color* color, const std::string& src, const glm::vec2& yBound, const float& z);
+
         static void createPolarZone(const std::string& src, const glm::vec2& yBound, const glm::vec2& heightBound);
-        static void createTemperateZone(std::mutex* mtx, double* percent, const double& total, const std::string& src, const glm::vec2& yBound, const float& z);
         static void createTropicalZone(const std::string& src, const glm::vec2& yBound, const glm::vec2& heightBound);
 
     };

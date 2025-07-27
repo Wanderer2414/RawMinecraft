@@ -19,7 +19,12 @@ namespace MyBase {
         __root = new TrieNode();
     }
     TextureStorage::~TextureStorage() {
-        __free(__root);
+        std::cout << "Texture remains: ";
+        if (__root) {
+            std::cout << __root->size << std::endl;
+            __free(__root);
+        }
+        else std::cout << 0 << std::endl;
     }
     GLuint TextureStorage::getTexture(const std::string& name) {
         return __create(__root, 0, name);
@@ -60,7 +65,7 @@ namespace MyBase {
     GLuint TextureStorage::__create(TrieNode*& root, const int& index, const std::string& name) {
         if (!root) root = new TrieNode();
         if (index == name.size()) {
-            if (!root->texture) root->texture = LoadTexture("assets/images/" + name);
+            if (!root->texture) root->texture = LoadTexture(name);
             root->size++;
             return root->texture;
         }

@@ -1,5 +1,6 @@
 #include "Tectonic.h"
 #include "glm/fwd.hpp"
+#include <cstdlib>
 
 namespace MyCraft {
 
@@ -149,59 +150,40 @@ namespace MyCraft {
         vertices = buffer;
     }
     void Tectonic::draw(const glm::vec2& size, unsigned char** board) const {
-        Tectonic outside = *this;
-        outside.setRoundness(50);
-        for (int i = 0; i<16; i++) {
-            outside = outside + 20;
-            std::vector<glm::vec2> bounds((int)outside.size.x, {outside.size.y/2, -outside.size.y/2});
-            for (int i = 0; i<outside.vertices.size(); i++) {
-                glm::vec2 a, b = outside.vertices[i], delta;
-                if (i) a = outside.vertices[i-1];
-                else a = outside.vertices.back();
-                delta = b-a;
-                delta.y /= delta.x;
-                delta.x = 1;
-                if (a.x > b.x) std::swap(a , b);
-                for (glm::vec2 vec = {floor(a.x), a.y}; vec.x < floor(b.x); vec = vec + delta) {
-                    int index = vec.x + outside.size.x/2;
-                    bounds[index].x = std::min(vec.y, bounds[index].x);
-                    bounds[index].y = std::max(vec.y, bounds[index].y);
-                }
-            }
-            for (int i = 0; i<outside.size.x; i++) {
-                if (bounds[i].x < bounds[i].y)
-                    for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
-                        int x = int(i-outside.size.x/2+ outside.origin.x);
-                        if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j]++;
-                    }
-            }
-        }
-
         {
-            Tectonic inside = *this;
-            inside.setRoundness(50);
-            inside = inside - 50;
-            std::vector<glm::vec2> bounds((int)inside.size.x, {inside.size.y/2, -inside.size.y/2});
-            for (int i = 0; i<inside.vertices.size(); i++) {
-                glm::vec2 a, b = inside.vertices[i], delta;
-                if (i) a = inside.vertices[i-1];
-                else a = inside.vertices.back();
-                delta = b-a;
-                delta.y /= delta.x;
-                delta.x = 1;
-                if (a.x > b.x) std::swap(a , b);
-                for (glm::vec2 vec = {floor(a.x), a.y}; vec.x < floor(b.x); vec = vec + delta) {
-                    int index = vec.x + inside.size.x/2;
-                    bounds[index].x = std::min(vec.y, bounds[index].x);
-                    bounds[index].y = std::max(vec.y, bounds[index].y);
-                }
-            }
-            for (int i = 0; i<inside.size.x; i++) {
-                if (bounds[i].x < bounds[i].y)
-                    for (int j = bounds[i].x + inside.origin.y; j < bounds[i].y + inside.origin.y; j++) {
-                        int x = int(i-outside.size.x/2+ outside.origin.x);
-                        if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j]++;
+            Tectonic outside = *this;
+            outside.setRoundness(50);
+            for (int i = 0; i<16; i++) {
+                outside = outside + 10;
+                int xSz = ceil(outside.size.x);
+
+                glm::vec2 *bounds = (glm::vec2*)malloc(xSz*8);
+                for (int i = 0; i<xSz; i++) bounds[i] = {outside.size.y/2, -outside.size.y/2};
+                for (int i = 0; i<outside.vertices.size(); i++) {
+                    glm::vec2 a, b = outside.vertices[i], delta;
+                    if (i) a = outside.vertices[i-1];
+                    else a = outside.vertices.back();
+                    delta = b-a;
+                    delta.y /= delta.x;
+                    delta.x = 1;
+                    if (a.x > b.x) std::swap(a , b);
+                    for (glm::vec2 vec(floor(a.x), a.y); vec.x < floor(b.x); vec = vec + delta) {
+                        int index = vec.x + outside.size.x/2;
+                        if (index<xSz) {
+                            bounds[index].x = std::min(vec.y, bounds[index].x);
+                            bounds[index].y = std::max(vec.y, bounds[index].y);
+                        }
                     }
+                }
+                for (int i = 0; i<outside.size.x; i++) {
+                    if (i<xSz && (bounds[i].x < bounds[i].y))
+                        for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
+                            int x = int(i-outside.size.x/2+ outside.origin.x);
+                            if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j]++;
+                        }
+                }
+                free(bounds);
+                bounds = 0;
             }
         }
     }
@@ -235,7 +217,7 @@ namespace MyCraft {
         float remain = 1;
         for (int i = 0; i<n; i++) {
             float percent = 1.0f*(rand()%70)/100 + 0.25;
-            glm::vec2 subsize =  {1.5f*percent*s.y, percent*s.y};
+            glm::vec2 subsize =  {10.0/n*percent*s.y, percent*s.y*n/15.0};
             Tectonics[i] = new Tectonic(20, subsize);
             glm::vec2 position;
             percent = 1.0f*(rand()%30)/100;

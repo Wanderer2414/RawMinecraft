@@ -6,6 +6,7 @@
 #include "Form.h"
 #include "MapMenu.h"
 #include "ProgressWaitingForm.h"
+#include "Texture.h"
 #include "WaitingWorldCreateForm.h"
 #include "WorldsManage.h"
 namespace MyCraft {
@@ -17,6 +18,7 @@ namespace MyCraft {
         MediateForm& operator=(const MediateForm&) const = delete; 
     protected:
     private:
+        MyBase::Texture                 __mapTexture;
         MyBase::TextureButton           __returnButton;
         WorldsManage                    __worldsManage;
         MapMenu                         __menu;

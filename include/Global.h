@@ -9,6 +9,7 @@
 #include <vector>
 #include <stb_image.h>
 #include <stb_truetype.h>
+#include <stb_image_write.h>
 #include <chrono>
 #include "tiny_gltf.h"
 #include <stack>

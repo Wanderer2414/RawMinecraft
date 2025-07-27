@@ -3,10 +3,8 @@
 #include "ControlCenter.h"
 #include "Date.h"
 #include "Form.h"
-#include "GLFW/glfw3.h"
 #include "GameForm.h"
 #include "General.h"
-#include "MapCreator.h"
 
 namespace MyCraft {
     MediateForm::MediateForm(GLFWwindow* window, const int& index): 
@@ -71,12 +69,16 @@ namespace MyCraft {
         __returnButton.setNormalColor(GRAY);
         __returnButton.setHoverColor(DARKGRAY);
         __returnButton.setClickColor(GRAY);
-        __returnButton.setTexture("arrow_back.png");
+        __returnButton.setTexture("assets/images/arrow_back.png");
         __returnButton.setTextureExportSize({0.08,0.08});
-        __returnButton.setTextureOrigin({0,0});
+        __returnButton.setTextureOrigin({0, 0});
         __returnButton.setTextureImportSize({1.0/3,1});
         insert(&__returnButton);
 
+        __mapTexture.setTextureExportPosition({-0.9,-0.3});
+        __mapTexture.setTextureExportSize({2.0/MyBase::ControlCenter::getInstance().GetWindowRatio(), 1});
+        __mapTexture.setTextureImportSize({1, 1});
+        insert(&__mapTexture);
         auto& list = __worldsManage.getWorld();
         for (const auto& info: list) {
             __menu.add(info->getWorldName(), info->getCreatedDate());
@@ -86,6 +88,7 @@ namespace MyCraft {
     MediateForm::~MediateForm() {}
 
     bool MediateForm::__mouseClicked(GLFWwindow* window) {
+        bool is_changed = false;
         if (__createWorldButton.isPressed()) {
             pauseScreen(window);
             __createWorldForm.open(window);
@@ -98,6 +101,14 @@ namespace MyCraft {
                 std::string file = "bin/"+std::to_string(index)+"/";
                 MyBase::CreateFolder(file);
                 __waitingCreateMap.open(file, window);
+            }
+        }
+        if (__menu.isPressed()) {
+            int index = __menu.getChoice();
+            if (index != -1) {
+                std::string file = "bin/"+std::to_string(index)+"/overal.png";
+                __mapTexture.setTexture(file);
+                is_changed = true;
             }
         }
         if (__joinWorldButton.isPressed()) {
@@ -116,7 +127,7 @@ namespace MyCraft {
             setReturnValue(0);
             close();
         }
-        return false;
+        return is_changed;
     }
     bool MediateForm::catchEvent(GLFWwindow* window) {
         bool is_changed = MyBase::Form::catchEvent(window);
