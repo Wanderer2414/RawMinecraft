@@ -9,17 +9,17 @@ namespace MyCraft {
     public:
         ChunkLoader(const std::string& src);
         ~ChunkLoader();
-        const std::vector<glm::vec4>& getChunks() const;
-        void playerAt(const glm::vec3& position);
+        const std::vector<glm::ivec4>& getChunks() const;
+        void playerAt(const glm::ivec3& position);
 
-        Chunk& operator[](const glm::vec3& posistion);
-        const Chunk& operator[](const glm::vec3& posistion) const;
+        Chunk& operator[](const glm::ivec3& posistion);
+        const Chunk& operator[](const glm::ivec3& posistion) const;
     protected:
     private:
         #define world_side 7
         bool                    __isLoaded;
         glm::ivec3              __position;
-        std::vector<glm::vec4>  __chunkPositions;
+        std::vector<glm::ivec4> __chunkPositions;
         std::vector<Chunk*>     __chunks;
         std::queue<Chunk*>      __storageQueue;
         int                     __chunkIndices[world_side][world_side][world_side];
@@ -35,6 +35,7 @@ namespace MyCraft {
         static void __moveSubNegativeZ(ChunkLoader*, const int& x, const int& z);
         void __movePositiveZ(), __moveNegativeZ();
         void glDraw() const override;
+        glm::ivec3 __chunkPosition(const glm::ivec3& block) const;
 
     };
 }

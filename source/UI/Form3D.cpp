@@ -10,11 +10,9 @@
 
 namespace MyBase3D {
     Form3D::Form3D(const int& index): __formIndex(index), __returnValue(-1), __isOpen(false), __backgroundColor(WHITE), __frameCount(0), __deltaClock(1) {
-        __sensitiveClock.setDuration(10);
         MyBase::ShapeManager::getInstance().createShape(__pauseScreen, {2,2});
         setFillColor({0,0,0, 120});
         ShapeContainer::setPosition({-1,-1});
-        __sensitiveClock.setDuration(30);
     }
     Form3D::~Form3D() {
         MyBase::ShapeManager::getInstance().removeShape(__pauseScreen, {2,2});
@@ -38,10 +36,6 @@ namespace MyBase3D {
             glfwPollEvents();
             is_changed = setHover(MyBase::ControlCenter::getInstance().getCursorPos(window)) || is_changed;
             is_changed = catchEvent(window) || is_changed;
-            if (__sensitiveClock.get()) {
-                __sensitiveClock.restart();
-                is_changed = sensitiveHandle(window) || is_changed;
-            }
             is_changed = handle(window) || is_changed;
             if (is_changed) {
                 glm::vec4 color = __backgroundColor.getColor();
@@ -56,12 +50,6 @@ namespace MyBase3D {
             __frameCount++;
         }
         return __returnValue;
-    }
-    bool Form3D::sensitiveHandle(GLFWwindow* window) {
-        bool is_changed = camera.sensitiveHandle(window);
-        is_changed = Container2D::sensitiveHandle(window) || is_changed;
-        is_changed = Container3D::sensitiveHandle(window) || is_changed;
-        return is_changed;
     }
     bool Form3D::catchEvent(GLFWwindow* window) {
         bool is_changed = camera.catchEvent(window);
@@ -105,8 +93,5 @@ namespace MyBase3D {
     }
     void Form3D::setBackgroundColor(const MyBase::Color& color) {
         __backgroundColor = color;
-    }
-    void Form3D::setSensitiveTime(const size_t& time) {
-        __sensitiveClock.setDuration(time);
     }
 }

@@ -8,7 +8,6 @@ namespace MyBase {
     MessageBox::MessageBox(): __isOpen(false), __size(2,2), __roundness(0), __returnValue(-1) {
         ShapeContainer::setPosition({-1,-1});
         ShapeContainer::setFillColor({0,0,0,120});
-        __sensitiveClock.setDuration(50);
         ShapeManager::getInstance().createShape(__background, __size, __roundness);
     }
     MessageBox::~MessageBox() {
@@ -46,10 +45,6 @@ namespace MyBase {
             glfwPollEvents();
             is_changed = Container2D::setHover(ControlCenter::getInstance().getCursorPos(window)) || is_changed;
             is_changed = catchEvent(window) || is_changed;
-            if (__sensitiveClock.get()) {
-                __sensitiveClock.restart();
-                is_changed = sensitiveHandle(window) || is_changed;
-            }
             is_changed = handle(window) || is_changed;
             if (is_changed) {
                 ControlCenter::getInstance().Disable3DMode();

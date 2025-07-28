@@ -6,13 +6,13 @@ namespace MyCraft {
     class Chunk {
     public:
         ~Chunk();
-        const BlockCatogary& getType(const glm::vec3& pos) const;
+        const BlockCatogary& getType(const glm::ivec3& pos) const;
         void save();
-        void setType(const glm::vec3& pos, const BlockCatogary& type);
-        std::bitset<16>::reference getBit(const glm::vec3& pos);
-        void enableBit(const glm::vec3& pos);
-        void disableBit(const glm::vec3& pos);
-        glm::vec3 getPosition() const;
+    void setType(const glm::ivec3& pos, const BlockCatogary& type);
+        std::bitset<16>::reference getBit(const glm::ivec3& pos);
+        void enableBit(const glm::ivec3& pos);
+        void disableBit(const glm::ivec3& pos);
+        glm::ivec3 getPosition() const;
         static Chunk* Load(const std::string& src, const glm::ivec3& position);
         void glDraw() const;
         friend class MapCreator;

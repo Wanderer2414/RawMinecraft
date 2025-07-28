@@ -93,16 +93,6 @@ namespace MyBase{
         for (auto& i:__permanentChildren) i->reset();
         for (auto& i:__children) i.first->reset();
     }
-    bool Container2D::sensitiveHandle(GLFWwindow* window) {
-        bool is_changed = false;
-        for (auto& child:__permanentChildren) is_changed = child->sensitiveHandle(window) || is_changed;
-        for (int i = 0; i<__children.size(); i++) { 
-            is_changed = __children[i].first->sensitiveHandle(window) || is_changed;
-            if (__children[i].first->isFocus()) __currentFocus = i;
-        }
-        is_changed = Controller::sensitiveHandle(window) || is_changed;
-        return is_changed;
-    }
     bool Container2D::catchEvent(GLFWwindow* window) {
         bool is_changed = false;
         for (auto& i:__permanentChildren) is_changed = i->catchEvent(window) || is_changed;

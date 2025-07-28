@@ -11,7 +11,7 @@ namespace MyCraft {
         __chunkLoader.playerAt(position);
     }
 
-    const BlockCatogary& WorldRender::at(const glm::vec3& posistion) const {
+    const BlockCatogary& WorldRender::at(const glm::ivec3& posistion) const {
         return __chunkLoader[posistion].getType(posistion);
     }
 
@@ -66,8 +66,8 @@ namespace MyCraft {
         }
     }
     void WorldRender::glDraw() const {
-        DrawingCenter::getInstance().BindChunk();
-        DrawingCenter::getInstance().DrawChunks((void*)__chunkLoader.getChunks().data(), __chunkLoader.getChunks().size());
+        DrawingCenter::BindMargin();
+        DrawingCenter::DrawMargins((void*)__chunkLoader.getChunks().data(), __chunkLoader.getChunks().size(), RED, 2);
         Container3D::glDraw();
     }
     void WorldRender::__enableBit(const glm::vec3& pos) {

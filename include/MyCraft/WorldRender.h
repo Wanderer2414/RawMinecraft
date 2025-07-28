@@ -13,7 +13,7 @@ namespace MyCraft {
         void save();
         void playerAt(const glm::vec3& position);
 
-        const BlockCatogary&      at(const glm::vec3& posistion) const;
+        const BlockCatogary&      at(const glm::ivec3& posistion) const;
 
         void place(const glm::vec3& pos, const BlockCatogary& type);
     protected:

@@ -22,7 +22,6 @@ class Container2D: public Controller2D {
                         erase(Controller2D* controller),
                         insertPermanent(Controller2D* controller),
                         update()                                    override;
-        virtual bool    sensitiveHandle(GLFWwindow* window)         override;
         virtual bool    catchEvent(GLFWwindow* window)              override;
         virtual bool    handle(GLFWwindow* window)                  override;
         virtual void    reset()                                     override;

@@ -8,7 +8,6 @@
 
 namespace MyBase {
     Form::Form(const int& index): __formIndex(index), __returnValue(-1), __backgroundColor(WHITE), __isOpen(false) {
-        __sensitiveClock.setDuration(10);
         ShapeManager::getInstance().createShape(__pauseScreen, {2,2});
         setFillColor({0,0,0, 120});
         ShapeContainer::setPosition({-1,-1});
@@ -28,10 +27,6 @@ namespace MyBase {
             glfwPollEvents();
             is_changed = Container2D::setHover(ControlCenter::getInstance().getCursorPos(window)) || is_changed;
             is_changed = catchEvent(window) || is_changed;
-            if (__sensitiveClock.get()) {
-                __sensitiveClock.restart();
-                is_changed = sensitiveHandle(window) || is_changed;
-            }
             is_changed = handle(window) || is_changed;
             if (is_changed) {
                 ControlCenter::getInstance().Disable3DMode();
@@ -74,8 +69,5 @@ namespace MyBase {
     }
     void Form::setBackgroundColor(const Color& color) {
         __backgroundColor = color;
-    }
-    void Form::setSensitiveTime(const size_t& time) {
-        __sensitiveClock.setDuration(time);
     }
 }

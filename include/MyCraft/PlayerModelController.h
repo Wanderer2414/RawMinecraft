@@ -11,8 +11,6 @@ namespace MyCraft {
         ~PlayerModelController();
         bool        isCrounch() const;
         bool        isRun() const;
-        bool        sensitiveHandle(GLFWwindow* window) override;
-        bool        handle(GLFWwindow* window) override;
         glm::vec3   getModelPosition() const override,
                     getDirection() const;
         void        move(const glm::vec3& delta) override,
@@ -26,7 +24,6 @@ namespace MyCraft {
                     glDraw() const override;
         
         glm::mat4x3 getShape() const override;
-        
     private:
         bool            __isRun, __isDrawable,
                         __isLeftAttack, __isRightAttack,
@@ -35,10 +32,13 @@ namespace MyCraft {
         glm::vec3       __position, __diagonal;
         glm::vec3       __direction, __eye_direction;
         std::vector<glm::mat4> __animation;
-        MyBase::Clock   __animationClock,
+        MyBase::Clock   __animationClock, __speedControl,
                         __runCooldown,
                         __attack__cooldown;
         glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
+        bool            __moveManage(GLFWwindow* window);
+        bool            handle(GLFWwindow* window) override;
+        bool            catchEvent(GLFWwindow* window) override;
         void            update() override;
     };
     class ResetCameraCommand: public MyBase::Command {

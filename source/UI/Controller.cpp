@@ -3,9 +3,6 @@
 namespace MyBase {
     Controller::Controller() {};
     Controller::~Controller() {};
-    bool Controller::sensitiveHandle(GLFWwindow* window) {
-        return false;
-    }
     bool Controller::catchEvent(GLFWwindow* window) {
         return false;
     }

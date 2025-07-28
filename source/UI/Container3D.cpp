@@ -6,11 +6,6 @@ namespace MyBase3D {
     Container3D::~Container3D() {
     
     }
-    bool Container3D::sensitiveHandle(GLFWwindow* window) {
-        bool is_changed = Controller3D::sensitiveHandle(window);
-        for (auto& child:__children) is_changed = child->sensitiveHandle(window) || is_changed;
-        return is_changed;
-    }
     bool Container3D::catchEvent(GLFWwindow* window) {
         bool is_changed = Controller3D::catchEvent(window);
         for (auto& i:__children) is_changed = i->catchEvent(window) || is_changed;

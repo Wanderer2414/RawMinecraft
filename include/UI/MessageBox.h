@@ -31,7 +31,6 @@ namespace MyBase {
         float               __roundness;
         glm::vec2           __size;
         RoundedRectangle    __background;
-        Clock               __sensitiveClock;
         bool contains(const glm::vec2& position) const override;
     };
 }

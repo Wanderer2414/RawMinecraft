@@ -4,7 +4,7 @@
 #include "Color.h"
 #include "Global.h"
 #include "Tectonic.h"
-#include "General.h"
+
 namespace MyCraft {
     std::string MapCreator::getFileName(const std::string& src, const glm::ivec3& position) {
         size_t index = (position.x+500)*1000*1000 + (position.y+500)*1000 + (500 + position.z);
@@ -224,6 +224,7 @@ namespace MyCraft {
             else {
                 xSize = p*xPart;
                 xMax -= xSize;
+                xPart = xMax/(count-k);
             }
             unsigned char **map = new unsigned char*[xSize*16];
             for (int i = 0; i<xSize*16; i++) {

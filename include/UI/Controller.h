@@ -13,7 +13,6 @@ namespace MyBase {
         Controller();
         ~Controller();
         virtual bool    catchEvent(GLFWwindow* window);
-        virtual bool    sensitiveHandle(GLFWwindow* window);
         virtual bool    handle(GLFWwindow* window);
         virtual void    glDraw() const = 0;
     private:

@@ -37,7 +37,7 @@ namespace MyBase3D {
         {
             std::vector<unsigned int> marginIndices = {0, 1, 2, 3, 0, 4, 5, 6, 7,4, 5, 1, 2, 6, 7, 3, 0};
             marginIndices.resize(17*32);
-            for (int i = 17; i<marginIndices.size(); i++) marginIndices[i] = marginIndices[i-17]+14;
+            for (int i = 17; i<marginIndices.size(); i++) marginIndices[i] = marginIndices[i-17]+18;
             glGenBuffers(1, &__marginBlockIndices);
             glBindBuffer(GL_ARRAY_BUFFER, __marginBlockIndices);
             glBufferData(GL_ARRAY_BUFFER, marginIndices.size()*4,marginIndices.data(), GL_STATIC_DRAW);

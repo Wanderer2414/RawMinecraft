@@ -49,7 +49,7 @@ namespace MyCraft {
         }
         return new_chunk;
     }
-    glm::vec3 Chunk::getPosition() const {
+    glm::ivec3 Chunk::getPosition() const {
         return __position;
     }
     void Chunk::save() {
@@ -75,48 +75,38 @@ namespace MyCraft {
         else MyBase::DeleteFile(__source);
         __isChange = false;
     }
-    const BlockCatogary& Chunk::getType(const glm::vec3& pos) const {
-        int x = std::floor(pos.x - __position.x);
-        int y = std::floor(pos.y - __position.y);
-        int z = std::floor(pos.z - __position.z);
-        return __blockTypes[x][y][z];
+    const BlockCatogary& Chunk::getType(const glm::ivec3& pos) const {
+        glm::ivec3 offset = pos - __position;
+        return __blockTypes[offset.x][offset.y][offset.z];
     }
-    void Chunk::setType(const glm::vec3& pos, const BlockCatogary& type) {
-        int x = (int)std::floor(pos.x-__position.x);
-        int y = (int)std::floor(pos.y - __position.y);
-        int z = (int)std::floor(pos.z - __position.z);
-        if (__blockTypes[x][y][z] == type) return;
-        if (type && !__blockTypes[x][y][z]) __numBlock++;
+    void Chunk::setType(const glm::ivec3& pos, const BlockCatogary& type) {
+        glm::ivec3 offset = pos - __position;
+        if (__blockTypes[offset.x][offset.y][offset.z] == type) return;
+        if (type && !__blockTypes[offset.x][offset.y][offset.z]) __numBlock++;
         else __numBlock--;
         __isChange = true;
-        __blockTypes[x][y][z] = type;
+        __blockTypes[offset.x][offset.y][offset.z] = type;
     }
-    std::bitset<16>::reference Chunk::getBit(const glm::vec3& pos) {
-        int x = std::floor(pos.x-__position.x);
-        int y = std::floor(pos.y - __position.y);
-        int z = std::floor(pos.z - __position.z);
-        return __bits[x][y][z];
+    std::bitset<16>::reference Chunk::getBit(const glm::ivec3& pos) {
+        glm::ivec3 offset = pos - __position;
+        return __bits[offset.x][offset.y][offset.z];
     }
-    void Chunk::enableBit(const glm::vec3& pos) {
-        int x = std::floor(pos.x-__position.x);
-        int y = std::floor(pos.y - __position.y);
-        int z = std::floor(pos.z - __position.z);
-        if (!__bits[x][y][z]) {
+    void Chunk::enableBit(const glm::ivec3& pos) {
+        glm::ivec3 offset = pos - __position;
+        if (!__bits[offset.x][offset.y][offset.z]) {
             __isChange = true;
-            __tableIndexes[x][y][z] = __list.size();
-            __list.push_back(glm::vec4(pos, __blockTypes[x][y][z]));
-            __bits[x][y][z] = 1;
+            __tableIndexes[offset.x][offset.y][offset.z] = __list.size();
+            __list.push_back(glm::vec4(pos, __blockTypes[offset.x][offset.y][offset.z]));
+            __bits[offset.x][offset.y][offset.z] = 1;
         };
 
     }
-    void Chunk::disableBit(const glm::vec3& pos) {
-        int x = std::floor(pos.x-__position.x);
-        int y = std::floor(pos.y - __position.y);
-        int z = std::floor(pos.z - __position.z);
-        if (__bits[x][y][z]) {
+    void Chunk::disableBit(const glm::ivec3& pos) {
+        glm::ivec3 offset = pos - __position;
+        if (__bits[offset.x][offset.y][offset.z]) {
             __isChange = true;
-            int index = __tableIndexes[x][y][z];
-            __tableIndexes[x][y][z] = -1;
+            int index = __tableIndexes[offset.x][offset.y][offset.z];
+            __tableIndexes[offset.x][offset.y][offset.z] = -1;
             if (index < __list.size()-1) {
                 __list[index] = __list.back();
                 __list.pop_back();
@@ -126,11 +116,11 @@ namespace MyCraft {
             }
             else __list.pop_back();
 
-            __bits[x][y][z] = 0;
+            __bits[offset.x][offset.y][offset.z] = 0;
         }
     }
     void Chunk::glDraw() const {
-        DrawingCenter::getInstance().BindCube();
-        DrawingCenter::getInstance().DrawCubes((void*)__list.data(), __list.size());
+        DrawingCenter::BindCube();
+        DrawingCenter::DrawCubes((void*)__list.data(), __list.size());
     }
 }

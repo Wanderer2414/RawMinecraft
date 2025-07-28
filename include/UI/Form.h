@@ -14,7 +14,6 @@ namespace MyBase {
         Form(const int& index);
         ~Form();
         virtual bool    contains(const glm::vec2& position) const override;
-        virtual void    setSensitiveTime(const size_t& milisecond);
         int             run(GLFWwindow* window);
         void            close();
 
@@ -31,7 +30,6 @@ namespace MyBase {
         int             __formIndex,
                         __returnValue;
         Color           __backgroundColor;
-        Clock           __sensitiveClock;
         Rectangle       __pauseScreen;
     };
     

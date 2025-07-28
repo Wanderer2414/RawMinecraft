@@ -1,6 +1,7 @@
 #include "PlayerModelController.h"
 #include "Block.h"
 #include "Camera.h"
+#include "ControlCenter.h"
 #include "Message.h"
 #include "Global.h"
 #include "ModelController.h"
@@ -18,6 +19,7 @@ namespace MyCraft {
         __speed = 0.2;
         __diagonal = {0.6, 0.4, 1.9};
         __runCooldown.setDuration(30);
+        __speedControl.setDuration(30);
 
         add(new PlayerMoveCommand(this));
         add(new FallCommand(this));
@@ -30,8 +32,23 @@ namespace MyCraft {
     bool PlayerModelController::isCrounch() const {
         return __isCrouch;
     }
-    bool PlayerModelController::sensitiveHandle(GLFWwindow* window) {
-        bool is_changed = ModelController::handle(window);
+    bool PlayerModelController::catchEvent(GLFWwindow* window) {
+        bool is_changed = ModelController::catchEvent(window);
+
+        if (MyBase::ControlCenter::getInstance().IsMouseClicked()) {
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
+                rightAttack();
+                is_changed = true;
+            }
+            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
+                leftAttack();
+                is_changed = true;
+            }
+        }
+        return is_changed;
+    }
+    bool PlayerModelController::__moveManage(GLFWwindow* window) {
+        bool is_changed = false;
         glm::vec3 dir(0);
         if (glfwGetKey(window, GLFW_KEY_A)) {
             dir.y -= __speed;
@@ -70,14 +87,6 @@ namespace MyCraft {
             //Auto fall
             send(new RequestFallMessage(getShape(), getZVelocity()));
         }
-        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
-            rightAttack();
-            is_changed = true;
-        }
-        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
-            leftAttack();
-            is_changed = true;
-        }
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) {
             if (!__isCrouch) {
                 __animationClock.setDuration(40);
@@ -87,11 +96,16 @@ namespace MyCraft {
 
         return is_changed;
     }
+    
     bool PlayerModelController::isRun() const {
         return __isRun;
     }
     bool PlayerModelController::handle(GLFWwindow* window) {
         bool is_changed = ModelController::handle(window);
+        if (__speedControl.get()) {
+            __speedControl.restart();
+            is_changed = __moveManage(window) || is_changed;
+        }
         if (__animationClock.get()) {
             __animationClock.restart();
             std::fill(__animation.begin(), __animation.end(), glm::mat4(1));

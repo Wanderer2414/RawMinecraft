@@ -5,7 +5,6 @@
 #include "Message.h"
 #include "General.h"
 #include "PlayerModelController.h"
-#include <algorithm>
 
 namespace MyCraft {
     World::World(const int& x, const int& y, const int& z, const std::string& src): __isHoverBlock(false), __worldRender(src) {
@@ -20,8 +19,7 @@ namespace MyCraft {
         add(new DestroyblockCommand(this));
         add(new WorldMoveCommand(this));
     }
-    World::~World() {
-    }
+    World::~World() {}
     
     bool World::handle(GLFWwindow* window) {
         bool is_changed = Controller::handle(window);
@@ -32,7 +30,8 @@ namespace MyCraft {
         return is_changed;
     }
     const BlockCatogary& World::at(const glm::vec3& pos) const {
-        return __worldRender.at(pos);
+        glm::ivec3 position(floor(pos.x), floor(pos.y), floor(pos.z));
+        return __worldRender.at(position);
     }
 
     void World::set(const int& rx, const int& ry, const int& rz, const BlockCatogary& type) {
@@ -56,9 +55,9 @@ namespace MyCraft {
     void World::glDraw() const {
         MyBase3D::Container3D::glDraw();
         if (__isHoverBlock) {
-            DrawingCenter::getInstance().BindMargin();
-            glm::vec4 vec = glm::vec4(__hoverBlock,1);
-            DrawingCenter::getInstance().DrawMargin((void*)&vec, 1, 2);
+            glm::ivec4 margin( __hoverBlock, 1);
+            DrawingCenter::BindMargin();
+            DrawingCenter::DrawMargins(&margin, 1, BLACK, 3);
         }
     }
     CheckEmptyCommand::CheckEmptyCommand(World* world): __world(world) {}

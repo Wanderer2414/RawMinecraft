@@ -169,6 +169,7 @@ namespace MyBase {
 }
 namespace MyCraft {
     void DrawMargin(const glm::mat4x3& mat, const glm::vec3& color, const float& linewidth) {
+        glLineWidth(linewidth);
         glm::vec3 shape[8] = {mat[0], mat[0]+mat[1], mat[0] + mat[1]+ mat[2], mat[0] +mat[2]};
         for (int i = 4; i<8; i++) shape[i] = shape[i-4]+mat[3];
 

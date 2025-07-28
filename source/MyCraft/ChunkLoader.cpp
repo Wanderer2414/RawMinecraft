@@ -15,11 +15,11 @@ namespace MyCraft {
             delete chunk;
         }
     }
-    const std::vector<glm::vec4>& ChunkLoader::getChunks() const {
+    const std::vector<glm::ivec4>& ChunkLoader::getChunks() const {
         return __chunkPositions;
     }
-    void ChunkLoader::playerAt(const glm::vec3& pos) {
-        glm::ivec3 position(floor(pos.x/16)-floor(world_side/2.f), floor(pos.y/16)-floor(world_side/2.f),  floor(pos.z/16) - floor(world_side/2.f));
+    void ChunkLoader::playerAt(const glm::ivec3& pos) {
+        glm::ivec3 position(__chunkPosition(pos) - glm::ivec3(world_side/2));
         glm::ivec3 delta = position - __position;
         float length = glm::length((glm::vec3)delta);
         if (!__isLoaded || length>2) {
@@ -51,7 +51,7 @@ namespace MyCraft {
                 for (int k = 0; k<world_side; k++) {
                     glm::ivec3 origin = __position + glm::ivec3(i,j,k);
                     __chunks[__chunkIndices[i][j][k]] = Chunk::Load(__sourceFolder, origin);
-                    __chunkPositions[__chunkIndices[i][j][k]] = glm::vec4(origin*16, 1);
+                    __chunkPositions[__chunkIndices[i][j][k]] = glm::ivec4(origin*16, 16);
                 }
             }
         }
@@ -68,7 +68,7 @@ namespace MyCraft {
         //Load new chunk
         glm::ivec3  origin =  chunkLoader->__position + glm::ivec3(world_side-1, j,k);
         chunkLoader->__chunks[tmp] = Chunk::Load(chunkLoader->__sourceFolder, origin);
-        chunkLoader->__chunkPositions[tmp] = glm::vec4(16*origin, 1);
+        chunkLoader->__chunkPositions[tmp] = glm::ivec4(16*origin, 16);
     }
     void ChunkLoader::__movePositiveX() {
         __position.x++;
@@ -95,7 +95,7 @@ namespace MyCraft {
         //Load new chunk
         glm::ivec3 origin =  chunkLoader->__position + glm::ivec3(0, j,k);
         chunkLoader->__chunks[tmp] = Chunk::Load(chunkLoader->__sourceFolder, origin);
-        chunkLoader->__chunkPositions[tmp] = glm::vec4(16*origin, 1);
+        chunkLoader->__chunkPositions[tmp] = glm::ivec4(16*origin, 16);
     }
     void ChunkLoader::__moveNegativeX() {
         __position.x--;
@@ -122,7 +122,7 @@ namespace MyCraft {
         //Load new chunk
         glm::ivec3  origin =  chunkLoader->__position + glm::ivec3(i, world_side-1,k);
         chunkLoader->__chunks[tmp] = Chunk::Load(chunkLoader->__sourceFolder, origin);
-        chunkLoader->__chunkPositions[tmp] = glm::vec4(16*origin, 1);
+        chunkLoader->__chunkPositions[tmp] = glm::ivec4(16*origin, 16);
     }
     void ChunkLoader::__movePositiveY() {
         __position.y++;
@@ -151,7 +151,7 @@ namespace MyCraft {
         //Load new chunk
         glm::ivec3  origin =  chunkLoader->__position + glm::ivec3(i, 0,k);
         chunkLoader->__chunks[index] = Chunk::Load(chunkLoader->__sourceFolder, origin);
-        chunkLoader->__chunkPositions[index] = glm::vec4(16*origin, 1);
+        chunkLoader->__chunkPositions[index] = glm::ivec4(16*origin, 16);
     }
     void ChunkLoader::__moveNegativeY() {
         __position.y--;
@@ -178,7 +178,7 @@ namespace MyCraft {
         //Load new chunk
         glm::ivec3  origin =  chunkLoader->__position + glm::ivec3(i, j,world_side-1);
         chunkLoader->__chunks[tmp] = Chunk::Load(chunkLoader->__sourceFolder, origin);
-        chunkLoader->__chunkPositions[tmp] = glm::vec4(16*origin, 1);
+        chunkLoader->__chunkPositions[tmp] = glm::ivec4(16*origin, 16);
     }
     void ChunkLoader::__movePositiveZ() {
         __position.z++;
@@ -205,7 +205,7 @@ namespace MyCraft {
         //Load new chunk
         glm::ivec3  origin =  chunkLoader->__position + glm::ivec3(i, j,0);
         chunkLoader->__chunks[tmp] = Chunk::Load(chunkLoader->__sourceFolder, origin);
-        chunkLoader->__chunkPositions[tmp] = glm::vec4(16*origin, 1);
+        chunkLoader->__chunkPositions[tmp] = glm::ivec4(16*origin, 16);
     }
     void ChunkLoader::__moveNegativeZ() {
         __position.z--;
@@ -220,14 +220,16 @@ namespace MyCraft {
             delete threads[i];
         }
     }
-
-    Chunk& ChunkLoader::operator[](const glm::vec3& pos) {
-        int x = floor(pos.x/16-__position.x), y = floor(pos.y/16-__position.y), z= floor(pos.z/16-__position.z);
-        return *__chunks[__chunkIndices[x][y][z]];
+    glm::ivec3 ChunkLoader::__chunkPosition(const glm::ivec3& block) const {
+        return {floor(block.x/16.f), floor(block.y/16.f), floor(block.z/16.f)};
     }
-    const Chunk& ChunkLoader::operator[](const glm::vec3& pos) const {
-        int x = floor(pos.x/16 -__position.x), y = floor(pos.y/16 - __position.y), z= floor(pos.z/16-__position.z);
-        return *__chunks[__chunkIndices[x][y][z]];
+    Chunk& ChunkLoader::operator[](const glm::ivec3& pos) {
+        glm::ivec3 offset = __chunkPosition(pos) - __position;
+        return *__chunks[__chunkIndices[offset.x][offset.y][offset.z]];
+    }
+    const Chunk& ChunkLoader::operator[](const glm::ivec3& pos) const {
+        glm::ivec3 offset = __chunkPosition(pos) - __position;
+        return *__chunks[__chunkIndices[offset.x][offset.y][offset.z]];
     }
     void ChunkLoader::glDraw() const {
         for (auto& chunk:__chunks) chunk->glDraw();

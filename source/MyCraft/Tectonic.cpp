@@ -153,7 +153,8 @@ namespace MyCraft {
         {
             Tectonic outside = *this;
             outside.setRoundness(50);
-            for (int i = 0; i<16; i++) {
+            bool reachBound = false;
+            for (int i = 0; i<16 && !reachBound; i++) {
                 outside = outside + 10;
                 int xSz = ceil(outside.size.x);
 
@@ -176,11 +177,13 @@ namespace MyCraft {
                     }
                 }
                 for (int i = 0; i<outside.size.x; i++) {
-                    if (i<xSz && (bounds[i].x < bounds[i].y))
+                    if (i<xSz && (bounds[i].x < bounds[i].y)) {
                         for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
                             int x = int(i-outside.size.x/2+ outside.origin.x);
                             if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j]++;
+                            else reachBound = true;
                         }
+                    }
                 }
                 delete[] bounds;
                 bounds = 0;
@@ -189,7 +192,8 @@ namespace MyCraft {
         {
             Tectonic outside = *this;
             outside.setRoundness(50);
-            for (int i = 0; i<10; i++) {
+            bool reachBound = false;
+            for (int i = 0; i<10 && !reachBound; i++) {
                 outside = outside - 30;
                 int xSz = ceil(outside.size.x);
                 if (xSz<=50) break;
@@ -216,6 +220,7 @@ namespace MyCraft {
                         for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
                             int x = int(i-outside.size.x/2+ outside.origin.x);
                             if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j]++;
+                            else reachBound = true;
                         }
                 }
                 delete[] bounds;

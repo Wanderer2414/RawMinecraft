@@ -15,7 +15,6 @@ class Container3D: public Controller3D {
         virtual void    insert(Controller3D* controller),
                         erase(Controller3D* controller),
                         update()                                    override;
-        virtual bool    sensitiveHandle(GLFWwindow* window)         override;
         virtual bool    catchEvent(GLFWwindow* window)              override;
         virtual bool    handle(GLFWwindow* window)                  override;
         virtual void    glDraw()                            const   override;

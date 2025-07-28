@@ -19,14 +19,14 @@ namespace MyCraft {
 
     }
     Application::~Application() {
-        MyCraft::DrawingCenter::close();
         MyBase::ShapeManager::close();
         MyBase3D::PointSet::close();
         MyBase3D::ShaderStorage::close();
         MyCraft::ModelStorage::close();
+        DrawingCenter::Close();
+        MyBase::TextureStorage::close();
         MyBase::ControlCenter::getInstance().CloseWindow();
         MyBase::ControlCenter::close();
-        MyBase::TextureStorage::close();
     }
 
     void Application::run() {

@@ -16,7 +16,6 @@ namespace MyBase3D {
         Form3D(const int& index);
         ~Form3D();
         virtual bool    contains(const glm::vec2& position) const override;
-        virtual void    setSensitiveTime(const size_t& milisecond);
         int             run(GLFWwindow* window);
 
         glm::vec2       getPosition()   const override, 
@@ -35,7 +34,6 @@ namespace MyBase3D {
         float                   getAverageFps() const, getCurrentFps() const;
         void                    setReturnValue(const int& returnValue);
         void                    close();
-        virtual bool            sensitiveHandle(GLFWwindow* window)         override;
         virtual bool            catchEvent(GLFWwindow* window)              override;
         virtual bool            handle(GLFWwindow* window)                  override;
         virtual void            glDraw() const override;
@@ -46,7 +44,6 @@ namespace MyBase3D {
                                 __returnValue;
         size_t                  __startClock, __frameCount, __currentClock, __deltaClock;
         MyBase::Color           __backgroundColor;
-        MyBase::Clock           __sensitiveClock;
         MyBase::Rectangle       __pauseScreen;
     };
     
