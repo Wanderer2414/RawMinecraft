@@ -157,7 +157,7 @@ namespace MyCraft {
                 outside = outside + 10;
                 int xSz = ceil(outside.size.x);
 
-                glm::vec2 *bounds = (glm::vec2*)malloc(xSz*8);
+                glm::vec2 *bounds = new glm::vec2[xSz];
                 for (int i = 0; i<xSz; i++) bounds[i] = {outside.size.y/2, -outside.size.y/2};
                 for (int i = 0; i<outside.vertices.size(); i++) {
                     glm::vec2 a, b = outside.vertices[i], delta;
@@ -169,7 +169,7 @@ namespace MyCraft {
                     if (a.x > b.x) std::swap(a , b);
                     for (glm::vec2 vec(floor(a.x), a.y); vec.x < floor(b.x); vec = vec + delta) {
                         int index = vec.x + outside.size.x/2;
-                        if (index<xSz) {
+                        if (index>=0 && index<xSz) {
                             bounds[index].x = std::min(vec.y, bounds[index].x);
                             bounds[index].y = std::max(vec.y, bounds[index].y);
                         }
@@ -182,7 +182,43 @@ namespace MyCraft {
                             if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j]++;
                         }
                 }
-                free(bounds);
+                delete[] bounds;
+                bounds = 0;
+            }
+        }
+        {
+            Tectonic outside = *this;
+            outside.setRoundness(50);
+            for (int i = 0; i<10; i++) {
+                outside = outside - 30;
+                int xSz = ceil(outside.size.x);
+                if (xSz<=50) break;
+                glm::vec2 *bounds = new glm::vec2[xSz];
+                for (int i = 0; i<xSz; i++) bounds[i] = {outside.size.y/2, -outside.size.y/2};
+                for (int i = 0; i<outside.vertices.size(); i++) {
+                    glm::vec2 a, b = outside.vertices[i], delta;
+                    if (i) a = outside.vertices[i-1];
+                    else a = outside.vertices.back();
+                    delta = b-a;
+                    delta.y /= delta.x;
+                    delta.x = 1;
+                    if (a.x > b.x) std::swap(a , b);
+                    for (glm::vec2 vec(floor(a.x), a.y); vec.x < floor(b.x); vec = vec + delta) {
+                        int index = vec.x + outside.size.x/2;
+                        if (index>=0 && index<xSz) {
+                            bounds[index].x = std::min(vec.y, bounds[index].x);
+                            bounds[index].y = std::max(vec.y, bounds[index].y);
+                        }
+                    }
+                }
+                for (int i = 0; i<outside.size.x; i++) {
+                    if (i<xSz && (bounds[i].x < bounds[i].y))
+                        for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
+                            int x = int(i-outside.size.x/2+ outside.origin.x);
+                            if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j]++;
+                        }
+                }
+                delete[] bounds;
                 bounds = 0;
             }
         }

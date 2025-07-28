@@ -165,24 +165,22 @@ namespace MyCraft {
                             if (board[mX][mY]>maxHeight) {
                                 int mZ = board[mX][mY]-maxHeight-1;
                                 if (mZ>=16) isTaller = true;
-                                else {
-                                    chunk.__bits[i][j][mZ] = 1;
-                                    chunk.__list.push_back(glm::vec4(chunk.__position+glm::ivec3(i,j,mZ),Grass));
-                                    chunk.__blockTypes[i][j][mZ] = Grass;
-                                    chunk.__numBlock++;
-                                    averageHeight += 1.0f*(mZ+maxHeight+1)/256;
-                                }
+                                else averageHeight += 1.0f*(mZ+maxHeight+1)/256;
                                 for (int z = 0; z<=std::min(mZ, 15); z++) {
                                     if (mX==0 || mX==bound.x-1 || mX == 0 || mY ==bound.y-1) {
                                         chunk.__bits[i][j][z] = 1;
-                                        chunk.__list.push_back(glm::vec4(chunk.__position+glm::ivec3(i,j,z),Grass));
+                                        chunk.__list.push_back(glm::ivec4(chunk.__position+glm::ivec3(i,j,z),Grass));
                                     }
                                     else if (board[mX-1][mY]<z+maxHeight+1 || board[mX+1][mY]<z+maxHeight+1 || board[mX][mY-1]<z+maxHeight+1 || board[mX][mY+1]<z+maxHeight+1) {
                                         chunk.__bits[i][j][z] = 1;
-                                        chunk.__list.push_back(glm::vec4(chunk.__position+glm::ivec3(i,j,z),Grass));
+                                        chunk.__list.push_back(glm::ivec4(chunk.__position+glm::ivec3(i,j,z),Grass));
                                     }
                                     chunk.__numBlock++;
                                     chunk.__blockTypes[i][j][z] = BlockCatogary::Grass;
+                                }
+                                if (mZ<16 && !chunk.__bits[i][j][mZ]) {
+                                    chunk.__bits[i][j][mZ] = 1;
+                                    chunk.__list.push_back(glm::ivec4(chunk.__position+glm::ivec3(i,j,mZ),Grass));
                                 }
                             }
                         }

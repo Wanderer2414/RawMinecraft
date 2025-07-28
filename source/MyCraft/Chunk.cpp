@@ -12,7 +12,7 @@ namespace MyCraft {
         new_chunk->__source = MapCreator::getFileName(src, position);
         std::ifstream file(new_chunk->__source, std::ios::in | std::ios::binary);
         if (file.is_open()) {
-            file.read((char*)&new_chunk->__position, sizeof(glm::vec3));
+            file.read((char*)&new_chunk->__position, sizeof(glm::ivec3));
             unsigned int sz;
             file.read((char*)&sz, sizeof(int));
             new_chunk->__list.resize(sz);
