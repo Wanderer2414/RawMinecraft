@@ -15,6 +15,7 @@ namespace MyCraft {
                     getDirection() const;
         void        move(const glm::vec3& delta) override,
                     rotate(const float& angle) override,
+                    teleport(const glm::vec3& position),
                     rotate(const glm::vec3& dir),
                     rightAttack(),
                     leftAttack(),

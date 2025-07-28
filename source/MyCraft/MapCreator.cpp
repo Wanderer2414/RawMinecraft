@@ -2,6 +2,7 @@
 #include "Block.h"
 #include "Chunk.h"
 #include "Color.h"
+#include "File.h"
 #include "Global.h"
 #include "Tectonic.h"
 
@@ -42,7 +43,7 @@ namespace MyCraft {
                 file.write((char*)&size, sizeof(int));
                 BlockCatogary types[4096];
                 memset(&types[0], 0, sizeof(BlockCatogary)*4096);
-                for (int i = 0; i<256; i++) types[i*16 + 15] = BlockCatogary::Grass;
+                for (int i = 0; i<256; i++) types[i*16 + 15] = BedRock;
                 file.write((char*)&types, sizeof(BlockCatogary)*4096);
                 file.close();
                 std::lock_guard<std::mutex> lock(*mtx);
@@ -85,9 +86,10 @@ namespace MyCraft {
                 size = 3328;
                 file.write((char*)&size, sizeof(int));
                 BlockCatogary types[4096];
-                memset(&types[0], BlockCatogary::Dirt, sizeof(BlockCatogary)*4096);
+                memset(&types[0], BlockCatogary::Stone, sizeof(BlockCatogary)*4096);
                 for (int i = 0; i<256; i++) {
-                    types[i*16+2] = types[i*16+3] = types[i*16+4] = BlockCatogary::Air;
+                    types[i*16+1] = types[i*16+5] = Obsidian;
+                    types[i*16+2] = types[i*16+3] = types[i*16+4] = Air;
                 }
                 file.write((char*)&types, sizeof(BlockCatogary)*4096);
                 file.close();
@@ -133,7 +135,8 @@ namespace MyCraft {
                     size = 4096;
                     file.write((char*)&size, sizeof(int));
                     BlockCatogary types[4096];
-                    memset(&types[0], BlockCatogary::Dirt, sizeof(BlockCatogary)*4096);
+                    memset(&types[0], BlockCatogary::Stone, sizeof(BlockCatogary)*4096);
+                    for (int i = 0; i<256; i++) types[i*16+15] = Sand;
 
                     file.write((char*)&types, sizeof(BlockCatogary)*4096);
                     file.close();
@@ -169,18 +172,19 @@ namespace MyCraft {
                                 for (int z = 0; z<=std::min(mZ, 15); z++) {
                                     if (mX==0 || mX==bound.x-1 || mX == 0 || mY ==bound.y-1) {
                                         chunk.__bits[i][j][z] = 1;
-                                        chunk.__list.push_back(glm::ivec4(chunk.__position+glm::ivec3(i,j,z),Grass));
+                                        chunk.__numBit++;
                                     }
                                     else if (board[mX-1][mY]<z+maxHeight+1 || board[mX+1][mY]<z+maxHeight+1 || board[mX][mY-1]<z+maxHeight+1 || board[mX][mY+1]<z+maxHeight+1) {
                                         chunk.__bits[i][j][z] = 1;
-                                        chunk.__list.push_back(glm::ivec4(chunk.__position+glm::ivec3(i,j,z),Grass));
+                                        chunk.__numBit++;
                                     }
                                     chunk.__numBlock++;
-                                    chunk.__blockTypes[i][j][z] = BlockCatogary::Grass;
+                                    if (z<mZ-2) chunk.__blockTypes[i][j][z] = Stone;
+                                    else chunk.__blockTypes[i][j][z] = Sand;
                                 }
                                 if (mZ<16 && !chunk.__bits[i][j][mZ]) {
                                     chunk.__bits[i][j][mZ] = 1;
-                                    chunk.__list.push_back(glm::ivec4(chunk.__position+glm::ivec3(i,j,mZ),Grass));
+                                    chunk.__numBit++;
                                 }
                             }
                         }
@@ -209,7 +213,7 @@ namespace MyCraft {
             }
         }
     }
-    void MapCreator::createTemperateZone(std::mutex* mtx, double* percent, const double& total, MyBase::Color* texture, const std::string& src, const glm::vec2& yBound, const float& z) {
+    void MapCreator::createTemperateZone(std::mutex* mtx, double* percent, const double& total, std::vector<glm::vec2>& centers, MyBase::Color* texture, const std::string& src, const glm::vec2& yBound, const float& z) {
         srand(clock());
         unsigned char count = rand()%3+2;
         int xMax = 1000, xPart = xMax/count;
@@ -235,8 +239,9 @@ namespace MyCraft {
             glm::vec2 bound(xSize*16, 1600);
             area.draw(bound, map);
             std::thread* threads[100];
-            
             glm::ivec3 origin(500-xMax-xSize, -50, z);
+            auto tcenters = area.getCenter();
+            for (auto& i:tcenters) centers.push_back(glm::vec2(i.x+origin.x*16, i.y + origin.y*16));
             for (int i = 0; i<100; i++) {
                 glm::vec2 xBound(0, xSize), yBound(i, i+1);
                 threads[i] = new std::thread(createSubTemperateZone, mtx, percent, total/100/count, src, bound,  map, xBound, yBound, origin);
@@ -261,7 +266,13 @@ namespace MyCraft {
         createBedrockLayer(mtx, percent, 0.2, src, -10);
         createMagmaLayer(mtx, percent, 0.2, src, -9);
         createTopSoilLayer(mtx, percent, 0.2, src, {-8, -6});
-        createTemperateZone(mtx, percent, 0.4, &color[0][0], src, {0,0}, -6);
+        std::vector<glm::vec2> centers;
+        createTemperateZone(mtx, percent, 0.4, centers, &color[0][0], src, {0,0}, -6);
         stbi_write_png((src+"overal.png").c_str(), 1000, 500, 4, &color[0][0], sizeof(char)*4*1000);
+
+        glm::ivec2 spawn = centers[rand()%centers.size()];
+        MyBase::File file(src+"info.bin");
+        file << spawn.x << spawn.y;
+        file.close();
     }
 }

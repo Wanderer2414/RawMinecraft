@@ -20,7 +20,7 @@ namespace MyCraft {
     private:
         Chunk();
         bool                        __isChange;
-        unsigned int                __numBlock;
+        unsigned int                __numBlock, __numBit;
         int                         __tableIndexes[16][16][16];
         glm::ivec3                  __position;
         BlockCatogary               __blockTypes[16][16][16];

@@ -29,6 +29,7 @@ namespace MyCraft {
         Tectonic operator+(const float& max_width) const;
         Tectonic operator-(const float& max_width) const;
         bool intersect(const Tectonic& Tectonic) const;
+        glm::vec2 getCenter() const;
         void setPosition(const glm::vec2& p);
         void setRoundness(const size_t& size);
         void draw(const glm::vec2& size, unsigned char** board) const;
@@ -45,6 +46,7 @@ namespace MyCraft {
         Area(const int& n, const glm::vec2& org, const glm::vec2& s);
         Area(const Area&) = delete;
         ~Area();
+        std::vector<glm::vec2> getCenter() const;
         Area& operator=(const Area&) const = delete;
         void draw(const glm::vec2& size, unsigned char** board) const;
     };

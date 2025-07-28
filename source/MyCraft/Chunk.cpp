@@ -5,7 +5,7 @@
 #include "MapCreator.h"
 
 namespace MyCraft {
-    Chunk::Chunk(): __isChange(false), __numBlock(0) {}
+    Chunk::Chunk(): __isChange(false), __numBlock(0), __numBit(0) {}
     Chunk::~Chunk() {}
     Chunk* Chunk::Load(const std::string& src, const glm::ivec3& position) {
         Chunk* new_chunk = new Chunk();
@@ -13,17 +13,16 @@ namespace MyCraft {
         std::ifstream file(new_chunk->__source, std::ios::in | std::ios::binary);
         if (file.is_open()) {
             file.read((char*)&new_chunk->__position, sizeof(glm::ivec3));
-            unsigned int sz;
-            file.read((char*)&sz, sizeof(int));
-            new_chunk->__list.resize(sz);
+            file.read((char*)&new_chunk->__numBit, sizeof(int));
+            new_chunk->__list.resize(new_chunk->__numBit);
             unsigned int buffer[128];
-            if (sz) {
+            if (new_chunk->__numBit) {
                 file.read((char*)&buffer[0], 128*sizeof(int));
             }
             file.read((char*)&new_chunk->__numBlock, sizeof(int));
             file.read((char*)&new_chunk->__blockTypes[0][0][0], sizeof(BlockCatogary)*4096);
             int index = 0;
-            if (sz) {
+            if (new_chunk->__numBit) {
                 for (int i = 0; i<16; i++)
                     for (int j = 0; j<16; j++) {
                         unsigned int data = buffer[i*8+j/2];
@@ -57,9 +56,8 @@ namespace MyCraft {
         if (__numBlock) {
             std::ofstream file(__source, std::ios::binary | std::ios::out);
             file.write((char*)&__position, sizeof(glm::vec3));
-            unsigned int sz = __list.size();
-            file.write((char*)&sz, sizeof(int));
-            if (sz) {
+            file.write((char*)&__numBit, sizeof(int));
+            if (__numBit) {
                 unsigned int buffer[128];
                 for (int i = 0; i<16; i++) {
                     for (int j = 0; j<8; j++) {
@@ -95,6 +93,7 @@ namespace MyCraft {
         glm::ivec3 offset = pos - __position;
         if (!__bits[offset.x][offset.y][offset.z]) {
             __isChange = true;
+            __numBit++;
             __tableIndexes[offset.x][offset.y][offset.z] = __list.size();
             __list.push_back(glm::vec4(pos, __blockTypes[offset.x][offset.y][offset.z]));
             __bits[offset.x][offset.y][offset.z] = 1;
@@ -115,7 +114,7 @@ namespace MyCraft {
                 __tableIndexes[origin.x][origin.y][origin.z] = index;
             }
             else __list.pop_back();
-
+            __numBit--;
             __bits[offset.x][offset.y][offset.z] = 0;
         }
     }

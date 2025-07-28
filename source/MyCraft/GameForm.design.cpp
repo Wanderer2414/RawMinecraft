@@ -1,4 +1,5 @@
 #include "GameForm.h"
+#include "File.h"
 #include "Form3D.h"
 #include "GamePauseForm.h"
 #include "HitBoxCenter.h"
@@ -39,6 +40,15 @@ namespace MyCraft {
         insert(&__positionLabel);
 
         __fpsClock.setDuration(500);
+
+        MyBase::File file(src+"info.bin");
+        if (!file.isNew()) {
+            glm::ivec2 pos;
+            file >> pos.x >> pos.y;
+            __model.teleport(glm::vec3(pos, 0));
+            pWorld.playerAt(glm::vec3(pos, 0));
+        }
+        file.close();
     }
     GameForm::~GameForm() {        
     }

@@ -126,6 +126,9 @@ namespace MyCraft {
         }
         return false;
     }
+    glm::vec2 Tectonic::getCenter() const {
+        return origin;
+    }
     void Tectonic::setPosition(const glm::vec2& p) {
         origin = p;
     }
@@ -154,7 +157,7 @@ namespace MyCraft {
             Tectonic outside = *this;
             outside.setRoundness(50);
             bool reachBound = false;
-            for (int i = 0; i<16 && !reachBound; i++) {
+            for (int i = 0; i<32 && !reachBound; i++) {
                 outside = outside + 10;
                 int xSz = ceil(outside.size.x);
 
@@ -192,8 +195,7 @@ namespace MyCraft {
         {
             Tectonic outside = *this;
             outside.setRoundness(50);
-            bool reachBound = false;
-            for (int i = 0; i<10 && !reachBound; i++) {
+            for (int i = 0; i<20; i++) {
                 outside = outside - 30;
                 int xSz = ceil(outside.size.x);
                 if (xSz<=50) break;
@@ -220,7 +222,6 @@ namespace MyCraft {
                         for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
                             int x = int(i-outside.size.x/2+ outside.origin.x);
                             if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j]++;
-                            else reachBound = true;
                         }
                 }
                 delete[] bounds;
@@ -275,6 +276,11 @@ namespace MyCraft {
         for (auto& Tectonic: specials) delete Tectonic;
         Tectonics.clear();
         specials.clear();
+    }
+    std::vector<glm::vec2> Area::getCenter() const {
+        std::vector<glm::vec2> ans(Tectonics.size());
+        for (int i = 0; i<Tectonics.size(); i++) ans[i] = Tectonics[i]->getCenter();
+        return ans;
     }
     void Area::draw(const glm::vec2& size, unsigned char** board) const {
         for (auto& Tectonic: Tectonics) Tectonic->draw(size, board);

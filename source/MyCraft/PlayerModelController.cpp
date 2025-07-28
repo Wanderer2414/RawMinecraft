@@ -197,6 +197,9 @@ namespace MyCraft {
             send(new CheckHoverMessage(__position, __eye_direction));
         }
     }
+    void PlayerModelController::teleport(const glm::vec3& position) {
+        __position = position;
+    }
     void PlayerModelController::move(const glm::vec3& delta) {
         __position += delta;
         send(new MyBase::SetCameraMessage(__position, __eye_direction));
