@@ -1,5 +1,6 @@
 #include "WaitingWorldCreateForm.h"
 #include "Font.h"
+#include "General.h"
 #include "MapCreator.h"
 #include "ProgressWaitingForm.h"
 #include "Global.h"
@@ -8,10 +9,12 @@ namespace MyCraft {
     WaitingWorldCreateForm::WaitingWorldCreateForm(const MyBase::Font& font): MyBase::ProgressWaitingForm(font)  {}
     WaitingWorldCreateForm::~WaitingWorldCreateForm() {}
     int WaitingWorldCreateForm::open(const std::string& file, GLFWwindow* window) {
-        thread = new std::thread(MapCreator::create, &mtx, &progress, file);
+        thread = new std::thread(MapCreator::create, &progress, file);
+        time = GetTime();
         return MyBase::ProgressWaitingForm::open(window);
     }
     void WaitingWorldCreateForm::__close(GLFWwindow*) {
+        std::cout << GetTime()-time << "s" << std::endl;
         thread->join();
         delete thread;
     }

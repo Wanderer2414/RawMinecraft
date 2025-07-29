@@ -45,8 +45,8 @@ namespace MyCraft {
         if (!file.isNew()) {
             glm::ivec2 pos;
             file >> pos.x >> pos.y;
-            __model.teleport(glm::vec3(pos, 0));
-            pWorld.playerAt(glm::vec3(pos, 0));
+            __model.teleport(glm::vec3(pos, 100));
+            pWorld.playerAt(glm::vec3(pos, 100));
         }
         file.close();
     }

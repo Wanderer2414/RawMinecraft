@@ -32,7 +32,8 @@ namespace MyCraft {
         glm::vec2 getCenter() const;
         void setPosition(const glm::vec2& p);
         void setRoundness(const size_t& size);
-        void draw(const glm::vec2& size, unsigned char** board) const;
+        void drawUp(const glm::vec2& size, unsigned int** board) const;
+        void drawDown(const glm::vec2& size, unsigned int** board) const;
     private:
         void __intersect(std::vector<glm::vec2>& vecs, const Tectonic& Tectonic) const;
         void __merge(std::vector<glm::vec2>& vecs, const Tectonic& Tectonic) const;
@@ -48,7 +49,7 @@ namespace MyCraft {
         ~Area();
         std::vector<glm::vec2> getCenter() const;
         Area& operator=(const Area&) const = delete;
-        void draw(const glm::vec2& size, unsigned char** board) const;
+        void draw(const glm::vec2& size, unsigned int** board) const;
     };
 }
 #endif

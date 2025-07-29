@@ -15,6 +15,7 @@ namespace MyCraft {
         void __close(GLFWwindow*) override;
         bool __exitCondition() override;
     private:
+        size_t time;
         std::thread* thread;
     };
 }

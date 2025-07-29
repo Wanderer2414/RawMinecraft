@@ -3,6 +3,7 @@
 #include "Chunk.h"
 #include "Color.h"
 #include "File.h"
+#include "General.h"
 #include "Global.h"
 #include "Tectonic.h"
 
@@ -11,25 +12,18 @@ namespace MyCraft {
         size_t index = (position.x+500)*1000*1000 + (position.y+500)*1000 + (500 + position.z);
         return src + std::to_string(index)+".bin";
     }
-    void MapCreator::createBedrockLayer(std::mutex* mtx, double* percent, const double& total, const std::string& src, const int& heightBound) {
-        std::thread* threads[100];
-        memset(&threads[0], 0, sizeof(void*)*100);
-        int index = 0;
-        for (int i = 0; i<10; i++) {
-            for (int j = 0; j<5; j++) {
-                glm::ivec2 xBound(i*100 - 500, (i+1)*100 -500), yBound(j*100-250, (j+1)*100 - 250);
-                threads[index++] = new std::thread(createSubBedrockLayer, mtx, percent, total/50, src, xBound, yBound, heightBound);
-            }
-        }
-        for (int i = 0; i<100; i++) {
-            if (threads[i]) {
-                threads[i]->join();
-                delete threads[i];
-            }
-        }
+    void MapCreator::createBedrockLayer(double* percent, const double& total, const std::string& src, const int& heightBound) {
+        glm::ivec2 xBound(- 500, 0), yBound(-250, 250);
+        std::thread thread(createSubBedrockLayer, percent, total/2, src, xBound, yBound, heightBound);
+
+        xBound= {0, 500};
+        std::thread threadA(createSubBedrockLayer, percent, total/2, src, xBound, yBound, heightBound);
+
+        thread.join();
+        threadA.join();
     }
-    void MapCreator::createSubBedrockLayer(std::mutex* mtx, double* percent, const double& total, const std::string& src, const glm::ivec2& xBound, const glm::ivec2& yBound, const int& height) {
-        double one_part = 1.0/((xBound.y-xBound.x)*(yBound.y-yBound.x));
+    void MapCreator::createSubBedrockLayer(double* percent, const double& total, const std::string& src, const glm::ivec2& xBound, const glm::ivec2& yBound, const int& height) {
+        double one_part = 1.0/((xBound.y-xBound.x));
         for (int x = xBound.x; x<xBound.y; x++) {
             for (int y = yBound.x; y<yBound.y; y++) {
                 glm::ivec3 origin(x,y,height);
@@ -46,31 +40,21 @@ namespace MyCraft {
                 for (int i = 0; i<256; i++) types[i*16 + 15] = BedRock;
                 file.write((char*)&types, sizeof(BlockCatogary)*4096);
                 file.close();
-                std::lock_guard<std::mutex> lock(*mtx);
-                *percent += one_part*total;
             }
+            *percent += one_part*total;
         }
     }
 
-    void MapCreator::createMagmaLayer(std::mutex* mtx, double* percent, const double& total, const std::string& src, const int& heightBound) {
-        std::thread* threads[100];
-        memset(&threads[0], 0, sizeof(void*)*100);
-        int index = 0;
-        for (int i = 0; i<10; i++) {
-            for (int j = 0; j<5; j++) {
-                glm::ivec2 xBound(i*100 - 500, (i+1)*100 -500), yBound(j*100-250, (j+1)*100 - 250);
-                threads[index++] = new std::thread(createSubMagmaLayer, mtx, percent, total/50, src, xBound, yBound, heightBound);
-            }
-        }
-        for (int i = 0; i<100; i++) {
-            if (threads[i]) {
-                threads[i]->join();
-                delete threads[i];
-            }
-        }
+    void MapCreator::createMagmaLayer(double* percent, const double& total, const std::string& src, const int& heightBound) {
+        glm::ivec2 xBound(- 500, 0), yBound(-250, 250);
+        std::thread thread(createSubMagmaLayer,percent, total/2, src, xBound, yBound, heightBound);
+        xBound = {0, 500};
+        std::thread threadA(createSubMagmaLayer, percent, total/2, src, xBound, yBound, heightBound);
+        thread.join();
+        threadA.join();
     }
-    void MapCreator::createSubMagmaLayer(std::mutex* mtx, double* percent, const double& total, const std::string& src, const glm::ivec2& xBound, const glm::ivec2& yBound, const int& height) {
-        double one_part = 1.0/((xBound.y-xBound.x)*(yBound.y-yBound.x));
+    void MapCreator::createSubMagmaLayer(double* percent, const double& total, const std::string& src, const glm::ivec2& xBound, const glm::ivec2& yBound, const int& height) {
+        double one_part = 1.0/((xBound.y-xBound.x));
         for (int x = xBound.x; x<xBound.y; x++) {
             for (int y = yBound.x; y<yBound.y; y++) {
                 glm::ivec3 origin(x,y,height);
@@ -93,31 +77,22 @@ namespace MyCraft {
                 }
                 file.write((char*)&types, sizeof(BlockCatogary)*4096);
                 file.close();
-                std::lock_guard<std::mutex> lock(*mtx);
-                *percent += one_part*total;
             }
+            *percent += one_part*total;
         }
     }
 
-    void MapCreator::createTopSoilLayer(std::mutex* mtx, double* percent, const double& total, const std::string& src, const glm::ivec2& zBound) {
-        std::thread* threads[100];
-        memset(&threads[0], 0, sizeof(void*)*100);
-        int index = 0;
-        for (int i = 0; i<10; i++) {
-            for (int j = 0; j<5; j++) {
-                glm::ivec2 xBound(i*100 - 500, (i+1)*100 -500), yBound(j*100-250, (j+1)*100 - 250);
-                threads[index++] = new std::thread(createSubTopSoilLayer, mtx, percent, total/50, src, xBound, yBound, zBound);
-            }
-        }
-        for (int i = 0; i<100; i++) {
-            if (threads[i]) {
-                threads[i]->join();
-                delete threads[i];
-            }
-        }
+    void MapCreator::createTopSoilLayer(double* percent, const double& total, const std::string& src, const glm::ivec2& zBound) {
+        glm::ivec2 xBound(- 500, 0), yBound(-250, 250);
+        std::thread thread(createSubTopSoilLayer, percent, total/2, src, xBound, yBound, zBound);
+
+        xBound = {0, 500};
+        std::thread threadA(createSubTopSoilLayer, percent, total/2, src, xBound, yBound, zBound);
+        thread.join();
+        threadA.join();
     }
-    void MapCreator::createSubTopSoilLayer(std::mutex* mtx, double* percent, const double& total, const std::string& src, const glm::ivec2& xBound, const glm::ivec2& yBound, const glm::ivec2& zBound) {
-        double one_part = 1.0/((xBound.y-xBound.x)*(yBound.y-yBound.x)*(zBound.y - zBound.x));
+    void MapCreator::createSubTopSoilLayer(double* percent, const double& total, const std::string& src, const glm::ivec2& xBound, const glm::ivec2& yBound, const glm::ivec2& zBound) {
+        double one_part = 1.0/((xBound.y-xBound.x)*(yBound.y-yBound.x));
         for (int x = xBound.x; x<xBound.y; x++) {
             for (int y = yBound.x; y<yBound.y; y++) {
                 for (int z = zBound.x; z < zBound.y; z++) {
@@ -140,14 +115,13 @@ namespace MyCraft {
 
                     file.write((char*)&types, sizeof(BlockCatogary)*4096);
                     file.close();
-                    std::lock_guard<std::mutex> lock(*mtx);
-                    *percent += one_part*total;
                 }
+                *percent += one_part*total;
             }
         }
     }
-    void MapCreator::createSubTemperateZone(std::mutex* mtx, double* percent, const double& total, const std::string& src, const glm::vec2& bound, unsigned char** board, const glm::vec2& xBound, const glm::vec2& yBound, const glm::ivec3& origin) {
-        double one_part = 1.0/((xBound.y-xBound.x)*(yBound.y-yBound.x));
+    void MapCreator::createSubTemperateZone(double* percent, const double& total, MyBase::Color* color, const std::string& src, const glm::vec2& bound, unsigned int** board, const glm::vec2& xBound, const glm::vec2& yBound, const glm::ivec3& origin) {
+        double one_part = 1.0/((xBound.y-xBound.x));
         for (int x = xBound.x; x<xBound.y; x++) {
             for (int y = yBound.x; y<yBound.y; y++) {
                 int maxHeight = 0;
@@ -168,7 +142,7 @@ namespace MyCraft {
                             if (board[mX][mY]>maxHeight) {
                                 int mZ = board[mX][mY]-maxHeight-1;
                                 if (mZ>=16) isTaller = true;
-                                else averageHeight += 1.0f*(mZ+maxHeight+1)/256;
+                                else averageHeight += 1.0f*board[mX][mY]/256;
                                 for (int z = 0; z<=std::min(mZ, 15); z++) {
                                     if (mX==0 || mX==bound.x-1 || mX == 0 || mY ==bound.y-1) {
                                         chunk.__bits[i][j][z] = 1;
@@ -179,12 +153,18 @@ namespace MyCraft {
                                         chunk.__numBit++;
                                     }
                                     chunk.__numBlock++;
-                                    if (z<mZ-2) chunk.__blockTypes[i][j][z] = Stone;
-                                    else chunk.__blockTypes[i][j][z] = Sand;
+                                    chunk.__blockTypes[i][j][z] = Stone;
                                 }
                                 if (mZ<16 && !chunk.__bits[i][j][mZ]) {
                                     chunk.__bits[i][j][mZ] = 1;
                                     chunk.__numBit++;
+                                }
+                                if (mZ < 16) {
+                                    if (board[mX][mY] < 200) {
+                                        int rate = rand()%5 + 2;
+                                        for (int z = std::max(mZ - rate,0); z<=mZ; z++)
+                                            chunk.__blockTypes[i][j][z] = Sand;
+                                    }
                                 }
                             }
                         }
@@ -192,28 +172,13 @@ namespace MyCraft {
                     chunk.save();
                     if (isTaller) maxHeight+=16;
                 }
-                std::lock_guard<std::mutex> lock(*mtx);
-                *percent += one_part*total;
+                if (averageHeight>200) color[(position.y+250)*1000+(position.x+500)] = {160, 160, 160, 255};
+                else if (averageHeight > 32) color[(position.y+250)*1000+(position.x+500)] = {255, 255, 153, 255};
             }
+            *percent += one_part*total;
         }
     }
-    void MapCreator::RenderToMap(MyBase::Color* texture, unsigned char** map, const glm::ivec2& xBound, const glm::ivec2& yBound, const glm::ivec2& origin) {
-        for (int x = xBound.x; x<xBound.y; x++) {
-            for (int y = yBound.x; y<yBound.y; y++) {
-                float colorAvarage = 0;
-                for (int i = 0; i<16; i++) {
-                    for (int j = 0; j<16; j++) colorAvarage+=1.0*map[x*16 + i][y*16 + j]/256;;
-                }
-                unsigned char color = colorAvarage;
-                if (color) {
-                    MyBase::Color& c = texture[(y + origin.y + 250)*1000 + x + origin.x + 500];
-                    c.red = c.blue = c.green = color;
-                    c.alpha = 255;
-                }
-            }
-        }
-    }
-    void MapCreator::createTemperateZone(std::mutex* mtx, double* percent, const double& total, std::vector<glm::vec2>& centers, MyBase::Color* texture, const std::string& src, const glm::vec2& yBound, const float& z) {
+    void MapCreator::createTemperateZone(double* percent, const double& total, std::vector<glm::vec2>& centers, MyBase::Color* texture, const std::string& src, const glm::vec2& yBound, const float& z) {
         srand(clock());
         unsigned char count = rand()%3+2;
         int xMax = 1000, xPart = xMax/count;
@@ -230,44 +195,43 @@ namespace MyCraft {
                 xMax -= xSize;
                 xPart = xMax/(count-k);
             }
-            unsigned char **map = new unsigned char*[xSize*16];
+            unsigned int **map = new unsigned int*[xSize*16];
             for (int i = 0; i<xSize*16; i++) {
-                map[i] = new unsigned char[1600];
-                memset(map[i], 0, 1600);
+                map[i] = new unsigned int[1600];
+                memset(map[i], 0, 6400);
             }
             Area area(p*(rand()%10+5), {0,100}, {xSize*16, 1400});
             glm::vec2 bound(xSize*16, 1600);
             area.draw(bound, map);
-            std::thread* threads[100];
+            
             glm::ivec3 origin(500-xMax-xSize, -50, z);
             auto tcenters = area.getCenter();
             for (auto& i:tcenters) centers.push_back(glm::vec2(i.x+origin.x*16, i.y + origin.y*16));
-            for (int i = 0; i<100; i++) {
-                glm::vec2 xBound(0, xSize), yBound(i, i+1);
-                threads[i] = new std::thread(createSubTemperateZone, mtx, percent, total/100/count, src, bound,  map, xBound, yBound, origin);
-            }
-            RenderToMap(texture, map, {0, xSize}, {0, 100}, {500-xSize-xMax, -50});
             
-            for (int i = 0; i<100; i++) {
-                threads[i]->join();
-                delete threads[i];
-            }
+            glm::vec2 xBound(0, xSize), yBound(0, 50);
+            std::thread threadA(createSubTemperateZone,percent, total/2/count,texture, src, bound,  map, xBound, yBound, origin);
+
+            yBound = {50, 100};
+            std::thread threadB(createSubTemperateZone,percent, total/2/count,texture, src, bound,  map, xBound, yBound, origin);
+            
+            threadA.join();
+            threadB.join();
+        
             for (int i = 0; i<xSize; i++) delete[] map[i];
             delete[] map;
         }
     }
 
-    void MapCreator::create(std::mutex* mtx, double* percent, const std::string& src) {
-        // createBedrockLayer(src, -1);
+    void MapCreator::create(double* percent, const std::string& src) {
         MyBase::Color color[500][1000];
-        for (int i = 0; i<500; i++) {
+        for (int i =0; i<500; i++) {
             for (int j = 0; j<1000; j++) color[i][j] = BLUE;
         }
-        createBedrockLayer(mtx, percent, 0.2, src, -10);
-        createMagmaLayer(mtx, percent, 0.2, src, -9);
-        createTopSoilLayer(mtx, percent, 0.2, src, {-8, -6});
+        createBedrockLayer(percent, 0.2, src, -10);
+        createMagmaLayer(percent, 0.2, src, -9);
+        createTopSoilLayer(percent, 0.2, src, {-8, -6});
         std::vector<glm::vec2> centers;
-        createTemperateZone(mtx, percent, 0.4, centers, &color[0][0], src, {0,0}, -6);
+        createTemperateZone( percent, 0.4, centers, &color[0][0], src, {0,0}, -6);
         stbi_write_png((src+"overal.png").c_str(), 1000, 500, 4, &color[0][0], sizeof(char)*4*1000);
 
         glm::ivec2 spawn = centers[rand()%centers.size()];

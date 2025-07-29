@@ -21,6 +21,7 @@ namespace MyCraft {
             }
             file.read((char*)&new_chunk->__numBlock, sizeof(int));
             file.read((char*)&new_chunk->__blockTypes[0][0][0], sizeof(BlockCatogary)*4096);
+            file.close();
             int index = 0;
             if (new_chunk->__numBit) {
                 for (int i = 0; i<16; i++)
@@ -40,7 +41,6 @@ namespace MyCraft {
                         }
                     }
             }
-            file.close();
         }
         else {
             new_chunk->__position = position*16;
