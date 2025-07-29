@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
-#include <exception>
 #include <iostream>
 #include <math.h>
 #include <vector>
@@ -35,13 +34,55 @@ public:
         return {length*cos(angle), length*sin(angle)};
     }
 };
-
+void rasterize(std::vector<std::vector<bool>>& matrix, const Vector2& a, const Vector2& b, const Vector2& origin) {
+    if (a.y>b.y) rasterize(matrix, b,a, origin);
+    else {
+        Vector2 delta = b-a;
+        delta.x /= delta.y;
+        delta.y = 1;
+        for (int y = ceil(a.y); y<b.y; y++) {
+            int x = a.x + (y-a.y)/delta.y*delta.x;
+            matrix[floor(x+origin.x)][floor(y+origin.y)] = 1;
+        }
+    }
+}
 class Tectonic {
 private:
     std::vector<PorlarVector2> vertices;
-    Vector2 origin;
+    std::vector<std::vector<bool>> matrix;
+    Vector2 origin, position;
     Vector2 size;
+    Tectonic(): Tectonic(0, {0,}) {};
 public:
+    void raster() {
+        Vector2 xBound = {size.x, 0}, yBound = {size.y, 0};
+        for (int i = 0; i<vertices.size(); i++) {
+            xBound.x = std::min(xBound.x, Vector2(vertices[i]).x);
+            xBound.y = std::max(xBound.y, Vector2(vertices[i]).x);
+            yBound.x = std::min(yBound.x, Vector2(vertices[i]).y);
+            yBound.y = std::max(yBound.y, Vector2(vertices[i]).y);
+        }
+        size = {ceil(xBound.y-xBound.x), ceil(yBound.y-yBound.x)};
+        origin = {-xBound.x, -yBound.x};
+        matrix.resize(size.x);
+        for (int i = 0; i<size.x; i++) matrix[i].resize(size.y, 0);
+        if (vertices.size())  {
+            for (int i = 1; i<vertices.size(); i++) {
+                rasterize(matrix, vertices[i-1], vertices[i], origin);
+            }
+            rasterize(matrix, vertices.back(), vertices[0], origin);
+            for (int y = 0; y<size.y; y++) {
+                bool isDraw = false;
+                int minX = 0, maxX = floor(size.x)-1;
+                while (minX<matrix.size() && !matrix[minX][y]) minX++;
+                while (maxX>0 && !matrix[maxX][y]) maxX--;
+                for (int x = minX; x<maxX; x++) {
+                    if (matrix[x][y]) isDraw = !isDraw;
+                    if (isDraw) matrix[x][y] = 1;
+                }
+            }
+        }
+    }
     Tectonic(const size_t& n, const Vector2& s): origin({0,0}), size(s) {
         float remain = 100;
         for (int i = 0; i<n; i++) {
@@ -61,9 +102,8 @@ public:
             length = length/100*(size.x*abs(cos(percent)) + size.y*abs(sin(percent)))/2;
             vertices.push_back({length, percent});
         }
+        raster();
     }
-    Tectonic(): Tectonic(0, {0,}) {};
-    Tectonic(const Vector2& size): Tectonic(rand()%10+5, size) {}
     Tectonic(const Tectonic& tectonic) {
         vertices = tectonic.vertices;
         origin = tectonic.origin;
@@ -71,6 +111,9 @@ public:
     }
     bool empty() const {
         return vertices.empty();
+    }
+    void setPosition(const Vector2& p) {
+        position = p;
     }
     float operator[](float angle) const {
         while (angle<0) angle += M_PI*2;
@@ -120,6 +163,7 @@ public:
             if (width>max_width) width = max_width;
             Tectonic.vertices[i] = {operator[](angle) + width, angle};
         }
+        Tectonic.raster();
         return  Tectonic;
     }
     Tectonic operator-(const float& max_width) const {
@@ -137,6 +181,7 @@ public:
             if (width>max_width) width = max_width;
             Tectonic.vertices[i] = {operator[](angle) - width, angle};
         }
+        Tectonic.raster();
         return Tectonic;
     }
     bool intersect(const Tectonic& Tectonic) const {
@@ -150,9 +195,6 @@ public:
                 return true;
         }
         return false;
-    }
-    void setPosition(const Vector2& p) {
-        origin = p;
     }
     void setRoundness(const size_t& size) {
         float old_percent = 1.f/vertices.size();
@@ -176,60 +218,16 @@ public:
     }
     void draw() const {
         for (int i = 0; i<vertices.size()-1; i++) 
-            DrawLineEx(origin+vertices[i], vertices[i+1]+origin, 2, WHITE);
-        DrawLineEx(vertices[0]+origin, vertices.back()+origin, 2, WHITE); 
-        DrawCircleV(origin, 5, RED);
+            DrawLineEx(position+vertices[i], vertices[i+1]+position, 2, WHITE);
+        DrawLineEx(vertices[0]+position, vertices.back()+position, 2, WHITE); 
+        DrawCircleV(position, 5, RED);
     }
-    void draw(unsigned char** board) const {
-        Tectonic outside = *this;
-        outside.setRoundness(50);
-        for (int i = 0; i<16; i++) {
-            outside = outside + 20;
-            std::vector<Vector2> bounds((int)outside.size.x, {outside.size.y/2, -outside.size.y/2});
-            for (int i = 0; i<outside.vertices.size(); i++) {
-                Vector2 a, b = outside.vertices[i], delta;
-                if (i) a = outside.vertices[i-1];
-                else a = outside.vertices.back();
-                delta = b-a;
-                delta.y /= delta.x;
-                delta.x = 1;
-                if (a.x > b.x) std::swap(a , b);
-                for (Vector2 vec = {floor(a.x), a.y}; vec.x < floor(b.x); vec = vec + delta) {
-                    int index = vec.x + outside.size.x/2;
-                    bounds[index].x = std::min(vec.y, bounds[index].x);
-                    bounds[index].y = std::max(vec.y, bounds[index].y);
-                }
-            }
-            for (int i = 0; i<outside.size.x; i++) {
-                if (bounds[i].x < bounds[i].y)
-                    for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) 
-                        board[int(i-outside.size.x/2+ outside.origin.x)][j]++;
-            }
-        }
-
-        {
-            Tectonic inside = *this;
-            inside.setRoundness(50);
-            inside = inside - 50;
-            std::vector<Vector2> bounds((int)inside.size.x, {inside.size.y/2, -inside.size.y/2});
-            for (int i = 0; i<inside.vertices.size(); i++) {
-                Vector2 a, b = inside.vertices[i], delta;
-                if (i) a = inside.vertices[i-1];
-                else a = inside.vertices.back();
-                delta = b-a;
-                delta.y /= delta.x;
-                delta.x = 1;
-                if (a.x > b.x) std::swap(a , b);
-                for (Vector2 vec = {floor(a.x), a.y}; vec.x < floor(b.x); vec = vec + delta) {
-                    int index = vec.x + inside.size.x/2;
-                    bounds[index].x = std::min(vec.y, bounds[index].x);
-                    bounds[index].y = std::max(vec.y, bounds[index].y);
-                }
-            }
-            for (int i = 0; i<inside.size.x; i++) {
-                if (bounds[i].x < bounds[i].y)
-                    for (int j = bounds[i].x + inside.origin.y; j < bounds[i].y + inside.origin.y; j++) 
-                        board[int(i-inside.size.x/2+ inside.origin.x)][j]++;
+    void draw(const Vector2& bound, unsigned char** board) const {
+        for (int x = 0; x<matrix.size(); x++) {
+            for (int y = 0; y<matrix[0].size(); y++) {
+                int mX = x + position.x - origin.x, mY = y + position.y - origin.y;
+                if (mX>=0 && mX<bound.x && mY>=0 && mY<bound.y)
+                    if (matrix[x][y]) board[mX][mY]++;
             }
         }
     }
@@ -290,8 +288,8 @@ public:
         specials.clear();
     }
     Area& operator=(const Area&) const = delete;
-    void draw(unsigned char** board) const {
-        for (auto& Tectonic: Tectonics) Tectonic->draw(board);
+    void draw(const Vector2& bound, unsigned char** board) const {
+        for (auto& Tectonic: Tectonics) Tectonic->draw(bound, board);
     }
 };
 int main() {
@@ -305,23 +303,24 @@ int main() {
         board[i] = new unsigned char[1500];
         std::memset(board[i], 0, 1500);
     }
-    Image image = GenImageColor(3000, 1500, WHITE);
+    Image image = GenImageColor(3000, 1500, BLACK);
     Color* colors = (Color*)image.data;
 
     unsigned char max_height = 0;
     float average_height = 0;
     size_t count = 0;
-    area.draw(board);
+    area.draw({3000, 1500}, board);
     for (int y = 0; y<image.height; y++) {
-        for (int x = 0; x<image.width; x++) {
+        for (int x = 0; x<image.width; x++) { 
             int index = y*image.width + x;
-            unsigned char color = board[x][y]*2;
-            max_height = std::max(max_height, board[x][y]);
-            if (color) {
-                average_height += board[x][y];
-                count++;
-            }
-            colors[index] = {color, color, color, 255};
+            if (board[x][y]) colors[index] = WHITE;
+            // unsigned char color = board[x][y]*2;
+            // max_height = std::max(max_height, board[x][y]);
+            // if (color) {
+            //     average_height += board[x][y];
+            //     count++;
+            // }
+            // colors[index] = {color, color, color, 255};
         }
     }
     std::cout << (int)max_height << std::endl;
@@ -334,7 +333,7 @@ int main() {
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawTexture(Texture2D, -250, -250, WHITE);
+        DrawTexture(Texture2D, 0, 0, WHITE);
         EndDrawing();
     }
     UnloadTexture(Texture2D);

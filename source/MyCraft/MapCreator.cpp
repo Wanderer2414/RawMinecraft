@@ -3,7 +3,6 @@
 #include "Chunk.h"
 #include "Color.h"
 #include "File.h"
-#include "General.h"
 #include "Global.h"
 #include "Tectonic.h"
 
@@ -120,60 +119,104 @@ namespace MyCraft {
             }
         }
     }
-    void MapCreator::createSubTemperateZone(double* percent, const double& total, MyBase::Color* color, const std::string& src, const glm::vec2& bound, unsigned int** board, const glm::vec2& xBound, const glm::vec2& yBound, const glm::ivec3& origin) {
+    void MapCreator::toBiome(Biome**& biome, unsigned int** board, const glm::ivec2& size) {
+        biome = new Biome*[size.x];
+        for (int i = 0; i<size.x; i++) {
+            biome[i] = new Biome[size.y];
+            memset(biome[i], (int)Biome::Sea, size.y);
+        }
+        for (int x = 1; x<size.x-1; x++) {
+            for (int y = 1; y<size.y-1; y++) {
+                float height = 0;
+                for (int i = 0; i<16; i++) {
+                    for (int j = 0; j<16; j++) {
+                        int mX = x*16+i, mY = y*16+j;
+                        height += 1.0f*board[mX][mY]/256;
+                    }
+                }
+                if (height>72)  biome[x][y] = Biome::High;
+                else if (height>64) biome[x][y] = Biome::Mid;
+                else if (height>32) biome[x][y] = Biome::Low;
+                else biome[x][y] = Biome::Sea;
+            }
+        }
+    }
+    void MapCreator::createSubTemperateZone(double* percent, const double& total, Biome** biome, MyBase::Color* color, const std::string& src, const glm::vec2& bound, unsigned int** board, const glm::vec2& xBound, const glm::vec2& yBound, const glm::ivec3& origin) {
         double one_part = 1.0/((xBound.y-xBound.x));
         for (int x = xBound.x; x<xBound.y; x++) {
             for (int y = yBound.x; y<yBound.y; y++) {
                 int maxHeight = 0;
                 glm::ivec3 position(x + origin.x,y + origin.y, origin.z);
                 bool isTaller = true;
-                float averageHeight = 0;
                 while (isTaller) {
                     isTaller = false;
-                    Chunk chunk;
-                    chunk.__isChange = true;
                     position.z = origin.z + maxHeight/16.f;
-                    chunk.__source = getFileName(src, position);
-                    memset(chunk.__blockTypes, BlockCatogary::Air, 4096*sizeof(BlockCatogary));
-                    chunk.__position = 16*position;
+                    Chunk* chunk = Chunk::Load(src, position);
+                    chunk->__isChange = true;
                     for (int i = 0; i<16; i++) {
                         for (int j = 0; j<16; j++) {
                             int mX = x*16+i, mY = y*16+j;
                             if (board[mX][mY]>maxHeight) {
                                 int mZ = board[mX][mY]-maxHeight-1;
                                 if (mZ>=16) isTaller = true;
-                                else averageHeight += 1.0f*board[mX][mY]/256;
                                 for (int z = 0; z<=std::min(mZ, 15); z++) {
                                     if (mX==0 || mX==bound.x-1 || mX == 0 || mY ==bound.y-1) {
-                                        chunk.__bits[i][j][z] = 1;
-                                        chunk.__numBit++;
+                                        chunk->__bits[i][j][z] = 1;
+                                        chunk->__numBit++;
                                     }
                                     else if (board[mX-1][mY]<z+maxHeight+1 || board[mX+1][mY]<z+maxHeight+1 || board[mX][mY-1]<z+maxHeight+1 || board[mX][mY+1]<z+maxHeight+1) {
-                                        chunk.__bits[i][j][z] = 1;
-                                        chunk.__numBit++;
+                                        chunk->__bits[i][j][z] = 1;
+                                        chunk->__numBit++;
                                     }
-                                    chunk.__numBlock++;
-                                    chunk.__blockTypes[i][j][z] = Stone;
+                                    chunk->__numBlock++;
+                                    chunk->__blockTypes[i][j][z] = Stone;
                                 }
-                                if (mZ<16 && !chunk.__bits[i][j][mZ]) {
-                                    chunk.__bits[i][j][mZ] = 1;
-                                    chunk.__numBit++;
+                                if (mZ<16 && !chunk->__bits[i][j][mZ]) {
+                                    chunk->__bits[i][j][mZ] = 1;
+                                    chunk->__numBit++;
                                 }
                                 if (mZ < 16) {
-                                    if (board[mX][mY] < 200) {
+                                    if (biome[x][y] == Biome::Desert || biome[x][y] == Biome::Beach) {
                                         int rate = rand()%5 + 2;
                                         for (int z = std::max(mZ - rate,0); z<=mZ; z++)
-                                            chunk.__blockTypes[i][j][z] = Sand;
+                                            chunk->__blockTypes[i][j][z] = Sand;
+                                    }
+                                    else if (biome[x][y] == Biome::MixRockyHill && mZ < 10) {
+                                        int rate = rand()%5 + 2;
+                                        for (int z = std::max(mZ - rate,0); z<=mZ; z++)
+                                            chunk->__blockTypes[i][j][z] = Sand;
+                                    }
+                                    else if (biome[x][y] == Biome::MixOasis) {
+                                        int rate = rand()%5 + 3, isGrass = rand()%5;
+                                        if (i>0 && j>0 && i<15 && j<15
+                                            && (chunk->__blockTypes[i-1][j][mZ] == Sand || 
+                                                chunk->__blockTypes[i+1][j][mZ] == Sand || 
+                                                chunk->__blockTypes[i][j-1][mZ] == Sand || 
+                                                chunk->__blockTypes[i][j+1][mZ] == Sand))
+                                            isGrass = false;
+                                        if (isGrass) {
+                                            for (int z = std::max(mZ - rate,0); z<=mZ; z++)
+                                                chunk->__blockTypes[i][j][z] = Grass;
+                                        } else {
+                                            for (int z = std::max(mZ - rate,0); z<=mZ; z++)
+                                                chunk->__blockTypes[i][j][z] = Sand;
+                                        }
+                                    }
+                                    else if (biome[x][y] == Biome::Oasis) {
+                                        int rate = rand()%5 + 3;
+                                        for (int z = std::max(mZ - rate,0); z<=mZ; z++)
+                                            chunk->__blockTypes[i][j][z] = Grass;
                                     }
                                 }
                             }
                         }
                     }
-                    chunk.save();
+                    chunk->save();
                     if (isTaller) maxHeight+=16;
                 }
-                if (averageHeight>200) color[(position.y+250)*1000+(position.x+500)] = {160, 160, 160, 255};
-                else if (averageHeight > 32) color[(position.y+250)*1000+(position.x+500)] = {255, 255, 153, 255};
+                if (biome[x][y]==Biome::RockyHill || biome[x][y]==Biome::MixRockyHill) color[(position.y+250)*1000+(position.x+500)] = {160, 160, 160, 255};
+                else if (biome[x][y] == Biome::Oasis || biome[x][y] == Biome::MixOasis) color[(position.y+250)*1000+(position.x+500)] = {0, 204, 0, 255}; 
+                else if (biome[x][y] != Biome::Sea) color[(position.y+250)*1000+(position.x+500)] = {255, 255, 153, 255};
             }
             *percent += one_part*total;
         }
@@ -182,6 +225,7 @@ namespace MyCraft {
         srand(clock());
         unsigned char count = rand()%3+2;
         int xMax = 1000, xPart = xMax/count;
+        //By area tectonic
         for (int k = 0; k<count; k++) {
             float p = 1.0f*(rand()%100 + 50)/100;
             int xSize = 0;
@@ -200,23 +244,125 @@ namespace MyCraft {
                 map[i] = new unsigned int[1600];
                 memset(map[i], 0, 6400);
             }
-            Area area(p*(rand()%10+5), {0,100}, {xSize*16, 1400});
-            glm::vec2 bound(xSize*16, 1600);
-            area.draw(bound, map);
-            
             glm::ivec3 origin(500-xMax-xSize, -50, z);
-            auto tcenters = area.getCenter();
-            for (auto& i:tcenters) centers.push_back(glm::vec2(i.x+origin.x*16, i.y + origin.y*16));
-            
+            glm::ivec2 bound(xSize*16, 1600);
+            //Create height map and biome map
+            {
+                Area area(p*(rand()%10+5), {0,100}, {xSize*16, 1400});
+                area.draw(bound, map);
+            }
+            Biome** biome = 0;
+            toBiome(biome, map, bound/16);
+            //Create oasis & standard biome
+            {
+                bool hasOasis = false;
+                glm::ivec2 bound(xSize-1, 99);
+                for (int x = 1; x<bound.x; x++) {
+                    for (int y = 1 ;y<bound.y; y++) {
+                        if (biome[x][y] == Biome::Low) {
+                            if (biome[x-1][y] == Biome::Sea || biome[x+1][y] == Biome::Sea || biome[x][y-1] == Biome::Sea || biome[x][y+1] == Biome::Sea)
+                                biome[x][y] = Biome::Beach;
+                            else biome[x][y] = Biome::Desert;
+                        }
+                        else if (biome[x][y] == Biome::Mid) {
+                            int rate = rand()%20;
+                            if (!rate && !hasOasis) {
+                                hasOasis = true;
+                                int count = 1, distance = 0;
+                                int mX = x-1, mY = y-1, side = 3;
+                                bool noNew = false;
+                                std::vector<std::pair<int,int>> store = {{x,y}};
+                                while (count < 16 && !noNew) {
+                                    noNew = true;
+                                    for (int x = mX, y = mY; x<mX+side; x++) {
+                                        if (x>=0 && y >= 0 && x<bound.x && y<bound.y) {
+                                            if (biome[x][y] == Biome::Mid || biome[x][y] == Biome::Desert) {
+                                                noNew = false;
+                                                count++;
+                                                store.push_back({x,y});
+                                            }
+                                        }
+                                    }
+                                    for (int x = mX, y = mY; y<mY+side; y++) {
+                                        if (x>=0 && y >= 0 && x<bound.x && y<bound.y) {
+                                            if (biome[x][y] == Biome::Mid || biome[x][y] == Biome::Desert) {
+                                                noNew = false;
+                                                count++;
+                                                store.push_back({x,y});
+                                            }
+                                        }
+                                    }
+                                    for (int x = mX, y = mY+side-1; x<mX+side; x++) {
+                                        if (x>=0 && y >= 0 && x<bound.x && y<bound.y) {
+                                            if (biome[x][y] == Biome::Mid || biome[x][y] == Biome::Desert) {
+                                                noNew = false;
+                                                count++;
+                                                store.push_back({x,y});
+                                            }
+                                        }
+                                    }
+                                    for (int x = mX+side-1, y = mY; y<mY+side; y++) {
+                                        if (x>=0 && y >= 0 && x<bound.x && y<bound.y) {
+                                            if (biome[x][y] == Biome::Mid || biome[x][y] == Biome::Desert) {
+                                                noNew = false;
+                                                count++;
+                                                store.push_back({x,y});
+                                            }
+                                        }
+                                    }
+                                    mX--; mY--;
+                                    side += 2;
+                                }
+                                if (!noNew) {
+                                    glm::ivec2 xBound(bound.x, 0), yBound(bound.y, 0);
+                                    for (const auto& [x,y]: store) {
+                                        biome[x][y] = Biome::Oasis;
+                                        xBound.x = std::min(xBound.x, x); xBound.y = std::max(xBound.y, x);
+                                        yBound.x = std::min(yBound.x, y); yBound.y = std::max(yBound.y, y);
+                                        if  (x>0 && biome[x-1][y] != Biome::Oasis) biome[x-1][y] = Biome::MixOasis;
+                                        if  (y>0 && biome[x][y-1] != Biome::Oasis) biome[x][y-1] = Biome::MixOasis;
+                                        if  (x<bound.x && biome[x+1][y] != Biome::Oasis) biome[x+1][y] = Biome::MixOasis;
+                                        if  (x<bound.y && biome[x][y+1] != Biome::Oasis) biome[x][y+1] = Biome::MixOasis;
+                                        glm::vec2 spawn(origin.x + x, origin.y + y);
+                                        centers.push_back(spawn*16.f);
+                                    }
+                                    glm::vec2 size( xBound.y-xBound.x, yBound.y-yBound.x);
+                                    size *= 16*1.2;
+                                    Tectonic lake(3, size);
+                                    glm::vec2 position((xBound.y+xBound.x)/2, (yBound.y + yBound.x)/2);
+                                    position *= 16;
+                                    lake.setPosition(position);
+                                    lake.drawDown({xSize*16, 1600}, map);
+                                }
+                            }
+                            else {
+                                if (biome[x-1][y] == Biome::High || biome[x+1][y] == Biome::High || biome[x][y-1] == Biome::High || biome[x][y+1] == Biome::High)
+                                    biome[x][y] = Biome::MixRockyHill;
+                                else biome[x][y] = Biome::Desert;
+                            }
+                        }
+                        else if (biome[x][y] == Biome::High) {
+                            if (biome[x-1][y] == Biome::Mid || biome[x+1][y] == Biome::Mid || biome[x][y-1] == Biome::Mid || biome[x][y+1] == Biome::Mid)
+                                biome[x][y] = Biome::MixRockyHill;
+                            else biome[x][y] = Biome::RockyHill;
+                        }
+                    }
+                }
+                
+            }
+            //Convert into real map
             glm::vec2 xBound(0, xSize), yBound(0, 50);
-            std::thread threadA(createSubTemperateZone,percent, total/2/count,texture, src, bound,  map, xBound, yBound, origin);
+            std::thread threadA(createSubTemperateZone,percent, total/2/count,  biome,texture, src, bound,  map, xBound, yBound, origin);
 
             yBound = {50, 100};
-            std::thread threadB(createSubTemperateZone,percent, total/2/count,texture, src, bound,  map, xBound, yBound, origin);
+            std::thread threadB(createSubTemperateZone,percent, total/2/count, biome, texture, src, bound,  map, xBound, yBound, origin);
             
             threadA.join();
             threadB.join();
-        
+
+            //Deallocate
+            for (int i = 0; i<bound.x/16; i++) delete[] biome[i];
+            delete[] biome;
             for (int i = 0; i<xSize; i++) delete[] map[i];
             delete[] map;
         }

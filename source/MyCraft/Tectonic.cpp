@@ -238,9 +238,9 @@ namespace MyCraft {
             outside.setRoundness(50);
             bool reachBound = false;
             for (int i = 0; i<20 && !reachBound; i++) {
-                outside = outside - 10;
+                outside = outside - 3;
                 int xSz = ceil(outside.size.x);
-                if (xSz<=50) break;
+                if (xSz<=10) break;
                 glm::vec2 *bounds = new glm::vec2[xSz];
                 for (int i = 0; i<xSz; i++) bounds[i] = {outside.size.y/2, -outside.size.y/2};
                 for (int i = 0; i<outside.vertices.size(); i++) {
