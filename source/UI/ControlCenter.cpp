@@ -144,6 +144,7 @@ namespace MyBase {
     }
     void ControlCenter::Enable3DMode() {
         glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
     }
     void ControlCenter::Disable3DMode() {
         glDisable(GL_DEPTH_TEST);

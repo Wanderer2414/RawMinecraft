@@ -232,6 +232,7 @@ namespace MyCraft {
         return *__chunks[__chunkIndices[offset.x][offset.y][offset.z]];
     }
     void ChunkLoader::glDraw() const {
+        glLineWidth(0);
         for (auto& chunk:__chunks) chunk->glDraw();
     }
 

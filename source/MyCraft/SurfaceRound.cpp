@@ -1,6 +1,6 @@
-#include "Tectonic.h"
-#include "glm/fwd.hpp"
-#include <cstdlib>
+#include "SurfaceRound.h"
+#include "MapCreator.h"
+#include <limits>
 
 namespace MyCraft {
 
@@ -17,7 +17,7 @@ namespace MyCraft {
         return {length*cos(angle), length*sin(angle)};
     }
 
-    Tectonic::Tectonic(const size_t& n, const glm::vec2& s): origin({0,0}), size(s) {
+    Round::Round(const size_t& n, const glm::vec2& s): origin({0,0}), size(s) {
         float remain = 100;
         for (int i = 0; i<n; i++) {
             float pecent = rand()%50+10;
@@ -37,17 +37,17 @@ namespace MyCraft {
             vertices.push_back({length, percent});
         }
     }
-    Tectonic::Tectonic(): Tectonic(0, {0,0}) {};
-    Tectonic::Tectonic(const glm::vec2& size): Tectonic(rand()%10+5, size) {}
-    Tectonic::Tectonic(const Tectonic& tectonic) {
-        vertices = tectonic.vertices;
-        origin = tectonic.origin;
-        size = tectonic.size;
+    Round::Round(): Round(0, {0,0}) {};
+    Round::Round(const glm::vec2& size): Round(rand()%10+5, size) {}
+    Round::Round(const Round& Round) {
+        vertices = Round.vertices;
+        origin = Round.origin;
+        size = Round.size;
     }
-    bool Tectonic::empty() const {
+    bool Round::empty() const {
         return vertices.empty();
     }
-    float Tectonic::operator[](float angle) const {
+    float Round::operator[](float angle) const {
         while (angle<0) angle += M_PI*2;
         while (angle>M_PI*2) angle -= M_PI*2;
         int i = 0;
@@ -72,20 +72,20 @@ namespace MyCraft {
 
         return 1.f/dem;
     }
-    Tectonic& Tectonic::operator=(const Tectonic& tectonic) {
-        if (&tectonic != this) {
-            vertices = tectonic.vertices;
-            origin = tectonic.origin;
-            size = tectonic.size;
+    Round& Round::operator=(const Round& Round) {
+        if (&Round != this) {
+            vertices = Round.vertices;
+            origin = Round.origin;
+            size = Round.size;
         }
         return *this;
     }
-    Tectonic Tectonic::operator+(const float& max_width) const {
+    Round Round::operator+(const float& max_width) const {
         if (max_width<0) return operator-(max_width);
-        Tectonic Tectonic;
-        Tectonic.vertices.resize(vertices.size());
-        Tectonic.origin = origin;
-        Tectonic.size = {size.x+max_width*2, size.y+max_width*2};
+        Round Round;
+        Round.vertices.resize(vertices.size());
+        Round.origin = origin;
+        Round.size = {size.x+max_width*2, size.y+max_width*2};
         float width = 1.0f*(rand()%50+25)/100*max_width;
         for (int i = 0; i<vertices.size(); i++) {
             float angle = M_PI*2*(i+1)/vertices.size();
@@ -93,16 +93,16 @@ namespace MyCraft {
                 width = width*(rand()%40-20+100)/100;
             else width = width*(rand()%20+100)/100;
             if (width>max_width) width = max_width;
-            Tectonic.vertices[i] = {operator[](angle) + width, angle};
+            Round.vertices[i] = {operator[](angle) + width, angle};
         }
-        return  Tectonic;
+        return  Round;
     }
-    Tectonic Tectonic::operator-(const float& max_width) const {
+    Round Round::operator-(const float& max_width) const {
         if (max_width<0) return operator+(max_width);
-        Tectonic Tectonic;
-        Tectonic.vertices.resize(vertices.size());
-        Tectonic.origin = origin;
-        Tectonic.size = {size.x-max_width*2, size.y - max_width*2};
+        Round Round;
+        Round.vertices.resize(vertices.size());
+        Round.origin = origin;
+        Round.size = {size.x-max_width*2, size.y - max_width*2};
         float width = 1.0f*(rand()%50+25)/100*max_width;
         for (int i = 0; i<vertices.size(); i++) {
             float angle = M_PI*2*(i+1)/vertices.size();
@@ -110,13 +110,13 @@ namespace MyCraft {
                 width = width*(rand()%40-20+100)/100;
             else width = width*(rand()%20+100)/100;
             if (width>max_width) width = max_width;
-            Tectonic.vertices[i] = {operator[](angle) - width, angle};
+            Round.vertices[i] = {operator[](angle) - width, angle};
         }
-        return Tectonic;
+        return Round;
     }
-    bool Tectonic::intersect(const Tectonic& Tectonic) const {
-        for (glm::vec2 position: Tectonic.vertices) {
-            position =position + Tectonic.origin;
+    bool Round::intersect(const Round& Round) const {
+        for (glm::vec2 position: Round.vertices) {
+            position =position + Round.origin;
             glm::vec2 delta = position - origin;
             float angle = atan(delta.y/delta.x);
             if (delta.x<0) angle+=M_PI;
@@ -126,13 +126,13 @@ namespace MyCraft {
         }
         return false;
     }
-    glm::vec2 Tectonic::getCenter() const {
+    glm::vec2 Round::getCenter() const {
         return origin;
     }
-    void Tectonic::setPosition(const glm::vec2& p) {
+    void Round::setPosition(const glm::vec2& p) {
         origin = p;
     }
-    void Tectonic::setRoundness(const size_t& size) {
+    void Round::setRoundness(const size_t& size) {
         float old_percent = 1.f/vertices.size();
         float new_percent = 1.f/size;
         std::vector<PorlarVector2> buffer(size);
@@ -152,9 +152,9 @@ namespace MyCraft {
         }
         vertices = buffer;
     }
-    void Tectonic::drawUp(const glm::vec2& size, unsigned int** board) const {
+    void Round::applyRound(const glm::vec2& size, unsigned int** board) const {
         {
-            Tectonic outside = *this;
+            Round outside = *this;
             outside.setRoundness(50);
             bool reachBound = false;
             for (int i = 0; i<32 && !reachBound; i++) {
@@ -179,10 +179,10 @@ namespace MyCraft {
                         }
                     }
                 }
-                for (int i = 0; i<outside.size.x; i++) {
-                    if (i<xSz && (bounds[i].x < bounds[i].y)) {
+                for (int i = 0; i<xSz; i++) {
+                    if (bounds[i].x < bounds[i].y) {
                         for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
-                            int x = int(i-outside.size.x/2+ outside.origin.x);
+                            int x = int(i-xSz/2.f+ outside.origin.x);
                             if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j]++;
                             else reachBound = true;
                         }
@@ -193,7 +193,7 @@ namespace MyCraft {
             }
         }
         {
-            Tectonic outside = *this;
+            Round outside = *this;
             outside.setRoundness(50);
             bool reachBound = false;
             for (int i = 0; i<20 && !reachBound; i++) {
@@ -218,10 +218,10 @@ namespace MyCraft {
                         }
                     }
                 }
-                for (int i = 0; i<outside.size.x; i++) {
-                    if (i<xSz && (bounds[i].x < bounds[i].y))
+                for (int i = 0; i<xSz; i++) {
+                    if (bounds[i].x < bounds[i].y)
                         for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
-                            int x = int(i-outside.size.x/2+ outside.origin.x);
+                            int x = floor(i-xSz/2.f+ outside.origin.x);
                             if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j]++;
                             else reachBound = true;
                         }
@@ -232,9 +232,55 @@ namespace MyCraft {
         }
     }
 
-    void Tectonic::drawDown(const glm::vec2& size, unsigned int** board) const {
+    void Round::applyLake(Biome** biome, const glm::vec2& size, const int& heightOrigin, unsigned int** board) const {
+        unsigned int height = std::numeric_limits<unsigned int>::max();;
         {
-            Tectonic outside = *this;
+            int xSz = ceil(size.x);
+            glm::vec2 *bounds = new glm::vec2[xSz];
+            for (int i = 0; i<xSz; i++) bounds[i] = {size.y/2, -size.y/2};
+            for (int i = 0; i<vertices.size(); i++) {
+                glm::vec2 a, b = vertices[i], delta;
+                if (i) a = vertices[i-1];
+                else a = vertices.back();
+                delta = b-a;
+                delta.y /= delta.x;
+                delta.x = 1;
+                if (a.x > b.x) std::swap(a , b);
+                for (glm::vec2 vec(floor(a.x), a.y); vec.x < floor(b.x); vec = vec + delta) {
+                    int index = vec.x + size.x/2;
+                    if (index>=0 && index<xSz) {
+                        bounds[index].x = std::min(vec.y, bounds[index].x);
+                        bounds[index].y = std::max(vec.y, bounds[index].y);
+                    }
+                }
+            }
+            for (int i = 0; i<xSz; i++) {
+                if (bounds[i].x < bounds[i].y) {
+                    int x = floor(i-xSz/2.f+ origin.x), y = floor(bounds[i].x + origin.y);
+                    if (x>=0 && x<size.x && y>=0 && y<size.y)  
+                        height = std::min(height, board[x][y]);
+                    y = floor(origin.y + bounds[i].y);
+                    if (x>=0 && x<size.x && y>=0 && y<size.y)  
+                        height = std::min(height, board[x][y]);
+                }
+            }
+            height = floor(height);
+            for (int i = 0; i<xSz; i++) {
+                if (bounds[i].x < bounds[i].y) {
+                    int x = floor(i-xSz/2.f+ origin.x)/16;
+                    int minY = floor(bounds[i].x + origin.y)/16, maxY = floor(bounds[i].y + origin.y)/16;
+                    if (x>0 && maxY>0 && minY>0)
+                        for (int y = minY; y <= maxY; y++) {
+                            biome[x][y].type = Biome::Lake;
+                            biome[x][y].height = heightOrigin + height;
+                        }
+                }
+            }
+            delete[] bounds;
+            bounds = 0;
+        }
+        {
+            Round outside = *this;
             outside.setRoundness(50);
             bool reachBound = false;
             for (int i = 0; i<20 && !reachBound; i++) {
@@ -259,11 +305,12 @@ namespace MyCraft {
                         }
                     }
                 }
-                for (int i = 0; i<outside.size.x; i++) {
-                    if (i<xSz && (bounds[i].x < bounds[i].y))
+                int h = height - i;
+                for (int i = 0; i<xSz; i++) {
+                    if (bounds[i].x < bounds[i].y)
                         for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
-                            int x = int(i-outside.size.x/2+ outside.origin.x);
-                            if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j]--;
+                            int x = floor(i-xSz/2.f+ outside.origin.x);
+                            if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j] = h;
                             else reachBound = true;
                         }
                 }
@@ -272,9 +319,9 @@ namespace MyCraft {
             }
         }
     }
-    void Tectonic::__intersect(std::vector<glm::vec2>& vecs, const Tectonic& Tectonic) const {
-        for (glm::vec2 position: Tectonic.vertices) {
-            position =position + Tectonic.origin;
+    void Round::__intersect(std::vector<glm::vec2>& vecs, const Round& Round) const {
+        for (glm::vec2 position: Round.vertices) {
+            position =position + Round.origin;
             glm::vec2 delta = position - origin;
             float angle = atan(delta.y/delta.x);
             if (delta.x<0) angle+=M_PI;
@@ -283,9 +330,9 @@ namespace MyCraft {
                 vecs.push_back(position);
         }
     }
-    void Tectonic::__merge(std::vector<glm::vec2>& vecs, const Tectonic& Tectonic) const {
-        for (glm::vec2 position: Tectonic.vertices) {
-            position =position + Tectonic.origin;
+    void Round::__merge(std::vector<glm::vec2>& vecs, const Round& Round) const {
+        for (glm::vec2 position: Round.vertices) {
+            position =position + Round.origin;
             glm::vec2 delta = position - origin;
             float angle = atan(delta.y/delta.x);
             if (delta.x<0) angle+=M_PI;
@@ -298,12 +345,12 @@ namespace MyCraft {
         srand(clock());
     }
     Area::Area(const int& n, const glm::vec2& org, const glm::vec2& s): origin(org), size(s) {
-        Tectonics.resize(n);
+        Rounds.resize(n);
         float remain = 1;
         for (int i = 0; i<n; i++) {
             float percent = 1.0f*(rand()%70)/100 + 0.25;
             glm::vec2 subsize =  {std::min(10.f/n*percent*s.y, s.x), percent*s.y*n/15.0};
-            Tectonics[i] = new Tectonic(20, subsize);
+            Rounds[i] = new Round(20, subsize);
             glm::vec2 position;
             percent = 1.0f*(rand()%30)/100;
             percent = percent*remain + 1 - remain;
@@ -311,21 +358,21 @@ namespace MyCraft {
             position.x = (size.x-subsize.x)*percent+subsize.x/2 + origin.x;
             percent = 1.0f*(rand()%100)/100;
             position.y = (size.y-subsize.y)*percent + subsize.y/2 + origin.y;
-            Tectonics[i]->setPosition(position);
+            Rounds[i]->setPosition(position);
         }
     }
     Area::~Area() {
-        for (auto& Tectonic: Tectonics) delete Tectonic;
-        for (auto& Tectonic: specials) delete Tectonic;
-        Tectonics.clear();
+        for (auto& Round: Rounds) delete Round;
+        for (auto& Round: specials) delete Round;
+        Rounds.clear();
         specials.clear();
     }
     std::vector<glm::vec2> Area::getCenter() const {
-        std::vector<glm::vec2> ans(Tectonics.size());
-        for (int i = 0; i<Tectonics.size(); i++) ans[i] = Tectonics[i]->getCenter();
+        std::vector<glm::vec2> ans(Rounds.size());
+        for (int i = 0; i<Rounds.size(); i++) ans[i] = Rounds[i]->getCenter();
         return ans;
     }
-    void Area::draw(const glm::vec2& size, unsigned int** board) const {
-        for (auto& Tectonic: Tectonics) Tectonic->drawUp(size, board);
+    void Area::applyRounds(const glm::vec2& size, unsigned int** board) const {
+        for (auto& Round: Rounds) Round->applyRound(size, board);
     }
 };
