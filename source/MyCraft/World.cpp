@@ -31,11 +31,11 @@ namespace MyCraft {
     }
     const BlockCatogary& World::at(const glm::vec3& pos) const {
         glm::ivec3 position(floor(pos.x), floor(pos.y), floor(pos.z));
-        return __worldRender.at(position);
+        return __worldRender.getType(position);
     }
 
     void World::set(const int& rx, const int& ry, const int& rz, const BlockCatogary& type) {
-        __worldRender.place({rx,ry,rz}, type);
+        __worldRender.setType({rx,ry,rz}, type);
     }
 
     void World::set(const glm::vec3& pos, const BlockCatogary& type) {

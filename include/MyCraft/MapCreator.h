@@ -1,6 +1,5 @@
 #ifndef MAP_CREATOR_H
 #define MAP_CREATOR_H
-#include "Chunk.h"
 #include "Color.h"
 #include "Global.h"
 namespace MyCraft {

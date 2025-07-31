@@ -6,22 +6,20 @@
 #include "Controller3D.h"
 
 namespace MyCraft {
-    class WorldRender: public MyBase3D::Container3D {
+    class WorldRender: public MyBase3D::Container3D, public ChunkLoader {
     public:
         WorldRender(const std::string& src);
         ~WorldRender();
         void save();
         void playerAt(const glm::vec3& position);
-
-        const BlockCatogary&      at(const glm::ivec3& posistion) const;
-
-        void place(const glm::vec3& pos, const BlockCatogary& type);
+        
     protected:
         void glDraw() const override;
+        Chunk& getChunk(const glm::ivec3& position) override;
+        const Chunk& getChunk(const glm::ivec3& position) const override;
+        const glm::ivec3& getPosition() const override;
     private:
-        void __enableBit(const glm::vec3& pos);
-        void __disableBit(const glm::vec3& pos);
-        ChunkLoader __chunkLoader;
+        ChunkManage __chunkLoader;
     };
 }
 #endif

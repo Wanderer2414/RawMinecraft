@@ -1,6 +1,6 @@
 #include "MapCreator.h"
 #include "Block.h"
-#include "Chunk.h"
+#include "ChunkLoader.h"
 #include "Color.h"
 #include "File.h"
 #include "Global.h"
@@ -143,27 +143,26 @@ namespace MyCraft {
     }
     void MapCreator::createOasisTree(const std::string& src, const glm::ivec3& root) {
         DynamicChunk chunk(src);
-        chunk.Load(root);
         int height = rand()%3+5;
         for (int i = 0; i<height; i++) {
             glm::ivec3 position = root;
             position.z += i;
-            chunk.place(position, OakWood);
+            chunk.setType(position, OakWood);
         }
         glm::ivec3 pos[] = {{0,0,1},{1,0,0}, {-1,0,0}, {0,1,0}, {0,-1,0},
                                         {1,0,-3}, {-1,0,-3}, {0,1,-3}, {0,-1,-3}};
         for (int i = 0; i<8; i++) {
             glm::ivec3 position = pos[i] +root;
             position.z += height;
-            if (!chunk.getType(position)) chunk.place(position, OakLeaf);
+            if (!chunk.getType(position)) chunk.setType(position, OakLeaf);
         }
         for (int i = -2; i<3; i++) {
             for (int j = -2; j<3; j++) 
             if (i || j) {
                 glm::ivec3 position(root.x+i, root.y+j, root.z+height-1);
-                if (!chunk.getType(position)) chunk.place(position, OakLeaf);
+                if (!chunk.getType(position)) chunk.setType(position, OakLeaf);
                 position = {root.x+i, root.y+j, root.z+height-2};
-                if (!chunk.getType(position)) chunk.place(position, OakLeaf);
+                if (!chunk.getType(position)) chunk.setType(position, OakLeaf);
             }
         }
     }
@@ -248,6 +247,7 @@ namespace MyCraft {
                         }
                     }
                     chunk->save();
+                    delete chunk;
                     if (isTaller) maxHeight+=16;
                 }
                 if (biome[x][y].type==Biome::RockyHill || biome[x][y].type==Biome::MixRockyHill) color[(position.y+250)*1000+(position.x+500)] = {160, 160, 160, 255};
