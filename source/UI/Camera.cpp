@@ -21,7 +21,7 @@ namespace MyBase3D {
 
         glGenBuffers(1, &__camera);
         glBindBuffer(GL_UNIFORM_BUFFER, __camera);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), nullptr, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4)+sizeof(glm::vec4), 0, GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, 0, __camera);
 
         __view = glm::lookAt(__position, __position + __delta, glm::vec3(0, 0, 1));
@@ -96,9 +96,11 @@ namespace MyBase3D {
         update();
     }
     void Camera::update() {
-        glBindBufferBase(GL_UNIFORM_BUFFER, 0, __camera);
         __clipPlane= __projection*__view;
+        glBindBuffer(GL_UNIFORM_BUFFER, __camera);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &__clipPlane[0][0]);
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::vec3), &__position);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 0, __camera);
 
         glm::vec3 center = __position+ __delta;
         center.x += 0.02;

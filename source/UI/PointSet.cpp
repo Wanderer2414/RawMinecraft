@@ -5,48 +5,73 @@ namespace MyBase3D {
     PointSet* PointSet::Default;
     PointSet::PointSet() {
 
-        glm::ivec4 vertices[18];
-        vertices[0] = {0, 0, 0, 0};
-        vertices[1] = {1, 0, 0, 0};
-        vertices[2] = {1, 1, 0, 0};
-        vertices[3] = {0, 1, 0, 0};
-
-        vertices[4] = {0, 0, 1, 0};
-        vertices[5] = {1, 0, 1, 0};
-        vertices[6] = {1, 1, 1, 0};
-        vertices[7] = {0, 1, 1, 0};
-
-        vertices[8] = {0, 0, 1, 0};
-        vertices[9] = {0, 1, 1, 0};
-
-        vertices[10] = {0, 1, 0, 0};
-        vertices[11] = {1, 1, 0, 0};
-        vertices[12] = {1, 1, 1, 0};
-        vertices[13] = {0, 1, 1, 0};
-
-        vertices[14] = {0, 0, 0, 0};
-        vertices[15] = {1, 0, 0, 0};
-        vertices[16] = {1, 0, 1, 0};
-        vertices[17] = {0, 0, 1, 0};
         {
+            glm::ivec4 vertices[36];
+            vertices[0] = {0, 0, 0, 0};
+            vertices[1] = {1, 0, 0, 0};
+            vertices[2] = {1, 1, 0, 0};
+
+            vertices[3] = {0, 0, 0, 0};
+            vertices[4] = {1, 1, 0, 0};
+            vertices[5] = {0, 1, 0, 0};
+
+            vertices[6] = {0, 0, 0, 0};
+            vertices[7] = {0, 0, 1, 0};
+            vertices[8] = {1, 0, 1, 0};
+
+            vertices[9] = {0, 0, 0, 0};
+            vertices[10] = {1, 0, 1, 0};
+            vertices[11] = {1, 0, 0, 0};
+
+            vertices[12] = {0, 0, 0, 0};
+            vertices[13] = {0, 0, 1, 0};
+            vertices[14] = {0, 1, 1, 0};
+
+            vertices[15] = {0, 0, 0, 0};
+            vertices[16] = {0, 1, 1, 0};
+            vertices[17] = {0, 1, 0, 0};
+            //
+            vertices[18] = {1, 1, 0, 0};
+            vertices[19] = {1, 1, 1, 0};
+            vertices[20] = {1, 0, 0, 0};
+
+            vertices[21] = {1, 1, 1, 0};
+            vertices[22] = {1, 0, 1, 0};
+            vertices[23] = {1, 0, 0, 0};
+            
+            vertices[24] = {1, 1, 0, 0};
+            vertices[25] = {1, 1, 1, 0};
+            vertices[26] = {0, 1, 0, 0};
+            
+            vertices[27] = {1, 1, 1, 0};
+            vertices[28] = {0, 1, 1, 0};
+            vertices[29] = {0, 1, 0, 0};
+            
+            vertices[30] = {0, 1, 1, 0};
+            vertices[31] = {1, 1, 1, 0};
+            vertices[32] = {0, 0, 1, 0};
+
+            vertices[33] = {1, 1, 1, 0};
+            vertices[34] = {1, 0, 1, 0};
+            vertices[35] = {0, 0, 1, 0};
+
             glGenBuffers(1, &__blockSet);
             glBindBuffer(GL_UNIFORM_BUFFER, __blockSet);
-            glBufferData(GL_UNIFORM_BUFFER, sizeof(int)*18*4, &vertices[0], GL_STATIC_DRAW);
+            glBufferData(GL_UNIFORM_BUFFER, sizeof(int)*36*4, &vertices[0], GL_STATIC_DRAW);
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
         }
         {
-            std::vector<unsigned int> marginIndices = {0, 1, 2, 3, 0, 4, 5, 6, 7,4, 5, 1, 2, 6, 7, 3, 0};
+            std::vector<unsigned int> marginIndices = {0, 1, 2, 5, 0, 7, 8, 19, 14,7, 8, 1, 2, 19, 14, 5, 0};
             marginIndices.resize(17*32);
-            for (int i = 17; i<marginIndices.size(); i++) marginIndices[i] = marginIndices[i-17]+18;
+            for (int i = 17; i<marginIndices.size(); i++) marginIndices[i] = marginIndices[i-17]+36;
             glGenBuffers(1, &__marginBlockIndices);
             glBindBuffer(GL_ARRAY_BUFFER, __marginBlockIndices);
             glBufferData(GL_ARRAY_BUFFER, marginIndices.size()*4,marginIndices.data(), GL_STATIC_DRAW);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
         {
-            std::vector<int> ImageBlockIndices = {7, 4, 6, 6, 4, 5, 6, 5, 2,2, 5, 1, 2, 1, 3, 3, 1, 0, 3, 0, 9, 9, 0, 8, 10, 13, 11, 11, 13, 12, 15, 16, 14, 14, 16, 17};
-            ImageBlockIndices.resize(36*32);
-            for (int i = 36; i<ImageBlockIndices.size() ;i++) ImageBlockIndices[i] = ImageBlockIndices[i-36]+18;
+            std::vector<int> ImageBlockIndices(36*32);
+            for (int i = 0; i<ImageBlockIndices.size() ;i++) ImageBlockIndices[i] = i;
             glGenBuffers(1, &__imageBlockIndices);
             glBindBuffer(GL_ARRAY_BUFFER, __imageBlockIndices);
             glBufferData(GL_ARRAY_BUFFER, ImageBlockIndices.size()*4,ImageBlockIndices.data(), GL_STATIC_DRAW);
@@ -73,16 +98,59 @@ namespace MyBase3D {
         }
         {
             #define row 6
-            glm::vec2 tex_coord[19] = {{3.0/18, 0},{2.0/18, 0},{2.0/18, 1.0/row},
-                                        {3.0/18, 1.0/row},{0, 0},{1.0/18, 0},
-                                        {1.0/18, 1.0/row},{0, 1.0/row},{4.0/18, 0},
-                                        {4.0/18, 1.0/row},{4.0/18, 1.0/row},{5.0/18, 1.0/row},
-                                        {5.0/18, 0},{4.0/18, 0},{6.0/18, 1.0/row},
-                                        {5.0/18, 1.0/row},{5.0/18, 0},{6.0/18, 0}};
-            tex_coord[18] = {1.0/3, 1.0/row};
+            glm::vec2 tex_coord[37];
+            tex_coord[0] = {3.0/18, 0};
+            tex_coord[1] = {2.0/18, 0};
+            tex_coord[2] = {2.0/18, 1.0/row};
+
+            tex_coord[3] = {3.0/18, 0};
+            tex_coord[4] = {2.0/18, 1.0/row};
+            tex_coord[5] = {3.0/18, 1.0/row};
+            
+            tex_coord[6] = {6.0/18, 1.0/row};
+            tex_coord[7] = {6.0/18, 0};
+            tex_coord[8] = {5.0/18, 0};
+
+            tex_coord[9] = {6.0/18, 1.0/row};
+            tex_coord[10] = {5.0/18, 0};
+            tex_coord[11] = {5.0/18, 1.0/row};
+            
+            tex_coord[12] = {3.0/18, 0};
+            tex_coord[13] = {4.0/18, 0};
+            tex_coord[14] = {4.0/18, 1.0/row};
+
+            tex_coord[15] = {3.0/18, 0};
+            tex_coord[16] = {4.0/18, 1.0/row};
+            tex_coord[17] = {3.0/18, 1.0/row};
+            //
+            tex_coord[18] = {2.0/18, 1.0/row};
+            tex_coord[19] = {1.0/18, 1.0/row};
+            tex_coord[20] = {2.0/18, 0};
+
+            tex_coord[21] = {1.0/18, 1.0/row};
+            tex_coord[22] = {1.0/18, 0};
+            tex_coord[23] = {2.0/18, 0};
+
+            tex_coord[24] = {5.0/18, 1.0/row};
+            tex_coord[25] = {5.0/18, 0};
+            tex_coord[26] = {4.0/18, 1.0/row};
+
+            tex_coord[27] = {5.0/18, 0};
+            tex_coord[28] = {4.0/18, 0};
+            tex_coord[29] = {4.0/18, 1.0/row};
+
+            tex_coord[30] = {0, 1.0/row};
+            tex_coord[31] = {1.0/18, 1.0/row};
+            tex_coord[32] = {0, 0};
+
+            tex_coord[33] = {1.0/18, 1.0/row};
+            tex_coord[34] = {1.0/18, 0};
+            tex_coord[35] = {0, 0};
+            
+            tex_coord[36] = {1.0/3, 1.0/row};
             glGenBuffers(1, &__blockUVS);
             glBindBuffer(GL_UNIFORM_BUFFER, __blockUVS);
-            glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*19*2, &tex_coord[0], GL_STATIC_DRAW);
+            glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*37*2, &tex_coord[0], GL_STATIC_DRAW);
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
         }
     }

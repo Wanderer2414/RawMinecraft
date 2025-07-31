@@ -189,10 +189,10 @@ namespace MyCraft {
         glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec3), &color, GL_STATIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, 1, COLOR);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MyBase3D::PointSet::getInstance().getMarginBlockIndices());
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDefaultShader());
         
-        glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_LINE_LOOP, 0, 4);
+        glDrawArrays(GL_LINE_LOOP, 4, 4);
 
         glDeleteBuffers(1, &VBO);
         glDeleteBuffers(1, &COLOR);

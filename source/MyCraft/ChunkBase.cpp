@@ -1,8 +1,5 @@
 #include "ChunkBase.h"
 #include "Block.h"
-#include "DrawingCenter.h"
-#include "General.h"
-#include "MapCreator.h"
 #include "Chunk.h"
 namespace MyCraft {
 

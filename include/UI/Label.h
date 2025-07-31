@@ -14,7 +14,7 @@ namespace MyBase {
         using  Text::move;
         virtual bool contains(const glm::vec2& position) const override;
     private:
-        virtual void glDraw() const override;
+        virtual void glDrawTransparent() const override;
     };
 }
 #endif
