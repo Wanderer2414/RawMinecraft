@@ -1,10 +1,10 @@
 #ifndef WORLD_DATA_H
 #define WORLD_DATA_H
 #include "Block.h"
-#include "ChunkLoader.h"
+#include "ChunkBase.h"
 #include "Container3D.h"
 #include "Controller3D.h"
-
+#include "ChunkManage.h"
 namespace MyCraft {
     class WorldRender: public MyBase3D::Container3D, public ChunkLoader {
     public:

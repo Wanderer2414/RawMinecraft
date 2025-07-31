@@ -37,6 +37,7 @@ namespace MyBase3D {
         virtual bool            catchEvent(GLFWwindow* window)              override;
         virtual bool            handle(GLFWwindow* window)                  override;
         virtual void            glDraw() const override;
+        virtual void            glDrawTransparent() const override;
         Camera                  camera;
     private:
         bool                    __isOpen;

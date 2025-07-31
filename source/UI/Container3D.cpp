@@ -39,6 +39,10 @@ namespace MyBase3D {
         for (auto& child:__children) 
             if (child->isVisible()) child->glDraw();
     }
+    void Container3D::glDrawTransparent() const {
+        for (auto& child:__children) 
+            if (child->isVisible()) child->glDrawTransparent();
+    }
     void Container3D::update() {
         for (auto& child:__children) child->update();
     }

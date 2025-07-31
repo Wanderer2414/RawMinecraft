@@ -18,6 +18,7 @@ class Container3D: public Controller3D {
         virtual bool    catchEvent(GLFWwindow* window)              override;
         virtual bool    handle(GLFWwindow* window)                  override;
         virtual void    glDraw()                            const   override;
+        virtual void    glDrawTransparent()                 const   override;
     private:
         std::vector<Controller3D*>                __children;
         // glm::vec2       __childrenPosition, __childrenSize;

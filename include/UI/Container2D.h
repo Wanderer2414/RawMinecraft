@@ -26,6 +26,7 @@ class Container2D: public Controller2D {
         virtual bool    handle(GLFWwindow* window)                  override;
         virtual void    reset()                                     override;
         virtual void    glDraw()                            const   override;
+        virtual void    glDrawTransparent()                 const   override;
         const int&      __getCurrentFocus() const;
         const int&      __getCurrentHover() const;
         bool            __setCurrentHover(const unsigned int& index);

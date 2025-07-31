@@ -6,7 +6,6 @@
 #include "Controller3D.h"
 #include "Message.h"
 #include "WorldRender.h"
-#include "glm/fwd.hpp"
 
 namespace MyCraft {
 class World: public MyBase3D::Container3D, public MyBase::Port {

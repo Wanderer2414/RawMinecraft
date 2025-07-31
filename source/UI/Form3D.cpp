@@ -42,6 +42,7 @@ namespace MyBase3D {
                 glClearColor(color.r, color.g, color.b, color.a);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glDraw();
+                glDrawTransparent();
                 glfwSwapBuffers(window);
             }
             is_changed = 0;
@@ -70,6 +71,14 @@ namespace MyBase3D {
         MyBase::ControlCenter::getInstance().Disable3DMode();
         MyBase::Container2D::glDraw();
     };
+    void Form3D::glDrawTransparent() const {
+        MyBase::ControlCenter::getInstance().Enable3DMode();
+        Container3D::glDrawTransparent();
+        camera.glDrawTransparent();
+        MyBase::ControlCenter::getInstance().Disable3DMode();
+        MyBase::Container2D::glDrawTransparent();
+    };
+    
     void Form3D::update() {
         camera.update();
     }
@@ -88,6 +97,7 @@ namespace MyBase3D {
     void Form3D::pauseScreen(GLFWwindow* window) {
         MyBase::ControlCenter::getInstance().BindSubScreen();
         glDraw();
+        glDrawTransparent();
         draw(__pauseScreen);
         MyBase::ControlCenter::getInstance().UnbindSubScreen();
     }

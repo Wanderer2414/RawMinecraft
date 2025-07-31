@@ -160,6 +160,14 @@ namespace MyBase{
             if (i!=__currentFocus && __children[i].first->isVisible()) __children[i].first->glDraw();
         if (__currentFocus>=0 && __children[__currentFocus].first->isVisible()) __children[__currentFocus].first->glDraw();
     }
+    void Container2D::glDrawTransparent() const {
+        for (auto& child:__permanentChildren) 
+            if (child->isVisible()) child->glDrawTransparent();
+        for (int i = __children.size()-1; i>=0; i--) 
+            if (i!=__currentFocus && __children[i].first->isVisible()) __children[i].first->glDrawTransparent();
+        if (__currentFocus>=0 && __children[__currentFocus].first->isVisible()) __children[__currentFocus].first->glDrawTransparent();
+    }
+
     void Container2D::update() {
         for (auto& [child, layer]:__children) child->update();
         for (auto& child:__permanentChildren) child->update();

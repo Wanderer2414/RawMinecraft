@@ -12,5 +12,8 @@ namespace MyBase {
     void Controller::update() {
         
     }
+    void Controller::glDrawTransparent() const {
+
+    }
     
 }

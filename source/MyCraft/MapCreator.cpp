@@ -1,6 +1,7 @@
 #include "MapCreator.h"
 #include "Block.h"
-#include "ChunkLoader.h"
+#include "Chunk.h"
+#include "ChunkBase.h"
 #include "Color.h"
 #include "File.h"
 #include "Global.h"

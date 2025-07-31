@@ -15,6 +15,7 @@ namespace MyBase {
         virtual bool    catchEvent(GLFWwindow* window);
         virtual bool    handle(GLFWwindow* window);
         virtual void    glDraw() const = 0;
+        virtual void    glDrawTransparent() const;
     private:
     };
 };
