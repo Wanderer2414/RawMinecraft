@@ -22,6 +22,7 @@ namespace MyCraft {
             glm::mat4x3 hitbox; // Hình dạng/hitbox
             float moveSpeed; // Tốc độ di chuyển
             std::mt19937 rng;
+            
     };
 };
 
