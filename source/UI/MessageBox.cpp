@@ -52,6 +52,7 @@ namespace MyBase {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 ControlCenter::getInstance().DrawSavedScreen();
                 glDraw();
+                glDrawTransparent();
                 glfwSwapBuffers(window);
             }
             if (__exitCondition() && ControlCenter::getInstance().IsKeyPressed() && glfwGetKey(window, GLFW_KEY_ESCAPE)) {
@@ -77,5 +78,8 @@ namespace MyBase {
     void MessageBox::glDraw() const {
         ShapeContainer::draw(__background);
         Container2D::glDraw();
+    }
+    void MessageBox::glDrawTransparent() const {
+        Container2D::glDrawTransparent();
     }
 }

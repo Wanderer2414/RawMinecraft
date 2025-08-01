@@ -74,15 +74,10 @@ namespace MyCraft {
     }
     void ChunkManage::__movePositiveX() {
         __position.x++;
-        std::thread* threads[world_side*world_side];
         for (int j = 0; j<world_side; j++) {
             for (int k = 0; k<world_side; k++) {
-                threads[j*world_side+k] = new std::thread(__moveSubPositiveX, this, j, k);
+                __moveSubPositiveX(this, j, k);
             }
-        }
-        for (int i = 0; i<world_side*world_side; i++) {
-            threads[i]->join();
-            delete threads[i];
         }
     }
     void ChunkManage::__moveSubNegativeX(ChunkManage* chunkLoader, const int& j, const int& k) {
@@ -101,15 +96,10 @@ namespace MyCraft {
     }
     void ChunkManage::__moveNegativeX() {
         __position.x--;
-        std::thread* threads[world_side*world_side];
         for (int j = 0; j<world_side; j++) {
             for (int k = 0; k<world_side; k++) {
-                threads[j*world_side+k] = new std::thread(__moveSubNegativeX, this, j, k);
+                __moveSubNegativeX(this, j, k);
             }
-        }
-        for (int i = 0; i<world_side*world_side; i++) {
-            threads[i]->join();
-            delete threads[i];
         }
     }
     void ChunkManage::__moveSubPositiveY(ChunkManage* chunkLoader, const int& i, const int& k) {
@@ -128,15 +118,10 @@ namespace MyCraft {
     }
     void ChunkManage::__movePositiveY() {
         __position.y++;
-        std::thread* threads[world_side*world_side];
         for (int i = 0; i<world_side; i++) {
             for (int k = 0; k<world_side; k++) {
-                threads[i*world_side+k] = new std::thread(__moveSubPositiveY, this, i, k);
+                __moveSubPositiveY(this, i, k);
             }
-        }
-        for (int i = 0; i<world_side*world_side; i++) {
-            threads[i]->join();
-            delete threads[i];
         }
     }
     void ChunkManage::__moveSubNegativeY(ChunkManage* chunkLoader, const int& i, const int& k) {
@@ -157,15 +142,10 @@ namespace MyCraft {
     }
     void ChunkManage::__moveNegativeY() {
         __position.y--;
-        std::thread* threads[world_side*world_side];
         for (int i = 0; i<world_side; i++) {
             for (int k = 0; k<world_side; k++) {
-                threads[i*world_side+k] = new std::thread(__moveSubNegativeY, this, i, k);
+                __moveSubNegativeY(this, i, k);
             }
-        }
-        for (int i = 0; i<world_side*world_side; i++) {
-            threads[i]->join();
-            delete threads[i];
         }
     }
     void ChunkManage::__moveSubPositiveZ(ChunkManage* chunkLoader, const int& i, const int& j) {
@@ -184,15 +164,10 @@ namespace MyCraft {
     }
     void ChunkManage::__movePositiveZ() {
         __position.z++;
-        std::thread *threads[world_side*world_side];
         for (int i = 0; i<world_side; i++) {
             for (int j = 0; j<world_side; j++) {
-                threads[i*world_side+j] = new std::thread(__moveSubPositiveZ, this, i, j);
+                __moveSubPositiveZ(this, i, j);
             }
-        }
-        for (int i = 0; i<world_side*world_side; i++) {
-            threads[i]->join();
-            delete threads[i];
         }
     }
     void ChunkManage::__moveSubNegativeZ(ChunkManage* chunkLoader, const int& i, const int& j) {
@@ -211,15 +186,10 @@ namespace MyCraft {
     }
     void ChunkManage::__moveNegativeZ() {
         __position.z--;
-        std::thread* threads[world_side*world_side];
         for (int i = 0; i<world_side; i++) {
             for (int j = 0; j<world_side; j++) {
-                threads[i*world_side+j] = new std::thread(__moveSubNegativeZ, this, i, j);
+                __moveSubNegativeZ(this, i, j);
             }
-        }
-        for (int i = 0; i<world_side*world_side; i++) {
-            threads[i]->join();
-            delete threads[i];
         }
     }
     void ChunkManage::glDraw() const {

@@ -1,5 +1,6 @@
 #ifndef CHUNK_H
 #define CHUNK_H
+#include "Biome.h"
 #include "ChunkBase.h"
 
 namespace MyCraft {

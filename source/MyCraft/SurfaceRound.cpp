@@ -1,6 +1,7 @@
 #include "SurfaceRound.h"
 #include "MapCreator.h"
 #include <limits>
+#include <stdexcept>
 
 namespace MyCraft {
 
@@ -152,7 +153,7 @@ namespace MyCraft {
         }
         vertices = buffer;
     }
-    void Round::applyRound(const glm::vec2& size, unsigned int** board) const {
+    void Round::applyRound(HeightMap& map) const {
         {
             Round outside = *this;
             outside.setRoundness(50);
@@ -183,7 +184,7 @@ namespace MyCraft {
                     if (bounds[i].x < bounds[i].y) {
                         for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
                             int x = int(i-xSz/2.f+ outside.origin.x);
-                            if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j]++;
+                            if (x>=0 && x<map.getSize().x && j>=0 && j<map.getSize().y) map.getHeight(x,j)++;
                             else reachBound = true;
                         }
                     }
@@ -222,7 +223,7 @@ namespace MyCraft {
                     if (bounds[i].x < bounds[i].y)
                         for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
                             int x = floor(i-xSz/2.f+ outside.origin.x);
-                            if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j]++;
+                            if (x>=0 && x<map.getSize().x && j>=0 && j<map.getSize().y) map.getHeight(x,j)++;
                             else reachBound = true;
                         }
                 }
@@ -232,7 +233,7 @@ namespace MyCraft {
         }
     }
 
-    void Round::applyLake(Biome** biome, const glm::vec2& size, const int& heightOrigin, unsigned int** board) const {
+    void Round::applyLake(const int& heightOrigin, Biomes* biome, HeightMap& map) const {
         unsigned int height = std::numeric_limits<unsigned int>::max();;
         {
             int xSz = ceil(size.x);
@@ -257,22 +258,24 @@ namespace MyCraft {
             for (int i = 0; i<xSz; i++) {
                 if (bounds[i].x < bounds[i].y) {
                     int x = floor(i-xSz/2.f+ origin.x), y = floor(bounds[i].x + origin.y);
-                    if (x>=0 && x<size.x && y>=0 && y<size.y)  
-                        height = std::min(height, board[x][y]);
+                    if (x>=0 && x<map.getSize().x && y>=0 && y<map.getSize().y)  
+                        height = std::min(height, map.getHeight(x,y));
                     y = floor(origin.y + bounds[i].y);
-                    if (x>=0 && x<size.x && y>=0 && y<size.y)  
-                        height = std::min(height, board[x][y]);
+                    if (x>=0 && x<map.getSize().x && y>=0 && y<map.getSize().y)  
+                        height = std::min(height, map.getHeight(x,y));
                 }
             }
             height = floor(height);
+            if (height>1000)
+                throw std::runtime_error("Height must be greater than 0");
             for (int i = 0; i<xSz; i++) {
                 if (bounds[i].x < bounds[i].y) {
                     int x = floor(i-xSz/2.f+ origin.x)/16;
                     int minY = floor(bounds[i].x + origin.y)/16, maxY = floor(bounds[i].y + origin.y)/16;
                     if (x>0 && maxY>0 && minY>0)
                         for (int y = minY; y <= maxY; y++) {
-                            biome[x][y].type = Biome::Lake;
-                            biome[x][y].height = heightOrigin + height;
+                            biome->getBiome(x,y).type = Biome::Lake;
+                            biome->getBiome(x,y).height = height + heightOrigin;
                         }
                 }
             }
@@ -310,7 +313,7 @@ namespace MyCraft {
                     if (bounds[i].x < bounds[i].y)
                         for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
                             int x = floor(i-xSz/2.f+ outside.origin.x);
-                            if (x>=0 && x<size.x && j>=0 && j<=size.y) board[x][j] = h;
+                            if (x>=0 && x<map.getSize().x && j>=0 && j<map.getSize().y) map.getHeight(x,j) = h;
                             else reachBound = true;
                         }
                 }
@@ -372,7 +375,7 @@ namespace MyCraft {
         for (int i = 0; i<Rounds.size(); i++) ans[i] = Rounds[i]->getCenter();
         return ans;
     }
-    void Area::applyRounds(const glm::vec2& size, unsigned int** board) const {
-        for (auto& Round: Rounds) Round->applyRound(size, board);
+    void Area::applyRounds(HeightMap& map) const {
+        for (auto& Round: Rounds) Round->applyRound(map);
     }
 };

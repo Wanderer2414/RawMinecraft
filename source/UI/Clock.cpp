@@ -1,6 +1,5 @@
 #include "Clock.h"
 #include "General.h"
-#include <cmath>
 namespace MyBase {
 
     Clock::Clock() {
@@ -24,7 +23,7 @@ namespace MyBase {
         }
     }
     void Clock::stop() {
-        __previous = INFINITY;
+        __previous = std::numeric_limits<size_t>::max();
     }
     void Clock::restart() {
         __previous = GetTime();

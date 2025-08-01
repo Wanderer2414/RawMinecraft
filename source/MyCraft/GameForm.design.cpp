@@ -1,4 +1,5 @@
 #include "GameForm.h"
+#include "Biome.h"
 #include "File.h"
 #include "Form3D.h"
 #include "GamePauseForm.h"
@@ -7,22 +8,31 @@
 
 namespace MyCraft {
     GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src): 
-        Form3D(index), pWorld(0, 0, 0, src), __pauseForm(__font), __font("assets/fonts/SyneMono-Regular.ttf") 
+        Form3D(index), pWorld(0, 0, 0, src), __pauseForm(__font), 
+        __font("assets/fonts/SyneMono-Regular.ttf"), __biomeManage(src) 
     {
         setBackgroundColor(BLACK);
         insert(&pWorld);
         insert(&__model);
         insert(&__hitbox);
         insert(&__label);
+        insert(&__biomeLabel);
         __hitbox.insert(&__model);
         __hitbox.match(&__model);
         __hitbox.match(&pWorld);
         __hitbox.match(&camera);
+
         __label.setFont(__font);
         __label.setText("Max fps:");
         __label.setTextColor(RED);
         __label.setScale({0.03, 0.06});
-        __label.setPosition({0.7f, 0.95f});
+        __label.setPosition({0.8f, 0.95f});
+
+        __biomeLabel.setFont(__font);
+        __biomeLabel.setText("Max fps:");
+        __biomeLabel.setTextColor(RED);
+        __biomeLabel.setScale({0.03, 0.06});
+        __biomeLabel.setPosition({0.8f, 0.9f});
 
         MyBase::ControlCenter::DisableMouse(window);
         MyBase::ControlCenter::CenteringMouse(window);
@@ -45,6 +55,12 @@ namespace MyCraft {
         if (!file.isNew()) {
             glm::ivec2 pos;
             file >> pos.x >> pos.y;
+            __model.teleport(glm::vec3(pos, 100));
+            pWorld.playerAt(glm::vec3(pos, 100));
+        }
+        else {
+            glm::ivec2 pos(0,0);
+            file << pos.x << pos.y;
             __model.teleport(glm::vec3(pos, 100));
             pWorld.playerAt(glm::vec3(pos, 100));
         }
@@ -86,6 +102,7 @@ namespace MyCraft {
         if (__fpsClock.get()) {
             __fpsClock.restart();
             __label.setText(std::format("Fps: {}", (int)getCurrentFps()));
+            __biomeLabel.setText(to_string(__biomeManage.getBiome(__model.getModelPosition()).type));
             is_changed = true;
         }
     

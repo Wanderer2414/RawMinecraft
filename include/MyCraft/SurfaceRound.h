@@ -1,6 +1,8 @@
 #ifndef Round_H
 #define Round_H
+#include "Biome.h"
 #include "Global.h"
+#include "HeightMap.h"
 namespace MyCraft {
     class Biome;
     class PorlarVector2 {
@@ -32,8 +34,8 @@ namespace MyCraft {
         glm::vec2 getCenter() const;
         void setPosition(const glm::vec2& p);
         void setRoundness(const size_t& size);
-        void applyRound(const glm::vec2& size, unsigned int** board) const;
-        void applyLake(Biome** biome, const glm::vec2& size, const int& heightOrigin, unsigned int** board) const;
+        void applyRound(HeightMap& map) const;
+        void applyLake(const int& heightOrigin, Biomes* biome, HeightMap& map) const;
     private:
         void __intersect(std::vector<glm::vec2>& vecs, const Round& Round) const;
         void __merge(std::vector<glm::vec2>& vecs, const Round& Round) const;
@@ -49,7 +51,7 @@ namespace MyCraft {
         ~Area();
         std::vector<glm::vec2> getCenter() const;
         Area& operator=(const Area&) const = delete;
-        void applyRounds(const glm::vec2& size, unsigned int** board) const;
+        void applyRounds(HeightMap& map) const;
     };
 }
 #endif

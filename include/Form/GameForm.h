@@ -1,5 +1,6 @@
 #ifndef GAMEFORM_H
 #define GAMEFORM_H
+#include "Biome.h"
 #include "Camera.h"
 #include "Clock.h"
 #include "Font.h"
@@ -27,9 +28,10 @@ namespace MyCraft {
             MyBase::Font    __fontDefault;
             MyBase::Clock   pFrameAlarm, __fpsClock;
             MyBase::Font    __font;
-            MyBase::Label   __label, __positionLabel;
+            MyBase::Label   __label, __positionLabel, __biomeLabel;
             World           pWorld;
             PlayerModelController     __model;
+            BiomeManage     __biomeManage;
             HitBoxCenter    __hitbox;
             float           pSpeed;
             GamePauseForm   __pauseForm;

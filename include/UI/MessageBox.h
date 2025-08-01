@@ -24,6 +24,7 @@ namespace MyBase {
         void setReturnValue(const int& returnValue);
         virtual bool catchEvent(GLFWwindow* window) override;
         virtual void glDraw() const override;
+        virtual void glDrawTransparent() const override;
         virtual bool __exitCondition();
     private:
         bool                __isOpen;
