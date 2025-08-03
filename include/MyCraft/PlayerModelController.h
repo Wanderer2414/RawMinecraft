@@ -26,7 +26,7 @@ namespace MyCraft {
         
         glm::mat4x3 getShape() const override;
     private:
-        bool            __isRun, __isDrawable,
+        bool            __isRun, __isDrawable, __isChanged,
                         __isLeftAttack, __isRightAttack,
                         __isCrouch;
         float           __runTime, __handTime, __speed;
@@ -38,8 +38,10 @@ namespace MyCraft {
                         __attack__cooldown;
         glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
         bool            __moveManage(GLFWwindow* window);
+        
         bool            handle(GLFWwindow* window) override;
         bool            catchEvent(GLFWwindow* window) override;
+        void            reset() override;
         void            update() override;
     };
     class ResetCameraCommand: public MyBase::Command {

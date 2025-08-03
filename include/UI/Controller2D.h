@@ -20,7 +20,7 @@ namespace MyBase {
                                 getSize() const = 0;
         virtual void            setFocus(const bool& focus),
                                 setVisible(const bool& visible),
-                                reset();
+                                reset() override;
         friend class Container2D;
     protected:
         virtual bool    contains(const glm::vec2& position) const = 0;

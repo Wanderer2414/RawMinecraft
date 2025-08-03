@@ -9,7 +9,7 @@
 #include "ModelStorage.h"
 #include "World.h"
 namespace MyCraft {
-    PlayerModelController::PlayerModelController(): __position(0), __direction(0, -1, 0), __runTime(0), __handTime(0),
+    PlayerModelController::PlayerModelController(): __position(0), __direction(0, -1, 0), __runTime(0), __handTime(0), __isChanged(false),
         __isLeftAttack(0), __isRightAttack(0), __animation(ModelStorage::getInstance().getPlayerModel().getNodeCount(), 1), __eye_direction(0, -1, 0),
         __isCrouch(false), __isDrawable(true) {
         ModelStorage::getInstance().getPlayerModel().apply(__animation, "walk", __runTime);
@@ -33,22 +33,21 @@ namespace MyCraft {
         return __isCrouch;
     }
     bool PlayerModelController::catchEvent(GLFWwindow* window) {
-        bool is_changed = ModelController::catchEvent(window);
-
-        if (MyBase::ControlCenter::getInstance().IsMouseClicked()) {
+        __isChanged = ModelController::catchEvent(window) || __isChanged;
+        if (MyBase::ControlCenter::getInstance().IsMouseClicked() || __isLeftAttack || __isRightAttack) {
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
                 rightAttack();
-                is_changed = true;
+                __isChanged = true;
             }
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
                 leftAttack();
-                is_changed = true;
+                __isChanged = true;
             }
+
         }
-        return is_changed;
+        return __isChanged;
     }
     bool PlayerModelController::__moveManage(GLFWwindow* window) {
-        bool is_changed = false;
         glm::vec3 dir(0);
         if (glfwGetKey(window, GLFW_KEY_A)) {
             dir.y -= __speed;
@@ -94,17 +93,17 @@ namespace MyCraft {
             }
         } else __isCrouch = false;
 
-        return is_changed;
+        return __isChanged;
     }
     
     bool PlayerModelController::isRun() const {
         return __isRun;
     }
     bool PlayerModelController::handle(GLFWwindow* window) {
-        bool is_changed = ModelController::handle(window);
+        __isChanged = ModelController::handle(window) || __isChanged;
         if (__speedControl.get()) {
             __speedControl.restart();
-            is_changed = __moveManage(window) || is_changed;
+            __isChanged = __moveManage(window) || __isChanged;
         }
         if (__animationClock.get()) {
             __animationClock.restart();
@@ -112,7 +111,7 @@ namespace MyCraft {
             if (__isCrouch) {
                 ModelStorage::getInstance().getPlayerModel().apply(__animation, "crouch", 0);
                 __speed = 0.05;
-                is_changed = true;
+                __isChanged = true;
             }
             if (__isRun) {
                 if (__runCooldown.get()) {
@@ -123,7 +122,7 @@ namespace MyCraft {
                 else __runTime+=0.1;
                 if (__runTime>=1) __runTime -= 1;
                 ModelStorage::getInstance().getPlayerModel().apply(__animation, "walk", __runTime);
-                is_changed = true;
+                __isChanged = true;
             }
             if (__isRightAttack) {
                 if (__attack__cooldown.get()) {
@@ -132,7 +131,7 @@ namespace MyCraft {
                 }
                 else __handTime += 0.03;
                 ModelStorage::getInstance().getPlayerModel().apply(__animation, "right_attack", __handTime);
-                is_changed = true;
+                __isChanged = true;
             }
             if (__isLeftAttack) {
                 if (__attack__cooldown.get()) {
@@ -141,10 +140,10 @@ namespace MyCraft {
                 }
                 else __handTime += 0.03;
                 ModelStorage::getInstance().getPlayerModel().apply(__animation, "left_attack", __handTime);
-                is_changed = true;
+                __isChanged = true;
             }
         }
-        return is_changed;
+        return __isChanged;
     }
     glm::vec3 PlayerModelController::getModelPosition() const {
         return __position;
@@ -176,6 +175,9 @@ namespace MyCraft {
         } 
         return ans;
     }
+    void PlayerModelController::reset() {
+        __isChanged = false;
+    }
     void PlayerModelController::leftAttack() {
         if (__attack__cooldown.get()) {
             __attack__cooldown.restart();
@@ -202,6 +204,7 @@ namespace MyCraft {
     }
     void PlayerModelController::move(const glm::vec3& delta) {
         __position += delta;
+        __isChanged = true;
         send(new MyBase::SetCameraMessage(__position, __eye_direction));
         send(new CheckHoverMessage(__position, __eye_direction));
         send( new WorldMoveMessage(__position));

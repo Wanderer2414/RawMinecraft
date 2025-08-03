@@ -33,6 +33,7 @@ namespace MyBase3D {
         while (!glfwWindowShouldClose(window) && __isOpen) {
             MyBase::ControlCenter::getInstance().Reset();
             Container2D::reset();
+            Container3D::reset();
             glfwPollEvents();
             is_changed = setHover(MyBase::ControlCenter::getInstance().getCursorPos(window)) || is_changed;
             is_changed = catchEvent(window) || is_changed;

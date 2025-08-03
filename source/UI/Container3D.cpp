@@ -31,7 +31,10 @@ namespace MyBase3D {
         while (i<__children.size() && __children[i] != controller) i++;
         __children.erase(__children.begin() + i);
     }
-
+    void Container3D::reset() {
+        Controller3D::reset();
+        for (auto& child:__children) child->reset();
+    }
     void Container3D::clear() {
         __children.clear();
     }

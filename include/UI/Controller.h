@@ -14,6 +14,7 @@ namespace MyBase {
         ~Controller();
         virtual bool    catchEvent(GLFWwindow* window);
         virtual bool    handle(GLFWwindow* window);
+        virtual void    reset();
         virtual void    glDraw() const;
         virtual void    glDrawTransparent() const;
     private:

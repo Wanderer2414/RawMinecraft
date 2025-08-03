@@ -9,6 +9,7 @@ namespace MyBase {
     bool Controller::handle(GLFWwindow* window) {
         return false;
     }
+    void Controller::reset() {}
     void Controller::update() {}
     void Controller::glDraw() const {}
     void Controller::glDrawTransparent() const {}

@@ -7,9 +7,11 @@
 #include "Form3D.h"
 #include "GamePauseForm.h"
 #include "HitBoxCenter.h"
+#include "InventoryForm.h"
 #include "Label.h"
 #include "ModelController.h"
 #include "PlayerModelController.h"
+#include "Toolbal.h"
 #include "World.h"
 
 namespace MyCraft {
@@ -25,15 +27,17 @@ namespace MyCraft {
             bool            catchEvent(GLFWwindow* window) override;
             bool            handle(GLFWwindow* window) override;
             MyBase::Font    __fontDefault;
-            MyBase::Clock   pFrameAlarm, __fpsClock;
+            MyBase::Clock   __frameAlarm, __fpsClock;
             MyBase::Font    __font;
             MyBase::Label   __label, __positionLabel, __biomeLabel;
-            World           pWorld;
+            World           __world;
             PlayerModelController     __model;
             BiomeManage     __biomeManage;
             HitBoxCenter    __hitbox;
-            float           pSpeed;
+            float           __speed;
             GamePauseForm   __pauseForm;
+            ToolBar         __toolBar;
+            InventoryForm   __inventoryForm;
         };
 }
 #endif

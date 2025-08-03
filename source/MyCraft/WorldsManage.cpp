@@ -1,5 +1,6 @@
 #include "WorldsManage.h"
 #include "File.h"
+#include "General.h"
 #include <cstring>
 
 namespace MyCraft {
@@ -24,6 +25,7 @@ namespace MyCraft {
         file << __date;
     };
     WorldsManage::WorldsManage() {
+        if (!MyBase::isFolder(source)) MyBase::CreateFolder(source);
         std::string src = source; src += "maps.bin";
         MyBase::File file(src);
         if (!file.isNew()) {

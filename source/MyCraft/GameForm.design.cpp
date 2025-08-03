@@ -8,18 +8,18 @@
 
 namespace MyCraft {
     GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src): 
-        Form3D(index), pWorld(0, 0, 0, src), __pauseForm(__font), 
+        Form3D(index), __world(0, 0, 0, src), __pauseForm(__font), 
         __font("assets/fonts/SyneMono-Regular.ttf"), __biomeManage(src) 
     {
         setBackgroundColor(BLACK);
-        insert(&pWorld);
+        insert(&__world);
         insert(&__model);
         insert(&__hitbox);
         insert(&__label);
         insert(&__biomeLabel);
         __hitbox.insert(&__model);
         __hitbox.match(&__model);
-        __hitbox.match(&pWorld);
+        __hitbox.match(&__world);
         __hitbox.match(&camera);
 
         __label.setFont(__font);
@@ -39,8 +39,8 @@ namespace MyCraft {
     
         camera.setPosition({10, 10, 1.7});
         pZVelocity = 0;
-        pSpeed = 0.1;
-        pFrameAlarm.setDuration(50);
+        __speed = 0.1;
+        __frameAlarm.setDuration(50);
         std::cout << "Open time: " << 1.0f*clock()/CLOCKS_PER_SEC << std::endl;
 
         __positionLabel.setFont(__font);
@@ -48,7 +48,7 @@ namespace MyCraft {
         __positionLabel.setTextColor(RED);
         __positionLabel.setScale({0.04, 0.06});
         insert(&__positionLabel);
-
+        insert(&__toolBar);
         __fpsClock.setDuration(500);
 
         MyBase::File file(src+"info.bin");
@@ -56,13 +56,13 @@ namespace MyCraft {
             glm::ivec3 pos;
             file >> pos.x >> pos.y >> pos.z;
             __model.teleport(pos);
-            pWorld.playerAt(pos);
+            __world.playerAt(pos);
         }
         else {
             glm::ivec3 pos(0,0,0);
             file << pos.x << pos.y << pos.z;
             __model.teleport(pos);
-            pWorld.playerAt(pos);
+            __world.playerAt(pos);
         }
         file.close();
     }
@@ -93,6 +93,15 @@ namespace MyCraft {
                     update();
                 }
                 else if (value == 1) close();
+            }
+            else if (glfwGetKey(window, GLFW_KEY_E)) {
+                pauseScreen(window);
+                MyBase::ControlCenter::EnableMouse(window);
+                __inventoryForm.open(window);
+                MyBase::ControlCenter::DisableMouse(window);
+                MyBase::ControlCenter::CenteringMouse(window);
+                is_changed = true;
+                update();
             }
         }
         return is_changed;

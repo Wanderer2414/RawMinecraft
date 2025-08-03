@@ -17,6 +17,7 @@ class Container3D: public Controller3D {
                         update()                                    override;
         virtual bool    catchEvent(GLFWwindow* window)              override;
         virtual bool    handle(GLFWwindow* window)                  override;
+        virtual void    reset()                                     override;
         virtual void    glDraw()                            const   override;
         virtual void    glDrawTransparent()                 const   override;
     private:
