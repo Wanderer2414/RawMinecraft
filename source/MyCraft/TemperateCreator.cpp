@@ -6,7 +6,7 @@ namespace MyCraft {
     int Temperate::getTectonicPerArea() const {
         return (rand()%3+2);
     }
-    void Temperate::AnalysSurface(std::vector<glm::ivec2>& spawner, HeightMap& map, Biomes& biome) const {
+    void Temperate::AnalysSurface(std::vector<glm::ivec3>& spawner, HeightMap& map, Biomes& biome) const {
         std::vector<glm::ivec2> listChunk;
         biome.filter(listChunk, Biome::Mid);
         if (listChunk.size()) {
@@ -17,11 +17,12 @@ namespace MyCraft {
                 bound[1].x = std::min(bound[1].x, pos.y);
                 bound[1].y = std::max(bound[1].y, pos.y);
             }
-            glm::ivec2 spawn((bound[0].y+bound[0].x)/2, (bound[1].y+bound[1].x)/2);
+            glm::ivec3 spawn((bound[0].y+bound[0].x)/2, (bound[1].y+bound[1].x)/2, 0);
             Round round(3, 16.f*0.8f*glm::vec2(bound[0].y-bound[0].x, bound[1].y-bound[1].x));
             round.setPosition(spawn*16);
             round.applyLake(&biome, map);
             spawn*=16;
+            spawn.z = map[spawn];
             spawner.push_back(spawn);
         }
         int maxX = biome.getPosition().x + biome.getSize().x, maxY = biome.getPosition().y + biome.getSize().y;

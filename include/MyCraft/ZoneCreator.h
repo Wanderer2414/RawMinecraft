@@ -10,7 +10,7 @@ namespace MyCraft {
     class Zone {
     public:
         virtual int getTectonicPerArea() const = 0;
-        virtual void AnalysSurface(std::vector<glm::ivec2>&, HeightMap& map, Biomes& biome) const = 0;
+        virtual void AnalysSurface(std::vector<glm::ivec3>&, HeightMap& map, Biomes& biome) const = 0;
         virtual void FillColumn(Chunk& chunk, HeightMap& map, Biome& biome, const glm::ivec3& ceiling) const = 0;
         virtual void FillChunk(const std::string& src, MyBase::Image& image, HeightMap& map, const glm::ivec3& origin, const Biome& type) const = 0;
     protected:
@@ -27,7 +27,7 @@ namespace MyCraft {
         void createOasisTree(DynamicChunk& chunk, const glm::ivec3& position) const;
         void FillColumn(Chunk& chunk, HeightMap& map, Biome& biome, const glm::ivec3& ceiling) const override;
         void FillChunk(const std::string& src, MyBase::Image& image, HeightMap& map, const glm::ivec3& origin, const Biome& type) const override;
-        void AnalysSurface(std::vector<glm::ivec2>& spawner, HeightMap& map, Biomes& biome) const override;
+        void AnalysSurface(std::vector<glm::ivec3>& spawner, HeightMap& map, Biomes& biome) const override;
     protected:
     private:
     };
@@ -42,7 +42,7 @@ namespace MyCraft {
         void createOakTree(DynamicChunk& chunk, const glm::ivec3& position) const;
         void FillColumn(Chunk& chunk, HeightMap& map, Biome& biome, const glm::ivec3& ceiling) const override;
         void FillChunk(const std::string& src, MyBase::Image& image, HeightMap& map, const glm::ivec3& origin, const Biome& type) const override;
-        void AnalysSurface(std::vector<glm::ivec2>& spawner, HeightMap& map, Biomes& biome) const override;
+        void AnalysSurface(std::vector<glm::ivec3>& spawner, HeightMap& map, Biomes& biome) const override;
     protected:
     private:
     };

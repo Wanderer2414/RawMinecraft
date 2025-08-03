@@ -53,16 +53,16 @@ namespace MyCraft {
 
         MyBase::File file(src+"info.bin");
         if (!file.isNew()) {
-            glm::ivec2 pos;
-            file >> pos.x >> pos.y;
-            __model.teleport(glm::vec3(pos, 100));
-            pWorld.playerAt(glm::vec3(pos, 100));
+            glm::ivec3 pos;
+            file >> pos.x >> pos.y >> pos.z;
+            __model.teleport(pos);
+            pWorld.playerAt(pos);
         }
         else {
-            glm::ivec2 pos(0,0);
-            file << pos.x << pos.y;
-            __model.teleport(glm::vec3(pos, 100));
-            pWorld.playerAt(glm::vec3(pos, 100));
+            glm::ivec3 pos(0,0,0);
+            file << pos.x << pos.y << pos.z;
+            __model.teleport(pos);
+            pWorld.playerAt(pos);
         }
         file.close();
     }

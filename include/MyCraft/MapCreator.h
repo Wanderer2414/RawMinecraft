@@ -16,7 +16,7 @@ namespace MyCraft {
     private:
         double* percent;
         std::string source;
-        std::vector<glm::ivec2> spawner;
+        std::vector<glm::ivec3> spawner;
         MyBase::Image* image;
 
         MapCreator(double* percent, const std::string& src);

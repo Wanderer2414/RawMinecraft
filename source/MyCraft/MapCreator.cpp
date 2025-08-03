@@ -170,7 +170,7 @@ namespace MyCraft {
     }
     void MapCreator::createZone(const Zone& zone, const double& total, const glm::vec2& yBound, const int& z) {
         srand(clock());
-        unsigned char count = rand()%5+3;
+        unsigned char count = rand()%3+2;
         int xMax = 1000, xPart = xMax/count;
         //By area tectonic
         for (int k = 0; k<count; k++) {
@@ -216,15 +216,17 @@ namespace MyCraft {
         mapCreator.createBedrockLayer(0.2, -10);
         mapCreator.createMagmaLayer(0.2, -9);
         mapCreator.createTopSoilLayer(0.2, {-8, -6});
-        mapCreator.createZone(Tropical(), 0.2, {-50,50}, -6);
-        mapCreator.createZone(Temperate(), 0.1, {50,150}, -6);
-        mapCreator.createZone(Temperate(), 0.1, {-150,-50}, -6);
+        mapCreator.createZone(Temperate(), 0.1, {-250,-100}, -6);
+        mapCreator.createZone(Tropical(), 0.2, {-100,100}, -6);
+        mapCreator.createZone(Temperate(), 0.1, {100,250}, -6);
         mapCreator.image->save(src+"overal.png");
         delete mapCreator.image;
 
-        glm::ivec2 spawn = mapCreator.spawner[rand()%mapCreator.spawner.size()];
-        MyBase::File file(src+"info.bin");
-        file << spawn.x << spawn.y;
-        file.close();
+        if (mapCreator.spawner.size()) {
+            glm::ivec3 spawn = mapCreator.spawner[rand()%mapCreator.spawner.size()];
+            MyBase::File file(src+"info.bin");
+            file << spawn.x << spawn.y << spawn.z;
+            file.close();
+        }
     }
 }
