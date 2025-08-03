@@ -6,6 +6,7 @@
 
 namespace MyCraft {
     IntroForm::IntroForm(GLFWwindow* window, const int& index): MyBase::Form(index), font("assets/fonts/SyneMono-Regular.ttf") {
+        
         setBackgroundColor(BLACK);
 
         __programmeName.setFont(font);

@@ -72,7 +72,7 @@ namespace MyCraft {
         __worldNameLabel.setTextColor(BLACK);
     }
     void MapMenuItem::__unchoose() {
-        setFillColor(TRANSPARENT);
+        setFillColor(TRANSPARENCY);
         __dateCreatedLabel.setTextColor(WHITE);
         __worldNameLabel.setTextColor(WHITE);
     }
@@ -124,7 +124,7 @@ namespace MyCraft {
     }
     void MapMenu::add(const std::string& name, const MyBase::Date& date) {
         __MapMenuItems.push_back(new MapMenuItem(*__font, name, date));
-        __MapMenuItems.back()->setFillColor(TRANSPARENT);
+        __MapMenuItems.back()->setFillColor(TRANSPARENCY);
         __MapMenuItems.back()->setMarginWidth(2);
         __MapMenuItems.back()->setMarginColor(WHITE);
         __MapMenuItems.back()->setSize({getSize().x - 0.02, 0.2}, 0.01);

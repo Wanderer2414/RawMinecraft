@@ -39,10 +39,8 @@ namespace MyBase {
     glm::vec2 getWindowSize() {
         #ifdef __linux__
         XL::Display* display = XL::XOpenDisplay(NULL);
-        if (!display) {
-            std::cerr << "Cannot open display\n";
-            exit(0);
-        }
+        if (!display)
+            throw std::runtime_error("Cannot open display");
         using namespace XL;
         XL::Screen* screen = ScreenOfDisplay(display, 0);
         float x = screen->width, y = screen->height;
@@ -54,7 +52,6 @@ namespace MyBase {
         SetProcessDPIAware();
         int width = GetSystemMetrics(SM_CXSCREEN);
         int height = GetSystemMetrics(SM_CYSCREEN);
-        std::cout << width << " " << height << std::endl;
         return {width, height};
         #endif
     }

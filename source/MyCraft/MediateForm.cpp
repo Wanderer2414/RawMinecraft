@@ -59,7 +59,7 @@ namespace MyCraft {
         __menu.setFont(__font);
         __menu.setPosition({-0.9, -0.9});
         __menu.setSize({1.48, 0.54});
-        __menu.setFillColor(TRANSPARENT);
+        __menu.setFillColor(TRANSPARENCY);
         __menu.setMarginWidth(2);
         __menu.setMarginColor(WHITE);
         insert(&__menu);

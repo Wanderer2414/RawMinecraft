@@ -16,7 +16,6 @@ namespace MyBase {
     #define RED MyBase::Color({255,0,0,255})
     #define GREEN MyBase::Color({0,255,0,255})
     #define BLUE MyBase::Color({0,0,255,255})
-    #define TRANSPARENT MyBase::Color({0,0,0,0})
-
+    #define TRANSPARENCY MyBase::Color({0,0,0,0})
 }
 #endif

@@ -12,16 +12,14 @@ namespace MyBase {
     void Font::loadFont(const std::string& source) {
         std::ifstream fstream(source);
         if (!fstream.is_open()) {
-            std::cerr << "Cant load font: " << source << std::endl;
-            exit(0);
+            throw std::runtime_error("Cant load font: " + source);
         }
-        else std::cout << "Load font successful: " << source << std::endl;
         fstream.seekg(0, std::ios::end);
         int sz = fstream.tellg();
         fstream.seekg(0);
         unsigned char data[1<<20];
         fstream.read((char*)&data, sz);
-        unsigned char bitmap[font_resolution*font_resolution];
+        unsigned char *bitmap = new unsigned char[font_resolution*font_resolution];
         stbtt_BakeFontBitmap(data, 0, font_height, bitmap, font_resolution, font_resolution, 32, 96, __data);
 
         glGenTextures(1, &__textmap);
@@ -31,6 +29,7 @@ namespace MyBase {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         
         glBindTexture(GL_TEXTURE_2D, 0);
+        delete[] bitmap;
     }
     void Font::Bind() const {
         glActiveTexture(GL_TEXTURE0);
