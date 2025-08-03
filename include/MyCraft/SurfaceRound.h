@@ -35,7 +35,7 @@ namespace MyCraft {
         void setPosition(const glm::vec2& p);
         void setRoundness(const size_t& size);
         void applyRound(HeightMap& map) const;
-        void applyLake(const int& heightOrigin, Biomes* biome, HeightMap& map) const;
+        void applyLake(Biomes* biome, HeightMap& map) const;
     private:
         void __intersect(std::vector<glm::vec2>& vecs, const Round& Round) const;
         void __merge(std::vector<glm::vec2>& vecs, const Round& Round) const;

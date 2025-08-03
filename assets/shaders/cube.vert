@@ -31,7 +31,7 @@ void main() {
     else if (Position.x<info[div].position.x) mod = 35-mod;
     
     ivec3 pos = info[div].position + cube_corner[mod];
-
+    
     if (mod%2!=0) uv_out += uv[mod/2].b;
     else uv_out += uv[mod/2].a;
     gl_Position = ClipPlane * vec4(pos,1);

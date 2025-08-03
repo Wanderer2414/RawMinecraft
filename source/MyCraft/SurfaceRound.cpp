@@ -1,7 +1,4 @@
 #include "SurfaceRound.h"
-#include "MapCreator.h"
-#include <limits>
-#include <stdexcept>
 
 namespace MyCraft {
 
@@ -173,7 +170,7 @@ namespace MyCraft {
                     delta.x = 1;
                     if (a.x > b.x) std::swap(a , b);
                     for (glm::vec2 vec(floor(a.x), a.y); vec.x < floor(b.x); vec = vec + delta) {
-                        int index = vec.x + outside.size.x/2;
+                        int index = floor(vec.x + xSz/2.f);
                         if (index>=0 && index<xSz) {
                             bounds[index].x = std::min(vec.y, bounds[index].x);
                             bounds[index].y = std::max(vec.y, bounds[index].y);
@@ -182,9 +179,10 @@ namespace MyCraft {
                 }
                 for (int i = 0; i<xSz; i++) {
                     if (bounds[i].x < bounds[i].y) {
-                        for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
-                            int x = int(i-xSz/2.f+ outside.origin.x);
-                            if (x>=0 && x<map.getSize().x && j>=0 && j<map.getSize().y) map.getHeight(x,j)++;
+                        int maxY = bounds[i].y + outside.origin.y;
+                        for (glm::ivec2 position(floor(i-xSz/2.f+ outside.origin.x), bounds[i].x + outside.origin.y); position.y < maxY; position.y++) {
+                            if (map.isValid(position)) 
+                                map[position]++;
                             else reachBound = true;
                         }
                     }
@@ -212,7 +210,7 @@ namespace MyCraft {
                     delta.x = 1;
                     if (a.x > b.x) std::swap(a , b);
                     for (glm::vec2 vec(floor(a.x), a.y); vec.x < floor(b.x); vec = vec + delta) {
-                        int index = vec.x + outside.size.x/2;
+                        int index = floor(vec.x + xSz/2.f);
                         if (index>=0 && index<xSz) {
                             bounds[index].x = std::min(vec.y, bounds[index].x);
                             bounds[index].y = std::max(vec.y, bounds[index].y);
@@ -221,9 +219,9 @@ namespace MyCraft {
                 }
                 for (int i = 0; i<xSz; i++) {
                     if (bounds[i].x < bounds[i].y)
-                        for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
-                            int x = floor(i-xSz/2.f+ outside.origin.x);
-                            if (x>=0 && x<map.getSize().x && j>=0 && j<map.getSize().y) map.getHeight(x,j)++;
+                        for (glm::ivec2 position(floor(i-xSz/2.f+ outside.origin.x), bounds[i].x + outside.origin.y); position.y < bounds[i].y + outside.origin.y; position.y++) {
+                            if (map.isValid(position)) 
+                                map[position]++;
                             else reachBound = true;
                         }
                 }
@@ -233,8 +231,8 @@ namespace MyCraft {
         }
     }
 
-    void Round::applyLake(const int& heightOrigin, Biomes* biome, HeightMap& map) const {
-        unsigned int height = std::numeric_limits<unsigned int>::max();;
+    void Round::applyLake(Biomes* biome, HeightMap& map) const {
+        int height = std::numeric_limits<int>::max();;
         {
             int xSz = ceil(size.x);
             glm::vec2 *bounds = new glm::vec2[xSz];
@@ -248,7 +246,7 @@ namespace MyCraft {
                 delta.x = 1;
                 if (a.x > b.x) std::swap(a , b);
                 for (glm::vec2 vec(floor(a.x), a.y); vec.x < floor(b.x); vec = vec + delta) {
-                    int index = vec.x + size.x/2;
+                    int index = floor(vec.x + xSz/2.f);
                     if (index>=0 && index<xSz) {
                         bounds[index].x = std::min(vec.y, bounds[index].x);
                         bounds[index].y = std::max(vec.y, bounds[index].y);
@@ -257,26 +255,23 @@ namespace MyCraft {
             }
             for (int i = 0; i<xSz; i++) {
                 if (bounds[i].x < bounds[i].y) {
-                    int x = floor(i-xSz/2.f+ origin.x), y = floor(bounds[i].x + origin.y);
-                    if (x>=0 && x<map.getSize().x && y>=0 && y<map.getSize().y)  
-                        height = std::min(height, map.getHeight(x,y));
-                    y = floor(origin.y + bounds[i].y);
-                    if (x>=0 && x<map.getSize().x && y>=0 && y<map.getSize().y)  
-                        height = std::min(height, map.getHeight(x,y));
+                    glm::ivec2 position(floor(i-xSz/2.f+ origin.x), floor(bounds[i].x + origin.y));
+                    if (map.isValid(position))  
+                        height = std::min(height, map[position]);
+                    position.y = floor(origin.y + bounds[i].y);
+                    if (map.isValid(position))  
+                        height = std::min(height, map[position]);
                 }
             }
             height = floor(height);
-            if (height>1000)
-                throw std::runtime_error("Height must be greater than 0");
             for (int i = 0; i<xSz; i++) {
                 if (bounds[i].x < bounds[i].y) {
-                    int x = floor(i-xSz/2.f+ origin.x)/16;
-                    int minY = floor(bounds[i].x + origin.y)/16, maxY = floor(bounds[i].y + origin.y)/16;
-                    if (x>0 && maxY>0 && minY>0)
-                        for (int y = minY; y <= maxY; y++) {
-                            biome->getBiome(x,y).type = Biome::Lake;
-                            biome->getBiome(x,y).height = height + heightOrigin;
-                        }
+                    int x = floor((i-xSz/2.f+ origin.x)/16);
+                    int minY = floor((bounds[i].x + origin.y)/16), maxY  = ceil((bounds[i].y + origin.y)/16);
+                    for (glm::ivec2 position(x, minY); position.y < maxY; position.y++) {
+                        (*biome)[position].type = Biome::Lake;
+                        (*biome)[position].height = height;
+                    }
                 }
             }
             delete[] bounds;
@@ -301,7 +296,7 @@ namespace MyCraft {
                     delta.x = 1;
                     if (a.x > b.x) std::swap(a , b);
                     for (glm::vec2 vec(floor(a.x), a.y); vec.x < floor(b.x); vec = vec + delta) {
-                        int index = vec.x + outside.size.x/2;
+                        int index = floor(vec.x + xSz/2.f);
                         if (index>=0 && index<xSz) {
                             bounds[index].x = std::min(vec.y, bounds[index].x);
                             bounds[index].y = std::max(vec.y, bounds[index].y);
@@ -310,12 +305,13 @@ namespace MyCraft {
                 }
                 int h = height - i;
                 for (int i = 0; i<xSz; i++) {
-                    if (bounds[i].x < bounds[i].y)
-                        for (int j = bounds[i].x + outside.origin.y; j < bounds[i].y + outside.origin.y; j++) {
-                            int x = floor(i-xSz/2.f+ outside.origin.x);
-                            if (x>=0 && x<map.getSize().x && j>=0 && j<map.getSize().y) map.getHeight(x,j) = h;
+                    if (bounds[i].x < bounds[i].y) {
+                        int maxY = bounds[i].y + outside.origin.y;
+                        for (glm::ivec2 position(floor(i-xSz/2.f+ outside.origin.x), bounds[i].x + outside.origin.y); position.y < maxY; position.y++) {
+                            if (map.isValid(position)) map[position] = h;
                             else reachBound = true;
                         }
+                    }
                 }
                 delete[] bounds;
                 bounds = 0;

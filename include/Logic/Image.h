@@ -9,14 +9,16 @@ namespace MyBase {
         Image(const Image&) = delete;
         Image& operator=(const Image&) const = delete; 
         ~Image();
-
+        
+        void setPosition(const glm::ivec2& position);
         const glm::ivec2& getSize() const;
-        void setColor(const unsigned int& x, const unsigned int& y, const MyBase::Color& color);
-        const Color& getColor(const unsigned int& x, const unsigned int& y) const;
+        const glm::ivec2& getPosition() const;
+        void setColor(const int& x, const int& y, const MyBase::Color& color);
+        const Color& getColor(const int& x, const int& y) const;
         void save(const std::string& source);
     protected:
     private:
-        glm::ivec2      __size;
+        glm::ivec2      __size, __position;
         MyBase::Color*  __pixel;
     };
 }

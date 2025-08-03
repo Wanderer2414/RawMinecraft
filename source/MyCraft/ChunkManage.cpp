@@ -21,7 +21,7 @@ namespace MyCraft {
         return __chunkPositions;
     }
     void ChunkManage::playerAt(const glm::ivec3& pos) {
-        glm::ivec3 position(pos.x/16 - world_side/2 - 1, pos.y/16 - world_side/2 - 1, pos.z/16 - world_side/2 - 1);
+        glm::ivec3 position(floor(pos.x/16.f) - floor(world_side/2.f), floor(pos.y/16.f) - floor(world_side/2.f), floor(pos.z/16.f) - floor(world_side/2.f));
         glm::ivec3 delta = position - __position;
         float length = glm::length((glm::vec3)delta);
         if (!__isLoaded || length>2) {

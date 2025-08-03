@@ -102,7 +102,11 @@ namespace MyCraft {
         if (__fpsClock.get()) {
             __fpsClock.restart();
             __label.setText(std::format("Fps: {}", (int)getCurrentFps()));
-            __biomeLabel.setText(to_string(__biomeManage.getBiome(__model.getModelPosition()).type));
+            glm::vec3 position = __model.getModelPosition();
+            position.x = floor(position.x/16);
+            position.y = floor(position.y/16);
+            position.z = floor(position.z/16);
+            __biomeLabel.setText(to_string(__biomeManage.getBiome(position).type));
             is_changed = true;
         }
     
