@@ -25,7 +25,7 @@ namespace MyCraft {
         MyBase::Font                    __font;
         MyBase::CreateWorldForm         __createWorldForm;
         WaitingWorldCreateForm          __waitingCreateMap;
-        MyBase::RoundedRectangleButton  __createWorldButton, __clearWorldButton, __joinWorldButton, __connectWorldButton;
+        MyBase::RoundedRectangleButton  __createWorldButton, __clearWorldButton, __joinWorldButton, __connectWorldButton, __planeWorldButton;
 
         bool __mouseClicked(GLFWwindow*) override;
         bool catchEvent(GLFWwindow* window) override;

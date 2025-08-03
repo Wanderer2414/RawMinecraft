@@ -42,7 +42,16 @@ namespace MyCraft {
         }
         else {
             new_chunk->__position = position*16;
-            memset(new_chunk->__blockTypes, 0, sizeof(BlockCatogary)*4096);
+            memset(new_chunk->__blockTypes, Air, sizeof(BlockCatogary)*4096);
+            if (src == "bin/test/" && position.z < 0) {
+                new_chunk->__numBlock = 4096;
+                memset(new_chunk->__blockTypes, Grass, 4096);
+                if (position.z == -1) {
+                    for (glm::ivec3 pos(0,0,15); pos.x<16; pos.x++) {
+                        for (pos.y=0;pos.y<16; pos.y++) new_chunk->enableLocalBit(pos);
+                    }
+                }
+            }
         }
         return new_chunk;
     }

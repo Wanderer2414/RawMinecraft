@@ -21,6 +21,7 @@ namespace MyCraft {
     void DrawMargin(const glm::mat4x3& box, const glm::vec3& color, const float& linewidth = 2);
 }
 namespace MyBase {
+    bool isFolder(const std::string& src);
     void CreateFolder(const std::string& src);
     void DeleteFile(const std::string& src);
     void DeleteFolder(const std::string& src);

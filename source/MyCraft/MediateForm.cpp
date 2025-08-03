@@ -12,6 +12,18 @@ namespace MyCraft {
         __createWorldForm(__font), __waitingCreateMap(__font)
         {
         setBackgroundColor(BLACK);
+
+        __planeWorldButton.setFont(__font);
+        __planeWorldButton.setTextColor(WHITE);
+        __planeWorldButton.setNormalColor(GRAY);
+        __planeWorldButton.setHoverColor(DARKGRAY);
+        __planeWorldButton.setClickColor(GRAY);
+        __planeWorldButton.setText("Test");
+        __planeWorldButton.setSize({0.3, 0.12}, 0.01);
+        __planeWorldButton.setPosition({0.6, -0.34});
+        __planeWorldButton.setScale({0.06, 0.06});
+        insert(&__planeWorldButton);
+
         __createWorldButton.setFont(__font);
         __createWorldButton.setTextColor(WHITE);
         __createWorldButton.setNormalColor(GRAY);
@@ -58,7 +70,7 @@ namespace MyCraft {
 
         __menu.setFont(__font);
         __menu.setPosition({-0.9, -0.9});
-        __menu.setSize({1.48, 0.54});
+        __menu.setSize({1.48, 0.68});
         __menu.setFillColor(TRANSPARENCY);
         __menu.setMarginWidth(2);
         __menu.setMarginColor(WHITE);
@@ -123,6 +135,14 @@ namespace MyCraft {
                 setReturnValue(1);
                 close();
             }
+        }
+        if (__planeWorldButton.isPressed()) {
+            std::string file = "bin/test/";
+            if (!MyBase::isFolder(file)) MyBase::CreateFolder(file);
+            GameForm gameForm(window, 0, file);
+            gameForm.run(window);
+            setReturnValue(1);
+            close();
         }
         if (__returnButton.isPressed()) {
             setReturnValue(0);

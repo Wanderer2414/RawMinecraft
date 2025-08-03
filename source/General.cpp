@@ -135,6 +135,9 @@ namespace MyBase {
         glDeleteBuffers(1, &ORI);
         glDeleteBuffers(1, &COLOR);
     }
+    bool isFolder(const std::string& src) {
+        return std::filesystem::exists(src) && std::filesystem::is_directory(src);
+    }
     void CreateFolder(const std::string& src) {
         if (!std::filesystem::create_directory(src)) {
             throw std::runtime_error("Failed to create folder: " + src);

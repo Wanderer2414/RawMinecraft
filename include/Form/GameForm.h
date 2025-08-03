@@ -13,7 +13,6 @@
 #include "World.h"
 
 namespace MyCraft {
-
     class GameForm: public MyBase3D::Form3D {
         public:
             GameForm(GLFWwindow* window, const int& index, const std::string& src);
