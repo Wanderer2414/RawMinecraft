@@ -31,7 +31,7 @@ namespace MyCraft {
         WorldsManage& operator=(const WorldsManage&) const = delete; 
         int createWorld(const std::string& name, const MyBase::Date& date);
         const std::vector<MapInfo*>& getWorld() const;
-
+        void save();
     protected:
     private:
         static constexpr char source[] = "bin/";

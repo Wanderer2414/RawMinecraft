@@ -4,6 +4,8 @@ namespace MyCraft {
 
 
     Biomes::Biomes(const unsigned int& width, const unsigned int& height): __size(width, height), __position(0, 0) {
+        __count[0] = __count[1] = __count[2] = __count[3] = __count[4] = 0;
+        __averageHeight[0] = __averageHeight[1] = __averageHeight[2] = __averageHeight[3] = __averageHeight[4] =0;
         __biome = new Biome*[width];
         for (int i = 0; i<width; i++) {
             __biome[i] = new Biome[height];
@@ -11,6 +13,10 @@ namespace MyCraft {
         }
     }
     Biomes::Biomes(Biomes&& biome) {
+        for (int i = 0; i<5; i++) {
+            __averageHeight[i] = biome.__averageHeight[i];
+            __count[i] = biome.__count[i];
+        }
         __biome = biome.__biome;
         __size = biome.__size;
         __position = biome.__position;
@@ -23,6 +29,8 @@ namespace MyCraft {
         }
     }
     Biomes::Biomes(const HeightMap& map) {
+        __count[0] = __count[1] = __count[2] = __count[3] = __count[4] = 0;
+        __averageHeight[0] = __averageHeight[1] = __averageHeight[2] = __averageHeight[3] = __averageHeight[4] = 0;
         __size = {map.getSize().x/16, map.getSize().y/16};
         __biome = new Biome*[__size.x];
         __position = map.getPosition()/16;
@@ -42,10 +50,13 @@ namespace MyCraft {
                 if (height>32) __biome[x][y].type = Biome::SuperHigh;
                 else if (height>-24)  __biome[x][y].type = Biome::High;
                 else if (height>-32) __biome[x][y].type = Biome::Mid;
-                else if (height>-64) __biome[x][y].type = Biome::Low;
-                else __biome[x][y].type = Biome::SuperLow;
-                int n = floor(height/16);
-                __biome[x][y].height = height-n*16;
+                else if (height>-56) __biome[x][y].type = Biome::Low;
+                else if (height>-64) __biome[x][y].type = Biome::SuperLow;
+                else __biome[x][y].type = Biome::Sea;
+                if (__biome[x][y].type>=Biome::SuperLow && __biome[x][y].type<=Biome::SuperHigh) {
+                    __averageHeight[__biome[x][y].type-1]+=height;
+                    __count[__biome[x][y].type-1]++;
+                }
             }
         }
     }
@@ -90,6 +101,7 @@ namespace MyCraft {
             case Biome::MixOasis: return "OasisSide";
             case Biome::Lake: return "Lake";
             case Biome::UnderGround: return "Underground";
+            case Biome::Meadow: return "Meadow";
             case Biome::Null: return "Null";
             default: return "None";
         }
@@ -99,6 +111,11 @@ namespace MyCraft {
         if (offset.x < 0 || offset.x>=__size.x || offset.y < 0 || offset.y>=__size.y)
             return false;
         return true;
+    }
+    int Biomes::getAverageHeight(const Biome::BiomeType& type) const {
+        if (type>=Biome::SuperLow && type<=Biome::SuperHigh && __count[type-1]>0)
+            return floor(1.0f*__averageHeight[type-1]/__count[type-1]) ;
+        return 0;
     }
     const glm::ivec2& Biomes::getPosition() const {
         return __position;
@@ -148,7 +165,7 @@ namespace MyCraft {
     const Biome& BiomeManage::getBiome(const glm::ivec3& position) {
         return get(position);
     };
-
+    
     void BiomeManage::setBiomeType(const glm::ivec3& position, const Biome::BiomeType& type) {
         get(position).type = type;
         __isChanged = true;

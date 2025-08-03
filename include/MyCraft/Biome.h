@@ -6,7 +6,7 @@ namespace MyCraft {
 
     struct Biome {
         enum BiomeType: unsigned char {
-            Null, SuperLow, Low, Mid, High, SuperHigh, Sea, Beach, MixRockyHill, RockyHill, Desert, Oasis, MixOasis, Lake, UnderGround
+            Null, SuperLow, Low, Mid, High, SuperHigh, Sea, Beach, MixRockyHill, RockyHill, Desert, Oasis, MixOasis, Lake, UnderGround, Meadow, FrozenPeak
         };
         int height;
         BiomeType type;
@@ -20,7 +20,9 @@ namespace MyCraft {
         ~Biomes();
         Biomes(const Biomes&) = delete;
         Biomes& operator=(const Biomes&) const = delete; 
+        
         bool isValid(const glm::ivec2& position) const;
+        int getAverageHeight(const Biome::BiomeType& type) const;
         const glm::ivec2& getSize() const;
         Biome& operator[](const glm::ivec2&);
         const Biome& operator[](const glm::ivec2&) const;
@@ -29,6 +31,7 @@ namespace MyCraft {
         void filter(std::vector<glm::ivec2>& list, const Biome::BiomeType& type);
     protected:
     private:
+        float __averageHeight[5]; int __count[5];
         Biome** __biome;
         glm::ivec2 __size, __position;
     };

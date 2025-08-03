@@ -203,6 +203,7 @@ namespace MyCraft {
     Chunk& ChunkManage::getChunk(const glm::ivec3& position) {
         glm::ivec3 offset(floor(position.x/16.f), floor(position.y/16.f), floor(position.z/16.f));
         offset -= getPosition();
+        
         if (offset.x >= world_side || offset.y >= world_side || offset.z >= world_side)
             throw std::runtime_error("Out range of storage!");
         return *__chunks[__chunkIndices[offset.x][offset.y][offset.z]];

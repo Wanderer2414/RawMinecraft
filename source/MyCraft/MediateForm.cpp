@@ -101,6 +101,7 @@ namespace MyCraft {
                 std::string file = "bin/"+std::to_string(index)+"/";
                 MyBase::CreateFolder(file);
                 __waitingCreateMap.open(file, window);
+                __worldsManage.save();
             }
         }
         if (__menu.isPressed()) {

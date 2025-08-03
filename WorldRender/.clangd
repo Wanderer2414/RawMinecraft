@@ -1,4 +1,0 @@
-CompileFlags:
-  Add:
-    - -I../raylib/src
-    - -I../include

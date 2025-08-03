@@ -37,7 +37,7 @@ namespace MyCraft {
         }
         file.close();
     }
-    WorldsManage::~WorldsManage() {
+    void WorldsManage::save() {
         std::string src = source; src += "maps.bin";
         MyBase::File file(src);
         unsigned int size = __mapsInfo.size();
@@ -46,6 +46,9 @@ namespace MyCraft {
             file << *__mapsInfo[i];
         }
         file.close();   
+    }
+    WorldsManage::~WorldsManage() {
+        save();
         for (auto& i:__mapsInfo) delete i;
         __mapsInfo.clear();
     }
