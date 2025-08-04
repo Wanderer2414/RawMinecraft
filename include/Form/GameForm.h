@@ -7,11 +7,11 @@
 #include "Form3D.h"
 #include "GamePauseForm.h"
 #include "HitBoxCenter.h"
+#include "Inventory.h"
 #include "InventoryForm.h"
 #include "Label.h"
 #include "ModelController.h"
 #include "PlayerModelController.h"
-#include "Toolbal.h"
 #include "World.h"
 
 namespace MyCraft {
@@ -36,7 +36,7 @@ namespace MyCraft {
             HitBoxCenter    __hitbox;
             float           __speed;
             GamePauseForm   __pauseForm;
-            ToolBar         __toolBar;
+            Inventory       __inventory;
             InventoryForm   __inventoryForm;
         };
 }

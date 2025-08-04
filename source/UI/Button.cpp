@@ -4,7 +4,6 @@
 #include "ShapeManager.h"
 #include "Text.h"
 #include "Texture.h"
-#include "TextureStorage.h"
 
 namespace MyBase {
 
@@ -166,9 +165,7 @@ namespace MyBase {
     }
 
     TextureButton::TextureButton() {}
-    TextureButton::~TextureButton() {
-        if (__src.size()) TextureStorage::getInstance().removeTexture(__src);
-    }
+    TextureButton::~TextureButton() {}
     void TextureButton::update() {
         RoundedRectangleButton::update();
         TextureContainer::update();
@@ -176,14 +173,6 @@ namespace MyBase {
         if (isPressed()) __mouseClicked(0);
         else if (isHovered()) __hover();
         else __lostHover();
-    }
-    void TextureButton::setTexture(const std::string& src) {
-        if (__src != src) {
-            if (__src.size()) TextureStorage::getInstance().removeTexture(__src);
-            __src = src;
-            GLuint texture = TextureStorage::getInstance().getTexture(__src);
-            TextureContainer::setTexture(texture);
-        }
     }
     void TextureButton::setTextureOrigin(const glm::vec2& origin) {
         __textureOrigin = origin;

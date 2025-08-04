@@ -1,41 +1,51 @@
 #include "Font.h"
+#include "FlyweightStorage.h"
 #include "Global.h"
 #include "stb_truetype.h"
 
 namespace MyBase {
-    Font::Font(const std::string& source) {
-        if (source.size()) loadFont(source);
-    }
-    Font::~Font() {
-        glDeleteTextures(1, &__textmap);
-    }
-    void Font::loadFont(const std::string& source) {
-        std::ifstream fstream(source);
-        if (!fstream.is_open()) {
-            throw std::runtime_error("Cant load font: " + source);
-        }
+    FlyWeightCore* Font::create(const std::string& src) const {
+        FontCore* core = new FontCore();
+        std::ifstream fstream(src);
+        if (!fstream.is_open()) throw std::runtime_error("Cant load font: " + src);
+        
         fstream.seekg(0, std::ios::end);
         int sz = fstream.tellg();
         fstream.seekg(0);
         unsigned char data[1<<20];
         fstream.read((char*)&data, sz);
         unsigned char *bitmap = new unsigned char[font_resolution*font_resolution];
-        stbtt_BakeFontBitmap(data, 0, font_height, bitmap, font_resolution, font_resolution, 32, 96, __data);
+        stbtt_BakeFontBitmap(data, 0, font_height, bitmap, font_resolution, font_resolution, 32, 96, core->__data);
 
-        glGenTextures(1, &__textmap);
-        glBindTexture(GL_TEXTURE_2D, __textmap);
+        glGenTextures(1, &core->__textmap);
+        glBindTexture(GL_TEXTURE_2D, core->__textmap);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, font_resolution, font_resolution, 0, GL_RED, GL_UNSIGNED_BYTE,  bitmap);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         
         glBindTexture(GL_TEXTURE_2D, 0);
         delete[] bitmap;
+        return core;
     }
-    void Font::Bind() const {
+    FontCore::FontCore() {}
+    FontCore::~FontCore() {
+        glDeleteTextures(1, &__textmap);
+    }
+    void FontCore::Bind() const {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, __textmap);
     }
-    glm::vec2 Font::MeasureText(const std::string& text) const {
+    Font::Font(const std::string& src) {
+        if (src.size()) load(src);
+    };
+    Font::~Font() {};
+    void Font::Bind() const {
+        return ((FontCore*)getCore())->Bind();
+    }
+    char* Font::getBuffer(const std::string& text, glm::vec2& size) const {
+        return ((FontCore*)getCore())->getBuffer(text, size);
+    }
+    glm::vec2 FontCore::MeasureText(const std::string& text) const {
         auto map = __utf_to_codepoint(text);
         glm::vec2 size = {0, 0};
         float y = 0, x = 0;
@@ -47,7 +57,7 @@ namespace MyBase {
         size.x = x/font_height;
         return size;
     }
-    char* Font::getBuffer(const std::string& text, glm::vec2& size) const{
+    char* FontCore::getBuffer(const std::string& text, glm::vec2& size) const{
         auto map = __utf_to_codepoint(text);
         size = {0, 0};
         float x = 0, y = 0;
@@ -72,7 +82,7 @@ namespace MyBase {
         size.y /= font_height;
         return buffer;
     }
-    std::vector<int> Font::__utf_to_codepoint(const std::string& text) const {
+    std::vector<int> FontCore::__utf_to_codepoint(const std::string& text) const {
         std::vector<int> ans;
         for (int i = 0; i<text.size();) {        
             unsigned char c = text[i];

@@ -97,7 +97,7 @@ namespace MyBase3D {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
         {
-            #define row 6
+            #define row 5
             glm::vec2 tex_coord[37];
             tex_coord[0] = {3.0/18, 0};
             tex_coord[1] = {2.0/18, 0};

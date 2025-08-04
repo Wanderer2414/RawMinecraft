@@ -20,7 +20,7 @@ namespace MyBase {
     class Port {
     public:
         Port(Network* network = 0);
-        ~Port();
+        virtual ~Port();
 
         virtual void match(Network* network);
 

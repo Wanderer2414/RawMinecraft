@@ -2,13 +2,13 @@
 #include "Block.h"
 #include "ControlCenter.h"
 #include "DrawingCenter.h"
+#include "FlyweightStorage.h"
 #include "IntroForm.h"
 #include "MediateForm.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
 #include "ModelStorage.h"
 #include "ShapeManager.h"
-#include "TextureStorage.h"
 
 namespace MyCraft {
     Application::Application(const float& width, const float& height) {
@@ -24,7 +24,7 @@ namespace MyCraft {
         MyBase3D::ShaderStorage::close();
         MyCraft::ModelStorage::close();
         DrawingCenter::Close();
-        MyBase::TextureStorage::close();
+        MyBase::FlyweightStorage::close();
         MyBase::ControlCenter::getInstance().CloseWindow();
         MyBase::ControlCenter::close();
     }

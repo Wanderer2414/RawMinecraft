@@ -5,13 +5,15 @@
 namespace MyCraft {
     class InventoryForm: public MyBase::MessageBox {
     public:
-        InventoryForm();
+        InventoryForm(Inventory& inventory);
         InventoryForm(const InventoryForm&) = delete;
         ~InventoryForm();
         InventoryForm& operator=(const InventoryForm&) const = delete; 
     protected:
+        void __open(GLFWwindow*) override;
+        void __close(GLFWwindow*) override;
     private:
-        Inventory       __inventory;
+        Inventory&       __inventory;
     };
 }
 #endif

@@ -2,10 +2,45 @@
 #include "Global.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
-#include "TextureStorage.h"
+#include "FlyweightStorage.h"
 
 namespace MyBase {
-    TextureContainer::TextureContainer(): __size(0,0), __position(0,0),__texturePosition(0,0), __textureSize(0,0), __texture(0) {
+    Texture::Texture(const std::string & src, const bool& isReverse) {
+        if (src.size()) load(src, isReverse);
+    }
+    glm::ivec2 Texture::getSize() const {
+        return ((TextureCore*)getCore())->__size;
+    }
+    void Texture::load(const std::string& src, const bool& isReverse) {
+        if (src.size()) {
+            stbi_set_flip_vertically_on_load(isReverse);
+            FlyWeightObject::load(src);
+        }
+    }
+    Texture::~Texture() {}
+    TextureCore::TextureCore() {};
+    TextureCore::~TextureCore() {};
+
+    void Texture::Bind() const {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, ((TextureCore*)getCore())->__texture);
+    }
+    FlyWeightCore* Texture::create(const std::string& src) const {
+        TextureCore* core = new TextureCore();
+        int nrChannels;
+        unsigned char* data = stbi_load(src.c_str(), &core->__size.x, &core->__size.y, &nrChannels, 0);
+        if (!data) throw std::runtime_error("Failed to load texture: " + src);
+
+        glGenTextures(1, &core->__texture);
+        glBindTexture(GL_TEXTURE_2D, core->__texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, core->__size.x,core->__size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        stbi_image_free(data);
+        return core;
+    }
+
+    TextureContainer::TextureContainer(): __size(0,0), __position(0,0),__texturePosition(0,0), __textureSize(0,0) {
         glGenVertexArrays(1, &__VAO);
         glBindVertexArray(__VAO);
         
@@ -36,6 +71,9 @@ namespace MyBase {
         glDeleteBuffers(1, &__textureSizeCode);
         glDeleteBuffers(1, &__positionCode);
         glDeleteBuffers(1, &__sizeCode);
+    }
+    const Texture& TextureContainer::getTexture() const {
+        return __texture;
     }
     const glm::vec2& TextureContainer::getTextureExportSize() const {
         return __size;
@@ -85,18 +123,17 @@ namespace MyBase {
             update();
         }
     }
-    void TextureContainer::setTexture(const GLuint& texture) {
+    void TextureContainer::setTexture(const Texture& texture) {
         __texture = texture;
     }
     void TextureContainer::update() {};
     void TextureContainer::draw() const {
-        if (!__texture) return;
+        if (__texture.isEmpty()) return;
         glUseProgram(MyBase3D::ShaderStorage::getInstance().getImage2DShader());
 
         glBindVertexArray(__VAO);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, __texture);
+        __texture.Bind();
 
         glBindBufferBase(GL_UNIFORM_BUFFER, 1, __positionCode);
         glBindBufferBase(GL_UNIFORM_BUFFER, 2, __sizeCode);
@@ -116,27 +153,18 @@ namespace MyBase {
     }
 
     
-    Texture::Texture() {}
-    Texture::~Texture() {
-        if (__src.size()) TextureStorage::getInstance().removeTexture(__src);
-    }
-    void Texture::setTexture(const std::string& texture) {
-        if (__src != texture) {
-            if (__src.size()) TextureStorage::getInstance().removeTexture(__src);
-            __src = texture;
-            TextureContainer::setTexture(TextureStorage::getInstance().getTexture(__src));
-        }
-    }
-    void Texture::glDraw() const {
+    TextureViewer::TextureViewer() {}
+    TextureViewer::~TextureViewer() {}
+    void TextureViewer::glDraw() const {
         TextureContainer::draw();
     }
-    glm::vec2 Texture::getPosition() const {
+    glm::vec2 TextureViewer::getPosition() const {
         return getTextureExportPosition();
     }
-    glm::vec2 Texture::getSize() const {
+    glm::vec2 TextureViewer::getSize() const {
         return getTextureExportSize();
     }
-    bool Texture::contains(const glm::vec2& posistion) const {
+    bool TextureViewer::contains(const glm::vec2& posistion) const {
         return false;
     }
 }

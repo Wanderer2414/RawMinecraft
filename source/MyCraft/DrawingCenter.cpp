@@ -4,11 +4,10 @@
 #include "PointSet.h"
 #include "ShaderStorage.h"
 #include "ShapeManager.h"
-#include "TextureStorage.h"
 namespace MyCraft {
     DrawingCenter* DrawingCenter::Default;
     DrawingCenter::DrawingCenter() {
-        __texture = MyBase::TextureStorage::getInstance().getTexture("assets/images/blockCatogary.png");
+        __texture.load("assets/images/blockCatogary.png", false);
         glGenVertexArrays(1, &__vertexArray);
         glGenBuffers(SWAP_BUFFER, __positionBuffer);
 
@@ -21,7 +20,6 @@ namespace MyCraft {
     }
     
     DrawingCenter::~DrawingCenter() {
-        MyBase::TextureStorage::getInstance().removeTexture("assets/images/blockCatogary.png");
         glDeleteBuffers(SWAP_BUFFER, __positionBuffer);
         glDeleteVertexArrays(1, &__vertexArray);
     }
@@ -43,8 +41,7 @@ namespace MyCraft {
         glBindBufferBase(GL_UNIFORM_BUFFER, 2, MyBase3D::PointSet::getInstance().getBlockSet());
         glBindBufferBase(GL_UNIFORM_BUFFER, 3, MyBase3D::PointSet::getInstance().getBlockUVS());
     
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, Default->__texture);
+        Default->__texture.Bind();
     }
     void DrawingCenter::BindMargin() {
         getInstance();

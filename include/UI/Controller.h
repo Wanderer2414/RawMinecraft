@@ -11,7 +11,7 @@ namespace MyBase {
         friend Container;
     protected:
         Controller();
-        ~Controller();
+        virtual ~Controller();
         virtual bool    catchEvent(GLFWwindow* window);
         virtual bool    handle(GLFWwindow* window);
         virtual void    reset();

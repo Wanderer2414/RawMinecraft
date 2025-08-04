@@ -2,6 +2,7 @@
 #define DRAWING_CENTER_H
 #include "Block.h"
 #include "Color.h"
+#include "Texture.h"
 #include <memory>
 namespace MyCraft {
     class DrawingCenter {
@@ -18,7 +19,8 @@ namespace MyCraft {
         DrawingCenter();
         static DrawingCenter* Default;
         unsigned char   __positionBufferPointer;
-        GLuint __vertexArray, __positionBuffer[SWAP_BUFFER], __texture;
+        GLuint __vertexArray, __positionBuffer[SWAP_BUFFER];
+        MyBase::Texture __texture;
     };
 };
 #endif

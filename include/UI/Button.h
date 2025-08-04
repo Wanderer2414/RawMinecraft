@@ -80,15 +80,14 @@ namespace MyBase  {
     public:
         TextureButton();
         ~TextureButton();
-        void setTexture(const std::string& texture);
         using TextureContainer::setTextureImportSize;
         using TextureContainer::setTextureExportSize;
+        using TextureContainer::setTexture;
         void setTextureOrigin(const glm::vec2& position);
     protected:
         virtual void update() override;
         virtual bool __hover() override, __lostHover() override, __mouseClicked(GLFWwindow* window) override, __mouseRelease(GLFWwindow* window) override;
     private:
-        std::string     __src;
         glm::vec2       __textureOrigin;
         void glDraw() const override;
     };

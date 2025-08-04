@@ -9,7 +9,7 @@
 namespace MyCraft {
     GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src): 
         Form3D(index), __world(0, 0, 0, src), __pauseForm(__font), 
-        __font("assets/fonts/SyneMono-Regular.ttf"), __biomeManage(src) 
+        __font("assets/fonts/SyneMono-Regular.ttf"), __biomeManage(src), __inventoryForm(__inventory) 
     {
         setBackgroundColor(BLACK);
         insert(&__world);
@@ -48,7 +48,6 @@ namespace MyCraft {
         __positionLabel.setTextColor(RED);
         __positionLabel.setScale({0.04, 0.06});
         insert(&__positionLabel);
-        insert(&__toolBar);
         __fpsClock.setDuration(500);
 
         MyBase::File file(src+"info.bin");
@@ -65,6 +64,7 @@ namespace MyCraft {
             __world.playerAt(pos);
         }
         file.close();
+        insert(&__inventory);
     }
     GameForm::~GameForm() {        
     }

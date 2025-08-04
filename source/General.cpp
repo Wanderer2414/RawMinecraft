@@ -151,21 +151,6 @@ namespace MyBase {
     void DeleteFile(const std::string& src) {
         remove(src.c_str());
     }
-    GLuint LoadTexture(const std::string& src) {
-        stbi_set_flip_vertically_on_load(true);
-        GLuint texture;
-        int width, height, nrChannels;
-        unsigned char* data = stbi_load(src.c_str(), &width, &height, &nrChannels, 0);
-        if (!data) throw std::runtime_error("Failed to load texture: " + src);
-
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width,height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        stbi_image_free(data);
-        return texture;
-    }
 }
 namespace MyCraft {
     void DrawMargin(const glm::mat4x3& mat, const glm::vec3& color, const float& linewidth) {

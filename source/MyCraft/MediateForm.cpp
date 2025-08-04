@@ -5,6 +5,7 @@
 #include "Form.h"
 #include "GameForm.h"
 #include "General.h"
+#include "Texture.h"
 
 namespace MyCraft {
     MediateForm::MediateForm(GLFWwindow* window, const int& index): 
@@ -81,7 +82,7 @@ namespace MyCraft {
         __returnButton.setNormalColor(GRAY);
         __returnButton.setHoverColor(DARKGRAY);
         __returnButton.setClickColor(GRAY);
-        __returnButton.setTexture("assets/images/arrow_back.png");
+        __returnButton.setTexture(MyBase::Texture("assets/images/arrow_back.png"));
         __returnButton.setTextureExportSize({0.08,0.08});
         __returnButton.setTextureOrigin({0, 0});
         __returnButton.setTextureImportSize({1.0/3,1});

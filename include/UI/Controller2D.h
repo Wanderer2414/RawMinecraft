@@ -5,7 +5,7 @@ namespace MyBase {
     class Controller2D: public Controller {
     public:
        Controller2D();
-       ~Controller2D();
+       virtual ~Controller2D();
 
         virtual bool            isHovered()         const,
                                 isReleased()        const,
