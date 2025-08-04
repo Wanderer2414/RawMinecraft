@@ -24,6 +24,7 @@ namespace MyBase3D {
         return 1.0f*(CLOCKS_PER_SEC)*__frameCount/(clock()-__startClock);
     }
     float Form3D::getCurrentFps() const {
+        if (__deltaClock==0) return 100000;
         return 1.0f*CLOCKS_PER_SEC/__deltaClock;
     }
     int Form3D::run(GLFWwindow* window) {
