@@ -11,9 +11,40 @@
 #include "World.h"
 #include "Wrapper.h"
 namespace MyCraft {
+
     ItemTable::ItemTable() {
-        for (int i = 0; i<4; i++)
-            for (int j = 0; j<10; j++) indices[i][j] = -1;
+        memset(__items[0], 0, sizeof(Item*)*40);
+    }
+    ItemTable::~ItemTable() {
+        for (int i = 0; i<4; i++) {
+            for (int j = 0; j<10; j++)
+                if (__items[i][j]) delete __items[i][j];
+        }
+    }
+
+    Item* ItemTable::getBags(const glm::ivec2& offset) const {
+        if (offset.x>=0 && offset.x<=3 && offset.y>=0 && offset.y<=10)
+            return __items[offset.x][offset.y];
+        return 0;
+    }
+    Item* ItemTable::getToolBar(const int& n) const {
+        if (n>=0 && n<=10) return __items[3][n];
+        return 0;
+    }
+
+    Item* ItemTable::placeBags(const glm::ivec2& offset, Item* item) {
+        if (offset.x<0 && offset.x>3 && offset.y<0 && offset.y>10) return 0;
+        Item* out = 0;
+        if (!item || __items[offset.x][offset.y]) out = __items[offset.x][offset.y];
+        __items[offset.x][offset.y] = item;
+        return out;
+    }
+    Item* ItemTable::placeToolbar(const int& n, Item* item) {
+        if (n<0 && n>=10) return 0;
+        Item* out = 0;
+        if (!item || __items[3][n]) out = __items[3][n];
+        __items[3][n] = item;
+        return out;
     }
     Bags::Bags(ItemTable& table): __items(table) {
         MyBase::Texture texture =  MyBase::Texture("assets/images/Inventory.png");
@@ -141,7 +172,13 @@ namespace MyCraft {
 
     void Bags::glDraw() const {
         MyBase::Container2D::glDraw();
-        for (int i = 0; i<__items.items.size(); i++) __items.items[i]->draw();
+        for (glm::ivec2 ofs(0,0); ofs.x<3; ofs.x++)
+            for (ofs.y=0; ofs.y<10; ofs.y++) 
+                if (__items.getBags(ofs)) __items.getBags(ofs)->draw();
+        
+        for (int i = 0; i<10; i++) 
+            if (__items.getToolBar(i)) 
+                __items.getToolBar(i)->draw();
     }
     glm::vec2 Bags::getPosition() const {
         return __inventoryTexture.getPosition();
@@ -151,8 +188,9 @@ namespace MyCraft {
     }
 
     void Bags::update() {
-        for (int i = 0; i<10; i++) if (__items.indices[3][i]>-1) 
-            __items.items[__items.indices[3][i]]->setPosition(getToolbarPosition(i) + __items.package.size*0.1f);
+        for (int i = 0; i<10; i++) 
+            if (__items.getToolBar(i)) 
+                __items.getToolBar(i)->setPosition(getToolbarPosition(i) + __items.package.size*0.1f);
     }
 
 
@@ -211,7 +249,7 @@ namespace MyCraft {
     void ToolBar::glDraw() const {
         MyBase::Container2D::glDraw();
         for (int i = 0; i<10; i++)
-            if (__items.indices[3][i]>-1) __items.items[__items.indices[3][i]]->draw();
+            if (__items.getToolBar(i)) __items.getToolBar(i)->draw();
     }
     glm::vec2 ToolBar::getPosition() const {
         return __toolBarTexture.getPosition();
@@ -230,8 +268,8 @@ namespace MyCraft {
         return false;
     }
     void ToolBar::update() {
-        for (int i = 0; i<10; i++) if (__items.indices[3][i]>-1) 
-            __items.items[__items.indices[3][i]]->setPosition(getToolbarPosition(i) + __items.package.size*0.1f);
+        for (int i = 0; i<10; i++) if (__items.getToolBar(i)) 
+            __items.getToolBar(i)->setPosition(getToolbarPosition(i) + __items.package.size*0.1f);
     }
 
 
@@ -241,22 +279,22 @@ namespace MyCraft {
         __items.package.font = MyBase::Font("assets/fonts/SyneMono-Regular.ttf");
         for (int i = 0; i<4; i++) for (int j = 0; j<10; j++) __indices[i][j] = -1;
 
-        __items.indices[3][0] = 0;
-        __items.items.push_back(new Item(__items.package, ItemType::Grass, 64));
+        __items.placeToolbar(0, new BlockItem(__items.package, ItemType::Grass, 64));
 
-        __items.indices[3][1] = 1;
-        __items.items.push_back(new Item(__items.package, ItemType::Ice, 64));
+        __items.placeToolbar(1,new BlockItem(__items.package, ItemType::Ice, 64));
+
+        __items.placeToolbar(2,new ToolItem(__items.package, ItemType::Shovel));
 
         __bags = new Bags(__items);
         __toolBar = new ToolBar(__items);
         add(new LeftAttackCommand(__toolBar));
         add(new AcceptPlaceCommand(__toolBar));
+        add(new RightAttackCommand(__toolBar));
         changeState(__toolBar);
     }
     Inventory::~Inventory() {
         delete __bags;
         delete __toolBar;
-        for (int i = 0; i<__items.items.size(); i++) delete __items.items[i];
     }
 
     void Inventory::open() {
@@ -274,11 +312,25 @@ namespace MyCraft {
     }
     void LeftAttackCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         LeftAttackMessage* package = (LeftAttackMessage*)message;
-        int index = __toolBar->__items.indices[3][__toolBar->__chosenIndex];
-        if (index!=-1) {
-            if (isBlock(*__toolBar->__items.items[index])) {
-                mine.send(new PlaceBlockMessage(package->shape, *__toolBar->__items.items[index]));
+        Item* item = __toolBar->__items.getToolBar(__toolBar->__chosenIndex);
+        if (item) {
+            if (item->isBlock()) {
+                BlockCatogary type = (BlockCatogary)ItemType(*item);
+                mine.send(new PlaceBlockMessage(package->shape, type));
             }
+        }
+    }
+
+    RightAttackCommand::RightAttackCommand(ToolBar* toolbar): __toolBar(toolbar) {}
+    RightAttackCommand::~RightAttackCommand() {}
+    MyBase::MessageType RightAttackCommand::getType() const {
+        return MyBase::RightAttack;
+    } 
+    void RightAttackCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        Item* item = __toolBar->__items.getToolBar(__toolBar->__chosenIndex);
+        if (item) {
+            if (item->isTool()) mine.send(new DestroyBlockMessage(*item));
+            else mine.send(new DestroyBlockMessage(ItemType::Air));
         }
     }
 
@@ -297,9 +349,9 @@ namespace MyCraft {
     }
     void AcceptPlaceCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         AcceptPlaceMessage* package = (AcceptPlaceMessage*)message;
-        int count = __toolbar->__items.items[__toolbar->__chosenIndex]->getCount();
+        int count = __toolbar->__items.getToolBar(__toolbar->__chosenIndex)->getCount();
         if (count) {
-            __toolbar->__items.items[__toolbar->__chosenIndex]->setCount(count-1);
+            __toolbar->__items.getToolBar(__toolbar->__chosenIndex)->setCount(count-1);
         }
     }
 

@@ -2,13 +2,14 @@
 #define CHUNK_MANAGE_H
 #include "ChunkBase.h"
 #include "Container3D.h"
+#include "Texture.h"
 
 namespace MyCraft {
     class ChunkManage: public MyBase3D::Container3D, public ChunkLoader {
     public:
         ChunkManage(const std::string& src);
         ~ChunkManage();
-        const std::vector<glm::ivec4>& getChunks() const;
+        const std::vector<glm::vec4>& getChunks() const;
         void playerAt(const glm::ivec3& position);
         Chunk&          getChunk(const glm::ivec3&)         override;
         const Chunk&    getChunk(const glm::ivec3&) const   override;
@@ -18,11 +19,12 @@ namespace MyCraft {
         #define world_side 7
         bool                    __isLoaded;
         glm::ivec3              __position;
-        std::vector<glm::ivec4> __chunkPositions;
+        std::vector<glm::vec4>  __chunkPositions;
         std::vector<Chunk*>     __chunks;
         std::queue<Chunk*>      __storageQueue;
         int                     __chunkIndices[world_side][world_side][world_side];
         std::string             __sourceFolder;
+        MyBase::Texture         __texture;
         void __loadDefault();
         static void __moveSubPositiveX(ChunkManage*, const int& y, const int& z);
         static void __moveSubNegativeX(ChunkManage*, const int& y, const int& z);

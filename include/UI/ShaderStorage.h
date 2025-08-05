@@ -11,10 +11,10 @@ class ShaderStorage {
         GLuint  GetDefaultShader() const,
                 GetCubeShader() const,
                 GetMarginShader() const,
-                getPoint2DShader() const,
-                getModelShader() const,
-                getFontShader() const,
-                getImage2DShader() const;
+                GetPoint2DShader() const,
+                GetModelShader() const,
+                GetFontShader() const,
+                GetImage2DShader() const;
     private:
         ShaderStorage();
         ~ShaderStorage();

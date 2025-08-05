@@ -94,7 +94,7 @@ namespace MyBase {
     }
     void Text::draw() const {
         if (!__font) return ;
-        glUseProgram(MyBase3D::ShaderStorage::getInstance().getFontShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetFontShader());
         glBindVertexArray(__VAO);
         __font->Bind();
         glBindBuffer(GL_ARRAY_BUFFER, __VBO);

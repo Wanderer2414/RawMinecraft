@@ -3,16 +3,16 @@
 #include "Container3D.h"
 #include "DrawingCenter.h"
 #include "Inventory.h"
+#include "Item.h"
 #include "Message.h"
 #include "General.h"
 #include "PlayerModelController.h"
 
 namespace MyCraft {
-    World::World(const int& x, const int& y, const int& z, const std::string& src): __isHoverBlock(false), __worldRender(src) {
-        // __worldRender.createPlaneWorld();
-        // exit(0);
+    World::World(const int& x, const int& y, const int& z, const std::string& src): __worldRender(src) {
+        insert(&__crackingManage);
         insert(&__worldRender);
-        pFrameAlarm.setDuration(150);
+        __frameAlarm.setDuration(150);
         add(new CheckFallCommand(this));
         add(new CheckEmptyCommand(this));
         add(new CheckHoverCommand(this));
@@ -21,14 +21,9 @@ namespace MyCraft {
         add(new WorldMoveCommand(this));
     }
     World::~World() {}
-    
-    bool World::handle(GLFWwindow* window) {
-        bool is_changed = Controller::handle(window);
-        if (pFrameAlarm.get()) {
-            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
-            }
-        }
-        return is_changed;
+
+    bool World::isHoverBlock() const {
+        return __crackingManage.isHover();
     }
     const BlockCatogary& World::at(const glm::vec3& pos) const {
         glm::ivec3 position(floor(pos.x), floor(pos.y), floor(pos.z));
@@ -43,23 +38,15 @@ namespace MyCraft {
         set(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z), type);
     }
     void World::setHoverBlock(const glm::vec3& pos, const glm::vec3& placePosition) {
-        __hoverBlock = pos;
         __placePosition = placePosition;
-        __isHoverBlock = true;
+        __crackingManage.hover();
+        __crackingManage.setHoverBlock(pos, at(pos));
     }
     void World::unHoverBlock() {
-        __isHoverBlock = false;
+        __crackingManage.unhover();
     }
     void World::playerAt(const glm::vec3& pos) {
         __worldRender.playerAt(pos);
-    }
-    void World::glDraw() const {
-        MyBase3D::Container3D::glDraw();
-        if (__isHoverBlock) {
-            glm::ivec4 margin( __hoverBlock, 1);
-            DrawingCenter::BindMargin();
-            DrawingCenter::DrawMargins(&margin, 1, BLACK, 3);
-        }
     }
     CheckEmptyCommand::CheckEmptyCommand(World* world): __world(world) {}
     CheckEmptyCommand::~CheckEmptyCommand() {}
@@ -231,7 +218,7 @@ namespace MyCraft {
         CheckHoverMessage* package = (CheckHoverMessage*)message;
         __world->__cameraPosition = package->position + glm::vec3(0,0,1.8);
         __world->__cameraDir = package->direction;
-        auto q = rasterize(__world->__cameraPosition, __world->__cameraPosition+package->direction*4.f);
+        auto q = rasterize(__world->__cameraPosition, __world->__cameraPosition+package->direction*4.f, 0.05);
         bool hover = false;
         glm::vec3 placePosition;
         while (q.size() && !hover) {
@@ -290,14 +277,14 @@ namespace MyCraft {
             }
         }
 
-        if (__world->__isHoverBlock && below_result && above_result) {
+        if (__world->isHoverBlock() && below_result && above_result) {
             __world->set(__world->__placePosition, package->type);
             mine.send(des, new AcceptPlaceMessage(package->type));
         }
     }
 
     
-    DestroyBlockMessage::DestroyBlockMessage() {}
+    DestroyBlockMessage::DestroyBlockMessage(const ItemType& t): type(t) {}
     DestroyBlockMessage::~DestroyBlockMessage() {}
     MyBase::MessageType DestroyBlockMessage::getType() const {
         return MyBase::DestroyBlock;
@@ -310,8 +297,12 @@ namespace MyCraft {
     }
     void DestroyblockCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
         DestroyBlockMessage* package = (DestroyBlockMessage*)message;
-        if (__world->__isHoverBlock) {
-            __world->set(__world->__hoverBlock, BlockCatogary::Air);
+        if (__world->isHoverBlock()) {
+            __world->__crackingManage.crack(0.1);
+            if (__world->__crackingManage.getPercent()>0.9) {
+                __world->__crackingManage.unhover();
+                __world->set(__world->__crackingManage.getHoverBlock(), BlockCatogary::Air);
+            }
         }
     }
 

@@ -34,7 +34,7 @@ namespace MyBase {
     }
     void Shape::draw() const {
         glBindVertexArray(__VAO);
-        glUseProgram(MyBase3D::ShaderStorage::getInstance().getPoint2DShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetPoint2DShader());
         glDrawArrays(GL_TRIANGLE_FAN, 0, getPointCount());
         glBindVertexArray(0);
     }
@@ -95,7 +95,7 @@ namespace MyBase {
     }
     
     void ShapeContainer::draw(const Shape& shape) const {
-        glUseProgram(MyBase3D::ShaderStorage::getInstance().getPoint2DShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetPoint2DShader());
         glBindVertexArray(shape.__VAO);
 
         glBindBufferBase(GL_UNIFORM_BUFFER, 1, __positionCode);

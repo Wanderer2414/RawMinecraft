@@ -97,57 +97,56 @@ namespace MyBase3D {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
         {
-            #define row 5
             glm::vec2 tex_coord[37];
-            tex_coord[0] = {3.0/18, 0};
-            tex_coord[1] = {2.0/18, 0};
-            tex_coord[2] = {2.0/18, 1.0/row};
+            tex_coord[0] = {480, 0};
+            tex_coord[1] = {320, 0};
+            tex_coord[2] = {320, 160};
 
-            tex_coord[3] = {3.0/18, 0};
-            tex_coord[4] = {2.0/18, 1.0/row};
-            tex_coord[5] = {3.0/18, 1.0/row};
+            tex_coord[3] = {480, 0};
+            tex_coord[4] = {320, 160};
+            tex_coord[5] = {480, 160};
             
-            tex_coord[6] = {6.0/18, 1.0/row};
-            tex_coord[7] = {6.0/18, 0};
-            tex_coord[8] = {5.0/18, 0};
+            tex_coord[6] = {960, 160};
+            tex_coord[7] = {960, 0};
+            tex_coord[8] = {800, 0};
 
-            tex_coord[9] = {6.0/18, 1.0/row};
-            tex_coord[10] = {5.0/18, 0};
-            tex_coord[11] = {5.0/18, 1.0/row};
+            tex_coord[9] = {960, 160};
+            tex_coord[10] = {800, 0};
+            tex_coord[11] = {800, 160};
             
-            tex_coord[12] = {3.0/18, 0};
-            tex_coord[13] = {4.0/18, 0};
-            tex_coord[14] = {4.0/18, 1.0/row};
+            tex_coord[12] = {480, 0};
+            tex_coord[13] = {640, 0};
+            tex_coord[14] = {640, 160};
 
-            tex_coord[15] = {3.0/18, 0};
-            tex_coord[16] = {4.0/18, 1.0/row};
-            tex_coord[17] = {3.0/18, 1.0/row};
+            tex_coord[15] = {480, 0};
+            tex_coord[16] = {640, 160};
+            tex_coord[17] = {480, 160};
             //
-            tex_coord[18] = {2.0/18, 1.0/row};
-            tex_coord[19] = {1.0/18, 1.0/row};
-            tex_coord[20] = {2.0/18, 0};
+            tex_coord[18] = {320, 160};
+            tex_coord[19] = {160, 160};
+            tex_coord[20] = {320, 0};
 
-            tex_coord[21] = {1.0/18, 1.0/row};
-            tex_coord[22] = {1.0/18, 0};
-            tex_coord[23] = {2.0/18, 0};
+            tex_coord[21] = {160, 160};
+            tex_coord[22] = {160, 0};
+            tex_coord[23] = {320, 0};
 
-            tex_coord[24] = {5.0/18, 1.0/row};
-            tex_coord[25] = {5.0/18, 0};
-            tex_coord[26] = {4.0/18, 1.0/row};
+            tex_coord[24] = {800, 160};
+            tex_coord[25] = {800, 0};
+            tex_coord[26] = {640, 160};
 
-            tex_coord[27] = {5.0/18, 0};
-            tex_coord[28] = {4.0/18, 0};
-            tex_coord[29] = {4.0/18, 1.0/row};
+            tex_coord[27] = {800, 0};
+            tex_coord[28] = {640, 0};
+            tex_coord[29] = {640, 160};
 
-            tex_coord[30] = {0, 1.0/row};
-            tex_coord[31] = {1.0/18, 1.0/row};
+            tex_coord[30] = {0, 160};
+            tex_coord[31] = {160, 160};
             tex_coord[32] = {0, 0};
 
-            tex_coord[33] = {1.0/18, 1.0/row};
-            tex_coord[34] = {1.0/18, 0};
+            tex_coord[33] = {160, 160};
+            tex_coord[34] = {160, 0};
             tex_coord[35] = {0, 0};
             
-            tex_coord[36] = {1.0/3, 1.0/row};
+            tex_coord[36] = {960, 160};
             glGenBuffers(1, &__blockUVS);
             glBindBuffer(GL_UNIFORM_BUFFER, __blockUVS);
             glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*37*2, &tex_coord[0], GL_STATIC_DRAW);

@@ -158,11 +158,11 @@ namespace MyCraft {
             BlockCatogary type = __blockTypes[offset.x][offset.y][offset.z];
             if (isTransparent(type)) {
                 __tableIndexes[offset.x][offset.y][offset.z] = __transparentList.size();
-                __transparentList.push_back(glm::ivec4(position, type));
+                __transparentList.push_back(glm::vec4(position, type));
             }
             else {
                 __tableIndexes[offset.x][offset.y][offset.z] = __list.size();
-                __list.push_back(glm::ivec4(position, type));
+                __list.push_back(glm::vec4(position, type));
             }
         }
     }
@@ -196,11 +196,9 @@ namespace MyCraft {
 
     }
     void Chunk::glDraw() const {
-        DrawingCenter::BindCube();
         DrawingCenter::DrawCubes((void*)__list.data(), __list.size());
     }
     void Chunk::glDrawTransparent() const {
-        DrawingCenter::BindCube();
         DrawingCenter::DrawCubes((void*)__transparentList.data(), __transparentList.size());
     }
 

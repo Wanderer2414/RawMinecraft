@@ -4,10 +4,10 @@
 #include "PointSet.h"
 #include "ShaderStorage.h"
 #include "ShapeManager.h"
+#include "Texture.h"
 namespace MyCraft {
     DrawingCenter* DrawingCenter::Default;
     DrawingCenter::DrawingCenter() {
-        __texture.load("assets/images/blockCatogary.png", false);
         glGenVertexArrays(1, &__vertexArray);
         glGenBuffers(SWAP_BUFFER, __positionBuffer);
 
@@ -17,10 +17,16 @@ namespace MyCraft {
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
         }
 
+        glGenBuffers(1, &__extraBuffer);
+        glBindBuffer(GL_UNIFORM_BUFFER, __extraBuffer);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*4, 0, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
     }
     
     DrawingCenter::~DrawingCenter() {
         glDeleteBuffers(SWAP_BUFFER, __positionBuffer);
+        glDeleteBuffers(1, &__extraBuffer);
         glDeleteVertexArrays(1, &__vertexArray);
     }
     void DrawingCenter::getInstance() {
@@ -30,7 +36,7 @@ namespace MyCraft {
         if (Default) delete Default;
         Default = 0;
     }
-    void DrawingCenter::BindCube() {
+    void DrawingCenter::BindCube(const MyBase::Texture& texture, const glm::vec2& extra) {
         getInstance();
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetCubeShader());
         glBindVertexArray(Default->__vertexArray);
@@ -38,10 +44,15 @@ namespace MyCraft {
         glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
         glEnableVertexAttribArray(0);
     
-        glBindBufferBase(GL_UNIFORM_BUFFER, 2, MyBase3D::PointSet::getInstance().getBlockSet());
-        glBindBufferBase(GL_UNIFORM_BUFFER, 3, MyBase3D::PointSet::getInstance().getBlockUVS());
+        glBindBufferBase(GL_UNIFORM_BUFFER, 3, MyBase3D::PointSet::getInstance().getBlockSet());
+        glBindBufferBase(GL_UNIFORM_BUFFER, 4, MyBase3D::PointSet::getInstance().getBlockUVS());
+
+        glm::vec4 ex(extra, texture.getSize());
+        glBindBuffer(GL_UNIFORM_BUFFER, Default->__extraBuffer);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(GLfloat)*4, &ex);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, Default->__extraBuffer);
     
-        Default->__texture.Bind();
+        texture.Bind();
     }
     void DrawingCenter::BindMargin() {
         getInstance();

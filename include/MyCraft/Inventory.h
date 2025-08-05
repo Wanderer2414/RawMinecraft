@@ -10,11 +10,19 @@
 #include "Texture.h"
 #include "Wrapper.h"
 namespace MyCraft {
-    struct ItemTable {
+    class ItemTable {
+    public:
         ItemTable();
-        char indices[4][10];
-        std::vector<Item*> items;
+        ~ItemTable();
         ItemPacked package;
+
+        Item* getBags(const glm::ivec2& offset) const;
+        Item* getToolBar(const int& n) const;
+
+        Item* placeBags(const glm::ivec2& offset, Item* item);
+        Item* placeToolbar(const int& n, Item* item);
+    private:
+        Item* __items[4][10];
     };
     class Bags: public MyBase::Container2D {
     public:
@@ -48,6 +56,7 @@ namespace MyCraft {
         glm::vec2 getPosition() const               override;
         glm::vec2 getSize() const                   override;
         void update()                               override;
+        friend class RightAttackCommand;
         friend class LeftAttackCommand;
         friend class AcceptPlaceCommand;
     private:
@@ -82,6 +91,16 @@ namespace MyCraft {
     public:
         LeftAttackCommand(ToolBar* toolbar);
         ~LeftAttackCommand();
+        MyBase::MessageType getType()      const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private:
+        ToolBar* __toolBar;
+    };
+
+    class RightAttackCommand: public MyBase::Command {
+    public:
+        RightAttackCommand(ToolBar* toolbar);
+        ~RightAttackCommand();
         MyBase::MessageType getType()      const override;
         void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
     private:

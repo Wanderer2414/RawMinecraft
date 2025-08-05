@@ -129,7 +129,7 @@ namespace MyBase {
     void TextureContainer::update() {};
     void TextureContainer::draw() const {
         if (__texture.isEmpty()) return;
-        glUseProgram(MyBase3D::ShaderStorage::getInstance().getImage2DShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetImage2DShader());
 
         glBindVertexArray(__VAO);
 

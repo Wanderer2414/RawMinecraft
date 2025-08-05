@@ -15,14 +15,14 @@ std::ostream& operator<<(std::ostream& cout, const glm::vec3& pos) {
     cout << "(" << pos.x << ", "<<pos.y << ", " << pos.z << ") ";
     return cout;
 }
-std::queue<glm::ivec3> rasterize(const glm::vec3& a, const glm::vec3& b) {
+std::queue<glm::ivec3> rasterize(const glm::vec3& a, const glm::vec3& b, const float& stride) {
     std::queue<glm::ivec3> ans;
     glm::vec3 delta = (b-a);
     glm::vec3 curr = a;
     ans.push({floor(a.x), floor(a.y), floor(a.z)});
-    int n = glm::length(delta)/0.1;
+    int n = glm::length(delta)/stride;
     if (!n) return ans;
-    delta = glm::normalize(delta)*0.1f;
+    delta = glm::normalize(delta)*stride;
     for (int i = 0; i<n; i++) {
         curr+=delta;
         glm::ivec3 tmp(floor(curr.x), floor(curr.y), floor(curr.z));
@@ -56,7 +56,7 @@ namespace MyBase {
         #endif
     }
     void DrawTexture(GLuint texture, const glm::vec2& position, const glm::vec2& size, const glm::vec2& subposition, const glm::vec2& subsize) {
-        glUseProgram(MyBase3D::ShaderStorage::getInstance().getImage2DShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetImage2DShader());
         GLuint POS, SIZE, SPOS, SSIZE, VAO;
 
         glGenVertexArrays(1, &VAO);
@@ -103,7 +103,7 @@ namespace MyBase {
         glDeleteBuffers(1, &SSIZE);
     }
     void DrawRectangle(const glm::vec2& position, const glm::vec2& size, const Color& c) {
-        glUseProgram(MyBase3D::ShaderStorage::getInstance().getPoint2DShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetPoint2DShader());
         GLuint VAO, VBO, ORI, COLOR;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);

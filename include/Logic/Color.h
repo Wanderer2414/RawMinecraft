@@ -9,6 +9,7 @@ namespace MyBase {
         bool operator!=(const Color& color) const;
     };
     #define BLACK MyBase::Color({0,0,0,255})
+    #define YELLOW MyBase::Color({255,255, 0,255})
     #define WHITE MyBase::Color({255,255,255,255})
     #define DARKGRAY MyBase::Color({59,59,59,255})
     #define GRAY MyBase::Color({137,137,137,255})

@@ -8,7 +8,7 @@ namespace MyCraft {
     class DrawingCenter {
     public:
         #define SWAP_BUFFER 3
-        static void BindCube();
+        static void BindCube(const MyBase::Texture& texture, const glm::vec2& extra = {1,1});
         static void BindMargin();
         static void DrawCubes(void* data, const int& size);
         static void DrawMargins(void* data, const int& size, const MyBase::Color& color, const int& lineWidth);
@@ -19,8 +19,7 @@ namespace MyCraft {
         DrawingCenter();
         static DrawingCenter* Default;
         unsigned char   __positionBufferPointer;
-        GLuint __vertexArray, __positionBuffer[SWAP_BUFFER];
-        MyBase::Texture __texture;
+        GLuint __vertexArray, __positionBuffer[SWAP_BUFFER], __extraBuffer;
     };
 };
 #endif

@@ -32,8 +32,8 @@ namespace MyCraft {
         BlockCatogary               __blockTypes[16][16][16];
         std::bitset<16>             __bits[16][16];
         std::string                 __source;
-        std::vector<glm::ivec4>     __list;
-        std::vector<glm::ivec4>     __transparentList;
+        std::vector<glm::vec4>     __list;
+        std::vector<glm::vec4>     __transparentList;
         void __add(const glm::ivec3& position);
         void __remove(const glm::ivec3& position);
     };

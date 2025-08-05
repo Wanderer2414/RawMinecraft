@@ -4,6 +4,8 @@
 #include "Block.h"
 #include "Clock.h"
 #include "Controller3D.h"
+#include "CrackingManage.h"
+#include "Item.h"
 #include "Message.h"
 #include "WorldRender.h"
 
@@ -13,6 +15,7 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
         World(const int& x, const int& y, const int& z, const std::string& src);
         ~World();
         const BlockCatogary&    at(const glm::vec3& pos) const;
+        bool                    isHoverBlock() const;
         void                    set(const int& x, const int& y, const int& z, const BlockCatogary& type);
         void                    set(const glm::vec3& pos, const BlockCatogary& type);
         void                    playerAt(const glm::vec3& pos);
@@ -22,14 +25,12 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
         friend class DestroyblockCommand;
         friend class CheckHoverCommand;
     protected:
-        bool handle(GLFWwindow* window) override;
-        virtual void glDraw() const override;
     private:
         WorldRender             __worldRender;
-        bool                    __isHoverBlock;
-        glm::ivec3              __hoverBlock, __placePosition;
+        CrackingManage          __crackingManage;
+        glm::ivec3              __placePosition;
         glm::vec3               __cameraPosition, __cameraDir;
-        MyBase::Clock           pFrameAlarm;
+        MyBase::Clock           __frameAlarm;
 
     };
     class CheckEmptyCommand: public MyBase::Command {
@@ -82,9 +83,9 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
     };
     class DestroyBlockMessage: public MyBase::Message {
     public:
-        DestroyBlockMessage();
+        DestroyBlockMessage(const ItemType& item);
         ~DestroyBlockMessage();
-        BlockCatogary type;
+        const ItemType type;
         MyBase::MessageType getType() const override;
     };
     class DestroyblockCommand: public MyBase::Command {

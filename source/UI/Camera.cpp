@@ -133,7 +133,7 @@ namespace MyBase3D {
         return is_changed;
     }
     void Camera::glDraw() const {
-        glUseProgram(MyBase3D::ShaderStorage::getInstance().getPoint2DShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetPoint2DShader());
         GLuint VAO, Positions, Colors;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
@@ -180,7 +180,7 @@ namespace MyBase {
     }
     void SetCameraCommand_ThirdPersonView::execute(Port& mine, Port& source, Message* message) {
         SetCameraMessage* package = (SetCameraMessage*)message;
-        __camera->setPosition(package->position-3.f*package->direction + glm::vec3(0,0,2));
+        __camera->setPosition(package->position-3.f*package->direction + glm::vec3(0,0,1.8));
         __camera->see(package->direction);
     }
     

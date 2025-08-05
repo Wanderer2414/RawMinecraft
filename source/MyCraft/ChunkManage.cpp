@@ -1,6 +1,7 @@
 #include "ChunkManage.h"
 #include "ChunkBase.h"
 #include "Chunk.h"
+#include "DrawingCenter.h"
 namespace MyCraft {
     ChunkManage::ChunkManage(const std::string& src): __isLoaded(false), __sourceFolder(src) {
         __chunks.resize(world_side*world_side*world_side, 0);
@@ -10,6 +11,7 @@ namespace MyCraft {
                 for (int k = 0; k<world_side; k++) 
                     __chunkIndices[i][j][k] = i*world_side*world_side + j*world_side + k;
         playerAt({0,0,0});
+        __texture.load("assets/images/blockCatogary.png", false);
     }
     ChunkManage::~ChunkManage() {
         for (auto& chunk:__chunks) {
@@ -17,7 +19,7 @@ namespace MyCraft {
             delete chunk;
         }
     }
-    const std::vector<glm::ivec4>& ChunkManage::getChunks() const {
+    const std::vector<glm::vec4>& ChunkManage::getChunks() const {
         return __chunkPositions;
     }
     void ChunkManage::playerAt(const glm::ivec3& pos) {
@@ -193,10 +195,12 @@ namespace MyCraft {
         }
     }
     void ChunkManage::glDraw() const {
+        DrawingCenter::BindCube(__texture);
         glLineWidth(0);
         for (auto& chunk:__chunks) chunk->glDraw();
     }
     void ChunkManage::glDrawTransparent() const {
+        DrawingCenter::BindCube(__texture);
         glLineWidth(0);
         for (auto& chunk:__chunks) chunk->glDrawTransparent();
     }

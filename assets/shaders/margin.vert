@@ -4,7 +4,7 @@ layout(location = 0) out vec4 color;
 layout(set=0, binding=0) uniform CameraBuffer{
     mat4 ClipPlane;
 };
-struct Info {ivec3 position; int scale;};
+struct Info {vec3 position; float scale;};
 layout(set=0, binding=1) uniform Origin {
     Info infos[32];
 };
