@@ -1,55 +1,36 @@
-#include "ModelStorage.h"
+#include "NpcStorage.h"
 #include "Global.h"
 #include "ModelLoader.h"
 #include "ShaderStorage.h"
-namespace MyCraft {
-    ModelStorage* ModelStorage::Default;
-    ModelStorage::ModelStorage(): __playerModel("assets/models/pig_model.gltf") {
+namespace MyCraft{
+    NPCStorage::NPCStorage(std::string & source): __NPCModel(source){
         glGenBuffers(1, &__nodeState);
         glBindBuffer(GL_UNIFORM_BUFFER, __nodeState);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), 0, GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, 1, __nodeState);
     }
-    //ModelStorage::ModelStorage(std::string & source) : 
-    ModelStorage::~ModelStorage() {
+
+    NPCStorage::~NPCStorage(){
         glDeleteBuffers(1, &__nodeState);
     }
 
-    ModelStorage& ModelStorage::getInstance() {
-        if (!Default) Default = new ModelStorage();
-        return *Default;
-    }
-
-    void ModelStorage::close() {
-        if (Default) {
-            delete Default;
-            Default = 0;
-        }
-    }
-
-    void ModelStorage::DrawModel(std::vector<glm::mat4>& state, const ModelLoader& model) {
+    void NPCStorage::DrawModel(std::vector<glm::mat4>& state, const ModelLoader& model) {
         glUseProgram(MyBase3D::ShaderStorage::getInstance().getModelShader());
         const tinygltf::Scene& scene = model.__model.scenes[model.__model.defaultScene];
         __drawNode(scene.nodes.back(), state, model);
     }
-    void ModelStorage::__drawNode(const int& nodeIndex, std::vector<glm::mat4>& state, const ModelLoader& lmodel) {
-        const tinygltf::Model& model = lmodel.__model;
-        const tinygltf::Node& node = model.nodes[nodeIndex];
-        if (model.nodes[nodeIndex].translation.size()) {
-            state[nodeIndex] = glm::translate(state[nodeIndex], glm::vec3(node.translation[0], node.translation[2], node.translation[1]));
-        }
-        if (node.mesh >= 0 && node.mesh<model.meshes.size()) {
-            glBindBuffer(GL_UNIFORM_BUFFER, __nodeState);
-            glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &state[nodeIndex]);
-            glBindBufferBase(GL_UNIFORM_BUFFER, 1, __nodeState);
+    void NPCStorage::__drawNode(const int & nodeIndex, std::vector<glm::mat4>& state, const ModelLoader & lmodel){
+        const tinygltf::Node& node = lmodel.__model.nodes[nodeIndex];
+        if (node.mesh >= 0) {
             __drawMesh(node.mesh, lmodel);
         }
-        for (int i:model.nodes[nodeIndex].children) {
-            state[i] = state[nodeIndex]*state[i];
-            __drawNode(i, state, lmodel);
+        if (!node.children.empty()) {
+            for (const int & child : node.children) {
+                __drawNode(child, state, lmodel);
+            }
         }
     }
-    void ModelStorage::__drawMesh(const int& meshIndex, const ModelLoader& lmodel) {
+    void NPCStorage::__drawMesh(const int & meshIndex, const ModelLoader & lmodel){
         const tinygltf::Model& model = lmodel.__model;
         const tinygltf::Mesh& mesh = model.meshes[meshIndex];
         for (const auto& prim:mesh.primitives) {
@@ -66,7 +47,8 @@ namespace MyCraft {
             glDrawElements(GL_LINE_STRIP, accessorIndices.count, accessorIndices.componentType, (void*)accessorIndices.byteOffset);
         }
     }
-    ModelLoader& ModelStorage::getPlayerModel() {
-        return __playerModel;
+
+    ModelLoader & NPCStorage::getNPCModel(){
+        return __NPCModel;
     }
 }

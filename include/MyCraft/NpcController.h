@@ -1,29 +1,39 @@
 #ifndef NPC_CONTROLLER_H
 #define NPC_CONTROLLER_H
-
 #include "ModelController.h"
+#include "Clock.h"
+#include "Message.h"
 #include <glm/glm.hpp>
 #include <random>
+#include "ModelStorage.h"
 
 namespace MyCraft {
-    class NpcController : public ModelController {
-        public:
-            NpcController();
-            ~NpcController();
-            void see(const glm::vec3& dir) override;
-            void move(const glm::vec3& dir) override;
-            void rotate(const float& angle) override;
-            glm::vec3 getModelPosition() const override;
-            glm::mat4x3 getShape() const override;
-        protected:
-            void update() override;
-            virtual void performBehavior() = 0; // Hành vi đặc trưng của mỗi NPC
-            glm::vec3 position; // Vị trí hiện tại
-            glm::mat4x3 hitbox; // Hình dạng/hitbox
-            float moveSpeed; // Tốc độ di chuyển
-            std::mt19937 rng;
-            
+    enum class NpcType{
+        COW,
+        WOLF,
+        CHICKEN
     };
-};
-
+    class NPCController : public ModelController, public MyBase::Port {
+        public:
+            NPCController();
+            ~NPCController();
+            void glDraw() const override;
+            virtual void performAction() = 0;
+            glm::mat4x3 getShape() const override;
+        
+        private:
+            bool            __isRun, __isDrawable,
+                            __isLeftAttack, __isRightAttack,
+                            __isCrouch;
+            float           __runTime, __handTime, __speed;
+            glm::vec3       __position, __diagonal;
+            glm::vec3       __direction, __eye_direction;
+            std::vector<glm::mat4> __animation;
+            MyBase::Clock   __animationClock,
+                            __runCooldown,
+                            __attack__cooldown;
+            glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
+            void            update() override;
+    };
+}
 #endif

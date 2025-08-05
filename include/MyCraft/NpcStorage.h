@@ -1,23 +1,22 @@
-#ifndef MODEL_STORAGE_H
-#define MODEL_STORAGE_H
+#ifndef NPC_STORAGE_H
+#define NPC_STORAGE_H
 #include <vector>
 #include <string>
 #include "Global.h"
 #include "ModelLoader.h"
+#include "NpcController.h"
+#include "PlayerModelController.h"
 
 namespace MyCraft {
-    class ModelStorage {
+    class NPCStorage {
     public:
-        static ModelStorage& getInstance();
-        static void close();
+        NPCStorage(std::string & source);
+        ~NPCStorage();
         void DrawModel(std::vector<glm::mat4>& state, const ModelLoader& model);
-        ModelLoader                             &getPlayerModel();
+        ModelLoader                             &getNPCModel();
 
     private:
-        ModelStorage();
-        ~ModelStorage();
-        static ModelStorage* Default;
-        ModelLoader                             __playerModel;
+        ModelLoader                             __NPCModel;
         
         GLuint                                  __nodeState;
         void    __drawNode(const int& node, std::vector<glm::mat4>& states, const ModelLoader& model),
