@@ -4,7 +4,7 @@
 #include "Global.h"
 namespace MyBase3D {
 
-class Container3D: public Controller3D {
+    class Container3D: public Controller3D {
     public:
         Container3D();
         ~Container3D();

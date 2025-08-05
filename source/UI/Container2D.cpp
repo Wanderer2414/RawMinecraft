@@ -112,7 +112,7 @@ namespace MyBase{
         for (auto& i: __permanentChildren) 
             is_changed = i->handle(window) || is_changed;
         for (int i = 0; i<__children.size(); i++)  {
-            __children[i].first->handle(window) || is_changed;
+            is_changed = __children[i].first->handle(window) || is_changed;
             if (__children[i].first->isFocus()) __currentFocus = i;
         }
         is_changed = Controller::handle(window) || is_changed;

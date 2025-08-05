@@ -1,5 +1,4 @@
 #include "PlayerModelController.h"
-#include "Block.h"
 #include "Camera.h"
 #include "ControlCenter.h"
 #include "Message.h"
@@ -36,11 +35,11 @@ namespace MyCraft {
         __isChanged = ModelController::catchEvent(window) || __isChanged;
         if (MyBase::ControlCenter::getInstance().IsMouseClicked() || __isLeftAttack || __isRightAttack) {
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
-                rightAttack();
+                leftAttack();
                 __isChanged = true;
             }
             if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
-                leftAttack();
+                rightAttack();
                 __isChanged = true;
             }
 
@@ -184,7 +183,7 @@ namespace MyCraft {
             __handTime = 0;
             __isRightAttack = false;
             __isLeftAttack = true;
-            send(new DestroyBlockMessage());
+            send(new LeftAttackMessage(getShape()));
             send(new CheckHoverMessage(__position, __eye_direction));
             send(new RequestFallMessage(getShape(), getZVelocity()));
         } 
@@ -195,7 +194,7 @@ namespace MyCraft {
             __handTime = 0;
             __isRightAttack = false;
             __isRightAttack = true;
-            send(new PlaceBlockMessage(getShape(), BlockCatogary::Grass));
+            send(new RightAttackMessage(__position, __eye_direction));
             send(new CheckHoverMessage(__position, __eye_direction));
         }
     }
@@ -328,7 +327,7 @@ namespace MyCraft {
         return MyBase::MessageType::RightAttack;
     }
     
-    LeftAttackMessage::LeftAttackMessage() {}
+    LeftAttackMessage::LeftAttackMessage(const glm::mat4x3& s): shape(s) {}
     LeftAttackMessage::~LeftAttackMessage() {}
     MyBase::MessageType LeftAttackMessage::getType() const{
         return MyBase::MessageType::LeftAttack;

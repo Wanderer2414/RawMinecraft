@@ -104,9 +104,10 @@ namespace MyCraft {
 
     class LeftAttackMessage: public MyBase::Message {
     public:
-        LeftAttackMessage();
+        LeftAttackMessage(const glm::mat4x3& pos);
         ~LeftAttackMessage();
         MyBase::MessageType     getType() const override;
+        const glm::mat4x3 shape;
     };
 
     class CheckHoverMessage: public MyBase::Message {

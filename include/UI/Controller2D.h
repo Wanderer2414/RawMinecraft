@@ -22,6 +22,7 @@ namespace MyBase {
                                 setVisible(const bool& visible),
                                 reset() override;
         friend class Container2D;
+        friend class Wrapper;
     protected:
         virtual bool    contains(const glm::vec2& position) const = 0;
         virtual bool    catchEvent(GLFWwindow* window) override;

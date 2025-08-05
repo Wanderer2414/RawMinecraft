@@ -2,6 +2,7 @@
 #include "Block.h"
 #include "Container3D.h"
 #include "DrawingCenter.h"
+#include "Inventory.h"
 #include "Message.h"
 #include "General.h"
 #include "PlayerModelController.h"
@@ -291,6 +292,7 @@ namespace MyCraft {
 
         if (__world->__isHoverBlock && below_result && above_result) {
             __world->set(__world->__placePosition, package->type);
+            mine.send(des, new AcceptPlaceMessage(package->type));
         }
     }
 

@@ -21,6 +21,7 @@ namespace MyCraft {
         __hitbox.match(&__model);
         __hitbox.match(&__world);
         __hitbox.match(&camera);
+        __hitbox.match(&__inventory);
 
         __label.setFont(__font);
         __label.setText("Max fps:");
@@ -64,7 +65,7 @@ namespace MyCraft {
             __world.playerAt(pos);
         }
         file.close();
-        insert(&__inventory);
+        insertPermanent(&__inventory);
     }
     GameForm::~GameForm() {        
     }
@@ -107,7 +108,7 @@ namespace MyCraft {
         return is_changed;
     }
     bool GameForm::handle(GLFWwindow* window) {
-        bool is_changed = Form3D::handle(window);
+    bool is_changed = Form3D::handle(window);
         if (__fpsClock.get()) {
             __fpsClock.restart();
             __label.setText(std::format("Fps: {}", (int)getCurrentFps()));

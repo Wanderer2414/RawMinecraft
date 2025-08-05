@@ -31,6 +31,9 @@ namespace MyBase {
                             c += 'A'-'a';
                     ControlCenter::getInstance().__charInput = c;
                 }
+                else if (key>='0' && key<='9') {
+                    ControlCenter::getInstance().__charInput = key;
+                }
                 else if (key == GLFW_KEY_BACKSPACE) {
                     ControlCenter::getInstance().__charInput='\b';
                 }
@@ -54,7 +57,6 @@ namespace MyBase {
     }
 
     void scroll_callback(GLFWwindow* window, double x, double y) {
-        ControlCenter::getInstance().__clock = clock();
         ControlCenter::getInstance().__scrollPosition = {x,y};
     }
 
@@ -80,12 +82,12 @@ namespace MyBase {
         return __windowHalfSize;    
     }
     void ControlCenter::Reset() {
+        __scrollPosition = {0,0};
         __isKeyPressed = __isMouseClicked = __isDoubleClick = false;
         if (__clickCount) __clickCount--;
         __charInput = 0;
     }
     glm::vec2 ControlCenter::getScroll() const {
-        if (clock()-__clock>CLOCKS_PER_SEC*0.001) return {0,0};
         return __scrollPosition;
     }
     GLFWwindow* ControlCenter::InitWindow(const float& width, const float& height, const std::string& program) {

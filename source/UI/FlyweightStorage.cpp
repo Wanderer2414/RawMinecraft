@@ -63,7 +63,7 @@ namespace MyBase {
     FlyweightStorage::~FlyweightStorage() {
         std::cout << "Flyweight remains: ";
         if (__root) {
-            std::cout << __root->size << std::endl;
+            std::cout << __root->size << std::endl; 
             __free(__root);
         }
         else std::cout << 0 << std::endl;
@@ -75,8 +75,10 @@ namespace MyBase {
     void FlyweightStorage::removeObject(const std::string& name) {
         create();
         Default->__remove(Default->__root, 0, name);
-        if (!Default->__root) delete Default;
-        Default = 0;
+        if (!Default->__root) {
+            delete Default;
+            Default = 0;
+        }
     }
     void FlyweightStorage::__free(TrieNode*& root) {
         if (!root) return ;
