@@ -9,7 +9,25 @@ namespace MyCraft {
         if (type>=ItemType::Dirt && type<=ItemType::Ice) return true;
         return false;
     }
-
+    bool isAdaptive(const ItemType& tool, const BlockCatogary& block) {
+        switch (tool) {
+            case ItemType::Shovel: return isShoverAdaptive(block);
+        default: return false;
+        }
+    }
+    bool isShoverAdaptive(const BlockCatogary& type) {
+        switch (type) {
+            case Dirt: return true;
+            case Grass: return true;
+        default: return false;
+        }
+    }
+    float getPowerness(const ItemType& type) {
+        switch (type) {
+            case ItemType::Shovel: return 200;
+        default: return 1;
+        }
+    }
     BlockCatogary to_block(const ItemType& type) {
         return (BlockCatogary)type;
     }
@@ -95,12 +113,12 @@ namespace MyCraft {
     void ToolItem::update() {
         if (__currentCount != getCount()) {
             if (getCount()<32) setFillColor(RED);
-            else if (getCount()<64) setFillColor(YELLOW);
+            else if (getCount()<128) setFillColor(YELLOW);
             glm::vec2 size = getTextureExportSize();
-            size.x = 1.0f*size.y/255*__currentCount;
+            size.y = 1.0f*getTextureExportSize().y/255*__currentCount;
             MyBase::ShapeManager::getInstance().removeShape(__durabilityBackground, size);
             __currentCount = getCount();
-            size.x = 1.0f*size.y/255*getCount();
+            size.y = 1.0f*getTextureExportSize().y/255*getCount();
             MyBase::ShapeManager::getInstance().createShape(__durabilityBackground, size);
         }
     }

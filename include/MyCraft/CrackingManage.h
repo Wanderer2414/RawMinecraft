@@ -12,7 +12,7 @@ namespace MyCraft {
         ~CrackingManage();
         CrackingManage(const CrackingManage&) = delete;
         CrackingManage& operator=(const CrackingManage&) const = delete;
-
+        BlockCatogary getType() const;
         bool isHover() const;
         float getPercent() const;
         void crack(const float& percent);

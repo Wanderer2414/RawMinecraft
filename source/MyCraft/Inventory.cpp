@@ -279,7 +279,7 @@ namespace MyCraft {
         __items.package.font = MyBase::Font("assets/fonts/SyneMono-Regular.ttf");
         for (int i = 0; i<4; i++) for (int j = 0; j<10; j++) __indices[i][j] = -1;
 
-        __items.placeToolbar(0, new BlockItem(__items.package, ItemType::Grass, 64));
+        __items.placeToolbar(0, new BlockItem(__items.package, ItemType::Grass, 5));
 
         __items.placeToolbar(1,new BlockItem(__items.package, ItemType::Ice, 64));
 
@@ -289,6 +289,7 @@ namespace MyCraft {
         __toolBar = new ToolBar(__items);
         add(new LeftAttackCommand(__toolBar));
         add(new AcceptPlaceCommand(__toolBar));
+        add(new AcceptDestroyCommand(__toolBar));
         add(new RightAttackCommand(__toolBar));
         changeState(__toolBar);
     }
@@ -328,10 +329,8 @@ namespace MyCraft {
     } 
     void RightAttackCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         Item* item = __toolBar->__items.getToolBar(__toolBar->__chosenIndex);
-        if (item) {
-            if (item->isTool()) mine.send(new DestroyBlockMessage(*item));
-            else mine.send(new DestroyBlockMessage(ItemType::Air));
-        }
+        if (item && item->isTool()) mine.send(new DestroyBlockMessage(*item));
+        else mine.send(new DestroyBlockMessage(ItemType::Air));
     }
 
     AcceptPlaceMessage::AcceptPlaceMessage(const BlockCatogary& t): type(t) {}
@@ -351,8 +350,31 @@ namespace MyCraft {
         AcceptPlaceMessage* package = (AcceptPlaceMessage*)message;
         int count = __toolbar->__items.getToolBar(__toolbar->__chosenIndex)->getCount();
         if (count) {
-            __toolbar->__items.getToolBar(__toolbar->__chosenIndex)->setCount(count-1);
+            if (count-1==0) delete __toolbar->__items.placeToolbar(__toolbar->__chosenIndex, 0);
+            else __toolbar->__items.getToolBar(__toolbar->__chosenIndex)->setCount(count-1);
         }
     }
 
+    AcceptDestroyMessage::AcceptDestroyMessage(const float& dec): percent(dec) {}
+    AcceptDestroyMessage::~AcceptDestroyMessage() {}
+
+    MyBase::MessageType AcceptDestroyMessage::getType() const {
+        return MyBase::AcceptDestroy;
+    }
+
+    AcceptDestroyCommand::AcceptDestroyCommand(ToolBar* toolbar): __toolbar(toolbar) {}
+    AcceptDestroyCommand::~AcceptDestroyCommand() {}
+
+    MyBase::MessageType AcceptDestroyCommand::getType() const {
+        return MyBase::AcceptDestroy;
+    }
+    void AcceptDestroyCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        AcceptDestroyMessage* package = (AcceptDestroyMessage*)message;
+        Item* item = __toolbar->__items.getToolBar(__toolbar->__chosenIndex);
+        if (item) {
+            int count = item->getCount() - package->percent;
+            if (count<=0) delete __toolbar->__items.placeToolbar(__toolbar->__chosenIndex, 0);
+            else __toolbar->__items.getToolBar(__toolbar->__chosenIndex)->setCount(count);
+        }
+    }
 }

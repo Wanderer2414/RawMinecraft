@@ -196,6 +196,7 @@ namespace MyCraft {
             __isRightAttack = true;
             send(new RightAttackMessage(__position, __eye_direction));
             send(new CheckHoverMessage(__position, __eye_direction));
+            send(new RequestFallMessage(getShape(), getZVelocity()));
         }
     }
     void PlayerModelController::teleport(const glm::vec3& position) {

@@ -1,5 +1,6 @@
 #ifndef ITEM_H
 #define ITEM_H
+#include "Block.h"
 #include "Font.h"
 #include "Rectangle.h"
 #include "Shape.h"
@@ -15,6 +16,9 @@ namespace MyCraft {
         MyBase::Font font;
         MyBase::Texture texture;
     };
+    bool isAdaptive(const ItemType&, const BlockCatogary&);
+    bool isShoverAdaptive(const BlockCatogary& block);
+    float getPowerness(const ItemType& type);
     class Item {
     public:
         Item(const ItemType& type, const unsigned char& count);

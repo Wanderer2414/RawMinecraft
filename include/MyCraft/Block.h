@@ -8,5 +8,6 @@ namespace MyCraft {
     };
 
     bool isTransparent(const BlockCatogary& type);
+    float getHardness(const BlockCatogary& type);
 }
 #endif

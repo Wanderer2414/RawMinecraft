@@ -59,6 +59,7 @@ namespace MyCraft {
         friend class RightAttackCommand;
         friend class LeftAttackCommand;
         friend class AcceptPlaceCommand;
+        friend class AcceptDestroyCommand;
     private:
         bool contains(const glm::vec2& position) const override;
         bool catchEvent(GLFWwindow*)                override;
@@ -120,6 +121,24 @@ namespace MyCraft {
     public:
         AcceptPlaceCommand(ToolBar* toolbar);
         ~AcceptPlaceCommand();
+
+        MyBase::MessageType getType()      const override;;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;;
+    private:
+        ToolBar* __toolbar;
+    };
+    class AcceptDestroyMessage: public MyBase::Message {
+    public:
+        AcceptDestroyMessage(const float& dec);
+        ~AcceptDestroyMessage();
+
+        float percent;
+        MyBase::MessageType getType() const override;
+    };
+    class AcceptDestroyCommand: public MyBase::Command {
+    public:
+        AcceptDestroyCommand(ToolBar* toolbar);
+        ~AcceptDestroyCommand();
 
         MyBase::MessageType getType()      const override;;
         void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;;

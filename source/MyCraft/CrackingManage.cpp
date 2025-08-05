@@ -9,7 +9,7 @@ namespace MyCraft {
         setVisible(false);
         __crackingTexture.load("assets/images/cracking.png", false);
         __blockTexture.load("assets/images/blockCatogary.png", false);
-        __clock.setDuration(250);
+        __clock.setDuration(300);
         __gravityClock.setDuration(3);
         __crackingPieces = new glm::vec4[64];
     }
@@ -26,6 +26,9 @@ namespace MyCraft {
     glm::ivec3 CrackingManage::getHoverBlock() const {
         return __hoverBlock;
     }
+    BlockCatogary CrackingManage::getType() const {
+        return __type;
+    }
     void CrackingManage::crack(const float& percent) {
         __clock.restart();
         if (__percent==0) {
@@ -37,7 +40,7 @@ namespace MyCraft {
         if (__percent<0.9) {
             __numberPieces = ceil(32*__percent);
         }
-        else if (!__numberRemain) {
+        else if (__numberRemain<64) {
             __numberRemain = 32;
             for (int i = 0; i<32; i++) {
                 __crackingPieces[i+32] = {rand()%110/100.f - 0.05 + __hoverBlock.x, rand()%110/100.f - 0.05 + __hoverBlock.y, __hoverBlock.z + i*0.1/3, __type};
@@ -54,8 +57,11 @@ namespace MyCraft {
         if (!__numberRemain && !__numberPieces) setVisible(false);
     }
     void CrackingManage::setHoverBlock(const glm::ivec3& hover, const BlockCatogary& type) {
-        __type = type;
-        __hoverBlock= hover;
+        if (__hoverBlock != hover) {
+            __percent = 0;
+            __type = type;
+            __hoverBlock= hover;
+        }
     }
     bool CrackingManage::handle(GLFWwindow* window) {
         bool is_changed = MyBase3D::Controller3D::handle(window);

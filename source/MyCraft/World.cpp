@@ -298,10 +298,16 @@ namespace MyCraft {
     void DestroyblockCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
         DestroyBlockMessage* package = (DestroyBlockMessage*)message;
         if (__world->isHoverBlock()) {
-            __world->__crackingManage.crack(0.1);
+            BlockCatogary type = __world->__crackingManage.getType();
+            float percent = 0.03;
+            if (isAdaptive(package->type, type)) {
+                percent = getPowerness(package->type)/getHardness(type);
+            }
+            __world->__crackingManage.crack(percent);
             if (__world->__crackingManage.getPercent()>0.9) {
                 __world->__crackingManage.unhover();
                 __world->set(__world->__crackingManage.getHoverBlock(), BlockCatogary::Air);
+                mine.send(des, new AcceptDestroyMessage(1/percent));
             }
         }
     }
