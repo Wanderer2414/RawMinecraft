@@ -39,8 +39,8 @@ namespace MyBase3D {
         __children.clear();
     }
     void Container3D::glDraw() const {
-        for (auto& child:__children) 
-            if (child->isVisible()) child->glDraw();
+        for (int i = __children.size()-1; i>=0; i--)
+            __children[i]->glDraw();
     }
     void Container3D::glDrawTransparent() const {
         for (auto& child:__children) 

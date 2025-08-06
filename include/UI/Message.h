@@ -40,12 +40,13 @@ namespace MyBase {
 
     class Network {
     public:
-        Network();
-        ~Network();
-        virtual void match(Port* port);
+        static void match(Port* port);
         virtual void receive(Port& source, Message* Message);
         virtual void receive(Port& source, Port& destination, Message* Message);
     private:
+        Network();
+        ~Network();
+        static Network& get();
         std::vector<std::vector<Port*>>             __ports;
         void send(Port& source, Port& destination, Message* Message);
     };

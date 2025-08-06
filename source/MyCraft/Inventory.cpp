@@ -317,7 +317,7 @@ namespace MyCraft {
         if (item) {
             if (item->isBlock()) {
                 BlockCatogary type = (BlockCatogary)ItemType(*item);
-                mine.send(new PlaceBlockMessage(package->shape, type));
+                mine.send(new PlaceBlockMessage(package->position, type));
             }
         }
     }
@@ -329,8 +329,8 @@ namespace MyCraft {
     } 
     void RightAttackCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         Item* item = __toolBar->__items.getToolBar(__toolBar->__chosenIndex);
-        if (item && item->isTool()) mine.send(new DestroyBlockMessage(*item));
-        else mine.send(new DestroyBlockMessage(ItemType::Air));
+        if (item && item->isTool()) mine.send(new CrackBlockMessage(*item));
+        else mine.send(new CrackBlockMessage(ItemType::Air));
     }
 
     AcceptPlaceMessage::AcceptPlaceMessage(const BlockCatogary& t): type(t) {}
@@ -355,7 +355,7 @@ namespace MyCraft {
         }
     }
 
-    AcceptDestroyMessage::AcceptDestroyMessage(const float& dec): percent(dec) {}
+    AcceptDestroyMessage::AcceptDestroyMessage(const float& dec, const BlockCatogary& t, const glm::vec3& p): percent(dec), type(t), position(p) {}
     AcceptDestroyMessage::~AcceptDestroyMessage() {}
 
     MyBase::MessageType AcceptDestroyMessage::getType() const {

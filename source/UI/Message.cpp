@@ -42,11 +42,15 @@ namespace MyBase {
 
     Network::Network(): __ports(MessageTypeSize) {}
     Network::~Network() {}
+    Network& Network::get() {
+        static Network network;
+        return network;
+    }
     void Network::match(Port* port) {
-        port->match(this);
+        port->match(&get());
         const auto& types = port->getTypes();
         for (const auto& type: types)
-            __ports[type].push_back(port);
+            get().__ports[type].push_back(port);
     }
     void Network::receive(Port& source, Message* Message) {
         auto& ports = __ports[Message->getType()];

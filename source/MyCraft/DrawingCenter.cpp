@@ -54,6 +54,24 @@ namespace MyCraft {
     
         texture.Bind();
     }
+    void DrawingCenter::BindDroppedBlock(const MyBase::Texture& texture, const glm::vec2& extra) {
+        getInstance();
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDroppedShader());
+        glBindVertexArray(Default->__vertexArray);
+        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::getInstance().getImageBlockIndices());
+        glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
+        glEnableVertexAttribArray(0);
+    
+        glBindBufferBase(GL_UNIFORM_BUFFER, 4, MyBase3D::PointSet::getInstance().getBlockSet());
+        glBindBufferBase(GL_UNIFORM_BUFFER, 5, MyBase3D::PointSet::getInstance().getBlockUVS());
+
+        glm::vec4 ex(extra, texture.getSize());
+        glBindBuffer(GL_UNIFORM_BUFFER, Default->__extraBuffer);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(GLfloat)*4, &ex);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 3, Default->__extraBuffer);
+    
+        texture.Bind();
+    }
     void DrawingCenter::BindMargin() {
         getInstance();
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetMarginShader());
@@ -95,5 +113,28 @@ namespace MyCraft {
             data = (char*)data + sizeof(GLfloat)*4*sz;
             Default->__positionBufferPointer = (Default->__positionBufferPointer+1)%SWAP_BUFFER;
         }
+    }
+    void DrawingCenter::DrawDroppedBlock(void* data, void* state, const int& size) {
+        getInstance();
+        GLuint STATE;
+        glGenBuffers(1, &STATE);
+        glBindBuffer(GL_UNIFORM_BUFFER, STATE);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4)*32, 0, GL_DYNAMIC_DRAW);
+        for (int i = 0; i<size; i+=32) {
+            int sz = std::min(32, size-i);
+            glBindBuffer(GL_UNIFORM_BUFFER, Default->__positionBuffer[Default->__positionBufferPointer]);
+            glBufferSubData(GL_UNIFORM_BUFFER,0,sizeof(GLfloat)*4*sz, data);
+            glBindBufferBase(GL_UNIFORM_BUFFER, 1, Default->__positionBuffer[Default->__positionBufferPointer]);
+            
+            glBindBuffer(GL_UNIFORM_BUFFER, STATE);
+            glBufferSubData(GL_UNIFORM_BUFFER,0,sizeof(glm::mat4)*32, state);
+            glBindBufferBase(GL_UNIFORM_BUFFER, 2, STATE);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36*sz);
+            data = (char*)data + sizeof(GLfloat)*4*sz;
+            state = (char*)data + sizeof(glm::mat4)*sz;
+            Default->__positionBufferPointer = (Default->__positionBufferPointer+1)%SWAP_BUFFER;
+        }
+        glDeleteBuffers(1, &STATE);
     }
 };

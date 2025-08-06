@@ -3,6 +3,7 @@
 #include "Biome.h"
 #include "Camera.h"
 #include "Clock.h"
+#include "Cursor.h"
 #include "Font.h"
 #include "Form3D.h"
 #include "GamePauseForm.h"
@@ -21,11 +22,13 @@ namespace MyCraft {
             ~GameForm();
         
             bool move(const float& x, const float& y, const float& z);
+            void update() override;
         protected:
         private:
             float           pZVelocity;
             bool            catchEvent(GLFWwindow* window) override;
             bool            handle(GLFWwindow* window) override;
+            Cursor          __cursor;
             MyBase::Font    __fontDefault;
             MyBase::Clock   __frameAlarm, __fpsClock;
             MyBase::Font    __font;
@@ -33,7 +36,6 @@ namespace MyCraft {
             World           __world;
             PlayerModelController     __model;
             BiomeManage     __biomeManage;
-            HitBoxCenter    __hitbox;
             float           __speed;
             GamePauseForm   __pauseForm;
             Inventory       __inventory;

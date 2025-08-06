@@ -5,6 +5,8 @@
 #include "Clock.h"
 #include "Controller3D.h"
 #include "CrackingManage.h"
+#include "DroppedItem.h"
+#include "HitBoxCenter.h"
 #include "Item.h"
 #include "Message.h"
 #include "WorldRender.h"
@@ -14,105 +16,56 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
     public:
         World(const int& x, const int& y, const int& z, const std::string& src);
         ~World();
-        const BlockCatogary&    at(const glm::vec3& pos) const;
-        bool                    isHoverBlock() const;
-        void                    set(const int& x, const int& y, const int& z, const BlockCatogary& type);
-        void                    set(const glm::vec3& pos, const BlockCatogary& type);
-        void                    playerAt(const glm::vec3& pos);
-        void                    setHoverBlock(const glm::vec3& pos, const glm::vec3& placePosition),
-                                unHoverBlock();
-        friend class PlaceblockCommand;
-        friend class DestroyblockCommand;
-        friend class CheckHoverCommand;
+        
+        bool isBusyBlock(const glm::ivec3& position);
+        void teleport(const glm::ivec3& position);
+        friend class PlaceBlockCommand;
+        friend class CrackBlockCommand;
     protected:
     private:
+        HitBoxCenter            __hitbox;
         WorldRender             __worldRender;
         CrackingManage          __crackingManage;
+        DropItemManage          __dropItemManage;
         glm::ivec3              __placePosition;
         glm::vec3               __cameraPosition, __cameraDir;
-        MyBase::Clock           __frameAlarm;
 
     };
-    class CheckEmptyCommand: public MyBase::Command {
-    public:
-        CheckEmptyCommand(MyCraft::World* world);
-        ~CheckEmptyCommand();
 
-        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
-        MyBase::MessageType getType() const override;
-    private:
-        World*  __world;
-    };
 
-    class CheckFallCommand: public MyBase::Command {
-    public:
-        CheckFallCommand(MyCraft::World* world);
-        ~CheckFallCommand();
-
-        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
-        MyBase::MessageType getType() const override;
-    private:
-        World*  __world;
-    };
-
-    class CheckHoverCommand: public MyBase::Command {
-    public:
-        CheckHoverCommand(MyCraft::World* world);
-        ~CheckHoverCommand();
-        MyBase::MessageType getType() const override;
-        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
-    private:
-        World* __world;
-    };
     class PlaceBlockMessage: public MyBase::Message {
     public:
-        PlaceBlockMessage(const glm::mat4x3& model, const BlockCatogary& type);;
+        PlaceBlockMessage(const glm::vec3& pos, const BlockCatogary& type);;
         ~PlaceBlockMessage();
-        glm::mat4x3 shape;
-        BlockCatogary type;
+        const glm::vec3 pos;
+        const BlockCatogary type;
         MyBase::MessageType getType() const override;
     };
-    class PlaceblockCommand: public MyBase::Command {
+    class PlaceBlockCommand: public MyBase::Command {
     public:
-        PlaceblockCommand(MyCraft::World* world);
-        ~PlaceblockCommand();
+        PlaceBlockCommand(MyCraft::World& world);
+        ~PlaceBlockCommand();
         MyBase::MessageType getType() const override;
         void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
     private:
-        World* __world;
+        World& __world;
     };
-    class DestroyBlockMessage: public MyBase::Message {
+
+    class CrackBlockMessage: public MyBase::Message {
     public:
-        DestroyBlockMessage(const ItemType& item);
-        ~DestroyBlockMessage();
+        CrackBlockMessage(const ItemType& item);
+        ~CrackBlockMessage();
         const ItemType type;
         MyBase::MessageType getType() const override;
     };
-    class DestroyblockCommand: public MyBase::Command {
+    class CrackBlockCommand: public MyBase::Command {
     public:
-        DestroyblockCommand(World* world);
-        ~DestroyblockCommand();
+        CrackBlockCommand(World& world);
+        ~CrackBlockCommand();
         MyBase::MessageType getType() const override;
         void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
     private:
-        World* __world;
-    };
-    class WorldMoveMessage: public MyBase::Message {
-    public:
-        WorldMoveMessage(const glm::vec3& position);
-        ~WorldMoveMessage();
-        glm::vec3 position;
-        MyBase::MessageType getType() const override;
-    private:
-    };
-    class WorldMoveCommand: public MyBase::Command {
-    public:
-        WorldMoveCommand(MyCraft::World* world);
-        ~WorldMoveCommand();
-        MyBase::MessageType getType() const override;
-        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
-    private:
-        World* __world;
+        World& __world;
     };
 }
 #endif

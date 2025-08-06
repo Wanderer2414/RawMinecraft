@@ -1,5 +1,6 @@
 #ifndef PLAYER_MODEL_H
 #define PLAYER_MODEL_H
+#include "Block.h"
 #include "Camera.h"
 #include "Clock.h"
 #include "Message.h"
@@ -22,7 +23,9 @@ namespace MyCraft {
                     see(const glm::vec3& dir) override,
                     seeRotate(const float& horizontal, const float& vertical),
                     setDrawAble(const bool& drawable),
-                    glDraw() const override;
+                    glDraw() const override,
+                    
+                    setHoverBlock(const glm::vec3& hover, const glm::vec3& place, const BlockCatogary& type);
         
         glm::mat4x3 getShape() const override;
     private:
@@ -36,6 +39,7 @@ namespace MyCraft {
         MyBase::Clock   __animationClock, __speedControl,
                         __runCooldown,
                         __attack__cooldown;
+        BlockCatogary   __type;
         glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
         bool            __moveManage(GLFWwindow* window);
         
@@ -96,24 +100,16 @@ namespace MyCraft {
 
     class RightAttackMessage: public MyBase::Message {
     public:
-        RightAttackMessage(const glm::vec3& pos, const glm::vec3& dir);
+        RightAttackMessage(const glm::vec3& position, const glm::vec3& direction);
         ~RightAttackMessage();
         MyBase::MessageType getType() const override;
-        const glm::vec3 posistion, direction;
+        const glm::vec3 position, direction;
     };
 
     class LeftAttackMessage: public MyBase::Message {
     public:
-        LeftAttackMessage(const glm::mat4x3& pos);
+        LeftAttackMessage(const glm::vec3& position, const glm::vec3& direction);
         ~LeftAttackMessage();
-        MyBase::MessageType     getType() const override;
-        const glm::mat4x3 shape;
-    };
-
-    class CheckHoverMessage: public MyBase::Message {
-    public:
-        CheckHoverMessage(const glm::vec3& pos, const glm::vec3& dir);
-        ~CheckHoverMessage();
         MyBase::MessageType     getType() const override;
         const glm::vec3 position, direction;
     };

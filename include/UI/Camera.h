@@ -6,13 +6,10 @@
 #include "Message.h"
 #include "Ray.h"
 namespace MyBase3D {
-    class Form3D;
     #define CAMERA_DISTANCE 4.0f
     class Camera: public MyBase3D::Controller3D, public MyBase::Port {
     public:
-        Camera();
-        ~Camera();
-
+        static Camera&  Instance();
         virtual void    move(const glm::vec3& delta),
                         rotate(const float& vertical_angle, const float& horizontal_angle),
                         look(const glm::vec3& pos),
@@ -28,27 +25,28 @@ namespace MyBase3D {
                         getCenter() const,
                         getDirection() const,
                         getCameraPosition() const;
+        glm::vec2       transfer(const glm::vec3& vector) const;
 
         Ray3f           getSight() const;
+        static void close();
         operator GLuint();
-        friend class    Form3D;
     protected:
         virtual bool    handle(GLFWwindow* window) override;
-        virtual void    glDraw() const override;
         virtual void    update() override;
     private:
+        Camera();
+        ~Camera();
         bool            __isThirdCamera;
         glm::vec2       __windowCenter;
         glm::vec3       __position, __delta;
         double          __verticalAngle;
-        glm::vec2       __direction[6];
         glm::mat4       __view, 
                         __projection, 
                         __clipPlane;
 
         GLuint          __camera;
         MyBase::Clock   __keyCooldown;
-        glm::vec2       transfer(const glm::vec3& vector) const;
+        static Camera* camera;
     };
 };
 namespace MyBase {

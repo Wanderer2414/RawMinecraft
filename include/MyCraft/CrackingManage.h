@@ -4,28 +4,29 @@
 #include "Clock.h"
 #include "Controller3D.h"
 #include "Global.h"
+#include "Item.h"
+#include "Message.h"
 #include "Texture.h"
 namespace MyCraft {
-    class CrackingManage: public MyBase3D::Controller3D {
+    class CrackingManage: public MyBase3D::Controller3D, public MyBase::Port {
     public:
         CrackingManage();
         ~CrackingManage();
         CrackingManage(const CrackingManage&) = delete;
         CrackingManage& operator=(const CrackingManage&) const = delete;
         BlockCatogary getType() const;
-        bool isHover() const;
+        glm::ivec3 getCrackingBlock() const;
         float getPercent() const;
         void crack(const float& percent);
-        glm::ivec3 getHoverBlock() const;
-        void hover(), unhover();
-        void setHoverBlock(const glm::ivec3& hover,const BlockCatogary& type);
+        void uncrack();
+        void setCrackBlock(const glm::ivec3& hover,const BlockCatogary& type);
     protected:
     private:
-        bool                    __isHover;
+        bool                    __isCracking;
         float                   __percent;
         int                     __numberPieces, __numberRemain;
         BlockCatogary           __type;
-        glm::ivec3              __hoverBlock;
+        glm::ivec3              __crackingBlock;
         MyBase::Texture         __crackingTexture, __blockTexture;
         MyBase::Clock           __clock, __gravityClock;
         glm::vec4             *__crackingPieces;
@@ -33,5 +34,6 @@ namespace MyCraft {
         bool handle(GLFWwindow*)       override;
         void glDrawTransparent() const override;
     };
+
 }
 #endif

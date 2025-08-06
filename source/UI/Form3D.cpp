@@ -1,4 +1,5 @@
 #include "Form3D.h"
+#include "Camera.h"
 #include "Color.h"
 #include "Container2D.h"
 #include "Container3D.h"
@@ -13,9 +14,11 @@ namespace MyBase3D {
         MyBase::ShapeManager::getInstance().createShape(__pauseScreen, {2,2});
         setFillColor({0,0,0, 120});
         ShapeContainer::setPosition({-1,-1});
+        insert(&Camera::Instance());
     }
     Form3D::~Form3D() {
         MyBase::ShapeManager::getInstance().removeShape(__pauseScreen, {2,2});
+        Camera::close();
     }
     bool Form3D::contains(const glm::vec2& position) const {
         return true;
@@ -55,13 +58,13 @@ namespace MyBase3D {
         return __returnValue;
     }
     bool Form3D::catchEvent(GLFWwindow* window) {
-        bool is_changed = camera.catchEvent(window);
+        bool is_changed = false;
         is_changed = Container2D::catchEvent(window) || is_changed;
         is_changed = Container3D::catchEvent(window) || is_changed;
         return is_changed;
     }
     bool Form3D::handle(GLFWwindow* window) {
-        bool is_changed = camera.handle(window);
+        bool is_changed = false;
         is_changed = Container2D::handle(window) || is_changed;
         is_changed = Container3D::handle(window) || is_changed;
         return is_changed;
@@ -69,21 +72,16 @@ namespace MyBase3D {
     void Form3D::glDraw() const {
         MyBase::ControlCenter::getInstance().Enable3DMode();
         Container3D::glDraw();
-        camera.glDraw();
         MyBase::ControlCenter::getInstance().Disable3DMode();
         MyBase::Container2D::glDraw();
     };
     void Form3D::glDrawTransparent() const {
         MyBase::ControlCenter::getInstance().Enable3DMode();
         Container3D::glDrawTransparent();
-        camera.glDrawTransparent();
         MyBase::ControlCenter::getInstance().Disable3DMode();
         MyBase::Container2D::glDrawTransparent();
     };
     
-    void Form3D::update() {
-        camera.update();
-    }
     void Form3D::setReturnValue(const int& returnValue) {
         __returnValue = returnValue;
     }

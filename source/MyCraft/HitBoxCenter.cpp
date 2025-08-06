@@ -11,6 +11,13 @@ namespace MyCraft {
     }
     HitBoxCenter::~HitBoxCenter() {
     }
+
+    bool HitBoxCenter::isBusyBlock(const glm::ivec3& position) const {
+        return false;
+    }
+    bool HitBoxCenter::isColistion(const glm::vec3& position) const {
+        return false;
+    }
     void HitBoxCenter::insert(ModelController* model) {
         __models.push_back(model);
     }

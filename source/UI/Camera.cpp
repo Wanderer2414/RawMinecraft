@@ -5,7 +5,7 @@
 #include "ShaderStorage.h"
 
 namespace MyBase3D {
-
+    Camera* Camera::camera = 0;
     Camera::Camera(): 
         __isThirdCamera(true),
         __position(4, 4, 2),
@@ -14,10 +14,6 @@ namespace MyBase3D {
         __windowCenter(MyBase::ControlCenter::getInstance().getWindowHalf()) {
 
         __delta = __delta/glm::length(__delta)*CAMERA_DISTANCE;
-
-        __direction[0] = __direction[1] = {0, 0};
-        __direction[2] = __direction[3] = {0, 0};
-        __direction[4] = __direction[5] = {0, 0};
 
         glGenBuffers(1, &__camera);
         glBindBuffer(GL_UNIFORM_BUFFER, __camera);
@@ -32,6 +28,10 @@ namespace MyBase3D {
     }
     Camera::~Camera() {
         glDeleteBuffers(1, &__camera);
+    }
+    Camera& Camera::Instance() {
+        if (!camera) camera = new Camera();
+        return *camera;
     }
     Camera::operator GLuint() {
         return __camera;
@@ -49,6 +49,10 @@ namespace MyBase3D {
     }
     glm::vec3 Camera::getDirection() const {
         return __delta;
+    }
+    void Camera::close() {
+        if (camera) delete camera;
+        camera = 0;
     }
     void Camera::setPosition(const float& x, const float& y, const float& z) {
         setPosition({x, y, z});
@@ -101,17 +105,6 @@ namespace MyBase3D {
         glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &__clipPlane[0][0]);
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::vec3), &__position);
         glBindBufferBase(GL_UNIFORM_BUFFER, 0, __camera);
-
-        glm::vec3 center = __position+ __delta;
-        center.x += 0.02;
-        __direction[1] = transfer(center);
-        center.x -= 0.02;
-
-        center.y += 0.02;
-        __direction[3] = transfer(center);
-        center.y -= 0.02;
-
-        __direction[5].y = 0.05*cos(__verticalAngle);
     }
     bool Camera::handle(GLFWwindow* window) {
         bool is_changed = Controller3D::handle(window);
@@ -131,30 +124,6 @@ namespace MyBase3D {
             }
         }
         return is_changed;
-    }
-    void Camera::glDraw() const {
-        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetPoint2DShader());
-        GLuint VAO, Positions, Colors;
-        glGenVertexArrays(1, &VAO);
-        glBindVertexArray(VAO);
-            
-        glGenBuffers(1, &Positions);
-        glBindBuffer(GL_ARRAY_BUFFER, Positions);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2)*6, &__direction[0], GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(0);
-
-        glGenBuffers(1, &Colors);
-        glBindBuffer(GL_UNIFORM_BUFFER, Colors);
-        glm::vec4 color(1,0,0, 1);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec4)*6, &color, GL_STATIC_DRAW);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 2, Colors);
-        glLineWidth(2);
-        glDrawArrays(GL_LINES, 0, 6);
-        glBindVertexArray(0);
-        glDeleteVertexArrays(1, &VAO);
-        glDeleteBuffers(1, &Positions);
-        glDeleteBuffers(1, &Colors);
     }
     glm::vec2 Camera::transfer(const glm::vec3& vector) const {
         glm::vec4 pos= __clipPlane*glm::vec4(vector,1);

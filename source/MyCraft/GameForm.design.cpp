@@ -1,10 +1,13 @@
 #include "GameForm.h"
 #include "Biome.h"
+#include "Camera.h"
+#include "Container2D.h"
+#include "Container3D.h"
 #include "File.h"
 #include "Form3D.h"
 #include "GamePauseForm.h"
-#include "HitBoxCenter.h"
 #include "ControlCenter.h"
+#include "Message.h"
 
 namespace MyCraft {
     GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src): 
@@ -14,14 +17,14 @@ namespace MyCraft {
         setBackgroundColor(BLACK);
         insert(&__world);
         insert(&__model);
-        insert(&__hitbox);
         insert(&__label);
         insert(&__biomeLabel);
-        __hitbox.insert(&__model);
-        __hitbox.match(&__model);
-        __hitbox.match(&__world);
-        __hitbox.match(&camera);
-        __hitbox.match(&__inventory);
+        insert(&__model);
+        insert(&__cursor);
+        MyBase::Network::match(&__model);
+        MyBase::Network::match(&__world);
+        MyBase::Network::match(&__inventory);
+        MyBase::Network::match(&MyBase3D::Camera::Instance());
 
         __label.setFont(__font);
         __label.setText("Max fps:");
@@ -38,7 +41,7 @@ namespace MyCraft {
         MyBase::ControlCenter::DisableMouse(window);
         MyBase::ControlCenter::CenteringMouse(window);
     
-        camera.setPosition({10, 10, 1.7});
+        MyBase3D::Camera::Instance().setPosition({10, 10, 1.7});
         pZVelocity = 0;
         __speed = 0.1;
         __frameAlarm.setDuration(50);
@@ -56,13 +59,13 @@ namespace MyCraft {
             glm::ivec3 pos;
             file >> pos.x >> pos.y >> pos.z;
             __model.teleport(pos);
-            __world.playerAt(pos);
+            __world.teleport(pos);
         }
         else {
             glm::ivec3 pos(0,0,0);
             file << pos.x << pos.y << pos.z;
             __model.teleport(pos);
-            __world.playerAt(pos);
+            __world.teleport(pos);
         }
         file.close();
         insertPermanent(&__inventory);
@@ -70,9 +73,9 @@ namespace MyCraft {
     GameForm::~GameForm() {        
     }
     bool GameForm::move(const float& x, const float& y, const float& z) {
-        glm::vec3 delta = {0, 0, 0}, pos= camera.getCameraPosition();
-        delta += x*camera.getHorizontalVector();
-        glm::vec3 tmp = camera.getDirection();
+        glm::vec3 delta = {0, 0, 0}, pos= MyBase3D::Camera::Instance().getCameraPosition();
+        delta += x*MyBase3D::Camera::Instance().getHorizontalVector();
+        glm::vec3 tmp = MyBase3D::Camera::Instance().getDirection();
         tmp.z = 0;
         tmp /= glm::length(tmp);
         delta.x += y*tmp.x;
@@ -132,5 +135,9 @@ namespace MyCraft {
             is_changed = true;
         }
         return is_changed;
+    }
+    void GameForm::update() {
+        MyBase::Container2D::update();
+        MyBase3D::Container3D::update();
     }
 }

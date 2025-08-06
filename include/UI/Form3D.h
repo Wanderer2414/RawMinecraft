@@ -22,7 +22,6 @@ namespace MyBase3D {
                         getSize()       const override;
         void            setBackgroundColor(const MyBase::Color& color);
         void            pauseScreen(GLFWwindow* window);
-        void            update() override;
         using MyBase::Container2D::insert;
         using MyBase::Container2D::insertPermanent;
         using Container3D::insert;
@@ -38,7 +37,6 @@ namespace MyBase3D {
         virtual bool            handle(GLFWwindow* window)                  override;
         virtual void            glDraw() const override;
         virtual void            glDrawTransparent() const override;
-        Camera                  camera;
     private:
         bool                    __isOpen;
         int                     __formIndex,

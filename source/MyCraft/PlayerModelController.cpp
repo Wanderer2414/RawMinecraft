@@ -1,4 +1,5 @@
 #include "PlayerModelController.h"
+#include "Block.h"
 #include "Camera.h"
 #include "ControlCenter.h"
 #include "Message.h"
@@ -183,7 +184,7 @@ namespace MyCraft {
             __handTime = 0;
             __isRightAttack = false;
             __isLeftAttack = true;
-            send(new LeftAttackMessage(getShape()));
+            send(new LeftAttackMessage(__position, __eye_direction));
             send(new CheckHoverMessage(__position, __eye_direction));
             send(new RequestFallMessage(getShape(), getZVelocity()));
         } 
@@ -322,22 +323,16 @@ namespace MyCraft {
         return MyBase::MessageType::RequestGoto;
     }
 
-    RightAttackMessage::RightAttackMessage(const glm::vec3& pos, const glm::vec3& dir): posistion(pos), direction(dir) {}
+    RightAttackMessage::RightAttackMessage(const glm::vec3& pos, const glm::vec3& dir): position(pos), direction(dir) {}
     RightAttackMessage::~RightAttackMessage() {}
     MyBase::MessageType RightAttackMessage::getType() const {
         return MyBase::MessageType::RightAttack;
     }
     
-    LeftAttackMessage::LeftAttackMessage(const glm::mat4x3& s): shape(s) {}
+    LeftAttackMessage::LeftAttackMessage(const glm::vec3& pos, const glm::vec3& dir): position(pos), direction(dir) {}
     LeftAttackMessage::~LeftAttackMessage() {}
     MyBase::MessageType LeftAttackMessage::getType() const{
         return MyBase::MessageType::LeftAttack;
-    }
-
-    CheckHoverMessage::CheckHoverMessage(const glm::vec3& pos, const glm::vec3& dir): position(pos), direction(dir) {}
-    CheckHoverMessage::~CheckHoverMessage() {}
-    MyBase::MessageType CheckHoverMessage::getType() const {
-        return MyBase::MessageType::CheckHover;
     }
 
     PlayerMoveCommand::PlayerMoveCommand(MyCraft::PlayerModelController* model): __model(model) {}

@@ -129,10 +129,11 @@ namespace MyCraft {
     };
     class AcceptDestroyMessage: public MyBase::Message {
     public:
-        AcceptDestroyMessage(const float& dec);
+        AcceptDestroyMessage(const float& dec, const BlockCatogary& type, const glm::vec3& position);
         ~AcceptDestroyMessage();
-
-        float percent;
+        const BlockCatogary type;
+        const float percent;
+        const glm::vec3 position;
         MyBase::MessageType getType() const override;
     };
     class AcceptDestroyCommand: public MyBase::Command {
