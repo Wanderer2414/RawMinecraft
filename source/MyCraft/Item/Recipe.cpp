@@ -50,15 +50,16 @@ namespace MyCraft {
         }
     }
     RecipeCreator::RecipeCreator(): __root(0) {
-        std::ifstream file("bin/recipe.bin");
+        std::ifstream file("bin/recipe.bin", std::ios::binary | std::ios::in);
         if (file.is_open()) {
+            file.seekg(0);
             unsigned int size = 0;
             file.read((char*)&size, sizeof(int));
             for (int i = 0; i<size; i++) {
                 unsigned char s = 0;
                 file.read((char*)&s, sizeof(char));
                 std::vector<RecipeSlot> recipe(s);
-                file.read((char*)&recipe[0], sizeof(RecipeSlot)*s);
+                file.read((char*)recipe.data(), sizeof(RecipeSlot)*s);
 
                 RecipeSlot result = {0,ItemType::Air};
                 file.read((char*)&result, sizeof(RecipeSlot));
