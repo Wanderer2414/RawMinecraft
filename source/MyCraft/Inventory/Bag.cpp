@@ -121,13 +121,13 @@ namespace MyCraft {
                 if (!getBags(__hoverPosition)) {
                     if (__hoverItem->getCount()==1) {
                         placeBags(__hoverPosition, __hoverItem);
-                        __hoverItem->setPosition(getItemPosition(__hoverPosition) + __items.package.size*0.1f);
+                        __hoverItem->setPosition(getItemPosition(__hoverPosition) + __items.package.size*0.125f);
                         __hoverItem = 0;
                     }
                     else {
                         Item* item = __hoverItem->split(1);
                         placeBags(__hoverPosition, item);
-                        item->setPosition(getItemPosition(__hoverPosition) + __items.package.size*0.1f);
+                        item->setPosition(getItemPosition(__hoverPosition) + __items.package.size*0.125f);
                     }
                 }
             }
@@ -153,7 +153,7 @@ namespace MyCraft {
                         }
                         else if (empty != -1) {
                             placeBags({-3, empty}, item);
-                            item->setPosition(getItemPosition({-3, empty}) + __items.package.size*0.1f);
+                            item->setPosition(getItemPosition({-3, empty}) + __items.package.size*0.125f);
                         }
                     }
                     else {
@@ -164,7 +164,7 @@ namespace MyCraft {
                 else if (__hoverItem && __hoverPosition.x>=-3) {
                     if (!getBags(__hoverPosition)) {
                         placeBags(__hoverPosition, __hoverItem);
-                        __hoverItem->setPosition(getItemPosition(__hoverPosition) + __items.package.size*0.1f);
+                        __hoverItem->setPosition(getItemPosition(__hoverPosition) + __items.package.size*0.125f);
                         __hoverItem = 0;
                     }
                     else {
@@ -290,12 +290,12 @@ namespace MyCraft {
     void Bag::update() {
         // if (__hoverItem) {
         //     __hoverItem = false;
-        //     glm::vec2 position = getItemPosition(__chosenPosition) + __items.package.size*0.1f;
+        //     glm::vec2 position = getItemPosition(__chosenPosition) + __items.package.size*0.125f;
         //     __items.getBags(__chosenPosition)->setPosition(position);
         // }
         for (int i = 0; i<10; i++) 
             if (__items.getToolBar(i)) 
-                __items.getToolBar(i)->setPosition(getToolbarPosition(i) + __items.package.size*0.1f);
+                __items.getToolBar(i)->setPosition(getToolbarPosition(i) + __items.package.size*0.125f);
     }
     void Bag::__reCheckRecipe() {
         if (__currentRecipe) {
@@ -310,7 +310,7 @@ namespace MyCraft {
     
         if (__currentRecipe) {
             __output = __currentRecipe->getMaxResult(__items.package, __recipe, 64);
-            __output->setPosition(getOutputItemPosition() + __items.package.size*0.1f);
+            __output->setPosition(getOutputItemPosition() + __items.package.size*0.125f);
         }
     }
 }

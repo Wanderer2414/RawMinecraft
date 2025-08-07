@@ -119,7 +119,8 @@ namespace MyCraft {
         GLuint STATE;
         glGenBuffers(1, &STATE);
         glBindBuffer(GL_UNIFORM_BUFFER, STATE);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4)*32, 0, GL_DYNAMIC_DRAW);
+        int state_size = std::min(size,32)*sizeof(glm::mat4);
+        glBufferData(GL_UNIFORM_BUFFER, state_size, 0, GL_DYNAMIC_DRAW);
         for (int i = 0; i<size; i+=32) {
             int sz = std::min(32, size-i);
             glBindBuffer(GL_UNIFORM_BUFFER, Default->__positionBuffer[Default->__positionBufferPointer]);
@@ -127,7 +128,7 @@ namespace MyCraft {
             glBindBufferBase(GL_UNIFORM_BUFFER, 1, Default->__positionBuffer[Default->__positionBufferPointer]);
             
             glBindBuffer(GL_UNIFORM_BUFFER, STATE);
-            glBufferSubData(GL_UNIFORM_BUFFER,0,sizeof(glm::mat4)*32, state);
+            glBufferSubData(GL_UNIFORM_BUFFER,0, state_size, state);
             glBindBufferBase(GL_UNIFORM_BUFFER, 2, STATE);
 
             glDrawArrays(GL_TRIANGLES, 0, 36*sz);

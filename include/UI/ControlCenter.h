@@ -26,6 +26,8 @@ namespace MyBase {
             static void EnableMouse(GLFWwindow*);
             static void CenteringMouse(GLFWwindow*);
             static void DisableMouse(GLFWwindow*);
+
+            void Maximize();
             
             void BindSubScreen()        const;
             void UnbindSubScreen()      const;
@@ -49,7 +51,7 @@ namespace MyBase {
             static void close();
         private: 
             bool            __isKeyPressed, __isMouseClicked, __isDoubleClick;
-            unsigned char   __majorVerson, __minorVerson, __clickCount;
+            unsigned char   __majorVerson, __minorVerson, __clickCount, __isMaximize;
             char            __charInput;
             float           __fpsInterval;
             GLuint          __screenTexture, __screenBuffer, __renderBuffer;

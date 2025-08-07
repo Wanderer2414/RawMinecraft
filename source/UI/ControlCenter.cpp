@@ -7,7 +7,7 @@ namespace MyBase {
     ControlCenter* ControlCenter::Default = 0;
     ControlCenter::ControlCenter():
          __fpsInterval(100), __majorVerson(3), __minorVerson(3), __clickCount(0),
-         __scrollPosition(0, 0), __clock(clock()), __charInput(-1), __isKeyPressed(false) {
+         __scrollPosition(0, 0), __clock(clock()), __charInput(-1), __isKeyPressed(false), __isMaximize(false) {
 
     }
     ControlCenter::~ControlCenter() {}
@@ -94,12 +94,15 @@ namespace MyBase {
         __windowSize = {width, height};
         __windowHalfSize = __windowSize/2.f;
         __programName = program;
+
         if (!glfwInit()) {
             throw std::runtime_error( "Failed to initialize GLFW");
         }
+
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, __majorVerson);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, __minorVerson);
+        glfwWindowHint(GLFW_MAXIMIZED, __isMaximize);
         GLFWwindow* window = glfwCreateWindow(__windowSize.x, __windowSize.y, __programName.c_str(), nullptr, nullptr);
         glfwMakeContextCurrent(window);
         glfwSwapInterval(__fpsInterval);
@@ -177,6 +180,9 @@ namespace MyBase {
     }
     void ControlCenter::DisableScissorMode() const {
         glDisable(GL_SCISSOR_TEST);
+    }
+    void ControlCenter::Maximize() {
+        __isMaximize = true;
     }
 
     void ControlCenter::BindSubScreen() const{

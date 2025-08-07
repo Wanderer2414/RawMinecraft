@@ -77,6 +77,6 @@ namespace MyCraft {
     }
     void ToolBar::update() {
         for (int i = 0; i<10; i++) if (__items.getToolBar(i)) 
-            __items.getToolBar(i)->setPosition(getToolbarPosition(i) + __items.package.size*0.1f);
+            __items.getToolBar(i)->setPosition(getToolbarPosition(i) + __items.package.size*0.125f);
     }
 }

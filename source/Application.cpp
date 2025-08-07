@@ -14,6 +14,7 @@ namespace MyCraft {
     Application::Application(const float& width, const float& height) {
         MyBase::ControlCenter::getInstance().OpenGLrequire(4, 6);
         MyBase::ControlCenter::getInstance().LimitFPS(0);
+        MyBase::ControlCenter::getInstance(). Maximize();
         __window = MyBase::ControlCenter::getInstance().InitWindow(width, height, "MyCraft");
         MyBase::ControlCenter::getInstance().EnableTransparent();
 
