@@ -257,7 +257,7 @@ namespace MyCraft {
         for (int i = 0; i<height; i++) {
             glm::ivec3 position = root;
             position.z += i;
-            chunk.setType(position, OakWood);
+            chunk.setType(position, OakLog);
         }
         glm::ivec3 pos[] = {{0,0,1},{1,0,0}, {-1,0,0}, {0,1,0}, {0,-1,0},
                                         {1,0,-3}, {-1,0,-3}, {0,1,-3}, {0,-1,-3}};

@@ -3,8 +3,19 @@
 #include "Global.h"
 namespace MyCraft {
     enum BlockCatogary: unsigned char {
-        Air, Dirt, Grass, CobbleStone, Stone, OakWood, OakLeaf,
-        BedRock, Sand, SandStone, Obsidian, DeepStale, Ice
+        Air, Dirt, Grass, 
+        CobbleStone, Stone, OakLog, 
+        OakLeaf,BedRock, Sand, 
+        SandStone, Obsidian, DeepStale, 
+        Ice, Podzol, DirtPath, 
+        FarmLand, FarmLandHydrad, SmoothStone,
+        SmoothStoneSlab, StoneBrick, CoalOre, 
+        IronOre, StrippedOakLog, OakPlank,
+        SpruceLog, StrippedSpruceLog, SprucePlank,
+        BirchLog, StrippedBirchLog, BirchPlank,
+        AcaciaLog, StrippedAcaciaLog, AcaciaPlank,
+        CraftTable, Furnace, Smoker,
+        BlastFurnace, Chest
     };
 
     bool isTransparent(const BlockCatogary& type);

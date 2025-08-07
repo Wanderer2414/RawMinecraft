@@ -1,5 +1,6 @@
 #include "Controller2D.h"
 #include "ControlCenter.h"
+#include "GLFW/glfw3.h"
 namespace MyBase {
 
     Controller2D::Controller2D():
@@ -57,7 +58,7 @@ namespace MyBase {
     }
     bool Controller2D::catchEvent(GLFWwindow* window) {
         bool is_changed = false;
-        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) || glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
             if (__isHovered) {
                 if (ControlCenter::getInstance().IsMouseClicked()) {
                     if (!__isFocus) is_changed = __focus(window) || is_changed;

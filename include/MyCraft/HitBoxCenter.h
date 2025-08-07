@@ -8,7 +8,9 @@ namespace MyCraft {
         public:
             HitBoxCenter();
             ~HitBoxCenter();
+            //Check whether one position of block is collision with any model?
             bool isBusyBlock(const glm::ivec3& position) const;
+            //Check whether one point is in any model?
             bool isColistion(const glm::vec3& position) const;
             void insert(ModelController* model);
             void erase(ModelController* model);

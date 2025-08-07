@@ -37,7 +37,7 @@ namespace MyBase {
         return __controller->setHover(hover);
     }
     bool Wrapper::setHover(const glm::vec2& position) {
-        return __controller->setHover(contains(position));
+        return __controller->setHover(position);
     }
     void Wrapper::setVisible(const bool& visible) {
         return __controller->setVisible(visible);

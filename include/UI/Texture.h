@@ -32,8 +32,9 @@ namespace MyBase {
     class TextureContainer {
     public:
         TextureContainer();
-        TextureContainer(const TextureContainer&) = delete;
         ~TextureContainer();
+        TextureContainer(TextureContainer&&) = delete;
+        TextureContainer(const TextureContainer&) = delete;
         TextureContainer& operator=(const TextureContainer&) const = delete; 
 
         const Texture& getTexture() const;

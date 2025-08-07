@@ -10,6 +10,7 @@ namespace MyCraft {
         ~InventoryForm();
         InventoryForm& operator=(const InventoryForm&) const = delete; 
     protected:
+        bool catchEvent(GLFWwindow* window) override;
         void __open(GLFWwindow*) override;
         void __close(GLFWwindow*) override;
     private:
