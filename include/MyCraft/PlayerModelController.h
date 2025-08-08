@@ -1,8 +1,9 @@
 #ifndef PLAYER_MODEL_H
 #define PLAYER_MODEL_H
 #include "Block.h"
-#include "Camera.h"
 #include "Clock.h"
+#include "Inventory.h"
+#include "Item.h"
 #include "Message.h"
 #include "ModelController.h"
 namespace MyCraft {
@@ -26,7 +27,7 @@ namespace MyCraft {
                     glDraw() const override,
                     
                     setHoverBlock(const glm::vec3& hover, const glm::vec3& place, const BlockCatogary& type);
-        
+        ItemTable&  getItems();
         glm::mat4x3 getShape() const override;
     private:
         bool            __isRun, __isDrawable, __isChanged,
@@ -40,6 +41,7 @@ namespace MyCraft {
                         __runCooldown,
                         __attack__cooldown;
         BlockCatogary   __type;
+        ItemTable       __items;
         glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
         bool            __moveManage(GLFWwindow* window);
         
@@ -124,5 +126,47 @@ namespace MyCraft {
     private:
         MyCraft::PlayerModelController*      __model;
     };
+    class PrepareOpenInventoryMessage: public MyBase::Message {
+    public:
+        PrepareOpenInventoryMessage(const glm::ivec3& position, const BlockCatogary& type);
+        ~PrepareOpenInventoryMessage();
+        MyBase::MessageType     getType() const override;
+        const glm::ivec3 position;
+        const BlockCatogary type;
+    };
+
+    class PrepareOpenInventoryCommand: public MyBase::Command {
+    public:
+        PrepareOpenInventoryCommand(PlayerModelController& model);
+        ~PrepareOpenInventoryCommand();
+
+        MyBase::MessageType getType()                               const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
+    private:
+        MyCraft::PlayerModelController& __model;
+    };
+
+    class ReceiveItemMessage: public MyBase::Message {
+    public:
+        ReceiveItemMessage(const glm::vec3& position, const ItemType& type, const unsigned int& count);
+        ~ReceiveItemMessage();
+        MyBase::MessageType     getType() const override;
+        const glm::vec3 position;
+        const ItemType type;
+        const int count;
+    };
+
+    class ReceiveItemCommand: public MyBase::Command {
+    public:
+        ReceiveItemCommand(PlayerModelController& model);
+        ~ReceiveItemCommand();
+
+        MyBase::MessageType getType()                               const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
+    private:
+        MyCraft::PlayerModelController& __model;
+    };
+
+    
 }
 #endif

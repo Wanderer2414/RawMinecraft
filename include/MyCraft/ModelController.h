@@ -17,6 +17,7 @@ namespace MyCraft {
                             rotate(const float& angle) = 0;
             virtual glm::vec3 getModelPosition() const = 0;
             virtual glm::mat4x3 getShape() const = 0;
+            
             friend class MoveCommand;
             friend class FallCommand;
             friend class StopFallCommand;

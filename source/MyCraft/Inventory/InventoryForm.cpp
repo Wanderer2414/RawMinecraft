@@ -3,19 +3,22 @@
 #include "ControlCenter.h"
 #include "Controller2D.h"
 #include "CraftingTableUI.h"
-#include "GLFW/glfw3.h"
 #include "InteractiveForm.h"
 #include "Inventory.h"
 #include "InventoryElement.h"
+#include "Message.h"
 #include "MessageBox.h"
 namespace MyCraft {
-    InventoryForm::InventoryForm(Inventory& inventory): __defaultUI(0), __inventory(inventory) {
+    InventoryForm::InventoryForm(Inventory& inventory, ItemTable& table): __inventory(inventory), __toolBar(table) {
         setSize(glm::vec2(1610.f/940.f*1.2f/MyBase::ControlCenter::getInstance().GetWindowRatio(), 1.2), 0.01);
         setPosition(-getSize()/2.f);
         setFillColor(WHITE);
 
+        inventory.changeState(&__toolBar);
+        __toolBar.open();
         insert(&__inventory);
         add(new OpenInventoryBlockCommand(*this));
+        MyBase::Network::match(&__toolBar);
     }
     InventoryForm::~InventoryForm() {}
 
@@ -28,23 +31,20 @@ namespace MyCraft {
         return is_changed;
     }
     void InventoryForm::setDefaultUI(InventoryUI* ui) {
-        __defaultUI = ui;
+        if (!ui) ui = &__toolBar;
+        ui->open();
+        __inventory.changeState(ui);
     }
     void InventoryForm::__open(GLFWwindow* window) {
         MyBase::ControlCenter::EnableMouse(window);
         MyBase::ControlCenter::getInstance().BindSubScreen();
-        __inventory.open(__defaultUI);
     }
     void InventoryForm::__close(GLFWwindow* window) {
-        __inventory.close();
         MyBase::ControlCenter::DisableMouse(window);
         MyBase::ControlCenter::CenteringMouse(window);
     }
-    ItemTable& InventoryForm::getItems() {
-        return __inventory.getItems();
-    }
-    OpenInventoryBlockMessage::OpenInventoryBlockMessage(const glm::vec3& position, const BlockCatogary& type):
-        blockPosition(position), blockType(type) {}
+    OpenInventoryBlockMessage::OpenInventoryBlockMessage(const glm::vec3& position, const BlockCatogary& type, ItemTable& t):
+        table(t), blockPosition(position), blockType(type) {}
 
     OpenInventoryBlockMessage::~OpenInventoryBlockMessage() {}
 
@@ -61,9 +61,11 @@ namespace MyCraft {
     void OpenInventoryBlockCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         OpenInventoryBlockMessage* package = (OpenInventoryBlockMessage*)message;
         if (package->blockType == CraftingTable) {
-            __inventory.setDefaultUI(new CraftingTableUI(&__inventory.getItems()));
+            InventoryUI* ui = new CraftingTableUI(&package->table);
+            __inventory.setDefaultUI(ui);
             __inventory.open(MyBase::ControlCenter::getInstance().getHomeScreeen());
             __inventory.setDefaultUI(0);
+            delete ui;
         }
     }
 }

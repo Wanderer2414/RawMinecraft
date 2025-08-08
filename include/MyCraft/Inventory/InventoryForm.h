@@ -7,28 +7,28 @@
 namespace MyCraft {
     class InventoryForm: public MyBase::MessageBox, public MyBase::Port {
     public:
-        InventoryForm(Inventory& inventory);
+        InventoryForm(Inventory& inventory, ItemTable& table);
         InventoryForm(const InventoryForm&) = delete;
         ~InventoryForm();
         InventoryForm& operator=(const InventoryForm&) const = delete; 
         void setDefaultUI(InventoryUI* ui);
-        ItemTable& getItems();
     protected:
         bool catchEvent(GLFWwindow* window) override;
         void __open(GLFWwindow*) override;
         void __close(GLFWwindow*) override;
     private:
-        InventoryUI*      __defaultUI;
         Inventory&        __inventory;
+        ToolBar           __toolBar;
     };
 
     class OpenInventoryBlockMessage: public MyBase::Message {
     public:
-        OpenInventoryBlockMessage(const glm::vec3& blockPosition, const BlockCatogary& type);
+        OpenInventoryBlockMessage(const glm::vec3& blockPosition, const BlockCatogary& type, ItemTable& table);
         ~OpenInventoryBlockMessage();
         
         const glm::vec3 blockPosition;
         const BlockCatogary blockType;
+        ItemTable& table;
 
         MyBase::MessageType getType() const override;
     };

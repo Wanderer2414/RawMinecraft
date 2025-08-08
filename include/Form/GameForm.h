@@ -11,6 +11,7 @@
 #include "InteractiveForm.h"
 #include "Inventory.h"
 #include "InventoryForm.h"
+#include "Item.h"
 #include "Label.h"
 #include "ModelController.h"
 #include "PlayerModelController.h"
@@ -35,7 +36,7 @@ namespace MyCraft {
             MyBase::Font    __font;
             MyBase::Label   __label, __positionLabel, __biomeLabel;
             World           __world;
-            PlayerModelController     __model;
+            PlayerModelController __model;
             BiomeManage     __biomeManage;
             float           __speed;
             GamePauseForm   __pauseForm;

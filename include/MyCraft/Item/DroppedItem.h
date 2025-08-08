@@ -5,6 +5,7 @@
 #include "Controller3D.h"
 #include "Item.h"
 #include "Message.h"
+#include "Recipe.h"
 #include "Texture.h"
 namespace MyCraft {
     class DropItemManage: public MyBase3D::Controller3D, public MyBase::Port {
@@ -13,7 +14,7 @@ namespace MyCraft {
         ~DropItemManage();
         DropItemManage(const DropItemManage&) = delete;
         DropItemManage& operator=(const DropItemManage&) const = delete; 
-
+        std::vector<std::pair<glm::vec3,RecipeSlot>> getNearItem(const glm::vec3& position);
         void add(const BlockCatogary& item, const glm::vec3& position);
         void remove(const int& index);
     protected:
@@ -28,10 +29,12 @@ namespace MyCraft {
 
     class DropItemMessage: public MyBase::Message {
     public:
-        DropItemMessage(const ItemType& type);
+        DropItemMessage(const ItemType& type, const int& count, const glm::vec3& position);
         ~DropItemMessage();
 
         const ItemType type;
+        const int count;
+        const glm::vec3 position;
         MyBase::MessageType getType() const override;
     private:
     };
@@ -39,6 +42,15 @@ namespace MyCraft {
     public:
         DropItemCommand(DropItemManage& manage);
         ~DropItemCommand();
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private:
+        DropItemManage& manage;
+    };
+    class LootItemCommand: public MyBase::Command {
+    public:
+        LootItemCommand(DropItemManage& manage);
+        ~LootItemCommand();
         MyBase::MessageType getType() const override;
         void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
     private:

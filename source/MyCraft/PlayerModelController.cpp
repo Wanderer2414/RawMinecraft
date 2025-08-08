@@ -2,6 +2,10 @@
 #include "Block.h"
 #include "Camera.h"
 #include "ControlCenter.h"
+#include "DroppedItem.h"
+#include "Inventory.h"
+#include "InventoryForm.h"
+#include "Item.h"
 #include "Message.h"
 #include "Global.h"
 #include "ModelController.h"
@@ -21,10 +25,16 @@ namespace MyCraft {
         __runCooldown.setDuration(30);
         __speedControl.setDuration(30);
 
+        __items.package.texture = MyBase::Texture("assets/images/blockItem.png");
+        __items.package.size = glm::vec2(102.f/940*1.2f/MyBase::ControlCenter::getInstance().GetWindowRatio(), 102.f/940*1.2)*0.8f;
+        __items.package.font = MyBase::Font("assets/fonts/SyneMono-Regular.ttf");
+
         add(new PlayerMoveCommand(this));
         add(new FallCommand(this));
         add(new StopFallCommand(this));
         add (new ResetCameraCommand(this));
+        add(new PrepareOpenInventoryCommand(*this));
+        add(new ReceiveItemCommand(*this));
 }
     PlayerModelController::~PlayerModelController() {
 
@@ -145,6 +155,9 @@ namespace MyCraft {
         }
         return __isChanged;
     }
+    ItemTable& PlayerModelController::getItems() {
+        return __items;
+    }
     glm::vec3 PlayerModelController::getModelPosition() const {
         return __position;
     }
@@ -173,7 +186,6 @@ namespace MyCraft {
             ans[0] -= ans[2];
             ans[2] = ans[2]*1.8f;
         } 
-        std::cout << "Get shape: " << __position.z << " " << ans[0].z << std::endl;
         return ans;
     }
     void PlayerModelController::reset() {
@@ -205,11 +217,8 @@ namespace MyCraft {
         __position = position;
     }
     void PlayerModelController::move(const glm::vec3& delta) {
-        std::cout << "Position: " << __position.x << " " << __position.y << " " << __position.z << std::endl;
-        std::cout << "Move: " << delta.x << " " << delta.y << " " << delta.z << std::endl;
         __position += delta;
         __isChanged = true;
-        std::cout << "After move: " << __position.x << " " << __position.y << " " << __position.z << std::endl;
         send(new MyBase::SetCameraMessage(__position, __eye_direction));
         send(new CheckHoverMessage(__position, __eye_direction));
         send( new WorldMoveMessage(__position));
@@ -316,9 +325,7 @@ namespace MyCraft {
     RequestGotoMessage::RequestGotoMessage(const glm::mat4x3& p, const glm::vec2& d): rectangleBox(p), direction(d) {}
     RequestGotoMessage::~RequestGotoMessage() {}
 
-    RequestFallMessage::RequestFallMessage(const glm::mat4x3& rec, const float& z): rectangleBox(rec), zVelocity(z) {
-        std::cout << "Zr: " << rec[0].z << std::endl;
-    }
+    RequestFallMessage::RequestFallMessage(const glm::mat4x3& rec, const float& z): rectangleBox(rec), zVelocity(z) {}
     RequestFallMessage::~RequestFallMessage() {
     }
     MyBase::MessageType RequestFallMessage::getType() const {
@@ -358,6 +365,47 @@ namespace MyCraft {
                 auto model = __model->getShape();
                 mine.send(new RequestFallMessage(model, __model->getZVelocity()));
             }
+        }
+    }
+
+    PrepareOpenInventoryMessage::PrepareOpenInventoryMessage(const glm::ivec3& p, const BlockCatogary& t): position(p), type(t) {}
+    PrepareOpenInventoryMessage::~PrepareOpenInventoryMessage() {}
+    MyBase::MessageType PrepareOpenInventoryMessage::getType() const {
+        return MyBase::PrepareOpenInventory;
+    }
+
+    PrepareOpenInventoryCommand::PrepareOpenInventoryCommand(PlayerModelController& model): __model(model) {}
+    PrepareOpenInventoryCommand::~PrepareOpenInventoryCommand() {}
+
+    MyBase::MessageType PrepareOpenInventoryCommand::getType() const {
+        return MyBase::PrepareOpenInventory;
+    }
+    void PrepareOpenInventoryCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)  {
+        std::cout << std::endl;
+        PrepareOpenInventoryMessage* package = (PrepareOpenInventoryMessage*)message;
+        mine.send(new OpenInventoryBlockMessage(package->position, package->type, __model.getItems()));
+    }
+
+    ReceiveItemMessage::ReceiveItemMessage(const glm::vec3& p, const ItemType& t, const unsigned int& c): type(t), count(c), position(p) {};
+    ReceiveItemMessage::~ReceiveItemMessage() {};
+    MyBase::MessageType ReceiveItemMessage::getType() const {
+        return MyBase::ReceiveItem;
+    }
+
+    ReceiveItemCommand::ReceiveItemCommand(PlayerModelController& model): __model(model) {}
+    ReceiveItemCommand::~ReceiveItemCommand() {}
+
+    MyBase::MessageType ReceiveItemCommand::getType() const {
+        return MyBase::ReceiveItem;
+    }
+    void ReceiveItemCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        ReceiveItemMessage* package = (ReceiveItemMessage*)message;
+        Item* item = Item::create(__model.getItems().package, package->count, package->type);
+        item = __model.getItems().push(item);
+        if (item) {
+            int count = item->getCount();
+            delete item;
+            mine.send(source, new DropItemMessage(package->type, count, package->position));
         }
     }
 }

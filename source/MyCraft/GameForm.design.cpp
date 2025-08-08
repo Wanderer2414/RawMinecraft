@@ -8,12 +8,15 @@
 #include "Form3D.h"
 #include "GamePauseForm.h"
 #include "ControlCenter.h"
+#include "Inventory.h"
+#include "InventoryElement.h"
 #include "Message.h"
 
 namespace MyCraft {
-    GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src): 
+    GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src):
         Form3D(index), __world(0, 0, 0, src), __pauseForm(__font),
-        __font("assets/fonts/SyneMono-Regular.ttf"), __biomeManage(src), __inventoryForm(__inventory) 
+        __font("assets/fonts/SyneMono-Regular.ttf"), __biomeManage(src), 
+        __inventoryForm(__inventory, __model.getItems()) 
     {
         setBackgroundColor(BLACK);
         insert(&__world);
@@ -70,6 +73,7 @@ namespace MyCraft {
             __model.teleport(pos);
             __world.teleport(pos);
         }
+        
         file.close();
     }
     GameForm::~GameForm() {   
@@ -98,16 +102,18 @@ namespace MyCraft {
                 else if (value == 1) close();
             }
             else if (glfwGetKey(window, GLFW_KEY_E)) {
-                __inventoryForm.setDefaultUI(new Bag(__inventory.getItems()));
+                InventoryUI* ui = new Bag(__model.getItems());
+                __inventoryForm.setDefaultUI(ui);
                 __inventoryForm.open(window);
+                __inventoryForm.setDefaultUI(0);
+                delete ui;
                 is_changed = true;
-                update();
             }
         }
         return is_changed;
     }
     bool GameForm::handle(GLFWwindow* window) {
-    bool is_changed = Form3D::handle(window);
+        bool is_changed = Form3D::handle(window);
         if (__fpsClock.get()) {
             __fpsClock.restart();
             __label.setText(std::format("Fps: {}", (int)getCurrentFps()));

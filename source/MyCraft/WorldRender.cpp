@@ -183,7 +183,6 @@ namespace MyCraft {
         auto shape = request->rectangleBox;
         if (z<=0) {
             z -= 0.06;
-            std::cout << "Z:" << shape[0].z << std::endl;
             shape[0].z += z;
             bool isFall = true;
             shape[3] = shape[0] + shape[2];
@@ -194,11 +193,9 @@ namespace MyCraft {
             isFall = isFall && __world.getType(shape[1])==BlockCatogary::Air; 
 
             isFall = isFall && __world.getType(shape[0])==BlockCatogary::Air; 
-            std::cout << isFall << " " << shape[0].z << " " << z << std::endl;
             if (isFall) mine.send(source, new FallMessage(std::max(z, -0.8f)));
             else {
                 float delta = shape[0][2] - z - ceil(shape[0][2]);
-                std::cout << "Delta: " << delta << std::endl;
                 mine.send(source, new FallMessage(-delta));
                 mine.send(source, new StopFallMessage());
             }

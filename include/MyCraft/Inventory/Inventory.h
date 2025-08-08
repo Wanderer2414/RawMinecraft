@@ -4,6 +4,7 @@
 #include "Block.h"
 #include "Controller.h"
 #include "Controller2D.h"
+#include "InventoryElement.h"
 #include "Item.h"
 #include "Message.h"
 #include "Toolbar.h"
@@ -31,75 +32,12 @@ namespace MyCraft {
         ~Inventory();
         Inventory(const Inventory&) = delete;
         Inventory& operator=(const Inventory&) const = delete; 
-
-        void open(InventoryUI* ui = 0);
-        void close();
-        ItemTable& getItems();
+        bool isEmpty() const;
     protected:
     private:
         InventoryUI             *__currentUI;
-        ToolBar                 *__toolBar;
-        ItemTable               __items;
     };
 
-    class LeftAttackCommand: public MyBase::Command {
-    public:
-        LeftAttackCommand(ToolBar* toolbar);
-        ~LeftAttackCommand();
-        MyBase::MessageType getType()      const override;
-        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
-    private:
-        ToolBar* __toolBar;
-    };
-
-    class RightAttackCommand: public MyBase::Command {
-    public:
-        RightAttackCommand(ToolBar* toolbar);
-        ~RightAttackCommand();
-        MyBase::MessageType getType()      const override;
-        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
-    private:
-        ToolBar* __toolBar;
-    };
-
-    class AcceptPlaceMessage: public MyBase::Message {
-    public:
-        AcceptPlaceMessage(const BlockCatogary& type);
-        ~AcceptPlaceMessage();
-
-        const BlockCatogary type;
-        MyBase::MessageType getType() const override;
-    };
-
-    class AcceptPlaceCommand: public MyBase::Command {
-    public:
-        AcceptPlaceCommand(ToolBar* toolbar);
-        ~AcceptPlaceCommand();
-
-        MyBase::MessageType getType()      const override;;
-        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;;
-    private:
-        ToolBar* __toolbar;
-    };
-    class AcceptDestroyMessage: public MyBase::Message {
-    public:
-        AcceptDestroyMessage(const float& dec, const BlockCatogary& type, const glm::vec3& position);
-        ~AcceptDestroyMessage();
-        const BlockCatogary type;
-        const float percent;
-        const glm::vec3 position;
-        MyBase::MessageType getType() const override;
-    };
-    class AcceptDestroyCommand: public MyBase::Command {
-    public:
-        AcceptDestroyCommand(ToolBar* toolbar);
-        ~AcceptDestroyCommand();
-
-        MyBase::MessageType getType()      const override;;
-        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;;
-    private:
-        ToolBar* __toolbar;
-    };
 
 }
 #endif
