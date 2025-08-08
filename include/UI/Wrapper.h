@@ -22,7 +22,9 @@ namespace MyBase {
                                 getSize() const     override;
         virtual void            setFocus(const bool& focus)     override,
                                 setVisible(const bool& visible) override,
-                                reset()                         override;
+                                reset()                         override,
+                                update()                        override;
+        Controller2D            *getState();
     protected:
         virtual bool            contains(const glm::vec2& position) const   override;
         virtual bool            catchEvent(GLFWwindow* window)              override;

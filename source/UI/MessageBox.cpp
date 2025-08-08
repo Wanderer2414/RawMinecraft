@@ -14,6 +14,10 @@ namespace MyBase {
         ShapeManager::getInstance().removeShape(__background, __size, __roundness);
     }
 
+    int MessageBox::getReturnValue() const {
+        return __returnValue;
+    }
+
     glm::vec2 MessageBox::getPosition() const {
         return ShapeContainer::getPosition();
     };
@@ -60,6 +64,7 @@ namespace MyBase {
             }
             is_changed = 0;
         }
+        ControlCenter::getInstance().Reset();
         __close(window);
         return __returnValue;
     }

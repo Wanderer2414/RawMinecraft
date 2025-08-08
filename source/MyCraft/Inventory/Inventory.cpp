@@ -48,12 +48,26 @@ namespace MyCraft {
         __items[3][n] = item;
         return out;
     }
+    Item* ItemTable::push(Item* item) {
+        for (int i = 3; i>=0; i--) {
+            for (int j = 0; j<10; j++) {
+                if (__items[i][j] && *__items[i][j] == *item) {
+                    item = __items[i][j]->merge(item);
+                    if (!item) return 0;
+                }
+                else if (!__items[i][j]) {
+                    __items[i][j] = item;
+                    return 0;
+                }
+            }
+        }
+        return item;
+    }
 
-    Inventory::Inventory(): MyBase::Wrapper(0) {
+    Inventory::Inventory(): MyBase::Wrapper(0), __currentUI(0) {
         __items.package.texture = MyBase::Texture("assets/images/blockItem.png");
         __items.package.size = glm::vec2(102.f/940*1.2f/MyBase::ControlCenter::getInstance().GetWindowRatio(), 102.f/940*1.2)*0.8f;
         __items.package.font = MyBase::Font("assets/fonts/SyneMono-Regular.ttf");
-        for (int i = 0; i<4; i++) for (int j = 0; j<10; j++) __indices[i][j] = -1;
 
         __items.placeToolbar(0, new BlockItem(__items.package, ItemType::OakLog, 48));
 
@@ -62,8 +76,8 @@ namespace MyCraft {
         __items.placeToolbar(2,new ToolItem(__items.package, ItemType::WoodenShovel));
         __items.placeToolbar(3,new NonuseItem(__items.package, ItemType::Stick, 64));
 
-        __bags = new Bag(__items);
         __toolBar = new ToolBar(__items);
+        __toolBar->open();
         add(new LeftAttackCommand(__toolBar));
         add(new AcceptPlaceCommand(__toolBar));
         add(new AcceptDestroyCommand(__toolBar));
@@ -71,14 +85,28 @@ namespace MyCraft {
         changeState(__toolBar);
     }
     Inventory::~Inventory() {
-        delete __bags;
         delete __toolBar;
     }
-
-    void Inventory::open() {
-        changeState(__bags);
+    ItemTable& Inventory::getItems() {
+        return __items;
+    }
+    void Inventory::open(InventoryUI* ui) {
+        if (!ui) return ;
+        if (__currentUI) {
+            __currentUI->close();
+            delete __currentUI;
+        } else __toolBar->close();
+        __currentUI = ui;
+        changeState(ui);
+        __currentUI->open();
     }
     void Inventory::close() {
+        if (__currentUI) {
+            __currentUI->close();
+            delete __currentUI;
+            __currentUI = 0;
+        }
+        __toolBar->open();
         changeState(__toolBar);
     }
 
@@ -96,6 +124,9 @@ namespace MyCraft {
                 BlockCatogary type = (BlockCatogary)ItemType(*item);
                 mine.send(new PlaceBlockMessage(package->position, type));
             }
+        }
+        else {
+            mine.send(new PlaceBlockMessage(package->position, Air));
         }
     }
 

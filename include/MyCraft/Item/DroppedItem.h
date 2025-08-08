@@ -25,5 +25,24 @@ namespace MyCraft {
         MyBase::Texture         __blockTexture;
         void glDraw() const override;
     };
+
+    class DropItemMessage: public MyBase::Message {
+    public:
+        DropItemMessage(const ItemType& type);
+        ~DropItemMessage();
+
+        const ItemType type;
+        MyBase::MessageType getType() const override;
+    private:
+    };
+    class DropItemCommand: public MyBase::Command {
+    public:
+        DropItemCommand(DropItemManage& manage);
+        ~DropItemCommand();
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private:
+        DropItemManage& manage;
+    };
 }
 #endif

@@ -37,4 +37,20 @@ namespace MyCraft {
             DrawingCenter::DrawDroppedBlock((void*)__item.data(), (void*)__state.data(), __item.size());
         }
     }
+
+    DropItemMessage::DropItemMessage(const ItemType& t): type(t) {}
+    DropItemMessage::~DropItemMessage() {}
+
+    MyBase::MessageType DropItemMessage::getType() const {
+        return MyBase::DropItem;
+    }
+    DropItemCommand::DropItemCommand(DropItemManage& m): manage(m) {}
+    DropItemCommand::~DropItemCommand() {}
+
+    MyBase::MessageType DropItemCommand::getType() const {
+        return MyBase::DropItem;
+    }
+    void DropItemCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        // manage.add(, );
+    }
 }

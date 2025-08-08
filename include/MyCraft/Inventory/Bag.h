@@ -1,12 +1,13 @@
 #ifndef BAG_H
 #define BAG_H
 #include "Container2D.h"
+#include "InventoryElement.h"
 #include "Item.h"
 #include "Recipe.h"
 
 namespace MyCraft {
     class ItemTable;    
-    class Bag: public MyBase::Container2D {
+    class Bag: public InventoryUI {
     public:
         Bag(ItemTable& table);
         ~Bag();
@@ -22,6 +23,8 @@ namespace MyCraft {
         bool catchEvent(GLFWwindow* window)             override;
         Item* getBags(const glm::ivec2& position)       const;
         Item* placeBags(const glm::ivec2& position, Item* item);
+        void open()                                     override;
+        void close()                                    override;
         glm::vec2 getHelmetPosition() const;
         glm::vec2 getChestplatePosition() const;
         glm::vec2 getLeggingsPosition() const;

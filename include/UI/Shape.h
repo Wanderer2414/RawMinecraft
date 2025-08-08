@@ -14,6 +14,7 @@ namespace MyBase {
         virtual glm::vec2 getPoint(const size_t& index) const = 0;
         virtual glm::vec2 getCenter() const = 0;
         friend class ShapeContainer;
+        friend class ShapeManager;
     protected:
         void update();
     private:

@@ -20,6 +20,7 @@ namespace MyCraft {
         Item*split(const int& count)                override;
     protected:
     private:
+        glm::vec2         __size;
         unsigned char     __currentCount;
         MyBase::Rectangle __durabilityBackground;
     };

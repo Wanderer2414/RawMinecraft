@@ -11,7 +11,7 @@
 #include "Shape.h"
 namespace MyBase3D {
 
-    class Form3D: public MyBase::Container2D, public Container3D, private MyBase::ShapeContainer {
+    class Form3D: public MyBase::Container2D, public Container3D {
     public:
         Form3D(const int& index);
         ~Form3D();
@@ -21,7 +21,6 @@ namespace MyBase3D {
         glm::vec2       getPosition()   const override, 
                         getSize()       const override;
         void            setBackgroundColor(const MyBase::Color& color);
-        void            pauseScreen(GLFWwindow* window);
         using MyBase::Container2D::insert;
         using MyBase::Container2D::insertPermanent;
         using Container3D::insert;
@@ -43,7 +42,6 @@ namespace MyBase3D {
                                 __returnValue;
         size_t                  __startClock, __frameCount, __currentClock, __deltaClock;
         MyBase::Color           __backgroundColor;
-        MyBase::Rectangle       __pauseScreen;
     };
     
 };

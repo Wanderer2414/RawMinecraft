@@ -1,5 +1,6 @@
 #include "CreateWorldForm.h"
 #include "Color.h"
+#include "ControlCenter.h"
 namespace MyBase {
     CreateWorldForm::CreateWorldForm(const Font& font): __isSubmit(false) {
         setSize({0.8, 0.3}, 0.01);
@@ -62,4 +63,7 @@ namespace MyBase {
         __isSubmit = false;
         __nameInput.setText("");
     }
+    void CreateWorldForm::__open(GLFWwindow*) {
+        ControlCenter::getInstance().BindSubScreen()
+;    }
 }

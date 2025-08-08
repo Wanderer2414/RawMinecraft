@@ -1,4 +1,5 @@
 #include "GameForm.h"
+#include "Bag.h"
 #include "Biome.h"
 #include "Camera.h"
 #include "Container2D.h"
@@ -11,7 +12,7 @@
 
 namespace MyCraft {
     GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src): 
-        Form3D(index), __world(0, 0, 0, src), __pauseForm(__font), 
+        Form3D(index), __world(0, 0, 0, src), __pauseForm(__font),
         __font("assets/fonts/SyneMono-Regular.ttf"), __biomeManage(src), __inventoryForm(__inventory) 
     {
         setBackgroundColor(BLACK);
@@ -21,8 +22,10 @@ namespace MyCraft {
         insert(&__biomeLabel);
         insert(&__model);
         insert(&__cursor);
+        insertPermanent(&__inventory);
         MyBase::Network::match(&__model);
         MyBase::Network::match(&__world);
+        MyBase::Network::match(&__inventoryForm);
         MyBase::Network::match(&__inventory);
         MyBase::Network::match(&MyBase3D::Camera::Instance());
 
@@ -68,9 +71,9 @@ namespace MyCraft {
             __world.teleport(pos);
         }
         file.close();
-        insertPermanent(&__inventory);
     }
-    GameForm::~GameForm() {        
+    GameForm::~GameForm() {   
+        MyBase::Network::close();     
     }
     bool GameForm::move(const float& x, const float& y, const float& z) {
         glm::vec3 delta = {0, 0, 0}, pos= MyBase3D::Camera::Instance().getCameraPosition();
@@ -87,23 +90,16 @@ namespace MyCraft {
         bool is_changed = MyBase3D::Form3D::catchEvent(window);
         if (MyBase::ControlCenter::getInstance().IsKeyPressed()) {
             if (glfwGetKey(window, GLFW_KEY_ESCAPE)) {
-                pauseScreen(window);
-                MyBase::ControlCenter::EnableMouse(window);
                 int value = __pauseForm.open(window);
                 if (!value) {
-                    MyBase::ControlCenter::DisableMouse(window);
-                    MyBase::ControlCenter::CenteringMouse(window);
                     is_changed = true;
                     update();
                 }
                 else if (value == 1) close();
             }
             else if (glfwGetKey(window, GLFW_KEY_E)) {
-                pauseScreen(window);
-                MyBase::ControlCenter::EnableMouse(window);
+                __inventoryForm.setDefaultUI(new Bag(__inventory.getItems()));
                 __inventoryForm.open(window);
-                MyBase::ControlCenter::DisableMouse(window);
-                MyBase::ControlCenter::CenteringMouse(window);
                 is_changed = true;
                 update();
             }

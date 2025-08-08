@@ -50,7 +50,7 @@ void Pickaxe(std::ofstream& file) {
         std::vector<std::pair<unsigned char, ItemType>> items = {
             {1, ItemType::OakPlank}, {1, ItemType::OakPlank}, {1, ItemType::OakPlank},
             {0, ItemType::Air},      {1, ItemType::Stick},    {0, ItemType::Air},
-            {0, ItemType::Air},      {1, ItemType::Stick},    {0, ItemType::Air}
+            {0, ItemType::Air},      {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::WoodPickaxe});
     }
@@ -60,7 +60,7 @@ void Pickaxe(std::ofstream& file) {
         std::vector<std::pair<unsigned char, ItemType>> items = {
             {1, ItemType::CobbleStone}, {1, ItemType::CobbleStone}, {1, ItemType::CobbleStone},
             {0, ItemType::Air},         {1, ItemType::Stick},       {0, ItemType::Air},
-            {0, ItemType::Air},         {1, ItemType::Stick},       {0, ItemType::Air}
+            {0, ItemType::Air},         {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::StonePickaxe});
     }
@@ -69,7 +69,7 @@ void Pickaxe(std::ofstream& file) {
         std::vector<std::pair<unsigned char, ItemType>> items = {
             {1, ItemType::IronIngot}, {1, ItemType::IronIngot}, {1, ItemType::IronIngot},
             {0, ItemType::Air},       {1, ItemType::Stick},     {0, ItemType::Air},
-            {0, ItemType::Air},       {1, ItemType::Stick},     {0, ItemType::Air}
+            {0, ItemType::Air},       {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::IronPickaxe});
     }
@@ -78,7 +78,7 @@ void Pickaxe(std::ofstream& file) {
         std::vector<std::pair<unsigned char, ItemType>> items = {
             {1, ItemType::GoldenIngot}, {1, ItemType::GoldenIngot}, {1, ItemType::GoldenIngot},
             {0, ItemType::Air},         {1, ItemType::Stick},       {0, ItemType::Air},
-            {0, ItemType::Air},         {1, ItemType::Stick},       {0, ItemType::Air}
+            {0, ItemType::Air},         {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::GoldenPickaxe});
     }
@@ -87,7 +87,7 @@ void Pickaxe(std::ofstream& file) {
         std::vector<std::pair<unsigned char, ItemType>> items = {
             {1, ItemType::NetheriteIngot}, {1, ItemType::NetheriteIngot}, {1, ItemType::NetheriteIngot},
             {0, ItemType::Air},            {1, ItemType::Stick},          {0, ItemType::Air},
-            {0, ItemType::Air},            {1, ItemType::Stick},          {0, ItemType::Air}
+            {0, ItemType::Air},            {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::NetheritePickaxe});
     }
@@ -98,7 +98,7 @@ void Axe(std::ofstream& file) {// Wooden Axe
         std::vector<std::pair<unsigned char, ItemType>> items = {
             {1, ItemType::OakPlank}, {1, ItemType::OakPlank}, {0, ItemType::Air},
             {1, ItemType::OakPlank}, {1, ItemType::Stick},    {0, ItemType::Air},
-            {0, ItemType::Air},      {1, ItemType::Stick},    {0, ItemType::Air}
+            {0, ItemType::Air},      {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::WoodedAxe});
     }
@@ -108,7 +108,7 @@ void Axe(std::ofstream& file) {// Wooden Axe
         std::vector<std::pair<unsigned char, ItemType>> items = {
             {1, ItemType::CobbleStone}, {1, ItemType::CobbleStone}, {0, ItemType::Air},
             {1, ItemType::CobbleStone}, {1, ItemType::Stick},       {0, ItemType::Air},
-            {0, ItemType::Air},         {1, ItemType::Stick},       {0, ItemType::Air}
+            {0, ItemType::Air},         {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::StoneAxe});
     }
@@ -118,7 +118,7 @@ void Axe(std::ofstream& file) {// Wooden Axe
         std::vector<std::pair<unsigned char, ItemType>> items = {
             {1, ItemType::IronIngot}, {1, ItemType::IronIngot}, {0, ItemType::Air},
             {1, ItemType::IronIngot}, {1, ItemType::Stick},     {0, ItemType::Air},
-            {0, ItemType::Air},       {1, ItemType::Stick},     {0, ItemType::Air}
+            {0, ItemType::Air},       {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::IronAxe});
     }
@@ -128,7 +128,7 @@ void Axe(std::ofstream& file) {// Wooden Axe
         std::vector<std::pair<unsigned char, ItemType>> items = {
             {1, ItemType::GoldenIngot}, {1, ItemType::GoldenIngot}, {0, ItemType::Air},
             {1, ItemType::GoldenIngot}, {1, ItemType::Stick},       {0, ItemType::Air},
-            {0, ItemType::Air},         {1, ItemType::Stick},       {0, ItemType::Air}
+            {0, ItemType::Air},         {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::GoldenAxe});
     }
@@ -138,7 +138,7 @@ void Axe(std::ofstream& file) {// Wooden Axe
         std::vector<std::pair<unsigned char, ItemType>> items = {
             {1, ItemType::NetheriteIngot}, {1, ItemType::NetheriteIngot}, {0, ItemType::Air},
             {1, ItemType::NetheriteIngot}, {1, ItemType::Stick},          {0, ItemType::Air},
-            {0, ItemType::Air},            {1, ItemType::Stick},          {0, ItemType::Air}
+            {0, ItemType::Air},            {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::NetheriteAxe});
     }
@@ -148,9 +148,9 @@ void Shovel(std::ofstream& file) {
     // Wooden Shovel
     {
         std::vector<std::pair<unsigned char, ItemType>> items = {
-            {0, ItemType::Air},      {1, ItemType::OakPlank}, {0, ItemType::Air},
+            {1, ItemType::OakPlank}, {0, ItemType::Air},
             {0, ItemType::Air},      {1, ItemType::Stick},    {0, ItemType::Air},
-            {0, ItemType::Air},      {1, ItemType::Stick},    {0, ItemType::Air}
+            {0, ItemType::Air},      {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::WoodenShovel});
     }
@@ -158,9 +158,9 @@ void Shovel(std::ofstream& file) {
     // Stone Shovel
     {
         std::vector<std::pair<unsigned char, ItemType>> items = {
-            {0, ItemType::Air},      {1, ItemType::CobbleStone}, {0, ItemType::Air},
+                  {1, ItemType::CobbleStone}, {0, ItemType::Air},
             {0, ItemType::Air},      {1, ItemType::Stick},       {0, ItemType::Air},
-            {0, ItemType::Air},      {1, ItemType::Stick},       {0, ItemType::Air}
+            {0, ItemType::Air},      {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::StoneShovel});
     }
@@ -168,9 +168,9 @@ void Shovel(std::ofstream& file) {
     // Iron Shovel
     {
         std::vector<std::pair<unsigned char, ItemType>> items = {
-            {0, ItemType::Air},      {1, ItemType::IronIngot}, {0, ItemType::Air},
+            {1, ItemType::IronIngot}, {0, ItemType::Air},
             {0, ItemType::Air},      {1, ItemType::Stick},     {0, ItemType::Air},
-            {0, ItemType::Air},      {1, ItemType::Stick},     {0, ItemType::Air}
+            {0, ItemType::Air},      {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::IronShovel});
     }
@@ -178,9 +178,9 @@ void Shovel(std::ofstream& file) {
     // Golden Shovel
     {
         std::vector<std::pair<unsigned char, ItemType>> items = {
-            {0, ItemType::Air},      {1, ItemType::GoldenIngot}, {0, ItemType::Air},
+            {1, ItemType::GoldenIngot}, {0, ItemType::Air},
             {0, ItemType::Air},      {1, ItemType::Stick},       {0, ItemType::Air},
-            {0, ItemType::Air},      {1, ItemType::Stick},       {0, ItemType::Air}
+            {0, ItemType::Air},      {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::GoldenShovel});
     }
@@ -188,9 +188,9 @@ void Shovel(std::ofstream& file) {
     // Netherite Shovel
     {
         std::vector<std::pair<unsigned char, ItemType>> items = {
-            {0, ItemType::Air},      {1, ItemType::NetheriteIngot}, {0, ItemType::Air},
+            {1, ItemType::NetheriteIngot}, {0, ItemType::Air},
             {0, ItemType::Air},      {1, ItemType::Stick},          {0, ItemType::Air},
-            {0, ItemType::Air},      {1, ItemType::Stick},          {0, ItemType::Air}
+            {0, ItemType::Air},      {1, ItemType::Stick}
         };
         write(file, items, {1, ItemType::NetheriteShovel});
     }

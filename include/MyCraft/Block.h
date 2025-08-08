@@ -14,7 +14,7 @@ namespace MyCraft {
         SpruceLog, StrippedSpruceLog, SprucePlank,
         BirchLog, StrippedBirchLog, BirchPlank,
         AcaciaLog, StrippedAcaciaLog, AcaciaPlank,
-        CraftTable, Furnace, Smoker,
+        CraftingTable, Furnace, Smoker,
         BlastFurnace, Chest
     };
 

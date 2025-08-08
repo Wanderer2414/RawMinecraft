@@ -49,6 +49,9 @@ namespace MyBase {
         __controller = controller;
         __controller->update();
     }
+    void Wrapper::update() {
+        __controller->update();
+    }
 
     bool Wrapper::contains(const glm::vec2& position) const {
         return __controller->contains(position);
@@ -64,5 +67,8 @@ namespace MyBase {
     }
     void Wrapper::glDrawTransparent() const {
         return __controller->glDrawTransparent();
+    }
+    Controller2D *Wrapper::getState() {
+        return __controller;
     }
 } ;

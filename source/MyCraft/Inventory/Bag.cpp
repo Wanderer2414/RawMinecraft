@@ -1,7 +1,6 @@
 #include "Bag.h"
 #include "Container2D.h"
 #include "ControlCenter.h"
-#include "GLFW/glfw3.h"
 #include "Inventory.h"
 #include "Recipe.h"
 namespace MyCraft {
@@ -142,7 +141,8 @@ namespace MyCraft {
                     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) {
                         Item* item = placeBags(__hoverPosition, 0);
                         char same = -1, empty = -1;
-                        for (int i = 8; i>=0; i--) {
+                        for (int i = 8; i>=0; i--) 
+                            if (i/3 <= 1 && i%3<=1) {
                             if (__recipe[i] &&*__recipe[i] == *item) same = i;
                             else if (!__recipe[i]) empty = i;
                         }
@@ -287,15 +287,29 @@ namespace MyCraft {
         return __inventoryTexture.getSize();
     }
 
-    void Bag::update() {
-        // if (__hoverItem) {
-        //     __hoverItem = false;
-        //     glm::vec2 position = getItemPosition(__chosenPosition) + __items.package.size*0.125f;
-        //     __items.getBags(__chosenPosition)->setPosition(position);
-        // }
+    void Bag::update() {}
+    void Bag::open() {
         for (int i = 0; i<10; i++) 
             if (__items.getToolBar(i)) 
                 __items.getToolBar(i)->setPosition(getToolbarPosition(i) + __items.package.size*0.125f);
+    }
+    void Bag::close() {
+        for (int i = 0; i<9; i++) {
+            if (__recipe[i]) {
+                __recipe[i] = __items.push(__recipe[i]);
+                if (__recipe[i]) {
+                    delete __recipe[i];
+                    // send(new DropItemMessage(*__recipe[i]));
+                }
+            }
+        }
+        if (__hoverItem) {
+            __hoverItem = __items.push(__hoverItem);
+            if (__hoverItem) {
+                delete __hoverItem;
+                // send(new DropItemMessage(*__hoverItem));
+            }
+        }
     }
     void Bag::__reCheckRecipe() {
         if (__currentRecipe) {

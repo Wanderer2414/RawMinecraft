@@ -12,6 +12,8 @@ namespace MyCraft {
         GamePauseForm& operator=(const GamePauseForm&) const = delete; 
     protected:
         bool __mouseClicked(GLFWwindow*) override;
+        void __open(GLFWwindow*) override;
+        void __close(GLFWwindow*) override;
     private:
         MyBase::RoundedRectangleButton  __exitButton;
         

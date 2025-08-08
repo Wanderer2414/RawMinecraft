@@ -1,11 +1,9 @@
 #include "ControlCenter.h" 
-#include "GLFW/glfw3.h"
 #include "General.h"
 #include "Global.h"
-#include <stdexcept>
 namespace MyBase {
     ControlCenter* ControlCenter::Default = 0;
-    ControlCenter::ControlCenter():
+    ControlCenter::ControlCenter(): __homeScreen(0),
          __fpsInterval(100), __majorVerson(3), __minorVerson(3), __clickCount(0),
          __scrollPosition(0, 0), __clock(clock()), __charInput(-1), __isKeyPressed(false), __isMaximize(false) {
 
@@ -104,18 +102,14 @@ namespace MyBase {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, __minorVerson);
         glfwWindowHint(GLFW_MAXIMIZED, __isMaximize);
         GLFWwindow* window = glfwCreateWindow(__windowSize.x, __windowSize.y, __programName.c_str(), nullptr, nullptr);
+        if (!__homeScreen) __homeScreen = window;
         glfwMakeContextCurrent(window);
         glfwSwapInterval(__fpsInterval);
-        if (!window) {
-            throw std::runtime_error("Failed to create GLFW window");
-        }
+        if (!window) throw std::runtime_error("Failed to create GLFW window");
 
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-            throw std::runtime_error("Failed to initialize GLAD");
-        }
-        else {
-            std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-        }
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) throw std::runtime_error("Failed to initialize GLAD");
+        else std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+        
         glfwSetScrollCallback(window, scroll_callback);
         glfwSetKeyCallback(window, key_callback);
         glfwSetMouseButtonCallback(window, mouse_callback);
@@ -140,7 +134,9 @@ namespace MyBase {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         return window;
     }
-    
+    GLFWwindow* ControlCenter::getHomeScreeen() const {
+        return __homeScreen;
+    }
     void ControlCenter::CloseWindow() {
         glDeleteTextures(1, &__screenTexture);
         glDeleteFramebuffers(1, &__screenBuffer);
@@ -186,11 +182,15 @@ namespace MyBase {
     }
 
     void ControlCenter::BindSubScreen() const{
-        glBindFramebuffer(GL_FRAMEBUFFER, __screenBuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, __screenBuffer);
         glClearColor(0,0,0,1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-    void ControlCenter::UnbindSubScreen() const{
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+        glBlitFramebuffer(0, 0, __windowSize.x, __windowSize.y,
+                        0, 0, __windowSize.x, __windowSize.y,
+                        GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     void ControlCenter::DrawSavedScreen() const{

@@ -7,14 +7,8 @@
 #include "ShapeManager.h"
 
 namespace MyBase {
-    Form::Form(const int& index): __formIndex(index), __returnValue(-1), __backgroundColor(WHITE), __isOpen(false) {
-        ShapeManager::getInstance().createShape(__pauseScreen, {2,2});
-        setFillColor({0,0,0, 120});
-        ShapeContainer::setPosition({-1,-1});
-    }
-    Form::~Form() {
-        ShapeManager::getInstance().removeShape(__pauseScreen, {2,2});
-    }
+    Form::Form(const int& index): __formIndex(index), __returnValue(-1), __backgroundColor(WHITE), __isOpen(false) {}
+    Form::~Form() {}
     bool Form::contains(const glm::vec2& position) const {
         return true;
     }
@@ -60,13 +54,6 @@ namespace MyBase {
     }
     glm::vec2 Form::getSize() const {
         return {2, 2};
-    }
-    void Form::pauseScreen(GLFWwindow* window) {
-        ControlCenter::getInstance().Disable3DMode();
-        ControlCenter::getInstance().BindSubScreen();
-        glDraw();
-        draw(__pauseScreen);
-        ControlCenter::getInstance().UnbindSubScreen();
     }
     void Form::setBackgroundColor(const Color& color) {
         __backgroundColor = color;

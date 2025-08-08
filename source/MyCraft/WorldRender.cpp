@@ -5,7 +5,6 @@
 #include "General.h"
 #include "Inventory.h"
 #include "Message.h"
-#include "ModelController.h"
 #include "PlayerModelController.h"
 
 namespace MyCraft {
@@ -184,22 +183,22 @@ namespace MyCraft {
         auto shape = request->rectangleBox;
         if (z<=0) {
             z -= 0.06;
+            std::cout << "Z:" << shape[0].z << std::endl;
+            shape[0].z += z;
             bool isFall = true;
             shape[3] = shape[0] + shape[2];
-            isFall = isFall && (__world.getType(shape[3]+glm::vec3(0,0,z))==BlockCatogary::Air || 
-                                __world.getType(shape[3])!=BlockCatogary::Air); 
+            isFall = isFall && __world.getType(shape[3])==BlockCatogary::Air; 
             shape[2] += shape[0] + shape[1];
-            isFall = isFall && (__world.getType(shape[2]+glm::vec3(0,0,z))==BlockCatogary::Air || 
-                                __world.getType(shape[2])!=BlockCatogary::Air); 
+            isFall = isFall && __world.getType(shape[2])==BlockCatogary::Air; 
             shape[1] += shape[0];   
-            isFall = isFall && (__world.getType(shape[1]+glm::vec3(0,0,z))==BlockCatogary::Air || 
-                                __world.getType(shape[1])!=BlockCatogary::Air); 
+            isFall = isFall && __world.getType(shape[1])==BlockCatogary::Air; 
 
-            isFall = isFall && (__world.getType(shape[0]+glm::vec3(0,0,z))==BlockCatogary::Air || 
-                                __world.getType(shape[0])!=BlockCatogary::Air); 
+            isFall = isFall && __world.getType(shape[0])==BlockCatogary::Air; 
+            std::cout << isFall << " " << shape[0].z << " " << z << std::endl;
             if (isFall) mine.send(source, new FallMessage(std::max(z, -0.8f)));
             else {
-                float delta = shape[0][2] - floor(shape[0][2]);
+                float delta = shape[0][2] - z - ceil(shape[0][2]);
+                std::cout << "Delta: " << delta << std::endl;
                 mine.send(source, new FallMessage(-delta));
                 mine.send(source, new StopFallMessage());
             }

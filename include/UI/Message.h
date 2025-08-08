@@ -7,7 +7,7 @@ namespace MyBase {
     class Network;
     class World;
     class Command;
-    #define MessageTypeSize 15
+    #define MessageTypeSize 18
     enum MessageType: unsigned char {
         RequestGoto, RequestFall,
         Move, Fall,  StopFall,
@@ -16,7 +16,9 @@ namespace MyBase {
         PlaceBlock, DestroyBlock, 
         AcceptPlace, AcceptDestroy,
         CheckHover,
-        WorldMove
+        WorldMove,
+        OpenBlock, OpenInventoryBlock,
+        DropItem
     };
     class Port {
     public:
@@ -43,12 +45,14 @@ namespace MyBase {
         static void match(Port* port);
         virtual void receive(Port& source, Message* Message);
         virtual void receive(Port& source, Port& destination, Message* Message);
+        static void close();
     private:
         Network();
         ~Network();
         static Network& get();
         std::vector<std::vector<Port*>>             __ports;
         void send(Port& source, Port& destination, Message* Message);
+        static Network* network;
     };
     
     class Message {

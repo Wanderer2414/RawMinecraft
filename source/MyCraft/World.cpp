@@ -1,5 +1,8 @@
 #include "World.h"
+#include "Block.h"
+#include "InteractiveForm.h"
 #include "Inventory.h"
+#include "InventoryForm.h"
 #include "Item.h"
 #include "Message.h"
 
@@ -63,10 +66,15 @@ namespace MyCraft {
         //         }
         //     }
         // }
-
-        if (__world.__worldRender.isHover() && !__world.isBusyBlock(__world.__worldRender.getPlaceBlock())) {
-            __world.__worldRender.setType(__world.__worldRender.getPlaceBlock(), package->type);
-            mine.send(des, new AcceptPlaceMessage(package->type));
+        if (__world.__worldRender.isHover()) {
+            BlockCatogary hoverType = __world.__worldRender.getType(__world.__worldRender.getHoverBlock());
+            if (isInteractive(hoverType)) {
+                mine.send(new OpenInventoryBlockMessage(__world.__worldRender.getHoverBlock(), hoverType));
+            }
+            else if (!__world.isBusyBlock(__world.__worldRender.getPlaceBlock())) {
+                __world.__worldRender.setType(__world.__worldRender.getPlaceBlock(), package->type);
+                mine.send(des, new AcceptPlaceMessage(package->type));
+            }
         }
     }
 

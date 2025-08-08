@@ -2,12 +2,10 @@
 #define INVENTORY_H
 #include "Bag.h"
 #include "Block.h"
-#include "Clock.h"
-#include "Container2D.h"
+#include "Controller.h"
 #include "Controller2D.h"
 #include "Item.h"
 #include "Message.h"
-#include "Texture.h"
 #include "Toolbar.h"
 #include "Wrapper.h"
 namespace MyCraft {
@@ -22,9 +20,11 @@ namespace MyCraft {
 
         Item* placeBags(const glm::ivec2& offset, Item* item);
         Item* placeToolbar(const int& n, Item* item);
+        Item* push(Item* item);
     private:
         Item* __items[4][10];
     };
+
     class Inventory: public MyBase::Wrapper, public MyBase::Port {
     public:
         Inventory();
@@ -32,12 +32,12 @@ namespace MyCraft {
         Inventory(const Inventory&) = delete;
         Inventory& operator=(const Inventory&) const = delete; 
 
-        void open();
+        void open(InventoryUI* ui = 0);
         void close();
+        ItemTable& getItems();
     protected:
     private:
-        char __indices[4][10];
-        Bag                    *__bags;
+        InventoryUI             *__currentUI;
         ToolBar                 *__toolBar;
         ItemTable               __items;
     };
@@ -100,5 +100,6 @@ namespace MyCraft {
     private:
         ToolBar* __toolbar;
     };
+
 }
 #endif

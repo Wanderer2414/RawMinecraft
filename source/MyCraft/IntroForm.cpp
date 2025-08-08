@@ -2,7 +2,6 @@
 #include "Color.h"
 #include "ControlCenter.h"
 #include "Form.h"
-#include "GLFW/glfw3.h"
 
 namespace MyCraft {
     IntroForm::IntroForm(GLFWwindow* window, const int& index): MyBase::Form(index), font("assets/fonts/SyneMono-Regular.ttf") {

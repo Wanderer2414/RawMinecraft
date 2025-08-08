@@ -1,4 +1,5 @@
 #include "GamePauseForm.h"
+#include "ControlCenter.h"
 #include "Font.h"
 namespace MyCraft {
     GamePauseForm::GamePauseForm(const MyBase::Font& font) {
@@ -28,4 +29,14 @@ namespace MyCraft {
         return false;
     }
     
+    void GamePauseForm::__open(GLFWwindow* window) {
+        MyBase::ControlCenter::getInstance().BindSubScreen();
+        MyBase::ControlCenter::EnableMouse(window);
+    }
+    void GamePauseForm::__close(GLFWwindow* window) {
+        if (!getReturnValue()) {
+            MyBase::ControlCenter::DisableMouse(window);
+            MyBase::ControlCenter::CenteringMouse(window);
+        }
+    }
 }

@@ -17,17 +17,15 @@ namespace MyCraft {
         setTextureImportSize(glm::vec2(160.f, 160.f)/(glm::vec2)getTexture().getSize());
         setTextureExportSize(package.size);
 
-        MyBase::ShapeContainer::setPosition(getTextureExportPosition());
         MyBase::ShapeContainer::setFillColor(GREEN);
         
-        glm::vec2 size = getTextureExportSize();
-        size.y = 1.0f*size.y/255*getCount();
-        MyBase::ShapeManager::getInstance().createShape(__durabilityBackground, size);
+        __size = getTextureExportSize();
+        __size.y = 1.0f*__size.y*getCount()/255;
+        MyBase::ShapeManager::getInstance().createShape(__durabilityBackground, __size);
+        std::cout << __durabilityBackground.getSize().x << std::endl;
     }
     ToolItem::~ToolItem() {
-        glm::vec2 size = getTextureExportSize();
-        size.y = 1.0f*size.y/255*__currentCount;
-        MyBase::ShapeManager::getInstance().removeShape(__durabilityBackground, size);
+        MyBase::ShapeManager::getInstance().removeShape(__durabilityBackground, __size);
     }
     glm::vec2 ToolItem::getPosition() const {
         return getTextureExportPosition();
@@ -40,16 +38,14 @@ namespace MyCraft {
         if (__currentCount != getCount()) {
             if (getCount()<32) setFillColor(RED);
             else if (getCount()<128) setFillColor(YELLOW);
-            glm::vec2 size = getTextureExportSize();
-            size.y = 1.0f*getTextureExportSize().y/255*__currentCount;
-            MyBase::ShapeManager::getInstance().removeShape(__durabilityBackground, size);
+            MyBase::ShapeManager::getInstance().removeShape(__durabilityBackground, __size);
             __currentCount = getCount();
-            size.y = 1.0f*getTextureExportSize().y/255*getCount();
-            MyBase::ShapeManager::getInstance().createShape(__durabilityBackground, size);
+            __size.y = 1.0f*getTextureExportSize().y*getCount()/255;
+            MyBase::ShapeManager::getInstance().createShape(__durabilityBackground, __size);
         }
     }
     void ToolItem::draw() const {
-        MyBase::ShapeContainer::draw(__durabilityBackground);
+       MyBase::ShapeContainer::draw(__durabilityBackground);
         MyBase::TextureContainer::draw();
     }
     Item* ToolItem::merge(Item*& item) {

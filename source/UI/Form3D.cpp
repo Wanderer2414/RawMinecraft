@@ -11,13 +11,9 @@
 
 namespace MyBase3D {
     Form3D::Form3D(const int& index): __formIndex(index), __returnValue(-1), __isOpen(false), __backgroundColor(WHITE), __frameCount(0), __deltaClock(1) {
-        MyBase::ShapeManager::getInstance().createShape(__pauseScreen, {2,2});
-        setFillColor({0,0,0, 120});
-        ShapeContainer::setPosition({-1,-1});
         insert(&Camera::Instance());
     }
     Form3D::~Form3D() {
-        MyBase::ShapeManager::getInstance().removeShape(__pauseScreen, {2,2});
         Camera::close();
     }
     bool Form3D::contains(const glm::vec2& position) const {
@@ -93,13 +89,6 @@ namespace MyBase3D {
     }
     glm::vec2 Form3D::getSize() const {
         return {2, 2};
-    }
-    void Form3D::pauseScreen(GLFWwindow* window) {
-        MyBase::ControlCenter::getInstance().BindSubScreen();
-        glDraw();
-        glDrawTransparent();
-        draw(__pauseScreen);
-        MyBase::ControlCenter::getInstance().UnbindSubScreen();
     }
     void Form3D::setBackgroundColor(const MyBase::Color& color) {
         __backgroundColor = color;

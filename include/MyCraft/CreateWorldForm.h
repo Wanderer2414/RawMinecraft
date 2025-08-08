@@ -17,13 +17,15 @@ namespace MyBase {
         std::string getName() const;
         Date getDate() const;
     protected:
-        bool __mouseClicked(GLFWwindow*) override;
     private:
         bool                    __isSubmit;
         Date                    __date;
         RoundedRectangleButton  __createButton;
         Label                   __nameLabel, __dateLabel;
         Textbox                 __nameInput;
+
+        void __open(GLFWwindow* ) override;
+        bool __mouseClicked(GLFWwindow*) override;
     };
 }
 #endif

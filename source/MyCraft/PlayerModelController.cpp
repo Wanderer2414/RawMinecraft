@@ -173,6 +173,7 @@ namespace MyCraft {
             ans[0] -= ans[2];
             ans[2] = ans[2]*1.8f;
         } 
+        std::cout << "Get shape: " << __position.z << " " << ans[0].z << std::endl;
         return ans;
     }
     void PlayerModelController::reset() {
@@ -204,8 +205,11 @@ namespace MyCraft {
         __position = position;
     }
     void PlayerModelController::move(const glm::vec3& delta) {
+        std::cout << "Position: " << __position.x << " " << __position.y << " " << __position.z << std::endl;
+        std::cout << "Move: " << delta.x << " " << delta.y << " " << delta.z << std::endl;
         __position += delta;
         __isChanged = true;
+        std::cout << "After move: " << __position.x << " " << __position.y << " " << __position.z << std::endl;
         send(new MyBase::SetCameraMessage(__position, __eye_direction));
         send(new CheckHoverMessage(__position, __eye_direction));
         send( new WorldMoveMessage(__position));
@@ -313,6 +317,7 @@ namespace MyCraft {
     RequestGotoMessage::~RequestGotoMessage() {}
 
     RequestFallMessage::RequestFallMessage(const glm::mat4x3& rec, const float& z): rectangleBox(rec), zVelocity(z) {
+        std::cout << "Zr: " << rec[0].z << std::endl;
     }
     RequestFallMessage::~RequestFallMessage() {
     }
@@ -349,8 +354,10 @@ namespace MyCraft {
         }
         else {
             __model->move(moveMessage->direction);
-            if (!__model->isFall())
-                mine.send(new RequestFallMessage(__model->getShape(), __model->getZVelocity()));
+            if (!__model->isFall()) {
+                auto model = __model->getShape();
+                mine.send(new RequestFallMessage(model, __model->getZVelocity()));
+            }
         }
     }
 }

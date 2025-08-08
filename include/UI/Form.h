@@ -9,7 +9,7 @@
 #include "Shape.h"
 namespace MyBase {
 
-    class Form: public Container2D, private ShapeContainer {
+    class Form: public Container2D {
     public:
         Form(const int& index);
         ~Form();
@@ -20,7 +20,6 @@ namespace MyBase {
         glm::vec2       getPosition()   const override, 
                         getSize()       const override;
         void            setBackgroundColor(const Color& color);
-        void            pauseScreen(GLFWwindow* window);
     protected:
         int             getReturnValue() const;
         int             getFormIndex();
@@ -30,7 +29,6 @@ namespace MyBase {
         int             __formIndex,
                         __returnValue;
         Color           __backgroundColor;
-        Rectangle       __pauseScreen;
     };
     
 };

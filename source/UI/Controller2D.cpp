@@ -1,6 +1,5 @@
 #include "Controller2D.h"
 #include "ControlCenter.h"
-#include "GLFW/glfw3.h"
 namespace MyBase {
 
     Controller2D::Controller2D():

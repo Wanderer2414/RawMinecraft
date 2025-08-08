@@ -103,7 +103,6 @@ namespace MyCraft {
     bool MediateForm::__mouseClicked(GLFWwindow* window) {
         bool is_changed = false;
         if (__createWorldButton.isPressed()) {
-            pauseScreen(window);
             __createWorldForm.open(window);
             if (__createWorldForm.isSubmit()) {
                 std::string world_name = __createWorldForm.getName();

@@ -75,8 +75,10 @@ namespace MyCraft {
     bool ToolBar::contains(const glm::vec2& position) const {
         return false;
     }
-    void ToolBar::update() {
+
+    void ToolBar::open() {
         for (int i = 0; i<10; i++) if (__items.getToolBar(i)) 
             __items.getToolBar(i)->setPosition(getToolbarPosition(i) + __items.package.size*0.125f);
     }
+    void ToolBar::close() {}
 }

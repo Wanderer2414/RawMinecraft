@@ -42,9 +42,10 @@ namespace MyBase {
 
     Network::Network(): __ports(MessageTypeSize) {}
     Network::~Network() {}
+    Network* Network::network = 0;
     Network& Network::get() {
-        static Network network;
-        return network;
+        if (!network) network = new Network();
+        return *network;
     }
     void Network::match(Port* port) {
         port->match(&get());
@@ -62,6 +63,10 @@ namespace MyBase {
     }
     void Network::send(Port& source, Port& destination, Message* Message) {
         destination.receive(source, Message);
+    }
+    void Network::close() {
+        if (!network) delete network;
+        network = 0;
     }
     Command::Command() {}
     Command::~Command() {};

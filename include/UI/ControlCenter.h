@@ -1,6 +1,7 @@
 #ifndef CONTROL_CENTER_H
 #define CONTROL_CENTER_H
 #include "Global.h"
+#include "Rectangle.h"
 namespace MyBase {
     class ControlCenter {
         public:
@@ -30,8 +31,9 @@ namespace MyBase {
             void Maximize();
             
             void BindSubScreen()        const;
-            void UnbindSubScreen()      const;
             void DrawSavedScreen()      const;
+            
+            GLFWwindow* getHomeScreeen() const;
 
             void Reset();
             bool IsMouseClicked() const;
@@ -59,6 +61,8 @@ namespace MyBase {
             glm::vec2       __scrollPosition;
             glm::vec2       __windowSize, __windowHalfSize;
             std::string     __programName;
+            MyBase::Rectangle       __pauseScreen;
+            GLFWwindow*     __homeScreen;
             ControlCenter();
             ~ControlCenter();
             static ControlCenter* Default;

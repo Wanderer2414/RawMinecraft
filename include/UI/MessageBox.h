@@ -20,12 +20,13 @@ namespace MyBase {
        int open(GLFWwindow* window);
        void close();
     protected:
-        virtual void __open(GLFWwindow*), __close(GLFWwindow*);
+        virtual bool __exitCondition();
+        int getReturnValue() const;
         void setReturnValue(const int& returnValue);
+        virtual void __open(GLFWwindow*), __close(GLFWwindow*);
         virtual bool catchEvent(GLFWwindow* window) override;
         virtual void glDraw() const override;
         virtual void glDrawTransparent() const override;
-        virtual bool __exitCondition();
     private:
         bool                __isOpen;
         int                 __returnValue;
