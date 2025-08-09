@@ -5,7 +5,7 @@
 namespace MyCraft {
 
     bool isToolItem(const ItemType& type) {
-        if (type>=ItemType::WoodedAxe && type<=ItemType::NetheriteShovel)
+        if (type>=ItemType::WoodenAxe && type<=ItemType::NetheriteShovel)
             return true;
         return false;
     }

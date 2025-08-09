@@ -20,11 +20,11 @@ namespace MyCraft {
         BirchLog, StrippedBirchLog, BirchPlank,
         AcaciaLog, StrippedAcaciaLog, AcaciaPlank,
         CraftTable, Furnace, Smoker,
-        BlastFurnace, Chest, WoodedAxe,
+        BlastFurnace, Chest, WoodenAxe,
         StoneAxe, IronAxe, GoldenAxe, 
         DiamonAxe, NetheriteAxe, WoodenHoe,
         StoneHoe, IronHoe, GlodenHoe,
-        DiamonHoe, NetheriteHoe, WoodPickaxe,
+        DiamonHoe, NetheriteHoe, WoodenPickaxe,
         StonePickaxe, IronPickaxe, GoldenPickaxe,
         DianmonPickaxe, NetheritePickaxe, WoodenShovel,
         StoneShovel, IronShovel, GoldenShovel,
@@ -49,8 +49,13 @@ namespace MyCraft {
         MyBase::Font font;
         MyBase::Texture texture;
     };
+    
     bool isAdaptive(const ItemType&, const BlockCatogary&);
-    bool isShoverAdaptive(const BlockCatogary& block);
+    bool isShovelAdaptive(const BlockCatogary& block);
+    bool isPickaxeAdaptive(const BlockCatogary& block);
+    bool isAxeAdaptive(const BlockCatogary& block);
+    bool isHandAdaptive(const BlockCatogary& block);
+    BlockCatogary getBrokenResult(const BlockCatogary& type);
     float getPowerness(const ItemType& type);
     class Item {
     public:

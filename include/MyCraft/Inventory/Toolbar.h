@@ -31,27 +31,6 @@ namespace MyCraft {
         glm::vec2 getToolbarPosition(const int& n) const;
         glm::vec2 getToolbarChosenPosition(const int& n) const;
     };
-
-    class LeftAttackCommand: public MyBase::Command {
-    public:
-        LeftAttackCommand(ToolBar* toolbar);
-        ~LeftAttackCommand();
-        MyBase::MessageType getType()      const override;
-        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
-    private:
-        ToolBar* __toolBar;
-    };
-
-    class RightAttackCommand: public MyBase::Command {
-    public:
-        RightAttackCommand(ToolBar* toolbar);
-        ~RightAttackCommand();
-        MyBase::MessageType getType()      const override;
-        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
-    private:
-        ToolBar* __toolBar;
-    };
-
     class AcceptPlaceMessage: public MyBase::Message {
     public:
         AcceptPlaceMessage(const BlockCatogary& type);

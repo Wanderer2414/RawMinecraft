@@ -6,7 +6,7 @@ namespace MyCraft {
         Air, Dirt, Grass, 
         CobbleStone, Stone, OakLog, 
         OakLeaf,BedRock, Sand, 
-        SandStone, Obsidian, DeepStale, 
+        SandStone, Obsidian, DeepSlate, 
         Ice, Podzol, DirtPath, 
         FarmLand, FarmLandHydrad, SmoothStone,
         SmoothStoneSlab, StoneBrick, CoalOre, 

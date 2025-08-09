@@ -1,6 +1,7 @@
 #include "WorldRender.h"
 #include "ChunkBase.h"
 #include "ChunkManage.h"
+#include "Container2D.h"
 #include "DrawingCenter.h"
 #include "General.h"
 #include "Inventory.h"
@@ -61,13 +62,16 @@ namespace MyCraft {
         DrawingCenter::BindMargin();
         DrawingCenter::DrawMargins((void*)__chunkLoader.getChunks().data(), __chunkLoader.getChunks().size(), RED, 2);
         Container3D::glDraw();
+    }
+
+    void WorldRender::glDrawTransparent() const {
+        MyBase3D::Container3D::glDrawTransparent();
         if (__isHover) {
             glm::vec4 margin(__hoverBlock, 1);
             DrawingCenter::BindMargin();
             DrawingCenter::DrawMargins(&margin, 1, BLACK, 3);
         }
     }
-
 
     CheckEmptyCommand::CheckEmptyCommand(WorldRender& world): __world(world) {}
     CheckEmptyCommand::~CheckEmptyCommand() {}

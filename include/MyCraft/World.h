@@ -33,14 +33,6 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
     };
 
 
-    class PlaceBlockMessage: public MyBase::Message {
-    public:
-        PlaceBlockMessage(const glm::vec3& pos, const BlockCatogary& type);;
-        ~PlaceBlockMessage();
-        const glm::vec3 pos;
-        const BlockCatogary type;
-        MyBase::MessageType getType() const override;
-    };
     class PlaceBlockCommand: public MyBase::Command {
     public:
         PlaceBlockCommand(MyCraft::World& world);
@@ -51,13 +43,6 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
         World& __world;
     };
 
-    class CrackBlockMessage: public MyBase::Message {
-    public:
-        CrackBlockMessage(const ItemType& item);
-        ~CrackBlockMessage();
-        const ItemType type;
-        MyBase::MessageType getType() const override;
-    };
     class CrackBlockCommand: public MyBase::Command {
     public:
         CrackBlockCommand(World& world);

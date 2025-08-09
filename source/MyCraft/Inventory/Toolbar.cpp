@@ -1,10 +1,10 @@
 #include "Toolbar.h"
 #include "ControlCenter.h"
 #include "DroppedItem.h"
-#include "GLFW/glfw3.h"
 #include "Inventory.h"
 #include "InventoryElement.h"
 #include "Message.h"
+#include "PlayerInventoryModule.h"
 #include "PlayerModelController.h"
 #include "ToolItem.h"
 #include "World.h"
@@ -29,10 +29,8 @@ namespace MyCraft {
         insert(&__toolBarTexture);
         __mouseEllapse.setDuration(100);
 
-        add(new LeftAttackCommand(this));
         add(new AcceptPlaceCommand(this));
         add(new AcceptDestroyCommand(this));
-        add(new RightAttackCommand(this));
         add(new AddItemCommand(this));
     }
 
@@ -48,12 +46,14 @@ namespace MyCraft {
                 __mouseEllapse.restart();
                 __chosenIndex = (__chosenIndex+1)%10;
                 __chosenTexture.setTextureExportPosition(getToolbarChosenPosition(__chosenIndex));
+                send(new HoldItemMessage(__items.getToolBar(__chosenIndex), true));
                 is_changed = true;
             }
             else if (x>0) {
                 __mouseEllapse.restart();
                 __chosenIndex = (__chosenIndex+9)%10;
                 __chosenTexture.setTextureExportPosition(getToolbarChosenPosition(__chosenIndex));
+                send(new HoldItemMessage(__items.getToolBar(__chosenIndex), true));
                 is_changed = true;
             }
         }
@@ -62,6 +62,7 @@ namespace MyCraft {
             if (c>=0 && c<=9) {
                 __chosenIndex = (c+9)%10;
                 __chosenTexture.setTextureExportPosition(getToolbarChosenPosition(__chosenIndex));
+                send(new HoldItemMessage(__items.getToolBar(__chosenIndex), true));
                 is_changed = true;
             }
         }
@@ -90,41 +91,11 @@ namespace MyCraft {
     }
 
     void ToolBar::open() {
+        send(new HoldItemMessage(__items.getToolBar(__chosenIndex), true));
         for (int i = 0; i<10; i++) if (__items.getToolBar(i)) 
             __items.getToolBar(i)->setPosition(getToolbarPosition(i) + __items.package.size*0.125f);
     }
     void ToolBar::close() {}
-    
-    LeftAttackCommand::LeftAttackCommand(ToolBar* toolBar): __toolBar(toolBar) {}
-    LeftAttackCommand::~LeftAttackCommand() {}
-
-    MyBase::MessageType LeftAttackCommand::getType() const {
-        return MyBase::LeftAttack;
-    }
-    void LeftAttackCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
-        LeftAttackMessage* package = (LeftAttackMessage*)message;
-        Item* item = __toolBar->__items.getToolBar(__toolBar->__chosenIndex);
-        if (item) {
-            if (isBlock(*item)) {
-                BlockCatogary type = (BlockCatogary)ItemType(*item);
-                mine.send(new PlaceBlockMessage(package->position, type));
-            }
-        }
-        else {
-            mine.send(new PlaceBlockMessage(package->position, Air));
-        }
-    }
-
-    RightAttackCommand::RightAttackCommand(ToolBar* toolbar): __toolBar(toolbar) {}
-    RightAttackCommand::~RightAttackCommand() {}
-    MyBase::MessageType RightAttackCommand::getType() const {
-        return MyBase::RightAttack;
-    } 
-    void RightAttackCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
-        Item* item = __toolBar->__items.getToolBar(__toolBar->__chosenIndex);
-        if (item && isToolItem(*item)) mine.send(new CrackBlockMessage(*item));
-        else mine.send(new CrackBlockMessage(ItemType::Air));
-    }
 
     AcceptPlaceMessage::AcceptPlaceMessage(const BlockCatogary& t): type(t) {}
     AcceptPlaceMessage::~AcceptPlaceMessage() {}

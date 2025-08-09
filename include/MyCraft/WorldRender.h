@@ -21,6 +21,7 @@ namespace MyCraft {
         const BlockCatogary&    getType(const glm::vec3&)      ;
     protected:
         void glDraw() const override;
+        void glDrawTransparent() const override;
         Chunk& getChunk(const glm::ivec3& position) override;
         const Chunk& getChunk(const glm::ivec3& position) const override;
         const glm::ivec3& getPosition() const override;

@@ -13,7 +13,7 @@ namespace MyCraft {
         __rotateClock.setDuration(20);
         __blockTexture.load("assets/images/blockCatogary.png", false);
         add(Grass, glm::vec3(0,0, 1));
-        Port::add(new LootItemCommand(*this));
+        Port::add(new LootItemByMoveCommand(*this));
         Port::add(new DropItemCommand(*this));
     }
     DropItemManage::~DropItemManage() {}
@@ -73,12 +73,24 @@ namespace MyCraft {
         manage.add((BlockCatogary)package->type, package->position);
     }
 
-    LootItemCommand::LootItemCommand(DropItemManage& m): manage(m) {};
-    LootItemCommand::~LootItemCommand() {};
-    MyBase::MessageType LootItemCommand::getType() const {
+    LootItemByMoveCommand::LootItemByMoveCommand(DropItemManage& m): manage(m) {};
+    LootItemByMoveCommand::~LootItemByMoveCommand() {};
+    MyBase::MessageType LootItemByMoveCommand::getType() const {
         return MyBase::RequestGoto;
     }
-    void LootItemCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+    void LootItemByMoveCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        RequestGotoMessage* package = (RequestGotoMessage*)message;
+        auto items = manage.getNearItem(package->rectangleBox[0]);
+        for (auto item: items) mine.send(source, new ReceiveItemMessage(item.first, item.second.item, item.second.count));
+        if (items.size()) mine.send(new AddItemMessage());
+    }
+
+    LootItemByJumpCommand::LootItemByJumpCommand(DropItemManage& m): manage(m) {};
+    LootItemByJumpCommand::~LootItemByJumpCommand() {}
+    MyBase::MessageType LootItemByJumpCommand::getType() const {
+        return MyBase::RequestFall;
+    }
+    void LootItemByJumpCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         RequestGotoMessage* package = (RequestGotoMessage*)message;
         auto items = manage.getNearItem(package->rectangleBox[0]);
         for (auto item: items) mine.send(source, new ReceiveItemMessage(item.first, item.second.item, item.second.count));

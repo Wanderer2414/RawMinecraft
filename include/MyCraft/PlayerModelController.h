@@ -6,17 +6,18 @@
 #include "Item.h"
 #include "Message.h"
 #include "ModelController.h"
+#include "PlayerInventoryModule.h"
 namespace MyCraft {
-    class PlayerModelController: public ModelController, public MyBase::Port {
+    class PlayerModelController: public ModelController, public MyBase::Port, public PlayerInventoryModule {
     public: 
         PlayerModelController();
         ~PlayerModelController();
         bool        isCrounch() const;
         bool        isRun() const;
-        glm::vec3   getModelPosition() const override,
+        glm::vec3   getModelPosition() const    override,
                     getDirection() const;
         void        move(const glm::vec3& delta) override,
-                    rotate(const float& angle) override,
+                    rotate(const float& angle)  override,
                     teleport(const glm::vec3& position),
                     rotate(const glm::vec3& dir),
                     rightAttack(),
@@ -27,7 +28,6 @@ namespace MyCraft {
                     glDraw() const override,
                     
                     setHoverBlock(const glm::vec3& hover, const glm::vec3& place, const BlockCatogary& type);
-        ItemTable&  getItems();
         glm::mat4x3 getShape() const override;
     private:
         bool            __isRun, __isDrawable, __isChanged,
@@ -41,7 +41,6 @@ namespace MyCraft {
                         __runCooldown,
                         __attack__cooldown;
         BlockCatogary   __type;
-        ItemTable       __items;
         glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
         bool            __moveManage(GLFWwindow* window);
         
@@ -50,6 +49,7 @@ namespace MyCraft {
         void            reset() override;
         void            update() override;
     };
+
     class ResetCameraCommand: public MyBase::Command {
     public:
         ResetCameraCommand(MyCraft::PlayerModelController* model);
@@ -59,6 +59,7 @@ namespace MyCraft {
     private:
         MyCraft::PlayerModelController* __model;
     };
+
     class MoveMessage: public MyBase::Message {
     public:
         MoveMessage(const glm::vec3& direction);
@@ -100,20 +101,22 @@ namespace MyCraft {
         float zVelocity;
     };
 
-    class RightAttackMessage: public MyBase::Message {
+    class PlaceMessage: public MyBase::Message {
     public:
-        RightAttackMessage(const glm::vec3& position, const glm::vec3& direction);
-        ~RightAttackMessage();
+        PlaceMessage(const glm::vec3& position, const glm::vec3& direction, const ItemType& left, const ItemType& right);
+        ~PlaceMessage();
         MyBase::MessageType getType() const override;
         const glm::vec3 position, direction;
+        const ItemType rightItem, leftItem;
     };
 
-    class LeftAttackMessage: public MyBase::Message {
+    class AttackMessage: public MyBase::Message {
     public:
-        LeftAttackMessage(const glm::vec3& position, const glm::vec3& direction);
-        ~LeftAttackMessage();
+        AttackMessage(const glm::vec3& position, const glm::vec3& direction, const ItemType& left, const ItemType& right);
+        ~AttackMessage();
         MyBase::MessageType     getType() const override;
         const glm::vec3 position, direction;
+        const ItemType rightItem, leftItem;
     };
 
     class PlayerMoveCommand: public MyBase::Command {
@@ -126,47 +129,5 @@ namespace MyCraft {
     private:
         MyCraft::PlayerModelController*      __model;
     };
-    class PrepareOpenInventoryMessage: public MyBase::Message {
-    public:
-        PrepareOpenInventoryMessage(const glm::ivec3& position, const BlockCatogary& type);
-        ~PrepareOpenInventoryMessage();
-        MyBase::MessageType     getType() const override;
-        const glm::ivec3 position;
-        const BlockCatogary type;
-    };
-
-    class PrepareOpenInventoryCommand: public MyBase::Command {
-    public:
-        PrepareOpenInventoryCommand(PlayerModelController& model);
-        ~PrepareOpenInventoryCommand();
-
-        MyBase::MessageType getType()                               const override;
-        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
-    private:
-        MyCraft::PlayerModelController& __model;
-    };
-
-    class ReceiveItemMessage: public MyBase::Message {
-    public:
-        ReceiveItemMessage(const glm::vec3& position, const ItemType& type, const unsigned int& count);
-        ~ReceiveItemMessage();
-        MyBase::MessageType     getType() const override;
-        const glm::vec3 position;
-        const ItemType type;
-        const int count;
-    };
-
-    class ReceiveItemCommand: public MyBase::Command {
-    public:
-        ReceiveItemCommand(PlayerModelController& model);
-        ~ReceiveItemCommand();
-
-        MyBase::MessageType getType()                               const override;
-        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
-    private:
-        MyCraft::PlayerModelController& __model;
-    };
-
-    
 }
 #endif

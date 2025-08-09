@@ -47,10 +47,20 @@ namespace MyCraft {
     private:
         DropItemManage& manage;
     };
-    class LootItemCommand: public MyBase::Command {
+    class LootItemByMoveCommand: public MyBase::Command {
     public:
-        LootItemCommand(DropItemManage& manage);
-        ~LootItemCommand();
+        LootItemByMoveCommand(DropItemManage& manage);
+        ~LootItemByMoveCommand();
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private:
+        DropItemManage& manage;
+    };
+
+    class LootItemByJumpCommand: public MyBase::Command {
+    public:
+        LootItemByJumpCommand(DropItemManage& manage);
+        ~LootItemByJumpCommand();
         MyBase::MessageType getType() const override;
         void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
     private:

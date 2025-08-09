@@ -15,10 +15,13 @@ namespace MyCraft {
         setFillColor(WHITE);
 
         inventory.changeState(&__toolBar);
-        __toolBar.open();
         insert(&__inventory);
-        add(new OpenInventoryBlockCommand(*this));
+
         MyBase::Network::match(&__toolBar);
+
+        add(new OpenInventoryBlockCommand(*this));
+
+        __toolBar.open();
     }
     InventoryForm::~InventoryForm() {}
 
@@ -64,6 +67,7 @@ namespace MyCraft {
             InventoryUI* ui = new CraftingTableUI(&package->table);
             __inventory.setDefaultUI(ui);
             __inventory.open(MyBase::ControlCenter::getInstance().getHomeScreeen());
+            ui->close();
             __inventory.setDefaultUI(0);
             delete ui;
         }

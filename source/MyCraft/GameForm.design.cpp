@@ -8,7 +8,6 @@
 #include "Form3D.h"
 #include "GamePauseForm.h"
 #include "ControlCenter.h"
-#include "Inventory.h"
 #include "InventoryElement.h"
 #include "Message.h"
 
@@ -105,8 +104,10 @@ namespace MyCraft {
                 InventoryUI* ui = new Bag(__model.getItems());
                 __inventoryForm.setDefaultUI(ui);
                 __inventoryForm.open(window);
+                ui->close();
                 __inventoryForm.setDefaultUI(0);
                 delete ui;
+                
                 is_changed = true;
             }
         }

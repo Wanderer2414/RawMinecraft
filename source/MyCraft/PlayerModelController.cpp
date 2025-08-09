@@ -1,17 +1,15 @@
 #include "PlayerModelController.h"
-#include "Block.h"
 #include "Camera.h"
 #include "ControlCenter.h"
-#include "DroppedItem.h"
-#include "Inventory.h"
-#include "InventoryForm.h"
 #include "Item.h"
 #include "Message.h"
 #include "Global.h"
 #include "ModelController.h"
 #include "ModelLoader.h"
 #include "ModelStorage.h"
-#include "World.h"
+#include "PlayerInventoryModule.h"
+#include "WorldRender.h"
+
 namespace MyCraft {
     PlayerModelController::PlayerModelController(): __position(0), __direction(0, -1, 0), __runTime(0), __handTime(0), __isChanged(false),
         __isLeftAttack(0), __isRightAttack(0), __animation(ModelStorage::getInstance().getPlayerModel().getNodeCount(), 1), __eye_direction(0, -1, 0),
@@ -25,16 +23,14 @@ namespace MyCraft {
         __runCooldown.setDuration(30);
         __speedControl.setDuration(30);
 
-        __items.package.texture = MyBase::Texture("assets/images/blockItem.png");
-        __items.package.size = glm::vec2(102.f/940*1.2f/MyBase::ControlCenter::getInstance().GetWindowRatio(), 102.f/940*1.2)*0.8f;
-        __items.package.font = MyBase::Font("assets/fonts/SyneMono-Regular.ttf");
 
         add(new PlayerMoveCommand(this));
         add(new FallCommand(this));
         add(new StopFallCommand(this));
         add (new ResetCameraCommand(this));
-        add(new PrepareOpenInventoryCommand(*this));
-        add(new ReceiveItemCommand(*this));
+        add(new PrepareOpenInventoryCommand(this));
+        add(new ReceiveItemCommand(this));
+        add(new HoldItemCommand(this));
 }
     PlayerModelController::~PlayerModelController() {
 
@@ -155,9 +151,6 @@ namespace MyCraft {
         }
         return __isChanged;
     }
-    ItemTable& PlayerModelController::getItems() {
-        return __items;
-    }
     glm::vec3 PlayerModelController::getModelPosition() const {
         return __position;
     }
@@ -197,7 +190,7 @@ namespace MyCraft {
             __handTime = 0;
             __isRightAttack = false;
             __isLeftAttack = true;
-            send(new LeftAttackMessage(__position, __eye_direction));
+            send(new PlaceMessage(__position, __eye_direction, getItemTypeLeftHand(), getItemTypeRightHand()));
             send(new CheckHoverMessage(__position, __eye_direction));
             send(new RequestFallMessage(getShape(), getZVelocity()));
         } 
@@ -208,7 +201,7 @@ namespace MyCraft {
             __handTime = 0;
             __isRightAttack = false;
             __isRightAttack = true;
-            send(new RightAttackMessage(__position, __eye_direction));
+            send(new AttackMessage(__position, __eye_direction, getItemTypeLeftHand(),getItemTypeRightHand()));
             send(new CheckHoverMessage(__position, __eye_direction));
             send(new RequestFallMessage(getShape(), getZVelocity()));
         }
@@ -335,16 +328,16 @@ namespace MyCraft {
         return MyBase::MessageType::RequestGoto;
     }
 
-    RightAttackMessage::RightAttackMessage(const glm::vec3& pos, const glm::vec3& dir): position(pos), direction(dir) {}
-    RightAttackMessage::~RightAttackMessage() {}
-    MyBase::MessageType RightAttackMessage::getType() const {
-        return MyBase::MessageType::RightAttack;
+    PlaceMessage::PlaceMessage(const glm::vec3& pos, const glm::vec3& dir, const ItemType& left, const ItemType& right): position(pos), direction(dir), rightItem(right), leftItem(left) {}
+    PlaceMessage::~PlaceMessage() {}
+    MyBase::MessageType PlaceMessage::getType() const {
+        return MyBase::MessageType::Place;
     }
     
-    LeftAttackMessage::LeftAttackMessage(const glm::vec3& pos, const glm::vec3& dir): position(pos), direction(dir) {}
-    LeftAttackMessage::~LeftAttackMessage() {}
-    MyBase::MessageType LeftAttackMessage::getType() const{
-        return MyBase::MessageType::LeftAttack;
+    AttackMessage::AttackMessage(const glm::vec3& pos, const glm::vec3& dir, const ItemType& left, const ItemType& right): position(pos), direction(dir), leftItem(left), rightItem(right) {}
+    AttackMessage::~AttackMessage() {}
+    MyBase::MessageType AttackMessage::getType() const{
+        return MyBase::MessageType::Attack;
     }
 
     PlayerMoveCommand::PlayerMoveCommand(MyCraft::PlayerModelController* model): __model(model) {}
@@ -365,47 +358,6 @@ namespace MyCraft {
                 auto model = __model->getShape();
                 mine.send(new RequestFallMessage(model, __model->getZVelocity()));
             }
-        }
-    }
-
-    PrepareOpenInventoryMessage::PrepareOpenInventoryMessage(const glm::ivec3& p, const BlockCatogary& t): position(p), type(t) {}
-    PrepareOpenInventoryMessage::~PrepareOpenInventoryMessage() {}
-    MyBase::MessageType PrepareOpenInventoryMessage::getType() const {
-        return MyBase::PrepareOpenInventory;
-    }
-
-    PrepareOpenInventoryCommand::PrepareOpenInventoryCommand(PlayerModelController& model): __model(model) {}
-    PrepareOpenInventoryCommand::~PrepareOpenInventoryCommand() {}
-
-    MyBase::MessageType PrepareOpenInventoryCommand::getType() const {
-        return MyBase::PrepareOpenInventory;
-    }
-    void PrepareOpenInventoryCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)  {
-        std::cout << std::endl;
-        PrepareOpenInventoryMessage* package = (PrepareOpenInventoryMessage*)message;
-        mine.send(new OpenInventoryBlockMessage(package->position, package->type, __model.getItems()));
-    }
-
-    ReceiveItemMessage::ReceiveItemMessage(const glm::vec3& p, const ItemType& t, const unsigned int& c): type(t), count(c), position(p) {};
-    ReceiveItemMessage::~ReceiveItemMessage() {};
-    MyBase::MessageType ReceiveItemMessage::getType() const {
-        return MyBase::ReceiveItem;
-    }
-
-    ReceiveItemCommand::ReceiveItemCommand(PlayerModelController& model): __model(model) {}
-    ReceiveItemCommand::~ReceiveItemCommand() {}
-
-    MyBase::MessageType ReceiveItemCommand::getType() const {
-        return MyBase::ReceiveItem;
-    }
-    void ReceiveItemCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
-        ReceiveItemMessage* package = (ReceiveItemMessage*)message;
-        Item* item = Item::create(__model.getItems().package, package->count, package->type);
-        item = __model.getItems().push(item);
-        if (item) {
-            int count = item->getCount();
-            delete item;
-            mine.send(source, new DropItemMessage(package->type, count, package->position));
         }
     }
 }
