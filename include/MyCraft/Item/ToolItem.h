@@ -1,6 +1,7 @@
 #ifndef TOOL_ITEM_H
 #define TOOL_ITEM_H
 #include "Item.h"
+#include "Rectangle.h"
 #include "Shape.h"
 #include "Texture.h"
 #include "BlockItem.h"

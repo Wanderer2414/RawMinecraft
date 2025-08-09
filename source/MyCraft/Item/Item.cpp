@@ -5,9 +5,6 @@
 #include "ToolItem.h"
 namespace MyCraft {
     bool isAdaptive(const ItemType& tool, const BlockCatogary& block) {
-        if (tool == ItemType::Air || tool <= ItemType::Chest)
-            return isHandAdaptive(block);
-
         if (tool >= ItemType::WoodenShovel && tool <= ItemType::NetheriteShovel)
             return isShovelAdaptive(block);
 
@@ -17,11 +14,12 @@ namespace MyCraft {
         if (tool >= ItemType::WoodenAxe && tool <= ItemType::NetheriteAxe)
             return isAxeAdaptive(block);
 
-        return false;
+        return isHandAdaptive(block);
     }
 
     bool isHandAdaptive(const BlockCatogary& block) {
         switch (block) {
+            case Torch: return true;
             case Dirt: return true;
             case Sand: return true;
             case Grass: return true;

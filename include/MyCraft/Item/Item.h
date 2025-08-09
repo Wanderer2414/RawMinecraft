@@ -2,9 +2,6 @@
 #define ITEM_H
 #include "Block.h"
 #include "Font.h"
-#include "Rectangle.h"
-#include "Shape.h"
-#include "Text.h"
 #include "Texture.h"
 namespace MyCraft {
     enum class ItemType: unsigned char {
@@ -20,7 +17,7 @@ namespace MyCraft {
         BirchLog, StrippedBirchLog, BirchPlank,
         AcaciaLog, StrippedAcaciaLog, AcaciaPlank,
         CraftTable, Furnace, Smoker,
-        BlastFurnace, Chest, WoodenAxe,
+        BlastFurnace, Chest, Torch, WoodenAxe,
         StoneAxe, IronAxe, GoldenAxe, 
         DiamonAxe, NetheriteAxe, WoodenHoe,
         StoneHoe, IronHoe, GlodenHoe,

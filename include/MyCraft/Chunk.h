@@ -1,6 +1,5 @@
 #ifndef CHUNK_H
 #define CHUNK_H
-#include "Biome.h"
 #include "ChunkBase.h"
 
 namespace MyCraft {
@@ -12,6 +11,7 @@ namespace MyCraft {
         void disableList();
         void enableList();
         void setType(const glm::ivec3& pos, const BlockCatogary& type)          override;
+        void setState(const glm::ivec3& pos, const glm::mat4& state)            override;
         static Chunk* Load(const std::string& src, const glm::ivec3& position);
         void glDraw() const;
         void glDrawTransparent() const;
@@ -32,8 +32,9 @@ namespace MyCraft {
         BlockCatogary               __blockTypes[16][16][16];
         std::bitset<16>             __bits[16][16];
         std::string                 __source;
-        std::vector<glm::vec4>     __list;
-        std::vector<glm::vec4>     __transparentList;
+        std::vector<glm::mat4>     __state;
+        std::vector<glm::mat4>     __transparentState;
+        std::map<int, glm::mat4>   __specialState;
         void __add(const glm::ivec3& position);
         void __remove(const glm::ivec3& position);
     };

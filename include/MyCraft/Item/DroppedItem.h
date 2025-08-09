@@ -15,17 +15,18 @@ namespace MyCraft {
         DropItemManage(const DropItemManage&) = delete;
         DropItemManage& operator=(const DropItemManage&) const = delete; 
         std::vector<std::pair<glm::vec3,RecipeSlot>> getNearItem(const glm::vec3& position);
-        void add(const BlockCatogary& item, const glm::vec3& position);
+        void add(const BlockCatogary& item, const unsigned char& count, const glm::vec3& position);
         void remove(const int& index);
         friend class FallItemCommand;
     protected:
         bool handle(GLFWwindow*) override;
     private:
         int __currentFall;
-        std::vector<glm::mat4>  __state;
-        std::vector<glm::vec4>  __item;
-        MyBase::Clock           __rotateClock;
-        MyBase::Texture         __blockTexture;
+        std::vector<glm::mat4>      __states;
+        std::vector<glm::vec3>      __sizes;
+        std::vector<unsigned char>   __count;
+        MyBase::Clock               __rotateClock;
+        MyBase::Texture             __blockTexture;
         void glDraw() const override;
     };
 

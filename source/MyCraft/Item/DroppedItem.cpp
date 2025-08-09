@@ -9,6 +9,7 @@
 #include "WorldRender.h"
 #include "Recipe.h"
 #include "Toolbar.h"
+#include "glm/ext/matrix_transform.hpp"
 namespace MyCraft {
     DropItemManage::DropItemManage() {
         __rotateClock.setDuration(20);
@@ -20,9 +21,24 @@ namespace MyCraft {
     }
     DropItemManage::~DropItemManage() {}
 
-    void DropItemManage::add(const BlockCatogary& item, const glm::vec3& position) {
-        __item.push_back(glm::vec4(position,item));
-        __state.push_back(glm::mat4(1));
+    void DropItemManage::add(const BlockCatogary& item, const unsigned char& count, const glm::vec3& position) {
+        bool isMerge = false;
+        for (int i = 0; i<__states.size() && !isMerge; i++) {
+            float distance = glm::length(position-glm::vec3(__states[i][3]));
+            if (distance<3 && BlockCatogary(__states[i][3].w) == item) {
+                __count[i] += count;
+                isMerge = true;
+            }
+        }
+        if (!isMerge) {
+            glm::mat4 state = getSpecialBlockState(item);
+            state = glm::scale(state, glm::vec3(0.4));
+            __sizes.push_back({state[0].x, state[1].y, state[2].z});
+            state[3] = glm::vec4(position.x - state[0].x/2, position.y-state[1].y/2, position.z,0);
+            state[3].w = item;
+            __states.push_back(state);
+            __count.push_back(count);
+        }
     }
     void DropItemManage::remove(const int& index) {
 
@@ -30,18 +46,19 @@ namespace MyCraft {
 
     bool DropItemManage::handle(GLFWwindow* window) {
         bool is_changed = MyBase3D::Controller3D::handle(window);
-        if (__rotateClock.get() && __item.size()) {
+        if (__rotateClock.get() && __states.size()) {
             __rotateClock.restart();
+            for (int i = 0; i<__states.size(); i++) {
+                __states[i] = __states[i]*glm::translate(glm::mat4(1), __sizes[i]);
+                __states[i] = __states[i]*glm::rotate(glm::mat4(1), 0.05f, {0,0,1});
+                __states[i] = __states[i]*glm::translate(glm::mat4(1), -__sizes[i]);
+            }
             glm::mat4x3 mat;
             mat[1] = {0.3, 0,0};
             mat[2] = {0, 0.3, 0};
             mat[3] = {0, 0, 0.3};
-            for (glm::mat4& i:__state) {
-                i = glm::rotate(i, 0.05f, {0,0,1});
-                i[2][3] = i[0][0]*0.05;
-            }
-            for (int i = 0; i<__item.size(); i++) {
-                mat[0] = __item[i];
+            for (int i = 0; i<__states.size(); i++) {
+                mat[0] = __states[i][3] - glm::vec4(0.15,0.15,0,0);
                 __currentFall = i;
                 send(new RequestFallMessage(mat, -0.03));
             }
@@ -50,21 +67,22 @@ namespace MyCraft {
     }
     std::vector<std::pair<glm::vec3, RecipeSlot>> DropItemManage::getNearItem(const glm::vec3& position) {
         std::vector<std::pair<glm::vec3, RecipeSlot>> ans;
-        for (int i = __item.size()-1; i>=0; i--) {
-            float xy_distance = glm::length(glm::vec2(__item[i])-glm::vec2(position));
-            float z_distance = abs(position.z-__item[i].z);
+        for (int i = __states.size()-1; i>=0; i--) {
+            float xy_distance = glm::length(glm::vec2(__states[i][3])-glm::vec2(position));
+            float z_distance = abs(position.z-__states[i][3].z);
             if (xy_distance<2 && z_distance<3) {
-                ans.push_back({__item[i], {1, (ItemType)__item[i].w}});
-                __item.erase(__item.begin()+i);
-                __state.erase(__state.begin()+i);
+                ans.push_back({__states[i][3], {__count[i], (ItemType)__states[i][3].w}});
+                __states.erase(__states.begin()+i);
+                __sizes.erase(__sizes.begin()+i);
+                __count.erase(__count.begin() + i);
             }
         }
         return ans;
     }
     void DropItemManage::glDraw() const {
-        if (__item.size()) {
-            DrawingCenter::BindDroppedBlock(__blockTexture, glm::vec2(1, 0.3));
-            DrawingCenter::DrawDroppedBlock((void*)__item.data(), (void*)__state.data(), __item.size());
+        if (__states.size()) {
+            DrawingCenter::BindCube(__blockTexture, glm::vec2(1, 0.3));
+            DrawingCenter::DrawCubes((void*)__states.data(), __states.size());
         }
     }
 
@@ -82,7 +100,7 @@ namespace MyCraft {
     }
     void DropItemCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         DropItemMessage* package = (DropItemMessage*)message;
-        manage.add((BlockCatogary)package->type, package->position);
+        manage.add((BlockCatogary)package->type, package->count, package->position);
     }
 
     LootItemByMoveCommand::LootItemByMoveCommand(DropItemManage& m): manage(m) {};
@@ -117,6 +135,6 @@ namespace MyCraft {
     }
     void FallItemCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         FallMessage* package = (FallMessage*)message;
-        __manage.__item[__manage.__currentFall].z += package->zVelocity;   
+        __manage.__states[__manage.__currentFall][3].z += package->zVelocity;   
     }
 }

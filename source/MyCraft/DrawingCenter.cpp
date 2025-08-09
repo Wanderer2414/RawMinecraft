@@ -13,7 +13,7 @@ namespace MyCraft {
 
         for (int i = 0; i<SWAP_BUFFER; i++) {
             glBindBuffer(GL_UNIFORM_BUFFER, __positionBuffer[i]);
-            glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*4*32, 0, GL_DYNAMIC_DRAW);
+            glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4)*32, 0, GL_DYNAMIC_DRAW);
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
         }
 
@@ -54,7 +54,7 @@ namespace MyCraft {
     
         texture.Bind();
     }
-    void DrawingCenter::BindDroppedBlock(const MyBase::Texture& texture, const glm::vec2& extra) {
+    void DrawingCenter::BindSpecialBlock(const MyBase::Texture& texture, const glm::vec2& extra) {
         getInstance();
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDroppedShader());
         glBindVertexArray(Default->__vertexArray);
@@ -106,15 +106,15 @@ namespace MyCraft {
         for (int i = 0; i<size; i+=32) {
             int sz = std::min(32, size-i);
             glBindBuffer(GL_UNIFORM_BUFFER, Default->__positionBuffer[Default->__positionBufferPointer]);
-            glBufferSubData(GL_UNIFORM_BUFFER,0,sizeof(GLfloat)*4*sz, data);
+            glBufferSubData(GL_UNIFORM_BUFFER,0,sizeof(glm::mat4)*sz, data);
             glBindBufferBase(GL_UNIFORM_BUFFER, 1, Default->__positionBuffer[Default->__positionBufferPointer]);
 
             glDrawArrays(GL_TRIANGLES, 0, 36*sz);
-            data = (char*)data + sizeof(GLfloat)*4*sz;
+            data = (char*)data + sizeof(glm::mat4)*sz;
             Default->__positionBufferPointer = (Default->__positionBufferPointer+1)%SWAP_BUFFER;
         }
     }
-    void DrawingCenter::DrawDroppedBlock(void* data, void* state, const int& size) {
+    void DrawingCenter::DrawSpecialBlock(void* data, void* state, const int& size) {
         getInstance();
         GLuint STATE;
         glGenBuffers(1, &STATE);

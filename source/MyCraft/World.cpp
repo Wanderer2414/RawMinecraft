@@ -96,7 +96,7 @@ namespace MyCraft {
                 position += glm::vec3(0.5);
                 __world.__worldRender.setType(__world.__crackingManage.getCrackingBlock(), Air);
                 __world.__crackingManage.uncrack();
-                if (isAdaptive(package->rightItem, type)) __world.__dropItemManage.add(getBrokenResult(type), position);
+                if (isAdaptive(package->rightItem, type)) __world.__dropItemManage.add(getBrokenResult(type), 1, position);
                 mine.send(des, new AcceptDestroyMessage(1/percent, type, position));
             }
         }

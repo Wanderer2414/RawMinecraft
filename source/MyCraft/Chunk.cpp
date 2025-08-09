@@ -1,4 +1,5 @@
 #include "Chunk.h"
+#include "Block.h"
 #include "DrawingCenter.h"
 #include "General.h"
 #include "MapCreator.h"
@@ -22,6 +23,7 @@ namespace MyCraft {
             }
             file.read((char*)&new_chunk->__numBlock, sizeof(int));
             file.read((char*)&new_chunk->__blockTypes[0][0][0], sizeof(BlockCatogary)*4096);
+            
             file.close();
             if (new_chunk->__numBit) {
                 for (int i = 0; i<16; i++)
@@ -64,8 +66,8 @@ namespace MyCraft {
     }
     void Chunk::enableList() {
         __enableQueue = true;
-        __list.clear();
-        __transparentList.clear();
+        __state.clear();
+        __transparentState.clear();
         for (int x = 0; x<16; x++) {
             for (int y = 0; y<16; y++) {
                 for (int z = 0; z<16; z++) {
@@ -118,7 +120,26 @@ namespace MyCraft {
         __isChange = true;
         __blockTypes[offset.x][offset.y][offset.z] = type;
         if (__enableQueue && __bits[offset.x][offset.y][offset.z]) {
-            __list[__tableIndexes[offset.x][offset.y][offset.z]].w = type;
+            __state[__tableIndexes[offset.x][offset.y][offset.z]][3].w = type;
+            if (__specialState.find(offset.x*256 + offset.y*16 + offset.z) != __specialState.end())
+                __specialState[offset.x*256 + offset.y*16 + offset.z][3].w = type;
+        }
+    }
+    void Chunk::setState(const glm::ivec3& pos, const glm::mat4& state) {
+        if (state != glm::mat4(1)) {
+            glm::ivec3 offset = pos - __position;
+            if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
+                throw std::runtime_error("Out range of chunk");
+            BlockCatogary type = __blockTypes[offset.x][offset.y][offset.z];
+            glm::mat4 cState(1);
+            if (isSpecialBlock(type)) cState = getSpecialBlockState(type);
+            cState *= state;
+            cState[3].w = type;
+            __specialState[offset.x*256 + offset.y*16 + offset.z] = cState;
+
+            if (__enableQueue && __bits[offset.x][offset.y][offset.z]) {
+                __state[__tableIndexes[offset.x][offset.y][offset.z]] = cState;
+            }
         }
     }
 
@@ -156,13 +177,19 @@ namespace MyCraft {
             throw std::runtime_error("Out range of chunk!");
         if (__blockTypes[offset.x][offset.y][offset.z] && __bits[offset.x][offset.y][offset.z]) {
             BlockCatogary type = __blockTypes[offset.x][offset.y][offset.z];
+            glm::mat4 state(1);
+            if (isSpecialBlock(type)) state = getSpecialBlockState(type);
+            if (__specialState.find(offset.x*256+offset.y*16+offset.z) != __specialState.end())
+                state *= __specialState[offset.x*256+offset.y*16+offset.z];
+            state[3] += glm::vec4(position, 0);
+            state[3].w = type;
             if (isTransparent(type)) {
-                __tableIndexes[offset.x][offset.y][offset.z] = __transparentList.size();
-                __transparentList.push_back(glm::vec4(position, type));
+                __tableIndexes[offset.x][offset.y][offset.z] = __transparentState.size();
+                __transparentState.push_back(state);
             }
             else {
-                __tableIndexes[offset.x][offset.y][offset.z] = __list.size();
-                __list.push_back(glm::vec4(position, type));
+                __tableIndexes[offset.x][offset.y][offset.z] = __state.size();
+                __state.push_back(state);
             }
         }
     }
@@ -174,32 +201,32 @@ namespace MyCraft {
         int index = __tableIndexes[offset.x][offset.y][offset.z];
         __tableIndexes[offset.x][offset.y][offset.z] = -1;
         if (isTransparent(type)) {
-            if (index < __transparentList.size()-1) {
-                __transparentList[index] = __transparentList.back();
-                __transparentList.pop_back();
+            if (index < __transparentState.size()-1) {
+                __transparentState[index] = __transparentState.back();
+                __transparentState.pop_back();
 
-                glm::ivec3 origin = glm::ivec3(__transparentList[index]) - __position;
+                glm::ivec3 origin = glm::ivec3(__transparentState[index][3]) - __position;
                 __tableIndexes[origin.x][origin.y][origin.z] = index;
             }
-            else __transparentList.pop_back();
+            else __transparentState.pop_back();
         }
         else {
-            if (index < __list.size()-1) {
-                __list[index] = __list.back();
-                __list.pop_back();
+            if (index < __state.size()-1) {
+                __state[index] = __state.back();
+                __state.pop_back();
 
-                glm::ivec3 origin = glm::ivec3(__list[index]) - __position;
+                glm::ivec3 origin = glm::ivec3(__state[index][3]) - __position;
                 __tableIndexes[origin.x][origin.y][origin.z] = index;
             }
-            else __list.pop_back();
+            else __state.pop_back();
         }
 
     }
     void Chunk::glDraw() const {
-        DrawingCenter::DrawCubes((void*)__list.data(), __list.size());
+        DrawingCenter::DrawCubes((void*)__state.data(), __state.size());
     }
     void Chunk::glDrawTransparent() const {
-        DrawingCenter::DrawCubes((void*)__transparentList.data(), __transparentList.size());
+        DrawingCenter::DrawCubes((void*)__transparentState.data(), __transparentState.size());
     }
 
 

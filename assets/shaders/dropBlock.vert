@@ -31,13 +31,9 @@ void main() {
     int index = int(info[div].index);
     uv_out = vec2(index%3, index/3)*eachSize;
     
-    vec4 pos = vec4(scale*cube_corner[mod],1);
+    vec4 pos = vec4(cube_corner[mod],1);
 
-    pos.x -= scale/2;
-    pos.y -= scale/2;
     pos*=state[div];
-    pos.x += scale/2;
-    pos.y += scale/2;
 
     pos += vec4(info[div].position, 0);
 

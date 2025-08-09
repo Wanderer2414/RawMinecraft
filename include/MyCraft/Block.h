@@ -15,10 +15,12 @@ namespace MyCraft {
         BirchLog, StrippedBirchLog, BirchPlank,
         AcaciaLog, StrippedAcaciaLog, AcaciaPlank,
         CraftingTable, Furnace, Smoker,
-        BlastFurnace, Chest
+        BlastFurnace, Chest, Torch
     };
 
+    bool isSpecialBlock(const BlockCatogary& type);
     bool isTransparent(const BlockCatogary& type);
     float getHardness(const BlockCatogary& type);
+    glm::mat4 getSpecialBlockState(const BlockCatogary& type);
 }
 #endif

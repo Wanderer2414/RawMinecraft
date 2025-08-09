@@ -11,7 +11,12 @@ namespace MyCraft {
         __blockTexture.load("assets/images/blockCatogary.png", false);
         __clock.setDuration(300);
         __gravityClock.setDuration(3);
-        __crackingPieces = new glm::vec4[64];
+        __crackingPieces = new glm::mat4[64];
+        for (int i = 0; i<64; i++) {
+            __crackingPieces[i][0] = {0.1, 0,0,0};
+            __crackingPieces[i][1] = {0, 0.1,0,0};
+            __crackingPieces[i][2] = {0, 0,0.1,0};
+        }
     }
     CrackingManage::~CrackingManage() {
         delete[] __crackingPieces;
@@ -27,7 +32,7 @@ namespace MyCraft {
         __clock.restart();
         if (!__percent) {
             for (int i = 0; i<32; i++) {
-                __crackingPieces[i] = {rand()%110/100.f - 0.05 + __crackingBlock.x, rand()%110/100.f - 0.05 + __crackingBlock.y, rand()%110/100.f - 0.05 + __crackingBlock.z, __type};
+                __crackingPieces[i][3] = {rand()%110/100.f - 0.05 + __crackingBlock.x, rand()%110/100.f - 0.05 + __crackingBlock.y, rand()%110/100.f - 0.05 + __crackingBlock.z, __type};
             }
         }
         __percent += percent;
@@ -38,7 +43,7 @@ namespace MyCraft {
             __percent = 0;
             __numberRemain = 32;
             for (int i = 0; i<32; i++) {
-                __crackingPieces[i+32] = {rand()%110/100.f - 0.05 + __crackingBlock.x, rand()%110/100.f - 0.05 + __crackingBlock.y, __crackingBlock.z + i*0.1/3, __type};
+                __crackingPieces[i+32][3] = {rand()%110/100.f - 0.05 + __crackingBlock.x, rand()%110/100.f - 0.05 + __crackingBlock.y, __crackingBlock.z + i*0.1/3, __type};
             }
         }
     }
@@ -64,8 +69,8 @@ namespace MyCraft {
             __gravityClock.restart();
             if (__numberPieces) {
                 for (int i = __numberPieces-1; i>=0; i--) {
-                    __crackingPieces[i].z-=0.01;
-                    if (__crackingBlock.z - __crackingPieces[i].z > 3) {
+                    __crackingPieces[i][3].z-=0.01;
+                    if (__crackingBlock.z - __crackingPieces[i][3].z > 3) {
                         std::swap(__crackingPieces[i], __crackingPieces[__numberPieces-1]);
                         __numberPieces--;
                     }
@@ -75,8 +80,8 @@ namespace MyCraft {
 
             if (__numberRemain) {
                 for (int i = 32+__numberRemain-1; i>=32; i--) {
-                    __crackingPieces[i].z-=0.01;
-                    if (__crackingBlock.z - __crackingPieces[i].z > 5) {
+                    __crackingPieces[i][3].z-=0.01;
+                    if (__crackingBlock.z - __crackingPieces[i][3].z > 5) {
                         std::swap(__crackingPieces[i], __crackingPieces[32+__numberRemain-1]);
                         __numberRemain--;
                     }
@@ -93,11 +98,11 @@ namespace MyCraft {
     void CrackingManage::glDrawTransparent() const {
 
         if (__percent>0 && __isCracking) {
-            glm::vec4 margin( __crackingBlock, 1);
-            margin.x -= 0.01;
-            margin.y -= 0.01;
-            margin.z -= 0.01;
-            margin.w = round(__percent*3);
+            glm::mat4 margin(1);
+            margin[3] = {__crackingBlock.x-0.01, __crackingBlock.y-0.01, __crackingBlock.z-0.01, round(__percent*3)};
+            margin[0] = {1.02, 0, 0, 0};
+            margin[1] = {0, 1.02, 0, 0};
+            margin[2] = {0, 0, 1.02,0};
             DrawingCenter::BindCube(__crackingTexture, {1,1.02});
             DrawingCenter::DrawCubes(&margin, 1);
 

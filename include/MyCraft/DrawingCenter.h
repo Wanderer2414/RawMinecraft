@@ -10,10 +10,10 @@ namespace MyCraft {
         #define SWAP_BUFFER 3
         static void BindCube(const MyBase::Texture& texture, const glm::vec2& extra = {1,1});
         static void BindMargin();
-        static void DrawCubes(void* data, const int& size);
+        static void DrawCubes(void* state, const int& size);
         static void DrawMargins(void* data, const int& size, const MyBase::Color& color, const int& lineWidth);
-        static void BindDroppedBlock(const MyBase::Texture& texture, const glm::vec2& extra = {1,1});
-        static void DrawDroppedBlock(void* data, void* state, const int& size);
+        static void BindSpecialBlock(const MyBase::Texture& texture, const glm::vec2& extra = {1,1});
+        static void DrawSpecialBlock(void* data, void* state, const int& size);
         static void Close();
     private:
         static void getInstance();

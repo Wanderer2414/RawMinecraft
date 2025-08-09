@@ -29,6 +29,14 @@ namespace MyCraft {
         setType(position, type);
     }
 
+    void ChunkObject::setLocalState(const glm::ivec3& offset, const glm::mat4& state) {
+        glm::ivec3 position = offset + getPosition();
+        setState(position, state);
+    }
+
+    void ChunkLoader::setState(const glm::ivec3& pos, const glm::mat4& state) {
+        getChunk(pos).setState(pos, state);
+    }
     void ChunkLoader::setType(const glm::ivec3& pos, const BlockCatogary& type) {
         if (!type) {
             if (getType(pos)) {

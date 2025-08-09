@@ -2,7 +2,7 @@
 namespace MyCraft {
 
     bool isBlock(const ItemType& type) {
-        if (type>=ItemType::Dirt && type<=ItemType::Chest) return true;
+        if (type>=ItemType::Dirt && type<=ItemType::Torch) return true;
         return false;
     }
     

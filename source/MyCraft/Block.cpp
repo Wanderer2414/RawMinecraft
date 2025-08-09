@@ -2,17 +2,33 @@
 #include "Global.h"
 #include <limits>
 namespace MyCraft {
+    bool isSpecialBlock(const BlockCatogary& type) {
+        switch (type) {
+            case Torch: return true;
+            default: return false;
+        }
+        return false;
+    }
     bool isTransparent(const BlockCatogary& type) {
         switch (type) {
             case Air: return true;
             case OakLeaf: return true;
+            case Torch: return true;
             default: return false;
         }
         return false;
     }
 
+    glm::mat4 getSpecialBlockState(const BlockCatogary& type) {
+        switch (type) {
+            case Torch: return glm::mat4({0.2,0,0,0}, {0,0.2, 0,0},{0,0,0.75,0},{0.4,0.4,0,1});
+            default: return glm::mat4(1);
+        }
+    }
+
     float getHardness(const BlockCatogary& type) {
         switch (type) {
+            case Torch: return 10;
             case Dirt: return 100;
             case Grass: return 100;
             case Sand: return 100;
