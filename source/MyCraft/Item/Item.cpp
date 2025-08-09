@@ -94,28 +94,28 @@ namespace MyCraft {
 
 
     float getPowerness(const ItemType& tool) {
-        if (tool == ItemType::WoodenAxe) return 20;
+        if (tool == ItemType::WoodenAxe) return 30;
         if (tool == ItemType::StoneAxe) return 40;
         if (tool == ItemType::IronAxe) return 60;
         if (tool == ItemType::GoldenAxe) return 80;
         if (tool == ItemType::DiamonAxe) return 70;
         if (tool == ItemType::NetheriteAxe) return 90;
 
-        if (tool == ItemType::WoodenPickaxe) return 20;
+        if (tool == ItemType::WoodenPickaxe) return 30;
         if (tool == ItemType::StonePickaxe) return 40;
         if (tool == ItemType::IronPickaxe) return 60;
         if (tool == ItemType::GoldenPickaxe) return 80;
         if (tool == ItemType::DianmonPickaxe) return 70;
         if (tool == ItemType::NetheritePickaxe) return 90;
 
-        if (tool == ItemType::WoodenShovel) return 20;
+        if (tool == ItemType::WoodenShovel) return 30;
         if (tool == ItemType::StoneShovel) return 40;
         if (tool == ItemType::IronShovel) return 60;
         if (tool == ItemType::GoldenShovel) return 80;
         if (tool == ItemType::DiamonShovel) return 70;
         if (tool == ItemType::NetheriteShovel) return 90;
 
-        if (tool == ItemType::WoodenHoe) return 20;
+        if (tool == ItemType::WoodenHoe) return 30;
         if (tool == ItemType::StoneHoe) return 40;
         if (tool == ItemType::IronHoe) return 60;
         if (tool == ItemType::GlodenHoe) return 80;
@@ -129,7 +129,7 @@ namespace MyCraft {
         if (tool == ItemType::DiamonSword) return 72;
         if (tool == ItemType::NetheriteSword) return 100;
 
-        return 10;
+        return 20;
     }
     BlockCatogary getBrokenResult(const BlockCatogary& block) {
         // Blocks that break into Dirt

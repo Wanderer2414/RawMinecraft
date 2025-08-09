@@ -2,19 +2,21 @@
 #include "Block.h"
 #include "Controller3D.h"
 #include "DrawingCenter.h"
-#include "Inventory.h"
 #include "Item.h"
 #include "Message.h"
+#include "PlayerInventoryModule.h"
 #include "PlayerModelController.h"
+#include "WorldRender.h"
 #include "Recipe.h"
 #include "Toolbar.h"
 namespace MyCraft {
     DropItemManage::DropItemManage() {
         __rotateClock.setDuration(20);
         __blockTexture.load("assets/images/blockCatogary.png", false);
-        add(Grass, glm::vec3(0,0, 1));
         Port::add(new LootItemByMoveCommand(*this));
+        Port::add(new LootItemByJumpCommand(*this));
         Port::add(new DropItemCommand(*this));
+        Port::add(new FallItemCommand(*this));
     }
     DropItemManage::~DropItemManage() {}
 
@@ -30,9 +32,18 @@ namespace MyCraft {
         bool is_changed = MyBase3D::Controller3D::handle(window);
         if (__rotateClock.get() && __item.size()) {
             __rotateClock.restart();
+            glm::mat4x3 mat;
+            mat[1] = {0.3, 0,0};
+            mat[2] = {0, 0.3, 0};
+            mat[3] = {0, 0, 0.3};
             for (glm::mat4& i:__state) {
                 i = glm::rotate(i, 0.05f, {0,0,1});
                 i[2][3] = i[0][0]*0.05;
+            }
+            for (int i = 0; i<__item.size(); i++) {
+                mat[0] = __item[i];
+                __currentFall = i;
+                send(new RequestFallMessage(mat, -0.03));
             }
         }
         return is_changed;
@@ -40,8 +51,9 @@ namespace MyCraft {
     std::vector<std::pair<glm::vec3, RecipeSlot>> DropItemManage::getNearItem(const glm::vec3& position) {
         std::vector<std::pair<glm::vec3, RecipeSlot>> ans;
         for (int i = __item.size()-1; i>=0; i--) {
-            float distance = glm::length(glm::vec3(__item[i])-position);
-            if (distance<2) {
+            float xy_distance = glm::length(glm::vec2(__item[i])-glm::vec2(position));
+            float z_distance = abs(position.z-__item[i].z);
+            if (xy_distance<2 && z_distance<3) {
                 ans.push_back({__item[i], {1, (ItemType)__item[i].w}});
                 __item.erase(__item.begin()+i);
                 __state.erase(__state.begin()+i);
@@ -91,9 +103,20 @@ namespace MyCraft {
         return MyBase::RequestFall;
     }
     void LootItemByJumpCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
-        RequestGotoMessage* package = (RequestGotoMessage*)message;
-        auto items = manage.getNearItem(package->rectangleBox[0]);
+        if (&source == &manage) return ;
+        RequestFallMessage* package = (RequestFallMessage*)message;
+        auto items = manage.getNearItem(package->rectangleBox[0] + package->rectangleBox[1]/2.f + package->rectangleBox[2]/2.f + package->rectangleBox[3]/2.f);
         for (auto item: items) mine.send(source, new ReceiveItemMessage(item.first, item.second.item, item.second.count));
         if (items.size()) mine.send(new AddItemMessage());
+    }
+
+    FallItemCommand::FallItemCommand(DropItemManage& m): __manage(m) {}
+    FallItemCommand::~FallItemCommand() {}
+    MyBase::MessageType FallItemCommand::getType() const {
+        return MyBase::Fall;
+    }
+    void FallItemCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        FallMessage* package = (FallMessage*)message;
+        __manage.__item[__manage.__currentFall].z += package->zVelocity;   
     }
 }

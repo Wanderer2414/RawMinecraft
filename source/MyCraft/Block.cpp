@@ -4,6 +4,7 @@
 namespace MyCraft {
     bool isTransparent(const BlockCatogary& type) {
         switch (type) {
+            case Air: return true;
             case OakLeaf: return true;
             default: return false;
         }

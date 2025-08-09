@@ -31,6 +31,25 @@ namespace MyCraft {
         glm::vec3   __hoverBlock, __placePosition;
     };
 
+    class RequestGotoMessage: public MyBase::Message {
+    public:
+        RequestGotoMessage(const glm::mat4x3& rectangleBox, const glm::vec2& direction);
+        ~RequestGotoMessage();
+        MyBase::MessageType     getType() const override;
+        const glm::vec2       direction;
+        const glm::mat4x3     rectangleBox;
+    private:
+    };
+
+    class RequestFallMessage: public MyBase::Message {
+    public:
+        RequestFallMessage(const glm::mat4x3& rectangleBox, const float& zVelocity);
+        ~RequestFallMessage();
+        MyBase::MessageType     getType() const override;
+        const glm::mat4x3 rectangleBox;
+        float zVelocity;
+    };
+    
     class CheckEmptyCommand: public MyBase::Command {
     public:
         CheckEmptyCommand(MyCraft::WorldRender& world);

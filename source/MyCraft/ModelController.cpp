@@ -1,6 +1,7 @@
 #include "ModelController.h"
 #include "Message.h"
 #include "PlayerModelController.h"
+#include "WorldRender.h"
 
 namespace MyCraft {
     ModelController::ModelController(): __isFall(false), __zVelocity(0) {}

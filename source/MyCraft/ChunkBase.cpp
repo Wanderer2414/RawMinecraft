@@ -32,9 +32,10 @@ namespace MyCraft {
     void ChunkLoader::setType(const glm::ivec3& pos, const BlockCatogary& type) {
         if (!type) {
             if (getType(pos)) {
+                BlockCatogary currentType = getType(pos);
                 getChunk(pos).disableBit(pos);
                 getChunk(pos).setType(pos, BlockCatogary::Air);
-                if (!isTransparent(getType(pos))) {
+                if (!isTransparent(currentType)) {
                     glm::vec3 position = pos;
                     position.x--;
                     if (!getBit(position) && getType(position)) enableBit(position);
@@ -87,20 +88,20 @@ namespace MyCraft {
         if (!getBit(pos)) return;
         glm::ivec3 position = pos;
         position.x -= 1;
-        if (!getType(position)) return;
+        if (isTransparent(getType(position))) return;
         
         position.x += 2;
-        if (!getType(position)) return ;
+        if (isTransparent(getType(position))) return ;
         
         position -= glm::vec3(1, 1, 0);
-        if (!getType(position)) return ;
+        if (isTransparent(getType(position))) return ;
         position.y += 2;
-        if (!getType(position)) return ;
+        if (isTransparent(getType(position))) return ;
 
         position -= glm::vec3(0, 1, 1);
-        if (!getType(position)) return ;
+        if (isTransparent(getType(position))) return ;
         position.z += 2;
-        if (!getType(position)) return ;
+        if (isTransparent(getType(position))) return ;
 
         getChunk(pos).disableBit(pos);
     }

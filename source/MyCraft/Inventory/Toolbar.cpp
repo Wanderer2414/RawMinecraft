@@ -114,7 +114,10 @@ namespace MyCraft {
         AcceptPlaceMessage* package = (AcceptPlaceMessage*)message;
         int count = __toolbar->__items.getToolBar(__toolbar->__chosenIndex)->getCount();
         if (count) {
-            if (count-1==0) delete __toolbar->__items.placeToolbar(__toolbar->__chosenIndex, 0);
+            if (count-1==0) {
+                delete __toolbar->__items.placeToolbar(__toolbar->__chosenIndex, 0);
+                mine.send(new HoldItemMessage(0, true));
+            }
             else __toolbar->__items.getToolBar(__toolbar->__chosenIndex)->setCount(count-1);
         }
     }
@@ -137,7 +140,10 @@ namespace MyCraft {
         Item* item = __toolbar->__items.getToolBar(__toolbar->__chosenIndex);
         if (item) {
             int count = item->getCount() - package->percent;
-            if (count<=0) delete __toolbar->__items.placeToolbar(__toolbar->__chosenIndex, 0);
+            if (count<=0) {
+                delete __toolbar->__items.placeToolbar(__toolbar->__chosenIndex, 0);
+                mine.send(new HoldItemMessage(0, true));
+            }
             else __toolbar->__items.getToolBar(__toolbar->__chosenIndex)->setCount(count);
         }
     }

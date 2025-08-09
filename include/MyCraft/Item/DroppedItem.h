@@ -17,9 +17,11 @@ namespace MyCraft {
         std::vector<std::pair<glm::vec3,RecipeSlot>> getNearItem(const glm::vec3& position);
         void add(const BlockCatogary& item, const glm::vec3& position);
         void remove(const int& index);
+        friend class FallItemCommand;
     protected:
         bool handle(GLFWwindow*) override;
     private:
+        int __currentFall;
         std::vector<glm::mat4>  __state;
         std::vector<glm::vec4>  __item;
         MyBase::Clock           __rotateClock;
@@ -65,6 +67,16 @@ namespace MyCraft {
         void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
     private:
         DropItemManage& manage;
+    };
+
+    class FallItemCommand: public MyBase::Command {
+    public:
+        FallItemCommand(DropItemManage& manage);
+        ~FallItemCommand();
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private:
+        DropItemManage& __manage;
     };
 }
 #endif

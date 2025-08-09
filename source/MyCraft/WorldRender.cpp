@@ -1,10 +1,8 @@
 #include "WorldRender.h"
 #include "ChunkBase.h"
 #include "ChunkManage.h"
-#include "Container2D.h"
 #include "DrawingCenter.h"
 #include "General.h"
-#include "Inventory.h"
 #include "Message.h"
 #include "PlayerModelController.h"
 
@@ -71,6 +69,20 @@ namespace MyCraft {
             DrawingCenter::BindMargin();
             DrawingCenter::DrawMargins(&margin, 1, BLACK, 3);
         }
+    }
+
+
+    RequestGotoMessage::RequestGotoMessage(const glm::mat4x3& p, const glm::vec2& d): rectangleBox(p), direction(d) {}
+    RequestGotoMessage::~RequestGotoMessage() {}
+
+    RequestFallMessage::RequestFallMessage(const glm::mat4x3& rec, const float& z): rectangleBox(rec), zVelocity(z) {}
+    RequestFallMessage::~RequestFallMessage() {
+    }
+    MyBase::MessageType RequestFallMessage::getType() const {
+        return MyBase::MessageType::RequestFall;
+    }
+    MyBase::MessageType RequestGotoMessage::getType() const {
+        return MyBase::MessageType::RequestGoto;
     }
 
     CheckEmptyCommand::CheckEmptyCommand(WorldRender& world): __world(world) {}

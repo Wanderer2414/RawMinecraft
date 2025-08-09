@@ -281,8 +281,7 @@ namespace MyCraft {
             glDeleteVertexArrays(1, &VAO);
         }
     }
-    void PlayerModelController::update() {
-    }
+    void PlayerModelController::update() {}
 
     ResetCameraCommand::ResetCameraCommand(MyCraft::PlayerModelController* model): __model(model) {};
     ResetCameraCommand::~ResetCameraCommand() {};
@@ -314,19 +313,6 @@ namespace MyCraft {
     }
     StopFallMessage::StopFallMessage() {};
     StopFallMessage::~StopFallMessage() {};
-
-    RequestGotoMessage::RequestGotoMessage(const glm::mat4x3& p, const glm::vec2& d): rectangleBox(p), direction(d) {}
-    RequestGotoMessage::~RequestGotoMessage() {}
-
-    RequestFallMessage::RequestFallMessage(const glm::mat4x3& rec, const float& z): rectangleBox(rec), zVelocity(z) {}
-    RequestFallMessage::~RequestFallMessage() {
-    }
-    MyBase::MessageType RequestFallMessage::getType() const {
-        return MyBase::MessageType::RequestFall;
-    }
-    MyBase::MessageType RequestGotoMessage::getType() const {
-        return MyBase::MessageType::RequestGoto;
-    }
 
     PlaceMessage::PlaceMessage(const glm::vec3& pos, const glm::vec3& dir, const ItemType& left, const ItemType& right): position(pos), direction(dir), rightItem(right), leftItem(left) {}
     PlaceMessage::~PlaceMessage() {}
