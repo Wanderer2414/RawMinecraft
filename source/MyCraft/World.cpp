@@ -71,7 +71,7 @@ namespace MyCraft {
             else if (!__world.isBusyBlock(__world.__worldRender.getPlaceBlock())) {
                 if (isBlock(package->rightItem)) {
                     BlockCatogary type = BlockCatogary(package->rightItem);
-                    __world.__worldRender.setType(__world.__worldRender.getPlaceBlock(), type);
+                    __world.__worldRender.place(type);
                     mine.send(new AcceptPlaceMessage(type));
                 }
             }
@@ -94,7 +94,7 @@ namespace MyCraft {
             if (!__world.__crackingManage.getPercent()) {
                 glm::vec3 position = __world.__crackingManage.getCrackingBlock();
                 position += glm::vec3(0.5);
-                __world.__worldRender.setType(__world.__crackingManage.getCrackingBlock(), Air);
+                __world.__worldRender.unplace();
                 __world.__crackingManage.uncrack();
                 if (isAdaptive(package->rightItem, type)) __world.__dropItemManage.add(getBrokenResult(type), 1, position);
                 mine.send(des, new AcceptDestroyMessage(1/percent, type, position));

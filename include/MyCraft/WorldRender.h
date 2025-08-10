@@ -13,6 +13,8 @@ namespace MyCraft {
         bool isHover() const;
         glm::ivec3 getHoverBlock() const;
         glm::ivec3 getPlaceBlock() const;
+        void place(const BlockCatogary& type);
+        void unplace();
         void save();
         void playerAt(const glm::vec3& position);
         void setHoverBlock(const glm::vec3& pos, const glm::vec3& place);
@@ -28,7 +30,10 @@ namespace MyCraft {
     private:
         bool        __isHover;
         ChunkManage __chunkLoader;
+        unsigned char __hoverPlane;
         glm::vec3   __hoverBlock, __placePosition;
+        using  ChunkLoader::setType;
+        using  ChunkLoader::setLocalType;
     };
 
     class RequestGotoMessage: public MyBase::Message {
@@ -84,15 +89,6 @@ namespace MyCraft {
     public:
         CheckHoverCommand(MyCraft::WorldRender& world);
         ~CheckHoverCommand();
-        MyBase::MessageType getType() const override;
-        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
-    private:
-        WorldRender& __world;
-    };
-    class DestroyBlockCommand: public MyBase::Command {
-    public:
-        DestroyBlockCommand(WorldRender& world);
-        ~DestroyBlockCommand();
         MyBase::MessageType getType() const override;
         void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
     private:

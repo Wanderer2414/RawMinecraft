@@ -34,7 +34,7 @@ namespace MyCraft {
         std::string                 __source;
         std::vector<glm::mat4>     __state;
         std::vector<glm::mat4>     __transparentState;
-        std::map<int, glm::mat4>   __specialState;
+        std::map<unsigned int, glm::mat4>   __specialState;
         void __add(const glm::ivec3& position);
         void __remove(const glm::ivec3& position);
     };

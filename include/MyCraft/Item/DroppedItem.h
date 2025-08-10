@@ -23,7 +23,6 @@ namespace MyCraft {
     private:
         int __currentFall;
         std::vector<glm::mat4>      __states;
-        std::vector<glm::vec3>      __sizes;
         std::vector<unsigned char>   __count;
         MyBase::Clock               __rotateClock;
         MyBase::Texture             __blockTexture;

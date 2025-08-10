@@ -18,9 +18,15 @@ namespace MyCraft {
         BlastFurnace, Chest, Torch
     };
 
-    bool isSpecialBlock(const BlockCatogary& type);
+    bool isValid(const BlockCatogary& type, const unsigned char& plane);
+    bool isSpecial(const BlockCatogary& type);
     bool isTransparent(const BlockCatogary& type);
+    bool isMultiState(const BlockCatogary& type);
     float getHardness(const BlockCatogary& type);
-    glm::mat4 getSpecialBlockState(const BlockCatogary& type);
+
+    BlockCatogary getBrokenResult(const BlockCatogary& type);
+
+    glm::mat4 getState(const BlockCatogary& type, const unsigned char& plane);
+    glm::mat4 getSpecialState(const BlockCatogary& type);
 }
 #endif

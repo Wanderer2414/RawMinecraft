@@ -2,13 +2,14 @@
 #include "Global.h"
 #include <limits>
 namespace MyCraft {
-    bool isSpecialBlock(const BlockCatogary& type) {
+    bool isSpecial(const BlockCatogary& type) {
         switch (type) {
             case Torch: return true;
             default: return false;
         }
         return false;
     }
+    
     bool isTransparent(const BlockCatogary& type) {
         switch (type) {
             case Air: return true;
@@ -18,10 +19,100 @@ namespace MyCraft {
         }
         return false;
     }
-
-    glm::mat4 getSpecialBlockState(const BlockCatogary& type) {
+    bool isMultiState(const BlockCatogary& type) {
         switch (type) {
-            case Torch: return glm::mat4({0.2,0,0,0}, {0,0.2, 0,0},{0,0,0.75,0},{0.4,0.4,0,1});
+            case Torch: return true;
+            default: return false;
+        }
+    }
+    bool isValid(const BlockCatogary& type, const unsigned char& plane) {
+        switch (type) {
+            case Torch: {
+                if (plane == 5) return false;
+                return true;
+            }
+            default: return true;
+        }
+    }
+    BlockCatogary getBrokenResult(const BlockCatogary& block) {
+        // Blocks that break into Dirt
+        if (block == Grass) return Dirt;
+        if (block == Podzol) return Dirt;
+        if (block == DirtPath) return Dirt;
+        if (block == FarmLand) return Dirt;
+        if (block == FarmLandHydrad) return Dirt;
+
+        // Ice breaks into nothing (non-recoverable without Silk Touch)
+        if (block == Ice) return Air;
+
+        // Leaves break into nothing (chance to drop saplings, but no block)
+        if (block == OakLeaf) return Air;
+
+        // Slabs drop as full block item (assuming no stacking)
+        if (block == SmoothStoneSlab) return SmoothStoneSlab;
+
+        // Logs, planks, stripped logs drop themselves
+        if (
+            block == OakLog || block == StrippedOakLog || block == OakPlank ||
+            block == SpruceLog || block == StrippedSpruceLog || block == SprucePlank ||
+            block == BirchLog || block == StrippedBirchLog || block == BirchPlank ||
+            block == AcaciaLog || block == StrippedAcaciaLog || block == AcaciaPlank
+        ) return block;
+
+        // Stone turns into cobblestone
+        if (block == Stone) return CobbleStone;
+
+        // SmoothStone breaks into cobblestone (if not Silk Touch)
+        if (block == SmoothStone) return CobbleStone;
+
+        // Stone variants return themselves
+        if (block == CobbleStone || block == StoneBrick || block == SandStone) return block;
+
+        // Ores drop nothing without correct tool (simulate as breaking to Air)
+        if (block == CoalOre || block == IronOre) return Air;
+
+        // Obsidian drops nothing unless mined correctly
+        if (block == Obsidian) return Air;
+
+        // DeepSlate simulates dropping cobbled variant
+        if (block == DeepSlate) return CobbleStone;
+
+        // Sand breaks to itself
+        if (block == Sand) return Sand;
+
+        // Functional blocks drop themselves
+        if (
+            block == CraftingTable || block == Furnace ||
+            block == Smoker || block == BlastFurnace ||
+            block == Chest
+        ) return block;
+
+        // Air returns Air (no item)
+        if (block == Air) return Air;
+
+        // Everything else: assume it drops itself
+        return block;
+    }
+
+    glm::mat4 getState(const BlockCatogary& type, const unsigned char& plane) {
+        switch (type) {
+            case Torch: {
+                switch (plane) {
+                    case 0: return glm::mat4({1,0,0,0}, {0,1,0,0},{0,0,1,0},{0.4,0.4,0,1});
+                    case 1: return glm::mat4({cos(M_PI/6), 0, -sin(M_PI/6),0}, {0,1,0,0},{sin(M_PI/6),0,cos(M_PI/6),0},{-0.1,0.4,0.3,1});
+                    case 2: return glm::mat4({1, 0, 0 ,0}, {0, cos(M_PI/6), -sin(M_PI/6),0}, {0, sin(M_PI/6),cos(M_PI/6),0} ,{0.4,-0.1,0.3,1});
+                    case 3: return glm::mat4({1, 0, 0 ,0}, {0, cos(M_PI/6), sin(M_PI/6),0}, {0, -sin(M_PI/6),cos(M_PI/6),0} ,{0.4,0.9,0.3,1});
+                    case 4: return glm::mat4({cos(M_PI/6), 0, sin(M_PI/6),0}, {0,1,0,0},{-sin(M_PI/6),0,cos(M_PI/6),0},{0.9,0.4,0.3,1});
+                    default: return glm::mat4(1);
+                }
+            }
+            default: return glm::mat4(1);
+        }
+    }
+
+    glm::mat4 getSpecialState(const BlockCatogary& type) {
+        switch (type) {
+            case Torch: return glm::mat4({0.2,0,0,0}, {0,0.2, 0,0},{0,0,0.75,0},{0,0,0,1});
             default: return glm::mat4(1);
         }
     }

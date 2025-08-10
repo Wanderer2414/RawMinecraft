@@ -1,4 +1,6 @@
 #include "WorldRender.h"
+#include "Block.h"
+#include "Chunk.h"
 #include "ChunkBase.h"
 #include "ChunkManage.h"
 #include "DrawingCenter.h"
@@ -13,7 +15,6 @@ namespace MyCraft {
         add(new CheckFallCommand(*this));
         add(new CheckHoverCommand(*this));
         add(new WorldMoveCommand(*this));
-        add(new DestroyBlockCommand(*this));
     }
     
     WorldRender::~WorldRender() {}
@@ -26,10 +27,28 @@ namespace MyCraft {
     glm::ivec3 WorldRender::getPlaceBlock() const {
         return __placePosition;
     }
+
+    void WorldRender::place(const BlockCatogary& type) {
+        if (type && isValid(type, __hoverPlane)) {
+            ChunkLoader::setType(__placePosition, type);
+            if (isMultiState(type)) setState(__placePosition, getState(type, __hoverPlane));
+        }
+    }
+    void WorldRender::unplace() {
+        ChunkLoader::setType(__hoverBlock, Air);
+    }
+    
     void WorldRender::setHoverBlock(const glm::vec3& pos, const glm::vec3& place) {
         __hoverBlock = pos;
         __placePosition = place;
         __isHover = true;
+        if (place.x < pos.x) __hoverPlane = 4;
+        else if (place.x > pos.x) __hoverPlane = 1;
+        else if (place.z < pos.z) __hoverPlane = 5;
+        else if (place.z > pos.z) __hoverPlane = 0;
+        else if (place.y < pos.y) __hoverPlane = 3;
+        else if (place.y > pos.y) __hoverPlane = 2;
+        else __hoverPlane = 255;
     }
     void WorldRender::unHover() {
         __isHover = false;
@@ -274,17 +293,6 @@ namespace MyCraft {
             __world.setHoverBlock(q.front(), placePosition);
         }
         else __world.unHover();
-    }
-
-    
-    DestroyBlockCommand::DestroyBlockCommand(WorldRender& world): __world(world) {}
-    DestroyBlockCommand::~DestroyBlockCommand() {}
-    MyBase::MessageType DestroyBlockCommand::getType() const {
-        return MyBase::AcceptDestroy;
-    }
-    void DestroyBlockCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
-        AcceptDestroyMessage* package = (AcceptDestroyMessage*)message;
-        __world.setType(package->position, Air);
     }
 
     WorldMoveMessage::WorldMoveMessage(const glm::vec3& pos): position(pos) {}

@@ -31,9 +31,8 @@ namespace MyCraft {
             }
         }
         if (!isMerge) {
-            glm::mat4 state = getSpecialBlockState(item);
+            glm::mat4 state = getSpecialState(item);
             state = glm::scale(state, glm::vec3(0.4));
-            __sizes.push_back({state[0].x, state[1].y, state[2].z});
             state[3] = glm::vec4(position.x - state[0].x/2, position.y-state[1].y/2, position.z,0);
             state[3].w = item;
             __states.push_back(state);
@@ -49,9 +48,9 @@ namespace MyCraft {
         if (__rotateClock.get() && __states.size()) {
             __rotateClock.restart();
             for (int i = 0; i<__states.size(); i++) {
-                __states[i] = __states[i]*glm::translate(glm::mat4(1), __sizes[i]);
-                __states[i] = __states[i]*glm::rotate(glm::mat4(1), 0.05f, {0,0,1});
-                __states[i] = __states[i]*glm::translate(glm::mat4(1), -__sizes[i]);
+                __states[i] *= glm::translate(glm::mat4(1), glm::vec3(0.5))*
+                    glm::rotate(glm::mat4(1), 0.05f, {0,0,1})*
+                    glm::translate(glm::mat4(1), glm::vec3(-0.5));
             }
             glm::mat4x3 mat;
             mat[1] = {0.3, 0,0};
@@ -73,7 +72,6 @@ namespace MyCraft {
             if (xy_distance<2 && z_distance<3) {
                 ans.push_back({__states[i][3], {__count[i], (ItemType)__states[i][3].w}});
                 __states.erase(__states.begin()+i);
-                __sizes.erase(__sizes.begin()+i);
                 __count.erase(__count.begin() + i);
             }
         }

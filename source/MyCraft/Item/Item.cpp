@@ -129,65 +129,6 @@ namespace MyCraft {
 
         return 20;
     }
-    BlockCatogary getBrokenResult(const BlockCatogary& block) {
-        // Blocks that break into Dirt
-        if (block == Grass) return Dirt;
-        if (block == Podzol) return Dirt;
-        if (block == DirtPath) return Dirt;
-        if (block == FarmLand) return Dirt;
-        if (block == FarmLandHydrad) return Dirt;
-
-        // Ice breaks into nothing (non-recoverable without Silk Touch)
-        if (block == Ice) return Air;
-
-        // Leaves break into nothing (chance to drop saplings, but no block)
-        if (block == OakLeaf) return Air;
-
-        // Slabs drop as full block item (assuming no stacking)
-        if (block == SmoothStoneSlab) return SmoothStoneSlab;
-
-        // Logs, planks, stripped logs drop themselves
-        if (
-            block == OakLog || block == StrippedOakLog || block == OakPlank ||
-            block == SpruceLog || block == StrippedSpruceLog || block == SprucePlank ||
-            block == BirchLog || block == StrippedBirchLog || block == BirchPlank ||
-            block == AcaciaLog || block == StrippedAcaciaLog || block == AcaciaPlank
-        ) return block;
-
-        // Stone turns into cobblestone
-        if (block == Stone) return CobbleStone;
-
-        // SmoothStone breaks into cobblestone (if not Silk Touch)
-        if (block == SmoothStone) return CobbleStone;
-
-        // Stone variants return themselves
-        if (block == CobbleStone || block == StoneBrick || block == SandStone) return block;
-
-        // Ores drop nothing without correct tool (simulate as breaking to Air)
-        if (block == CoalOre || block == IronOre) return Air;
-
-        // Obsidian drops nothing unless mined correctly
-        if (block == Obsidian) return Air;
-
-        // DeepSlate simulates dropping cobbled variant
-        if (block == DeepSlate) return CobbleStone;
-
-        // Sand breaks to itself
-        if (block == Sand) return Sand;
-
-        // Functional blocks drop themselves
-        if (
-            block == CraftingTable || block == Furnace ||
-            block == Smoker || block == BlastFurnace ||
-            block == Chest
-        ) return block;
-
-        // Air returns Air (no item)
-        if (block == Air) return Air;
-
-        // Everything else: assume it drops itself
-        return block;
-    }
 
 
     BlockCatogary to_block(const ItemType& type) {

@@ -24,6 +24,15 @@ namespace MyCraft {
             file.read((char*)&new_chunk->__numBlock, sizeof(int));
             file.read((char*)&new_chunk->__blockTypes[0][0][0], sizeof(BlockCatogary)*4096);
             
+            unsigned int numState = 0;
+            file.read((char*)&numState, sizeof(int));
+            for (int i = 0; i<numState; i++) {
+                unsigned int index;
+                file.read((char*)&index, sizeof(int));
+                glm::mat4 state;
+                file.read((char*)&state, sizeof(glm::mat4));
+                new_chunk->__specialState[index] = state;
+            }
             file.close();
             if (new_chunk->__numBit) {
                 for (int i = 0; i<16; i++)
@@ -95,6 +104,12 @@ namespace MyCraft {
             }
             file.write((char*)&__numBlock, sizeof(int));
             file.write((char*)&__blockTypes[0][0][0], sizeof(BlockCatogary)*4096);
+            unsigned int size = __specialState.size();
+            file.write((char*)&size, sizeof(int));
+            for (auto& element: __specialState) {
+                file.write((char*)&element.first, sizeof(int));
+                file.write((char*)&element.second, sizeof(glm::mat4));
+            }
             file.close();
         }
         else MyBase::DeleteFile(__source);
@@ -132,13 +147,15 @@ namespace MyCraft {
                 throw std::runtime_error("Out range of chunk");
             BlockCatogary type = __blockTypes[offset.x][offset.y][offset.z];
             glm::mat4 cState(1);
-            if (isSpecialBlock(type)) cState = getSpecialBlockState(type);
-            cState *= state;
+            if (isSpecial(type)) cState = getSpecialState(type);
+            cState = state*cState;
+            cState[3] += glm::vec4(pos,0);
             cState[3].w = type;
-            __specialState[offset.x*256 + offset.y*16 + offset.z] = cState;
+            __specialState[offset.x*256 + offset.y*16 + offset.z] = state;
 
             if (__enableQueue && __bits[offset.x][offset.y][offset.z]) {
-                __state[__tableIndexes[offset.x][offset.y][offset.z]] = cState;
+                if (isTransparent(type)) __transparentState[__tableIndexes[offset.x][offset.y][offset.z]] = cState;
+                else __state[__tableIndexes[offset.x][offset.y][offset.z]] = cState;
             }
         }
     }
@@ -178,9 +195,9 @@ namespace MyCraft {
         if (__blockTypes[offset.x][offset.y][offset.z] && __bits[offset.x][offset.y][offset.z]) {
             BlockCatogary type = __blockTypes[offset.x][offset.y][offset.z];
             glm::mat4 state(1);
-            if (isSpecialBlock(type)) state = getSpecialBlockState(type);
+            if (isSpecial(type)) state = getSpecialState(type);
             if (__specialState.find(offset.x*256+offset.y*16+offset.z) != __specialState.end())
-                state *= __specialState[offset.x*256+offset.y*16+offset.z];
+                state = __specialState[offset.x*256+offset.y*16+offset.z]*state;
             state[3] += glm::vec4(position, 0);
             state[3].w = type;
             if (isTransparent(type)) {

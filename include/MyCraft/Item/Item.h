@@ -52,7 +52,7 @@ namespace MyCraft {
     bool isPickaxeAdaptive(const BlockCatogary& block);
     bool isAxeAdaptive(const BlockCatogary& block);
     bool isHandAdaptive(const BlockCatogary& block);
-    BlockCatogary getBrokenResult(const BlockCatogary& type);
+    
     float getPowerness(const ItemType& type);
     class Item {
     public:
