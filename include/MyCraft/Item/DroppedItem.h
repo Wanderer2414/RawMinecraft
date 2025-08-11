@@ -3,6 +3,7 @@
 #include "Block.h"
 #include "Clock.h"
 #include "Controller3D.h"
+#include "DrawingCenter.h"
 #include "Item.h"
 #include "Message.h"
 #include "Recipe.h"
@@ -22,7 +23,7 @@ namespace MyCraft {
         bool handle(GLFWwindow*) override;
     private:
         int __currentFall;
-        std::vector<glm::mat4>      __states;
+        DrawingStorage              __normal;
         std::vector<unsigned char>   __count;
         MyBase::Clock               __rotateClock;
         MyBase::Texture             __blockTexture;

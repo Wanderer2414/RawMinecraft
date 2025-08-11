@@ -136,7 +136,7 @@ namespace MyCraft {
                 while (isTaller) {
                     isTaller = false;
                     cPosition.z = (maxHeight+1)/16;
-                    Chunk* chunk = Chunk::Load(src, cPosition);
+                    Chunk* chunk = Chunk::Load(0, src, cPosition);
                     chunk->disableList();
                     for (glm::ivec3 position(cPosition*16); position.x < maxX; position.x++) {
                         for (position.y = cPosition.y*16; position.y< maxY; position.y++) {

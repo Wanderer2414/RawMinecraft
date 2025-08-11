@@ -18,6 +18,9 @@ namespace MyCraft {
     }
     
     WorldRender::~WorldRender() {}
+    bool WorldRender::contains(const glm::ivec3& pos) const {
+        return __chunkLoader.contains(pos);
+    }
     bool WorldRender::isHover() const {
         return __isHover;
     }
@@ -30,12 +33,12 @@ namespace MyCraft {
 
     void WorldRender::place(const BlockCatogary& type) {
         if (type && isValid(type, __hoverPlane)) {
-            ChunkLoader::setType(__placePosition, type);
-            if (isMultiState(type)) setState(__placePosition, getState(type, __hoverPlane));
+            __chunkLoader.setType(__placePosition, type);
+            if (isMultiState(type)) __chunkLoader.setState(__placePosition, getState(type, __hoverPlane));
         }
     }
     void WorldRender::unplace() {
-        ChunkLoader::setType(__hoverBlock, Air);
+        __chunkLoader.setType(__hoverBlock, Air);
     }
     
     void WorldRender::setHoverBlock(const glm::vec3& pos, const glm::vec3& place) {
@@ -60,20 +63,11 @@ namespace MyCraft {
 
     const BlockCatogary& WorldRender::getType(const glm::vec3& position) const {
         glm::ivec3 pos(floor(position.x), floor(position.y), floor(position.z));
-        return ChunkLoader::getType(pos);
+        return __chunkLoader.getType(pos);
     }
     const BlockCatogary& WorldRender::getType(const glm::vec3& position){
         glm::ivec3 pos(floor(position.x), floor(position.y), floor(position.z));
-        return ChunkLoader::getType(pos);
-    }
-    Chunk& WorldRender::getChunk(const glm::ivec3& position) {
-        return __chunkLoader.getChunk(position);
-    };
-    const Chunk& WorldRender::getChunk(const glm::ivec3& position) const {
-        return __chunkLoader.getChunk(position);
-    };
-    const glm::ivec3& WorldRender::getPosition() const {
-        return __chunkLoader.getPosition();
+        return __chunkLoader.getType(pos);
     }
     void WorldRender::glDraw() const {
         DrawingCenter::BindMargin();

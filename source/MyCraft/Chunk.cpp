@@ -6,12 +6,22 @@
 
 namespace MyCraft {
 
-    Chunk::Chunk(): __isChange(false), __numBlock(0), __numBit(0), __enableQueue(true) {}
+    Chunk::Chunk(): __isChange(false), __numBlock(0), __numBit(0), __enableQueue(true), __container(0) {
+    }
     Chunk::~Chunk() {
+        for (int code: __lightSource) {
+            glm::vec3 position;
+            unsigned char I = code%256; code /= 256;
+            position.z = code%16 + __position.z; code /= 16;
+            position.y = code%16 + __position.y; code /= 16;
+            position.x = code + __position.x;
+            __container->removeLight(position);
+        }
         save();
     }
-    Chunk* Chunk::Load(const std::string& src, const glm::ivec3& position) {
+    Chunk* Chunk::Load(ChunkLoader* loader, const std::string& src, const glm::ivec3& position) {
         Chunk* new_chunk = new Chunk();
+        new_chunk->__container = loader;
         new_chunk->__source = MapCreator::getFileName(src, position);
         std::ifstream file(new_chunk->__source, std::ios::in | std::ios::binary);
         if (file.is_open()) {
@@ -33,6 +43,21 @@ namespace MyCraft {
                 file.read((char*)&state, sizeof(glm::mat4));
                 new_chunk->__specialState[index] = state;
             }
+            unsigned int size = 0;
+            file.read((char*)&size, sizeof(int));
+            int *lightsrc = new int[size];
+            file.read((char*)lightsrc, sizeof(int)*size);
+            for (int i = 0; i<size; i++) {
+                int code = lightsrc[i];
+                glm::vec3 position;
+                new_chunk->__lightSource.insert(code);
+                unsigned char I = code%256; code /= 256;
+                position.z = code%16 + new_chunk->__position.z; code /= 16;
+                position.y = code%16 + new_chunk->__position.y; code /= 16;
+                position.x = code + new_chunk->__position.x;
+                loader->setLight(position, I);
+            }
+            delete[] lightsrc;
             file.close();
             if (new_chunk->__numBit) {
                 for (int i = 0; i<16; i++)
@@ -53,6 +78,7 @@ namespace MyCraft {
         }
         else {
             new_chunk->__position = position*16;
+            new_chunk->__container = loader;
             memset(new_chunk->__blockTypes, Air, sizeof(BlockCatogary)*4096);
             if (src == "bin/test/" && position.z < 0) {
                 new_chunk->__numBlock = 4096;
@@ -75,8 +101,8 @@ namespace MyCraft {
     }
     void Chunk::enableList() {
         __enableQueue = true;
-        __state.clear();
-        __transparentState.clear();
+        __normal.clear();
+        __transparent.clear();
         for (int x = 0; x<16; x++) {
             for (int y = 0; y<16; y++) {
                 for (int z = 0; z<16; z++) {
@@ -85,6 +111,15 @@ namespace MyCraft {
                     }
                 }
             }
+        }
+    }
+    void Chunk::setLight(const glm::ivec3& position, const float& indensity) {
+        glm::ivec3 pos = position - __position;
+        int index = __tableIndexes[pos.x][pos.y][pos.z];
+        if (__bits[pos.x][pos.y][pos.z]) {
+            if (isTransparent(__blockTypes[pos.x][pos.y][pos.z]))
+                __transparent.setLight(index, indensity*5/255.f);
+            else __normal.setLight(index, indensity*5/255.f);
         }
     }
     void Chunk::save() {
@@ -110,6 +145,9 @@ namespace MyCraft {
                 file.write((char*)&element.first, sizeof(int));
                 file.write((char*)&element.second, sizeof(glm::mat4));
             }
+            size = __lightSource.size();
+            file.write((char*)&size, sizeof(int));
+            for (auto& i:__lightSource) file.write((char*)&i, sizeof(int));
             file.close();
         }
         else MyBase::DeleteFile(__source);
@@ -124,20 +162,27 @@ namespace MyCraft {
         glm::ivec3 offset = pos - __position;
         return __blockTypes[offset.x][offset.y][offset.z];
     }
-
+    
     void Chunk::setType(const glm::ivec3& pos, const BlockCatogary& type) {
         glm::ivec3 offset = pos - __position;
         if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
             throw std::runtime_error("Out range of chunk");
+
         if (__blockTypes[offset.x][offset.y][offset.z] == type) return;
+
+        if (isLightSource(type)) {
+            __lightSource.insert(offset.x*65536+offset.y*4096+offset.z*256 + getLightIndensity(type));
+        }
+        else if (!type && isLightSource(__blockTypes[offset.x][offset.y][offset.z])) {
+            __lightSource.erase(offset.x*65536+offset.y*4096+offset.z*256 + getLightIndensity(type));
+        }
+
         if (type && !__blockTypes[offset.x][offset.y][offset.z]) __numBlock++;
         else if (!type && __blockTypes[offset.x][offset.y][offset.z]) __numBlock--;
         __isChange = true;
         __blockTypes[offset.x][offset.y][offset.z] = type;
         if (__enableQueue && __bits[offset.x][offset.y][offset.z]) {
-            __state[__tableIndexes[offset.x][offset.y][offset.z]][3].w = type;
-            if (__specialState.find(offset.x*256 + offset.y*16 + offset.z) != __specialState.end())
-                __specialState[offset.x*256 + offset.y*16 + offset.z][3].w = type;
+            __normal.setType(__tableIndexes[offset.x][offset.y][offset.z], type);
         }
     }
     void Chunk::setState(const glm::ivec3& pos, const glm::mat4& state) {
@@ -150,12 +195,12 @@ namespace MyCraft {
             if (isSpecial(type)) cState = getSpecialState(type);
             cState = state*cState;
             cState[3] += glm::vec4(pos,0);
-            cState[3].w = type;
+
             __specialState[offset.x*256 + offset.y*16 + offset.z] = state;
 
             if (__enableQueue && __bits[offset.x][offset.y][offset.z]) {
-                if (isTransparent(type)) __transparentState[__tableIndexes[offset.x][offset.y][offset.z]] = cState;
-                else __state[__tableIndexes[offset.x][offset.y][offset.z]] = cState;
+                if (isTransparent(type)) __transparent.setState(__tableIndexes[offset.x][offset.y][offset.z], cState);
+                else __normal.setState(__tableIndexes[offset.x][offset.y][offset.z], cState);
             }
         }
     }
@@ -199,14 +244,16 @@ namespace MyCraft {
             if (__specialState.find(offset.x*256+offset.y*16+offset.z) != __specialState.end())
                 state = __specialState[offset.x*256+offset.y*16+offset.z]*state;
             state[3] += glm::vec4(position, 0);
-            state[3].w = type;
             if (isTransparent(type)) {
-                __tableIndexes[offset.x][offset.y][offset.z] = __transparentState.size();
-                __transparentState.push_back(state);
+                __tableIndexes[offset.x][offset.y][offset.z] = __transparent.size();
+                __transparent.push(state, glm::vec4(0,getTransparentConst(type),0,type));
             }
             else {
-                __tableIndexes[offset.x][offset.y][offset.z] = __state.size();
-                __state.push_back(state);
+                __tableIndexes[offset.x][offset.y][offset.z] = __normal.size();
+                __normal.push(state, glm::vec4(0,0,0,type));
+            }
+            if (__container) {
+                setLight(position, __container->getLightIndensity(position));
             }
         }
     }
@@ -217,33 +264,29 @@ namespace MyCraft {
         BlockCatogary type = __blockTypes[offset.x][offset.y][offset.z];
         int index = __tableIndexes[offset.x][offset.y][offset.z];
         __tableIndexes[offset.x][offset.y][offset.z] = -1;
+        if (__specialState.find(offset.x*256+offset.y*16 + offset.z) != __specialState.end())
+            __specialState.erase(offset.x*256+offset.y*16 + offset.z);
         if (isTransparent(type)) {
-            if (index < __transparentState.size()-1) {
-                __transparentState[index] = __transparentState.back();
-                __transparentState.pop_back();
-
-                glm::ivec3 origin = glm::ivec3(__transparentState[index][3]) - __position;
+            __transparent.remove(index);
+            if (index != __transparent.size()) {
+                glm::ivec3 origin = glm::ivec3(__transparent.getPosition(index)) - __position;
                 __tableIndexes[origin.x][origin.y][origin.z] = index;
             }
-            else __transparentState.pop_back();
         }
         else {
-            if (index < __state.size()-1) {
-                __state[index] = __state.back();
-                __state.pop_back();
-
-                glm::ivec3 origin = glm::ivec3(__state[index][3]) - __position;
+            __normal.remove(index);
+            if (index != __normal.size()) {
+                glm::ivec3 origin = glm::ivec3(__normal.getPosition(index)) - __position;
                 __tableIndexes[origin.x][origin.y][origin.z] = index;
             }
-            else __state.pop_back();
         }
 
     }
     void Chunk::glDraw() const {
-        DrawingCenter::DrawCubes((void*)__state.data(), __state.size());
+        DrawingCenter::DrawCubes(__normal);
     }
     void Chunk::glDrawTransparent() const {
-        DrawingCenter::DrawCubes((void*)__transparentState.data(), __transparentState.size());
+        DrawingCenter::DrawCubes(__transparent);
     }
 
 
@@ -254,6 +297,10 @@ namespace MyCraft {
             delete __chunk;
             __chunk = 0;
         }
+    }
+    bool DynamicChunk::contains(const glm::ivec3& position) const {
+        glm::ivec3 offset = position - __chunk->getPosition();
+        return !(offset.x<0 || offset.x>15 || offset.y<0 || offset.y>15 || offset.z < 0 || offset.z > 15);
     }
     const glm::ivec3& DynamicChunk::getPosition() const {
         if (__chunk) return __chunk->getPosition();
@@ -283,7 +330,7 @@ namespace MyCraft {
         }
         if (!__chunk) {
             glm::ivec3 chunk(floor(position.x/16.f), floor(position.y/16.f), floor(position.z/16.f));
-            __chunk = Chunk::Load(__source, chunk);
+            __chunk = Chunk::Load(this,__source, chunk);
         }
         return *__chunk;
     }

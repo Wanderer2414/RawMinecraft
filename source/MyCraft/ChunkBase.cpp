@@ -1,6 +1,7 @@
 #include "ChunkBase.h"
 #include "Block.h"
 #include "Chunk.h"
+#include "ChunkManage.h"
 namespace MyCraft {
 
     const BlockCatogary& ChunkObject::getLocalType(const glm::ivec3& offset) const {
@@ -15,6 +16,11 @@ namespace MyCraft {
     std::bitset<16>::reference ChunkObject::getLocalBit(const glm::ivec3& offset) {
         glm::ivec3 position = offset + getPosition();
         return getBit(position);
+    }
+
+    void ChunkObject::setLocalLight(const glm::ivec3& offset, const float& indensity) {
+        glm::ivec3 position = offset + getPosition();
+        setLight(position, indensity);
     }
     void ChunkObject::enableLocalBit(const glm::ivec3& offset) {
         glm::ivec3 position = offset + getPosition();
@@ -61,6 +67,7 @@ namespace MyCraft {
                     position.z += 2;
                     if (!getBit(position) && getType(position)) enableBit(position);
                 }
+                if (isLightSource(currentType)) setLight(pos, 0);
             }
         }
         else {
@@ -84,9 +91,138 @@ namespace MyCraft {
                     position.z += 2;
                     disableBit(position);
                 }
+                if (isLightSource(type)) {
+                    setLight(pos, MyCraft::getLightIndensity(type));
+                }
             }
             else if (isTransparent(type) == isTransparent(getType(pos))) 
                 getChunk(pos).setType(pos, type);
+        }
+    }
+    float ChunkLoader::getLightIndensity(const glm::ivec3& position) const {
+        return tree.getLightIndensity(position);
+    }
+    void ChunkLoader::removeLight(const glm::ivec3& position) {
+        tree.remove(position);
+    }
+    void ChunkLoader::setLight(const glm::ivec3& position, const float& indensity) {
+        glm::ivec3 offset = position - getPosition();
+        if (offset.x < 0 || offset.x >= 16*world_side || offset.y < 0 ||  offset.y >= 16*world_side || offset.z < 0 ||  offset.z >= 16*world_side) 
+            throw std::runtime_error("Out range of chunk");
+        glm::ivec3 cPosition = position;
+        if (indensity>0) {
+            unsigned char side = 1;
+            int I = indensity;
+            tree.insert(position, indensity);
+            if (contains(position)) getChunk(position).setLight(position, I);
+            while (I>0) {
+                I--;
+                side += 2;
+                cPosition -= glm::ivec3(1);
+                glm::ivec3 position = cPosition; 
+                for (position.y = cPosition.y;position.y < cPosition.y + side; position.y++) {
+                    for (position.z = cPosition.z; position.z < cPosition.z + side; position.z++) {
+                        if (contains(position)) 
+                            getChunk(position).setLight(position, tree.getLightIndensity(position));
+                    }
+                }
+                position.x = cPosition.x + side - 1;
+                for (position.y = cPosition.y;position.y < cPosition.y + side; position.y++) {
+                    for (position.z = cPosition.z; position.z < cPosition.z + side; position.z++) {
+                        if (contains(position)) 
+                            getChunk(position).setLight(position, tree.getLightIndensity(position));
+                    }
+                }
+
+                position.y = cPosition.y;
+                for (position.x = cPosition.x;position.x < cPosition.x + side; position.x++) {
+                    for (position.z = cPosition.z; position.z < cPosition.z + side; position.z++) {
+                        if (contains(position)) 
+                            getChunk(position).setLight(position, tree.getLightIndensity(position));
+                    }
+                }
+
+                position.y = cPosition.y + side - 1;
+                for (position.x = cPosition.x;position.x < cPosition.x + side; position.x++) {
+                    for (position.z = cPosition.z; position.z < cPosition.z + side; position.z++) {
+                        if (contains(position)) 
+                            getChunk(position).setLight(position, tree.getLightIndensity(position));
+                    }
+                }
+
+                position.z = cPosition.z;
+                for (position.x = cPosition.x;position.x < cPosition.x + side; position.x++) {
+                    for (position.y = cPosition.y; position.y < cPosition.y + side; position.y++) {
+                        if (contains(position)) 
+                            getChunk(position).setLight(position, tree.getLightIndensity(position));
+
+                    }
+                }
+
+                position.z = cPosition.z + side - 1;
+                for (position.x = cPosition.x;position.x < cPosition.x + side; position.x++) {
+                    for (position.y = cPosition.y; position.y < cPosition.y + side; position.y++) {
+                        if (contains(position)) 
+                            getChunk(position).setLight(position, tree.getLightIndensity(position));
+                    }
+                }
+            }
+        }
+        else {
+            unsigned char side = 1;
+            float I = tree.remove(position);
+            while (I>0) {
+                I--;
+                side += 2;
+                cPosition -= glm::ivec3(1);
+                glm::ivec3 position = cPosition; 
+                for (position.y = cPosition.y;position.y < cPosition.y + side; position.y++) {
+                    for (position.z = cPosition.z; position.z < cPosition.z + side; position.z++) {
+                        if (contains(position))
+                            getChunk(position).setLight(position, tree.getLightIndensity(position));
+                    }
+                }
+                position.x = cPosition.x + side - 1;
+                for (position.y = cPosition.y;position.y < cPosition.y + side; position.y++) {
+                    for (position.z = cPosition.z; position.z < cPosition.z + side; position.z++) {
+                        if (contains(position))
+                            getChunk(position).setLight(position, tree.getLightIndensity(position));
+                    }
+                }
+
+                position.y = cPosition.y;
+                for (position.x = cPosition.x;position.x < cPosition.x + side; position.x++) {
+                    for (position.z = cPosition.z; position.z < cPosition.z + side; position.z++) {
+                        if (contains(position))
+                            getChunk(position).setLight(position, tree.getLightIndensity(position));
+                    }
+                }
+
+                position.y = cPosition.y + side - 1;
+                for (position.x = cPosition.x;position.x < cPosition.x + side; position.x++) {
+                    for (position.z = cPosition.z; position.z < cPosition.z + side; position.z++) {
+                        if (contains(position))
+                            getChunk(position).setLight(position, tree.getLightIndensity(position));
+                    }
+                }
+
+                position.z = cPosition.z;
+                for (position.x = cPosition.x;position.x < cPosition.x + side; position.x++) {
+                    for (position.y = cPosition.y; position.y < cPosition.y + side; position.y++) {
+                        if (contains(position))
+                            getChunk(position).setLight(position, tree.getLightIndensity(position));
+                    }
+                }
+
+                position.z = cPosition.z + side - 1;
+                for (position.x = cPosition.x;position.x < cPosition.x + side; position.x++) {
+                    for (position.y = cPosition.y; position.y < cPosition.y + side; position.y++) {
+                        if (contains(position))
+                            getChunk(position).setLight(position, tree.getLightIndensity(position));
+                    }
+                }
+            }
+
         }
     }
     void ChunkLoader::enableBit(const glm::ivec3& position) {

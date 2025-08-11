@@ -15,6 +15,7 @@
 #include "Label.h"
 #include "ModelController.h"
 #include "PlayerModelController.h"
+#include "Sun.h"
 #include "World.h"
 
 namespace MyCraft {
@@ -27,7 +28,8 @@ namespace MyCraft {
             void update() override;
         protected:
         private:
-            float           pZVelocity;
+            float           __zVelocity;
+            glm::vec3       __spawnPoint;
             bool            catchEvent(GLFWwindow* window) override;
             bool            handle(GLFWwindow* window) override;
             Cursor          __cursor;
@@ -42,6 +44,9 @@ namespace MyCraft {
             GamePauseForm   __pauseForm;
             Inventory       __inventory;
             InventoryForm   __inventoryForm;
+            Sun             __sun;
+
+            void __open(GLFWwindow*) override;
         };
 }
 #endif

@@ -36,6 +36,7 @@ namespace MyBase3D {
         virtual bool            handle(GLFWwindow* window)                  override;
         virtual void            glDraw() const override;
         virtual void            glDrawTransparent() const override;
+        virtual void            __open(GLFWwindow* window), __close(GLFWwindow* window);
     private:
         bool                    __isOpen;
         int                     __formIndex,

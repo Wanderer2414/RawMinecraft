@@ -1,6 +1,8 @@
 #ifndef CHUNK_H
 #define CHUNK_H
 #include "ChunkBase.h"
+#include "DrawingCenter.h"
+#include <unordered_set>
 
 namespace MyCraft {
 
@@ -12,7 +14,8 @@ namespace MyCraft {
         void enableList();
         void setType(const glm::ivec3& pos, const BlockCatogary& type)          override;
         void setState(const glm::ivec3& pos, const glm::mat4& state)            override;
-        static Chunk* Load(const std::string& src, const glm::ivec3& position);
+        void setLight(const glm::ivec3& position, const float& indensity)       override;
+        static Chunk* Load(ChunkLoader* loader, const std::string& src, const glm::ivec3& position);
         void glDraw() const;
         void glDrawTransparent() const;
         const BlockCatogary&                getType(const glm::ivec3& pos) const   override;
@@ -32,9 +35,10 @@ namespace MyCraft {
         BlockCatogary               __blockTypes[16][16][16];
         std::bitset<16>             __bits[16][16];
         std::string                 __source;
-        std::vector<glm::mat4>     __state;
-        std::vector<glm::mat4>     __transparentState;
+        DrawingStorage              __normal, __transparent;
+        std::unordered_set<int>     __lightSource;
         std::map<unsigned int, glm::mat4>   __specialState;
+        ChunkLoader                 *__container;
         void __add(const glm::ivec3& position);
         void __remove(const glm::ivec3& position);
     };
@@ -44,6 +48,7 @@ namespace MyCraft {
     public:
         DynamicChunk(const std::string& src);
         ~DynamicChunk();
+        bool contains(const glm::ivec3&) const override;
         void save();
         void disableList();
         void enableList();

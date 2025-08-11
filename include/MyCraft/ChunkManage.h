@@ -9,6 +9,7 @@ namespace MyCraft {
     public:
         ChunkManage(const std::string& src);
         ~ChunkManage();
+        bool contains(const glm::ivec3& position) const override;
         const std::vector<glm::vec4>& getChunks() const;
         void playerAt(const glm::ivec3& position);
         Chunk&          getChunk(const glm::ivec3&)         override;
@@ -26,14 +27,8 @@ namespace MyCraft {
         std::string             __sourceFolder;
         MyBase::Texture         __texture;
         void __loadDefault();
-        static void __moveSubPositiveX(ChunkManage*, const int& y, const int& z);
-        static void __moveSubNegativeX(ChunkManage*, const int& y, const int& z);
         void __movePositiveX(), __moveNegativeX();
-        static void __moveSubPositiveY(ChunkManage*, const int& x, const int& z);
-        static void __moveSubNegativeY(ChunkManage*, const int& x, const int& z);
         void __movePositiveY(), __moveNegativeY();
-        static void __moveSubPositiveZ(ChunkManage*, const int& x, const int& z);
-        static void __moveSubNegativeZ(ChunkManage*, const int& x, const int& z);
         void __movePositiveZ(), __moveNegativeZ();
         void glDraw() const override;
         void glDrawTransparent() const override;

@@ -3,6 +3,7 @@
 #include "Block.h"
 #include "Clock.h"
 #include "Controller3D.h"
+#include "DrawingCenter.h"
 #include "Global.h"
 #include "Item.h"
 #include "Message.h"
@@ -24,12 +25,11 @@ namespace MyCraft {
     private:
         bool                    __isCracking;
         float                   __percent;
-        int                     __numberPieces, __numberRemain;
         BlockCatogary           __type;
         glm::ivec3              __crackingBlock;
         MyBase::Texture         __crackingTexture, __blockTexture;
         MyBase::Clock           __clock, __gravityClock;
-        glm::mat4               *__crackingPieces;
+        DrawingStorage          __crackingPieces, __crackingBlocks;
 
         bool handle(GLFWwindow*)       override;
         void glDrawTransparent() const override;

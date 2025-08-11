@@ -26,10 +26,13 @@ namespace MyBase3D {
         if (__deltaClock==0) return 100000;
         return 1.0f*CLOCKS_PER_SEC/__deltaClock;
     }
+    void Form3D::__open(GLFWwindow* window) {}
+    void Form3D::__close(GLFWwindow* window) {}
     int Form3D::run(GLFWwindow* window) {
         __currentClock = __startClock = clock();
         bool is_changed = true;
         __isOpen = true;
+        __open(window);
         while (!glfwWindowShouldClose(window) && __isOpen) {
             MyBase::ControlCenter::getInstance().Reset();
             Container2D::reset();
@@ -51,6 +54,7 @@ namespace MyBase3D {
             __currentClock = clock();
             __frameCount++;
         }
+        __close(window);
         return __returnValue;
     }
     bool Form3D::catchEvent(GLFWwindow* window) {

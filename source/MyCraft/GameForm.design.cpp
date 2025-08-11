@@ -24,6 +24,7 @@ namespace MyCraft {
         insert(&__biomeLabel);
         insert(&__model);
         insert(&__cursor);
+        insert(&__sun);
         insertPermanent(&__inventory);
         MyBase::Network::match(&__model);
         MyBase::Network::match(&__world);
@@ -47,7 +48,7 @@ namespace MyCraft {
         MyBase::ControlCenter::CenteringMouse(window);
     
         MyBase3D::Camera::Instance().setPosition({10, 10, 1.7});
-        pZVelocity = 0;
+        __zVelocity = 0;
         __speed = 0.1;
         __frameAlarm.setDuration(50);
         std::cout << "Open time: " << 1.0f*clock()/CLOCKS_PER_SEC << std::endl;
@@ -58,25 +59,25 @@ namespace MyCraft {
         __positionLabel.setScale({0.04, 0.06});
         insert(&__positionLabel);
         __fpsClock.setDuration(500);
-
         MyBase::File file(src+"info.bin");
         if (!file.isNew()) {
             glm::ivec3 pos;
             file >> pos.x >> pos.y >> pos.z;
-            __model.teleport(pos);
-            __world.teleport(pos);
+            __spawnPoint = pos;
         }
         else {
             glm::ivec3 pos(0,0,0);
             file << pos.x << pos.y << pos.z;
-            __model.teleport(pos);
-            __world.teleport(pos);
         }
         
         file.close();
     }
     GameForm::~GameForm() {   
         MyBase::Network::close();     
+    }
+    void GameForm::__open(GLFWwindow* window) {
+        __model.teleport(__spawnPoint);
+        __world.teleport(__spawnPoint);
     }
     bool GameForm::move(const float& x, const float& y, const float& z) {
         glm::vec3 delta = {0, 0, 0}, pos= MyBase3D::Camera::Instance().getCameraPosition();

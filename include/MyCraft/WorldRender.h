@@ -6,10 +6,11 @@
 #include "ChunkManage.h"
 #include "Message.h"
 namespace MyCraft {
-    class WorldRender: public MyBase3D::Container3D, public ChunkLoader, public MyBase::Port {
+    class WorldRender: public MyBase3D::Container3D, public MyBase::Port {
     public:
         WorldRender(const std::string& src);
         ~WorldRender();
+        bool contains(const glm::ivec3& pos) const;
         bool isHover() const;
         glm::ivec3 getHoverBlock() const;
         glm::ivec3 getPlaceBlock() const;
@@ -24,16 +25,11 @@ namespace MyCraft {
     protected:
         void glDraw() const override;
         void glDrawTransparent() const override;
-        Chunk& getChunk(const glm::ivec3& position) override;
-        const Chunk& getChunk(const glm::ivec3& position) const override;
-        const glm::ivec3& getPosition() const override;
     private:
         bool        __isHover;
         ChunkManage __chunkLoader;
         unsigned char __hoverPlane;
         glm::vec3   __hoverBlock, __placePosition;
-        using  ChunkLoader::setType;
-        using  ChunkLoader::setLocalType;
     };
 
     class RequestGotoMessage: public MyBase::Message {

@@ -32,9 +32,7 @@ namespace MyCraft {
         add(new ReceiveItemCommand(this));
         add(new HoldItemCommand(this));
 }
-    PlayerModelController::~PlayerModelController() {
-
-    }
+    PlayerModelController::~PlayerModelController() {}
     bool PlayerModelController::isCrounch() const {
         return __isCrouch;
     }

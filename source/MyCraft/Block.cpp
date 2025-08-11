@@ -1,7 +1,12 @@
 #include "Block.h"
 #include "Global.h"
-#include <limits>
 namespace MyCraft {
+    bool isLightSource(const BlockCatogary &type) {
+        switch (type) {
+            case Torch: return true;
+            default: return false;
+        }
+    }
     bool isSpecial(const BlockCatogary& type) {
         switch (type) {
             case Torch: return true;
@@ -32,6 +37,18 @@ namespace MyCraft {
                 return true;
             }
             default: return true;
+        }
+    }
+    float getTransparentConst(const BlockCatogary& type) {
+        switch (type) {
+            case OakLeaf: return 0.98;
+            default: return 0;
+        }
+    }
+    unsigned char getLightIndensity(const BlockCatogary &type) {
+        switch (type) {
+            case Torch: return 20;
+            default: return 0;
         }
     }
     BlockCatogary getBrokenResult(const BlockCatogary& block) {

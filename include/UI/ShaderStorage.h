@@ -11,7 +11,6 @@ class ShaderStorage {
         GLuint  GetDefaultShader() const,
                 GetCubeShader() const,
                 GetMarginShader() const,
-                GetDroppedShader() const,
                 GetPoint2DShader() const,
                 GetModelShader() const,
                 GetFontShader() const,
@@ -22,7 +21,6 @@ class ShaderStorage {
         static ShaderStorage* Default;
         GLuint  __defaultShader,
                 __cubeShader,
-                __droppedShader,
                 __point2DShader,
                 __marginShader,
                 __modelShader,

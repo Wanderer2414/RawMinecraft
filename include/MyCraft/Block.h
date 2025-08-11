@@ -18,11 +18,14 @@ namespace MyCraft {
         BlastFurnace, Chest, Torch
     };
 
+    bool isLightSource(const BlockCatogary& type);
     bool isValid(const BlockCatogary& type, const unsigned char& plane);
     bool isSpecial(const BlockCatogary& type);
     bool isTransparent(const BlockCatogary& type);
     bool isMultiState(const BlockCatogary& type);
     float getHardness(const BlockCatogary& type);
+    float getTransparentConst(const BlockCatogary& type);
+    unsigned char getLightIndensity(const BlockCatogary& type);
 
     BlockCatogary getBrokenResult(const BlockCatogary& type);
 

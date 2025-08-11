@@ -1,8 +1,7 @@
 #include "General.h"
 #include "Global.h"
 #include "Application.h"
-#include <mutex>
-#include <thread>
+#include <ctime>
 
 #define TINYGLTF_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
