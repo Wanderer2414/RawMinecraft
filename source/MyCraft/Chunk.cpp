@@ -174,7 +174,7 @@ namespace MyCraft {
             __lightSource.insert(offset.x*65536+offset.y*4096+offset.z*256 + getLightIndensity(type));
         }
         else if (!type && isLightSource(__blockTypes[offset.x][offset.y][offset.z])) {
-            __lightSource.erase(offset.x*65536+offset.y*4096+offset.z*256 + getLightIndensity(type));
+            __lightSource.erase(offset.x*65536+offset.y*4096+offset.z*256 + getLightIndensity(__blockTypes[offset.x][offset.y][offset.z]));
         }
 
         if (type && !__blockTypes[offset.x][offset.y][offset.z]) __numBlock++;

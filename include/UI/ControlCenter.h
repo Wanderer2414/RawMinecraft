@@ -61,7 +61,7 @@ namespace MyBase {
             glm::vec2       __scrollPosition;
             glm::vec2       __windowSize, __windowHalfSize;
             std::string     __programName;
-            MyBase::Rectangle       __pauseScreen;
+            
             GLFWwindow*     __homeScreen;
             ControlCenter();
             ~ControlCenter();

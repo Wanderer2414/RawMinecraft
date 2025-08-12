@@ -25,13 +25,13 @@ namespace MyBase3D {
                         getCenter() const,
                         getDirection() const,
                         getCameraPosition() const;
-        glm::vec2       transfer(const glm::vec3& vector) const;
+        static glm::vec2 transfer(const glm::vec3& vector);
 
         Ray3f           getSight() const;
         static void close();
         operator GLuint();
     protected:
-        virtual bool    handle(GLFWwindow* window) override;
+        virtual bool    catchEvent(GLFWwindow* window) override;
         virtual void    update() override;
     private:
         Camera();
@@ -45,7 +45,6 @@ namespace MyBase3D {
                         __clipPlane;
 
         GLuint          __camera;
-        MyBase::Clock   __keyCooldown;
         static Camera* camera;
     };
 };

@@ -47,6 +47,7 @@ namespace MyCraft {
             Sun             __sun;
 
             void __open(GLFWwindow*) override;
+            void glDraw() const override;
         };
 }
 #endif

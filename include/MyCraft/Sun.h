@@ -1,21 +1,42 @@
 #ifndef SUN_H
 #define SUN_H
 #include "Clock.h"
-#include "Controller2D.h"
+#include "Container3D.h"
 #include "Controller3D.h"
+#include "Ellipse.h"
+#include "Message.h"
+#include "Rectangle.h"
+#include "Shape.h"
+#include "Texture.h"
 namespace MyCraft {
-    class Sun: public MyBase3D::Controller3D {
+    class Sun: private MyBase::TextureContainer, public MyBase::Port {
     public:
         Sun();
         ~Sun();
 
-        void update() override;
+        void update();
+        bool handle(GLFWwindow* window);
+        void glDraw() const            ;
+        friend class SunMoveCommand;
     private:    
-        int                         __time;
+        glm::vec2                   __offset;
+        float                       __time;
         MyBase::Clock               __clock;
         GLuint                      __lightBuffer;
+        MyBase::Rectangle           __coverSky;
+        MyBase::Ellipse             __sun;
+        MyBase::ShapeContainer      __skyContainer, __sunContainer;
+    };
 
-        bool handle(GLFWwindow* window) override;
+    class SunMoveCommand: public MyBase::Command {
+    public:
+        SunMoveCommand(Sun& sun);
+        ~SunMoveCommand();
+
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private:
+        Sun& __sun;
     };
 }
 #endif

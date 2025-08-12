@@ -69,9 +69,6 @@ void main() {
     frag_color = texture(tex, uv);
     
     vec3 hsl = rgb2hsl(vec3(frag_color));
-    if (hsl.y + lightness < 0) hsl.y = 0;
-    else if (lightness + hsl.y < 1) hsl.y += lightness;
-    else hsl.y = 1;
 
     if (hsl.z + lightness < 0) hsl.z = 0;
     else if (lightness + hsl.z < 1) hsl.z += lightness;

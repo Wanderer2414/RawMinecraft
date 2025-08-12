@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Controller3D.h"
 #include "Global.h"
 #include "ControlCenter.h"
 #include "Message.h"
@@ -22,7 +23,6 @@ namespace MyBase3D {
 
         __view = glm::lookAt(__position, __position + __delta, glm::vec3(0, 0, 1));
         __projection = glm::perspective(glm::radians(60.f), MyBase::ControlCenter::getInstance().GetWindowRatio(), 0.1f, 100.f);
-        __keyCooldown.setDuration(200);
         add(new MyBase::SetCameraCommand_ThirdPersonView(this));
         update();
     }
@@ -106,9 +106,9 @@ namespace MyBase3D {
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::vec3), &__position);
         glBindBufferBase(GL_UNIFORM_BUFFER, 0, __camera);
     }
-    bool Camera::handle(GLFWwindow* window) {
-        bool is_changed = Controller3D::handle(window);
-        if (__keyCooldown.get()) {
+    bool Camera::catchEvent(GLFWwindow* window) {
+        bool is_changed = Controller3D::catchEvent(window);
+        if (MyBase::ControlCenter::getInstance().IsKeyPressed()) {
             if (glfwGetKey(window, GLFW_KEY_F5)) {
                 if (__isThirdCamera) {
                     add(new MyBase::SetCameraCommand_FirstPersonView(this));
@@ -120,14 +120,13 @@ namespace MyBase3D {
                     send(new MyBase::ResetCameraMessage(false));
                     __isThirdCamera = true;
                 }
-                __keyCooldown.restart();
             }
         }
         return is_changed;
     }
-    glm::vec2 Camera::transfer(const glm::vec3& vector) const {
-        glm::vec4 pos= __clipPlane*glm::vec4(vector,1);
-        return pos;
+    glm::vec2 Camera::transfer(const glm::vec3& vector) {
+        glm::vec4 pos= Instance().__clipPlane*glm::vec4(vector,1);
+        return pos/pos.w;
     }
     Ray3f Camera::getSight() const {
         return Ray3f(__position, __position + __delta);

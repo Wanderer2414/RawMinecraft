@@ -24,12 +24,12 @@ namespace MyCraft {
         insert(&__biomeLabel);
         insert(&__model);
         insert(&__cursor);
-        insert(&__sun);
         insertPermanent(&__inventory);
         MyBase::Network::match(&__model);
         MyBase::Network::match(&__world);
         MyBase::Network::match(&__inventoryForm);
         MyBase::Network::match(&__inventory);
+        MyBase::Network::match(&__sun);
         MyBase::Network::match(&MyBase3D::Camera::Instance());
 
         __label.setFont(__font);
@@ -116,6 +116,7 @@ namespace MyCraft {
     }
     bool GameForm::handle(GLFWwindow* window) {
         bool is_changed = Form3D::handle(window);
+        is_changed = __sun.handle(window) || is_changed;
         if (__fpsClock.get()) {
             __fpsClock.restart();
             __label.setText(std::format("Fps: {}", (int)getCurrentFps()));
@@ -143,5 +144,9 @@ namespace MyCraft {
     void GameForm::update() {
         MyBase::Container2D::update();
         MyBase3D::Container3D::update();
+    }
+    void GameForm::glDraw() const {
+        __sun.glDraw();
+        MyBase3D::Form3D::glDraw();
     }
 }

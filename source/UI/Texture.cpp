@@ -28,7 +28,7 @@ namespace MyBase {
     FlyWeightCore* Texture::create(const std::string& src) const {
         TextureCore* core = new TextureCore();
         int nrChannels;
-        unsigned char* data = stbi_load(src.c_str(), &core->__size.x, &core->__size.y, &nrChannels, 0);
+        unsigned char* data = stbi_load(src.c_str(), &core->__size.x, &core->__size.y, &nrChannels, 4);
         if (!data) throw std::runtime_error("Failed to load texture: " + src);
 
         glGenTextures(1, &core->__texture);

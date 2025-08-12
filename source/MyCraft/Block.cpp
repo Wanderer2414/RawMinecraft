@@ -47,7 +47,7 @@ namespace MyCraft {
     }
     unsigned char getLightIndensity(const BlockCatogary &type) {
         switch (type) {
-            case Torch: return 20;
+            case Torch: return 30;
             default: return 0;
         }
     }
