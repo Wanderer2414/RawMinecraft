@@ -1,5 +1,6 @@
 #ifndef WORLD_DATA_H
 #define WORLD_DATA_H
+#include "Block.h"
 #include "ChunkBase.h"
 #include "Container3D.h"
 #include "Controller3D.h"
@@ -12,6 +13,7 @@ namespace MyCraft {
         ~WorldRender();
         bool contains(const glm::ivec3& pos) const;
         bool isHover() const;
+        BlockCatogary getHoverType() const;
         glm::ivec3 getHoverBlock() const;
         glm::ivec3 getPlaceBlock() const;
         void place(const BlockCatogary& type);
@@ -20,8 +22,9 @@ namespace MyCraft {
         void playerAt(const glm::vec3& position);
         void setHoverBlock(const glm::vec3& pos, const glm::vec3& place);
         void unHover();
-        const BlockCatogary&    getType(const glm::vec3&) const;
-        const BlockCatogary&    getType(const glm::vec3&)      ;
+        bool isBusy(const glm::vec3& position) const;
+        bool isHover(const glm::vec3& position) const;
+        BlockCatogary getType(const glm::vec3& position) const;
     protected:
         void glDraw() const override;
         void glDrawTransparent() const override;

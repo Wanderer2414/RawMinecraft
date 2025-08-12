@@ -20,6 +20,7 @@ namespace MyCraft {
 
     bool isLightSource(const BlockCatogary& type);
     bool isValid(const BlockCatogary& type, const unsigned char& plane);
+    bool isCollistion(const BlockCatogary& type);
     bool isSpecial(const BlockCatogary& type);
     bool isTransparent(const BlockCatogary& type);
     bool isMultiState(const BlockCatogary& type);

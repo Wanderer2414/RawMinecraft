@@ -189,7 +189,7 @@ namespace MyCraft {
             __isRightAttack = false;
             __isLeftAttack = true;
             send(new PlaceMessage(__position, __eye_direction, getItemTypeLeftHand(), getItemTypeRightHand()));
-            send(new CheckHoverMessage(__position, __eye_direction));
+            send(new CheckHoverMessage(__position + glm::vec3(0,0,1.8), __eye_direction));
             send(new RequestFallMessage(getShape(), getZVelocity()));
         } 
     }
@@ -200,7 +200,7 @@ namespace MyCraft {
             __isRightAttack = false;
             __isRightAttack = true;
             send(new AttackMessage(__position, __eye_direction, getItemTypeLeftHand(),getItemTypeRightHand()));
-            send(new CheckHoverMessage(__position, __eye_direction));
+            send(new CheckHoverMessage(__position + glm::vec3(0,0,1.8), __eye_direction));
             send(new RequestFallMessage(getShape(), getZVelocity()));
         }
     }
@@ -210,8 +210,8 @@ namespace MyCraft {
     void PlayerModelController::move(const glm::vec3& delta) {
         __position += delta;
         __isChanged = true;
-        send(new MyBase::SetCameraMessage(__position, __eye_direction));
-        send(new CheckHoverMessage(__position, __eye_direction));
+        send(new MyBase::SetCameraMessage(__position + glm::vec3(0,0,1.8), __eye_direction));
+        send(new CheckHoverMessage(__position + glm::vec3(0,0,1.8), __eye_direction));
         send( new WorldMoveMessage(__position));
         if (delta.x || delta.y) {
             __runCooldown.restart();
@@ -237,8 +237,8 @@ namespace MyCraft {
         if (angle>M_PI/20 && angle < M_PI*0.95) {
             __eye_direction = eye_direction;
         }
-        send(new MyBase::SetCameraMessage(__position, __eye_direction));
-        send(new CheckHoverMessage(__position, __eye_direction));
+        send(new MyBase::SetCameraMessage(__position+glm::vec3(0,0,1.8), __eye_direction));
+        send(new CheckHoverMessage(__position + glm::vec3(0,0,1.8), __eye_direction));
     }
     void PlayerModelController::setDrawAble(const bool& drawable) {
         __isDrawable = drawable;
@@ -290,7 +290,7 @@ namespace MyCraft {
         MyBase::ResetCameraMessage* package = (MyBase::ResetCameraMessage*)message;
         if (package->isFirstCamera) __model->setDrawAble(false);
         else __model->setDrawAble(true);
-        __model->send(new MyBase::SetCameraMessage(__model->getModelPosition(), __model->getDirection()));
+        __model->send(new MyBase::SetCameraMessage(__model->getModelPosition() + glm::vec3(0,0,1.8), __model->getDirection()));
     }
 
 

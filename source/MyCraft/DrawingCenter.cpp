@@ -61,6 +61,13 @@ namespace MyCraft {
         int i = index%32, n = index/32;
         return __elements[n]->state[i];
     }
+
+    const glm::mat4& DrawingStorage::getState(const int& index) const {
+        if (index>=size()) 
+            throw std::runtime_error("Out of range!");
+        int i = index%32, n = index/32;
+        return __elements[n]->state[i];
+    }
     ItemType DrawingStorage::getType(const int& index) const {
         if (index>=size()) 
             throw std::runtime_error("Out of range!");

@@ -7,6 +7,7 @@
 #include "General.h"
 #include "Message.h"
 #include "PlayerModelController.h"
+#include "glm/matrix.hpp"
 
 namespace MyCraft {
     WorldRender::WorldRender(const std::string& src): __chunkLoader(src), __isHover(false) {
@@ -23,6 +24,32 @@ namespace MyCraft {
     }
     bool WorldRender::isHover() const {
         return __isHover;
+    }
+    bool WorldRender::isBusy(const glm::vec3& position) const {
+        glm::ivec3 pos(floor(position.x), floor(position.y), floor(position.z));
+        BlockCatogary type = __chunkLoader.getType(pos);
+        if (!isCollistion(type)) return false;
+        if (!isSpecial(type)) return type;
+        else {
+            glm::mat4 inverse = glm::inverse(__chunkLoader.getState(pos));
+            glm::vec3 cPosition = inverse*glm::vec4(position,1);
+            return (cPosition.x>=0 && cPosition.x<=1 && cPosition.y>=0 && cPosition.y<=1 && cPosition.z>=0 && cPosition.z<1);
+        }
+    }
+    bool WorldRender::isHover(const glm::vec3& position) const {
+        glm::ivec3 pos(floor(position.x), floor(position.y), floor(position.z));
+        BlockCatogary type = __chunkLoader.getType(pos);
+        if (!isSpecial(type)) return type;
+        else {
+            glm::mat4 inverse = glm::inverse(__chunkLoader.getState(pos));
+            glm::vec3 cPosition = inverse*glm::vec4(position,1);
+            return (cPosition.x>=0 && cPosition.x<=1 && cPosition.y>=0 && cPosition.y<=1 && cPosition.z>=0 && cPosition.z<1);
+        }
+    }
+
+    BlockCatogary WorldRender::getType(const glm::vec3& position) const {
+        glm::ivec3 pos(floor(position.x), floor(position.y), floor(position.z));
+        return __chunkLoader.getType(pos);
     }
     glm::ivec3 WorldRender::getHoverBlock() const {
         return __hoverBlock;
@@ -61,14 +88,6 @@ namespace MyCraft {
         __chunkLoader.playerAt(position);
     }
 
-    const BlockCatogary& WorldRender::getType(const glm::vec3& position) const {
-        glm::ivec3 pos(floor(position.x), floor(position.y), floor(position.z));
-        return __chunkLoader.getType(pos);
-    }
-    const BlockCatogary& WorldRender::getType(const glm::vec3& position){
-        glm::ivec3 pos(floor(position.x), floor(position.y), floor(position.z));
-        return __chunkLoader.getType(pos);
-    }
     void WorldRender::glDraw() const {
         DrawingCenter::BindMargin();
         DrawingCenter::DrawMargins((void*)__chunkLoader.getChunks().data(), __chunkLoader.getChunks().size(), RED, 2);
@@ -83,7 +102,9 @@ namespace MyCraft {
             DrawingCenter::DrawMargins(&margin, 1, BLACK, 3);
         }
     }
-
+    BlockCatogary WorldRender::getHoverType() const {
+        return __chunkLoader.getType(__hoverBlock);
+    }
 
     RequestGotoMessage::RequestGotoMessage(const glm::mat4x3& p, const glm::vec2& d): rectangleBox(p), direction(d) {}
     RequestGotoMessage::~RequestGotoMessage() {}
@@ -108,56 +129,58 @@ namespace MyCraft {
         glm::vec3 dir = glm::vec3(request->direction, 0);
         //Below check
         glm::vec3 npos = shape[0] + dir, epos = npos + shape[1];
-        std::queue<glm::ivec3> q = rasterize(npos, epos);
-        while (q.size() && below_result) {
-            if (__world.getType(q.front()) != BlockCatogary::Air) below_result = false;
-            q.pop();
+        glm::vec3 delta = (epos-npos)/10.f;
+        float minHeight = 0;
+            
+        for (int i = 0; i<=10 && below_result; i++) {
+            if (__world.isBusy(npos+i*1.0f*delta)) {
+                below_result = false;
+                minHeight = std::max(minHeight, getSpecialState(__world.getType(npos+i*1.0f*delta))[2].z);
+            }
         }
         //Above block check
         npos.z += 1;
         epos.z += 1;
-        q = rasterize(npos, epos);
-        while (q.size() && above_result) {
-            if (__world.getType(q.front()) != BlockCatogary::Air) above_result = false;
-            q.pop();
+        delta = (epos-npos)/10.f;
+        for (int i = 0; i<=10 && above_result; i++) {
+            if (__world.isBusy(npos+i*1.0f*delta)) above_result = false;
         }
         if (!below_result || !above_result) {
             //Check auto jump
             if (above_result) {
                 below_result = above_result = true;
-                q = rasterize(shape[0]-glm::vec3(0,0,1), shape[0]+shape[1]-glm::vec3(0,0,1));
-                while (q.size() && above_result) {
-                    if (__world.getType(q.front()) == BlockCatogary::Air) below_result = false;
-                    q.pop();
+                glm::vec3 start = shape[0]-glm::vec3(0,0,1), end = shape[0]+shape[1]-glm::vec3(0,0,1);
+                glm::vec3 delta = end-start;
+                delta = (end-start)/10.f;
+                for (int i = 0; i<10 && below_result; i++) {
+                    if (!__world.isBusy(start+i*1.0f*delta)) below_result = false;
                 }
-                q = rasterize(shape[0]+shape[2]-glm::vec3(0,0,1), shape[0]+shape[1]+shape[2]-glm::vec3(0,0,1));
-                while (q.size() && above_result) {
-                    if (__world.getType(q.front()) == BlockCatogary::Air) below_result = false;
-                    q.pop();
+                start = shape[0]+shape[2]-glm::vec3(0,0,1), end = shape[0]+shape[1]+shape[2]-glm::vec3(0,0,1);
+                delta = (end-start)/10.f;
+                for (int i = 0; i<=10 && below_result; i++) {
+                    if (!__world.isBusy(start+i*1.0f*delta)) below_result = false;
                 }
                 npos.z += 1;
                 epos.z += 1;
-                q = rasterize(npos, epos);
-                while (q.size() && above_result) {
-                    if (__world.getType(q.front()) != BlockCatogary::Air) above_result = false;
-                    q.pop();
+                delta = (epos-npos)/10.f;
+                for (int i = 0; i<=10 && above_result; i++) {
+                    if (__world.isBusy(npos+i*1.0f*delta)) above_result = false;
                 }
             }
-            if (below_result && above_result) dir.z=1;
+            if (below_result && above_result) 
+                dir.z = minHeight;
             else {
                 //Check parallel Ox
                 npos = shape[0] + glm::vec3(dir.x, 0, 0); epos = npos + shape[1];
                 below_result = above_result = true;
-                q = rasterize(npos, epos);
-                while (q.size() && below_result) {
-                    if (__world.getType(q.front()) != BlockCatogary::Air) below_result = false;
-                    q.pop();
+                delta = (epos-npos)/10.f;
+                for (int i = 0; i<=10 && below_result; i++) {
+                    if (__world.isBusy(npos+i*1.0f*delta)) below_result = false;
                 }
                 npos.z++; epos.z++;
-                q = rasterize(npos, epos);
-                while (q.size() && below_result) {
-                    if (__world.getType(q.front()) != BlockCatogary::Air) above_result = false;
-                    q.pop();
+                delta = (epos-npos)/10.f;
+                for (int i = 0; i<=10 && above_result; i++) {
+                    if (__world.isBusy(npos+i*1.0f*delta)) above_result = false;
                 }
 
                 if (above_result && below_result) dir.y = 0;
@@ -165,16 +188,14 @@ namespace MyCraft {
                     //Check paralel Oy
                     npos = shape[0] + glm::vec3(0, dir.y, 0); epos = npos + shape[1];
                     below_result = above_result = true;
-                    q = rasterize(npos, epos);
-                    while (q.size() && below_result) {
-                        if (__world.getType(q.front()) != BlockCatogary::Air) below_result = false;
-                        q.pop();
+                    delta = (epos-npos)/10.f;
+                    for (int i = 0; i<=10 && below_result; i++) {
+                        if (__world.isBusy(npos+i*1.0f*delta)) below_result = false;
                     }
                     npos.z++; epos.z++;
-                    q = rasterize(npos, epos);
-                    while (q.size() && below_result) {
-                        if (__world.getType(q.front()) != BlockCatogary::Air) below_result = false;
-                        q.pop();
+                    delta = (epos-npos)/10.f;
+                    for (int i = 0; i<=10 && above_result; i++) {
+                        if (__world.isBusy(npos+i*1.0f*delta)) above_result = false;
                     }
                     if (below_result) dir.x = 0;
                 }
@@ -189,10 +210,10 @@ namespace MyCraft {
             shape[1][2]--;
             shape[0][2]--;
 
-            if (__world.getType(shape[0])==BlockCatogary::Air && 
-                __world.getType(shape[1])==BlockCatogary::Air && 
-                __world.getType(shape[2])==BlockCatogary::Air && 
-                __world.getType(shape[3])==BlockCatogary::Air) {
+            if (!__world.isBusy(shape[0]) && 
+                !__world.isBusy(shape[1]) && 
+                !__world.isBusy(shape[2]) && 
+                !__world.isBusy(shape[3])) {
                     dir.z = -0.01;
             }
 
@@ -214,19 +235,34 @@ namespace MyCraft {
             z -= 0.06;
             shape[0].z += z;
             bool isFall = true;
+            float minHeight = 0;
             shape[3] = shape[0] + shape[2];
-            isFall = isFall && __world.getType(shape[3])==BlockCatogary::Air; 
+            if (__world.isBusy(shape[3])) {
+                isFall = false; 
+                minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[3]))[2].z);
+            }
             shape[2] += shape[0] + shape[1];
-            isFall = isFall && __world.getType(shape[2])==BlockCatogary::Air; 
+            if (__world.isBusy(shape[2])) {
+                isFall = false;
+                minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[2]))[2].z);
+            }
             shape[1] += shape[0];   
-            isFall = isFall && __world.getType(shape[1])==BlockCatogary::Air; 
+            if (__world.isBusy(shape[1])) {
+                isFall = false; 
+                minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[1]))[2].z);
+            }
 
-            isFall = isFall && __world.getType(shape[0])==BlockCatogary::Air; 
+            if (__world.isBusy(shape[0])) {
+                isFall = false; 
+                minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[0]))[2].z);
+            }
             if (isFall) mine.send(source, new FallMessage(std::max(z, -0.8f)));
-            else {
-                float delta = shape[0][2] - z - ceil(shape[0][2]);
-                mine.send(source, new FallMessage(-delta));
-                mine.send(source, new StopFallMessage());
+            else {   
+                float delta = shape[0][2] - z - ceil(shape[0][2])+1-minHeight;
+                if (delta) {
+                    mine.send(source, new FallMessage(-delta));
+                    mine.send(source, new StopFallMessage());
+                }
             }
         }
         else if (z>0) {
@@ -239,10 +275,10 @@ namespace MyCraft {
             shape[1] += shape[0];
             shape[1][2]+=0.1;
             shape[0][2]+=0.1;
-            if (__world.getType(shape[0])==BlockCatogary::Air && 
-                __world.getType(shape[1])==BlockCatogary::Air && 
-                __world.getType(shape[2])==BlockCatogary::Air && 
-                __world.getType(shape[3])==BlockCatogary::Air) {
+            if (!__world.isBusy(shape[0]) && 
+                !__world.isBusy(shape[1]) && 
+                !__world.isBusy(shape[2]) && 
+                !__world.isBusy(shape[3])) {
                     mine.send(source, new FallMessage(z-0.035));
             }
             else {
@@ -269,22 +305,23 @@ namespace MyCraft {
     };
     void CheckHoverCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
         CheckHoverMessage* package = (CheckHoverMessage*)message;
-        glm::vec3 position = package->position + glm::vec3(0,0,1.8);
+        glm::vec3 position = package->position;
         glm::vec3 direction = package->direction;
-        auto q = rasterize(position, position + direction*4.f, 0.05);
+        glm::vec3 delta = direction*4.f/20.f;
         bool hover = false;
-        glm::ivec3 placePosition;
-        while (q.size() && !hover) {
-            if (__world.getType(q.front())!=BlockCatogary::Air) {
+        glm::ivec3 hoverPosition, placePosition;
+        for (int i = 0; i<=20 && !hover; i++) {
+            glm::vec3 cur = position+i*1.0f*delta;
+            if (__world.isHover(cur)) {
                 hover = true;
+                hoverPosition = glm::ivec3(floor(cur.x), floor(cur.y), floor(cur.z));
             }
             else {
-                placePosition = q.front();
-                q.pop();
+                placePosition = glm::ivec3(floor(cur.x), floor(cur.y), floor(cur.z));
             }
         }
         if (hover) {
-            __world.setHoverBlock(q.front(), placePosition);
+            __world.setHoverBlock(hoverPosition, placePosition);
         }
         else __world.unHover();
     }

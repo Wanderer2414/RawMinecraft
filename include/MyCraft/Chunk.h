@@ -15,6 +15,7 @@ namespace MyCraft {
         void setType(const glm::ivec3& pos, const BlockCatogary& type)          override;
         void setState(const glm::ivec3& pos, const glm::mat4& state)            override;
         void setLight(const glm::ivec3& position, const float& indensity)       override;
+        glm::mat4 getState(const glm::ivec3&) const                             override;
         static Chunk* Load(ChunkLoader* loader, const std::string& src, const glm::ivec3& position);
         void glDraw() const;
         void glDrawTransparent() const;

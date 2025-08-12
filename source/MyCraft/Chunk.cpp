@@ -162,7 +162,16 @@ namespace MyCraft {
         glm::ivec3 offset = pos - __position;
         return __blockTypes[offset.x][offset.y][offset.z];
     }
-    
+    glm::mat4 Chunk::getState(const glm::ivec3& position) const {
+        glm::ivec3 offset = position-__position;
+        if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
+            throw std::runtime_error("Out range of chunk");
+        if (!__bits[offset.x][offset.y][offset.z]) return glm::mat4(1);
+        int index = __tableIndexes[offset.x][offset.y][offset.z];
+        BlockCatogary type = __blockTypes[offset.x][offset.y][offset.z];
+        if (isTransparent(type)) return __transparent.getState(index);
+        else return __normal.getState(index);
+    }
     void Chunk::setType(const glm::ivec3& pos, const BlockCatogary& type) {
         glm::ivec3 offset = pos - __position;
         if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 

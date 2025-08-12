@@ -9,12 +9,19 @@ namespace MyCraft {
     }
     bool isSpecial(const BlockCatogary& type) {
         switch (type) {
-            case Torch: return true;
+            case Torch:
+            case OakPlank: return true;
             default: return false;
         }
         return false;
     }
-    
+    bool isCollistion(const BlockCatogary& type) {
+        switch (type) {
+            case Torch: return false;
+            case Air: return false;
+            default: return true;
+        }
+    }
     bool isTransparent(const BlockCatogary& type) {
         switch (type) {
             case Air: return true;
@@ -130,6 +137,7 @@ namespace MyCraft {
     glm::mat4 getSpecialState(const BlockCatogary& type) {
         switch (type) {
             case Torch: return glm::mat4({0.2,0,0,0}, {0,0.2, 0,0},{0,0,0.75,0},{0,0,0,1});
+            case OakPlank: return glm::mat4({1,0,0,0}, {0,1, 0,0},{0,0,0.5,0},{0,0,0,1});
             default: return glm::mat4(1);
         }
     }

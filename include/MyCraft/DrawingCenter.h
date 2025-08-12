@@ -22,6 +22,7 @@ namespace MyCraft {
         ItemType getType(const int& index) const;
         glm::vec3 getPosition(const int& index) const;
         glm::mat4& getState(const int& index);
+        const glm::mat4& getState(const int& index) const;
         friend class DrawingCenter;
     private:
         struct Element {    

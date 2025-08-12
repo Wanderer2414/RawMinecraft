@@ -9,8 +9,6 @@ bool isIntersect(const MyBase3D::Ray3f& ray, const MyBase3D::Rect3f& rectangle);
 
 std::size_t GetTime();
 
-std::queue<glm::ivec3> rasterize(const glm::vec3& a, const glm::vec3& b, const float& stride = 0.1);
-
 std::ostream& operator<<(std::ostream& cout, const glm::vec3& pos);
 std::tuple<int,int,int> to_tuple(const glm::ivec3& vec);
 

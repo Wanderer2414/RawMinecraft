@@ -13,6 +13,7 @@ namespace MyCraft {
         __items.package.font = MyBase::Font("assets/fonts/SyneMono-Regular.ttf");
 
         __items.placeToolbar(0, Item::create(__items.package, 1, ItemType::Torch));
+        __items.placeToolbar(1, Item::create(__items.package, 32, ItemType::OakPlank));
     }
 
     PlayerInventoryModule::~PlayerInventoryModule() {}

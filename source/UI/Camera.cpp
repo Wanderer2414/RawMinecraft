@@ -148,7 +148,7 @@ namespace MyBase {
     }
     void SetCameraCommand_ThirdPersonView::execute(Port& mine, Port& source, Message* message) {
         SetCameraMessage* package = (SetCameraMessage*)message;
-        __camera->setPosition(package->position-3.f*package->direction + glm::vec3(0,0,1.8));
+        __camera->setPosition(package->position-3.f*package->direction);
         __camera->see(package->direction);
     }
     
@@ -160,7 +160,7 @@ namespace MyBase {
     }
     void SetCameraCommand_FirstPersonView::execute(Port& mine, Port& source, Message* message) {
         SetCameraMessage* package = (SetCameraMessage*)message;
-        __camera->setPosition(package->position + glm::vec3(0,0,1.8));
+        __camera->setPosition(package->position);
         __camera->see(package->direction);
     }
 

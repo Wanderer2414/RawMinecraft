@@ -250,7 +250,9 @@ namespace MyCraft {
         getChunk(pos).disableBit(pos);
     }
 
-
+    glm::mat4 ChunkLoader::getState(const glm::ivec3& position) const {
+        return getChunk(position).getState(position);
+    }
     const BlockCatogary& ChunkLoader::getType(const glm::ivec3& position) const  {
         return getChunk(position).getType(position);
     }
