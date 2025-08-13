@@ -23,7 +23,7 @@ namespace MyCraft {
         bool handle(GLFWwindow*) override;
     private:
         int __currentFall;
-        DrawingStorage              __normal;
+        BlockDrawingStorage              __normal;
         std::vector<unsigned char>   __count;
         MyBase::Clock               __rotateClock;
         MyBase::Texture             __blockTexture;

@@ -127,7 +127,7 @@ namespace MyCraft {
         if (tool == ItemType::DiamonSword) return 72;
         if (tool == ItemType::NetheriteSword) return 100;
 
-        return 20;
+        return 400;
     }
 
 

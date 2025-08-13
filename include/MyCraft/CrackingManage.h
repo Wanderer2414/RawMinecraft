@@ -29,7 +29,7 @@ namespace MyCraft {
         glm::ivec3              __crackingBlock;
         MyBase::Texture         __crackingTexture, __blockTexture;
         MyBase::Clock           __clock, __gravityClock;
-        DrawingStorage          __crackingPieces, __crackingBlocks;
+        BlockDrawingStorage          __crackingPieces, __crackingBlocks;
 
         bool handle(GLFWwindow*)       override;
         void glDrawTransparent() const override;

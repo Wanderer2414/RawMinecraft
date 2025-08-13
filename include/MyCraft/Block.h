@@ -15,7 +15,7 @@ namespace MyCraft {
         BirchLog, StrippedBirchLog, BirchPlank,
         AcaciaLog, StrippedAcaciaLog, AcaciaPlank,
         CraftingTable, Furnace, Smoker,
-        BlastFurnace, Chest, Torch
+        BlastFurnace, Chest, Torch, Water
     };
 
     bool isLightSource(const BlockCatogary& type);

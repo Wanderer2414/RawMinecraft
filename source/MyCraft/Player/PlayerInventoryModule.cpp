@@ -14,6 +14,8 @@ namespace MyCraft {
 
         __items.placeToolbar(0, Item::create(__items.package, 1, ItemType::Torch));
         __items.placeToolbar(1, Item::create(__items.package, 32, ItemType::OakPlank));
+        __items.placeToolbar(2, Item::create(__items.package, 32, ItemType::StrippedAcaciaLog));
+        __items.placeToolbar(3, Item::create(__items.package, 32, ItemType::Water));
     }
 
     PlayerInventoryModule::~PlayerInventoryModule() {}

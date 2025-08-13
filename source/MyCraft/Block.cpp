@@ -1,5 +1,4 @@
 #include "Block.h"
-#include "Global.h"
 namespace MyCraft {
     bool isLightSource(const BlockCatogary &type) {
         switch (type) {
@@ -10,7 +9,7 @@ namespace MyCraft {
     bool isSpecial(const BlockCatogary& type) {
         switch (type) {
             case Torch:
-            case OakPlank: return true;
+                return true;
             default: return false;
         }
         return false;
@@ -33,7 +32,8 @@ namespace MyCraft {
     }
     bool isMultiState(const BlockCatogary& type) {
         switch (type) {
-            case Torch: return true;
+            case Torch:
+                return true;
             default: return false;
         }
     }
@@ -130,6 +130,7 @@ namespace MyCraft {
                     default: return glm::mat4(1);
                 }
             }
+            break;
             default: return glm::mat4(1);
         }
     }
@@ -137,7 +138,6 @@ namespace MyCraft {
     glm::mat4 getSpecialState(const BlockCatogary& type) {
         switch (type) {
             case Torch: return glm::mat4({0.2,0,0,0}, {0,0.2, 0,0},{0,0,0.75,0},{0,0,0,1});
-            case OakPlank: return glm::mat4({1,0,0,0}, {0,1, 0,0},{0,0,0.5,0},{0,0,0,1});
             default: return glm::mat4(1);
         }
     }

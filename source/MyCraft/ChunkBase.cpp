@@ -4,6 +4,8 @@
 #include "ChunkManage.h"
 namespace MyCraft {
 
+    ChunkObject::~ChunkObject() {}
+    
     const BlockCatogary& ChunkObject::getLocalType(const glm::ivec3& offset) const {
         glm::ivec3 position = offset + getPosition();
         return getType(position);
@@ -95,9 +97,17 @@ namespace MyCraft {
                     setLight(pos, MyCraft::getLightIndensity(type));
                 }
             }
-            else if (isTransparent(type) == isTransparent(getType(pos))) 
-                getChunk(pos).setType(pos, type);
+            else {
+                setType(pos, Air);
+                setType(pos, type);
+            }
         }
+    }
+    void ChunkLoader::setWater(const glm::ivec3& position, const float& height) {
+        getChunk(position).setWater(position, height);
+    }
+    float ChunkLoader::getWaterHeight(const glm::ivec3& position) const {
+        return getChunk(position).getWaterHeight(position);
     }
     float ChunkLoader::getLightIndensity(const glm::ivec3& position) const {
         return tree.getLightIndensity(position);

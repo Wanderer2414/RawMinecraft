@@ -34,7 +34,7 @@ namespace MyCraft {
             glm::mat4 state = getSpecialState(item);
             state = glm::scale(state, glm::vec3(0.4));
             state[3] = glm::vec4(position.x - state[0].x/2, position.y-state[1].y/2, position.z,1);
-            __normal.push(state, glm::vec4(0,0,0,item));
+            __normal.push(position, state, glm::vec4(0,0,0,item));
             __count.push_back(count);
         }
     }

@@ -1,11 +1,11 @@
 #ifndef WORLD_DATA_H
 #define WORLD_DATA_H
 #include "Block.h"
-#include "ChunkBase.h"
 #include "Container3D.h"
 #include "Controller3D.h"
 #include "ChunkManage.h"
 #include "Message.h"
+#include "WaterManage.h"
 namespace MyCraft {
     class WorldRender: public MyBase3D::Container3D, public MyBase::Port {
     public:

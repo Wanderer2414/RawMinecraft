@@ -15,6 +15,8 @@ namespace MyCraft {
         void setType(const glm::ivec3& pos, const BlockCatogary& type)          override;
         void setState(const glm::ivec3& pos, const glm::mat4& state)            override;
         void setLight(const glm::ivec3& position, const float& indensity)       override;
+        void setWater(const glm::ivec3& position, const float& height)          override;
+        float getWaterHeight(const glm::ivec3& position) const                  override;
         glm::mat4 getState(const glm::ivec3&) const                             override;
         static Chunk* Load(ChunkLoader* loader, const std::string& src, const glm::ivec3& position);
         void glDraw() const;
@@ -34,9 +36,10 @@ namespace MyCraft {
         int                         __tableIndexes[16][16][16];
         glm::ivec3                  __position;
         BlockCatogary               __blockTypes[16][16][16];
+        unsigned char               __waterHeight[16][16][16];
         std::bitset<16>             __bits[16][16];
         std::string                 __source;
-        DrawingStorage              __normal, __transparent;
+        BlockDrawingStorage         __normal, __transparent;
         std::unordered_set<int>     __lightSource;
         std::map<unsigned int, glm::mat4>   __specialState;
         ChunkLoader                 *__container;

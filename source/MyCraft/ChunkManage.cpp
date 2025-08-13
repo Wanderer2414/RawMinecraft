@@ -1,10 +1,12 @@
 #include "ChunkManage.h"
 #include "ChunkBase.h"
 #include "Chunk.h"
+#include "Container3D.h"
 #include "DrawingCenter.h"
 #include "General.h"
 namespace MyCraft {
-    ChunkManage::ChunkManage(const std::string& src): __isLoaded(false), __sourceFolder(src) {
+    ChunkManage::ChunkManage(const std::string& src): __isLoaded(false), __sourceFolder(src), __waterManage(*this) {
+        insert(&__waterManage);
         __chunks.resize(world_side*world_side*world_side, 0);
         __chunkPositions.resize(world_side*world_side*world_side);
         for (int i = 0; i<world_side; i++)
@@ -219,11 +221,16 @@ namespace MyCraft {
         }
     }
     void ChunkManage::glDraw() const {
+        MyBase3D::Container3D::glDraw();
         DrawingCenter::BindCube(__texture);
         glLineWidth(0);
         for (auto& chunk:__chunks) chunk->glDraw();
     }
+    void ChunkManage::pushDynamicWater(const glm::ivec3& position) {
+        __waterManage.place(position);
+    }
     void ChunkManage::glDrawTransparent() const {
+        MyBase3D::Container3D::glDrawTransparent();
         DrawingCenter::BindCube(__texture);
         glLineWidth(0);
         for (auto& chunk:__chunks) chunk->glDrawTransparent();
@@ -231,7 +238,6 @@ namespace MyCraft {
     Chunk& ChunkManage::getChunk(const glm::ivec3& position) {
         glm::ivec3 offset(floor(position.x/16.f), floor(position.y/16.f), floor(position.z/16.f));
         offset -= __position/16;
-        
         if (offset.x >= world_side || offset.y >= world_side || offset.z >= world_side || !__chunks[__chunkIndices[offset.x][offset.y][offset.z]])
             throw std::runtime_error("Out range of storage!");
 

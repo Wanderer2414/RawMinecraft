@@ -97,6 +97,28 @@ namespace MyBase3D {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
         {
+            std::vector<glm::vec4> rectangle3DSet = {{0,0,1, 0}, {1,0,1,0}, {1, 1, 1, 0}, {0,1,1,0}};
+            glGenBuffers(1, &__rectangle3DSet);
+            glBindBuffer(GL_UNIFORM_BUFFER, __rectangle3DSet);
+            glBufferData(GL_UNIFORM_BUFFER, rectangle3DSet.size()*sizeof(glm::vec4), rectangle3DSet.data(), GL_STATIC_DRAW);
+            glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        }
+        {
+            std::vector<int> rectangle3DIndices(32*36);
+            for (int i = 0; i<192; i++) {
+                rectangle3DIndices[i*6] = i*4;
+                rectangle3DIndices[i*6+1] = i*4+1;
+                rectangle3DIndices[i*6+2] = i*4+2;
+                rectangle3DIndices[i*6+3] = i*4;
+                rectangle3DIndices[i*6+4] = i*4+2;
+                rectangle3DIndices[i*6+5] = i*4+3;
+            }
+            glGenBuffers(1, &__rectangle3DIndice);
+            glBindBuffer(GL_ARRAY_BUFFER, __rectangle3DIndice);
+            glBufferData(GL_ARRAY_BUFFER, rectangle3DIndices.size()*sizeof(int), rectangle3DIndices.data(), GL_STATIC_DRAW);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        }
+        {
             glm::vec2 tex_coord[37];
             tex_coord[0] = {480, 0};
             tex_coord[1] = {320, 0};
@@ -156,6 +178,8 @@ namespace MyBase3D {
     PointSet::~PointSet() {
         glDeleteBuffers(1, &__blockSet);
         glDeleteBuffers(1, &__blockUVS);
+        glDeleteBuffers(1, &__rectangle3DIndice);
+        glDeleteBuffers(1, &__rectangle3DSet);
         glDeleteBuffers(1, &__marginBlockIndices);
         glDeleteBuffers(1, &__imageBlockIndices);
         glDeleteBuffers(1, &__rectangleIndices);
@@ -193,5 +217,11 @@ namespace MyBase3D {
     }
     GLuint PointSet::getRectangle2DUV() const {
         return __rectangle2DUV;
+    }
+    GLuint PointSet::getRectangle3DSet() const {
+        return __rectangle3DSet;
+    }
+    GLuint PointSet::getRectangle3DIndices() const {
+        return __rectangle3DIndice;
     }
 }

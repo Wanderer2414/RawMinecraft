@@ -7,6 +7,7 @@
 namespace MyCraft {
 
     Chunk::Chunk(): __isChange(false), __numBlock(0), __numBit(0), __enableQueue(true), __container(0) {
+        memset(__waterHeight, 0, 4096);
     }
     Chunk::~Chunk() {
         for (int code: __lightSource) {
@@ -91,6 +92,12 @@ namespace MyCraft {
             }
         }
         return new_chunk;
+    }
+    float Chunk::getWaterHeight(const glm::ivec3& position) const {
+        glm::ivec3 offset = position-__position;
+        if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
+            throw std::runtime_error("Out range of chunk");
+        return __waterHeight[offset.x][offset.y][offset.z]/10.f;
     }
     const glm::ivec3& Chunk::getPosition() const {
         return __position;
@@ -194,6 +201,12 @@ namespace MyCraft {
             __normal.setType(__tableIndexes[offset.x][offset.y][offset.z], type);
         }
     }
+    void Chunk::setWater(const glm::ivec3& position, const float& height) {
+        glm::ivec3 offset = position - __position;
+        if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
+            throw std::runtime_error("Out range of chunk");
+        __waterHeight[offset.x][offset.y][offset.z] = height*10;
+    }
     void Chunk::setState(const glm::ivec3& pos, const glm::mat4& state) {
         if (state != glm::mat4(1)) {
             glm::ivec3 offset = pos - __position;
@@ -255,11 +268,11 @@ namespace MyCraft {
             state[3] += glm::vec4(position, 0);
             if (isTransparent(type)) {
                 __tableIndexes[offset.x][offset.y][offset.z] = __transparent.size();
-                __transparent.push(state, glm::vec4(0,getTransparentConst(type),0,type));
+                __transparent.push(position, state, glm::vec4(0,getTransparentConst(type),0,type));
             }
             else {
                 __tableIndexes[offset.x][offset.y][offset.z] = __normal.size();
-                __normal.push(state, glm::vec4(0,0,0,type));
+                __normal.push(position, state, glm::vec4(0,0,0,type));
             }
             if (__container) {
                 setLight(position, __container->getLightIndensity(position));

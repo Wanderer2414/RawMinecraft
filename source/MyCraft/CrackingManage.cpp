@@ -23,7 +23,7 @@ namespace MyCraft {
         __percent += percent;
         __crackingBlocks.setType(0, BlockCatogary(round(__percent*3)));
         for (int i = 0; i<ceil(__percent*32) - __crackingPieces.size(); i++) {
-            __crackingPieces.push(glm::mat4({0.1,0,0,0}, 
+            __crackingPieces.push(__crackingBlock, glm::mat4({0.1,0,0,0}, 
                                             {0, 0.1, 0, 0}, 
                                             {0, 0, 0.1, 0}, 
                 {rand()%110/100.f - 0.05 + __crackingBlock.x, rand()%110/100.f - 0.05 + __crackingBlock.y,rand()%110/100.f - 0.05 + __crackingBlock.z, 1}), 
@@ -32,7 +32,7 @@ namespace MyCraft {
         if (__percent>=1) {
             __percent = 0;
             for (int i = 0; i<32; i++) {
-            __crackingPieces.push(
+            __crackingPieces.push(__crackingBlock, 
                                   glm::mat4({0.1,0,0,0}, 
                                             {0, 0.1, 0, 0}, 
                                             {0, 0, 0.1, 0}, 
@@ -48,7 +48,9 @@ namespace MyCraft {
             __type = type;
             __crackingBlock= hover;
             __crackingBlocks.clear();
-            __crackingBlocks.push(glm::mat4({1.02, 0,0,0}, {0, 1.02, 0, 0}, {0,0,1.02, 0}, {glm::vec3(__crackingBlock)-glm::vec3(0.01), 1}), {0,0,0, type});
+            glm::mat4 state = getSpecialState(__type);
+            state[3] += glm::vec4(__crackingBlock, 0);
+            __crackingBlocks.push(__crackingBlock, state, {0,1.02,0, type});
         }
     }
     void CrackingManage::uncrack() {

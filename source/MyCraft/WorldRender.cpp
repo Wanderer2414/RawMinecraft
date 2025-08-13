@@ -1,13 +1,9 @@
 #include "WorldRender.h"
 #include "Block.h"
-#include "Chunk.h"
-#include "ChunkBase.h"
 #include "ChunkManage.h"
 #include "DrawingCenter.h"
-#include "General.h"
 #include "Message.h"
 #include "PlayerModelController.h"
-#include "glm/matrix.hpp"
 
 namespace MyCraft {
     WorldRender::WorldRender(const std::string& src): __chunkLoader(src), __isHover(false) {
@@ -59,7 +55,8 @@ namespace MyCraft {
     }
 
     void WorldRender::place(const BlockCatogary& type) {
-        if (type && isValid(type, __hoverPlane)) {
+        if (type == Water) __chunkLoader.pushDynamicWater(__placePosition);
+        else if (type && isValid(type, __hoverPlane)) {
             __chunkLoader.setType(__placePosition, type);
             if (isMultiState(type)) __chunkLoader.setState(__placePosition, getState(type, __hoverPlane));
         }

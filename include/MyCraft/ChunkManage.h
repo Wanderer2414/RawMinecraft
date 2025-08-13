@@ -3,6 +3,7 @@
 #include "ChunkBase.h"
 #include "Container3D.h"
 #include "Texture.h"
+#include "WaterManage.h"
 
 namespace MyCraft {
     class ChunkManage: public MyBase3D::Container3D, public ChunkLoader {
@@ -13,6 +14,7 @@ namespace MyCraft {
         const std::vector<glm::vec4>& getChunks() const;
         void playerAt(const glm::ivec3& position);
         Chunk&          getChunk(const glm::ivec3&)         override;
+        void pushDynamicWater(const glm::ivec3& position);
         const Chunk&    getChunk(const glm::ivec3&) const   override;
         const glm::ivec3& getPosition() const override;
     protected:
@@ -26,6 +28,7 @@ namespace MyCraft {
         int                     __chunkIndices[world_side][world_side][world_side];
         std::string             __sourceFolder;
         MyBase::Texture         __texture;
+        WaterManage             __waterManage;
         void __loadDefault();
         void __movePositiveX(), __moveNegativeX();
         void __movePositiveY(), __moveNegativeY();

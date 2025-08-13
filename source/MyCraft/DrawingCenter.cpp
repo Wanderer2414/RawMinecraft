@@ -6,83 +6,110 @@
 #include "ShaderStorage.h"
 #include "ShapeManager.h"
 #include "Texture.h"
-#include <stdexcept>
+
 namespace MyCraft {
 
-    DrawingStorage::DrawingStorage() {}
-    DrawingStorage::~DrawingStorage() {
+    BlockDrawingStorage::BlockDrawingStorage() {}
+    BlockDrawingStorage::~BlockDrawingStorage() {
         clear();
     }
 
-    void DrawingStorage::clear() {
+    void BlockDrawingStorage::clear() {
         for (int i = 0; i<__elements.size(); i++) delete __elements[i];
         __elements.clear();
     }
-    int DrawingStorage::size() const {
+    int BlockDrawingStorage::size() const {
         if (__elements.size()) return (__elements.size()-1)*32+__elements.back()->size;
         else return 0;
     }
-    void DrawingStorage::push(const glm::mat4& state, const glm::vec4& info) {
+    void BlockDrawingStorage::push(const glm::vec3& postiion, const glm::mat4& state, const glm::vec4& info) {
         if (__elements.empty()) __elements.push_back(new Element());
         if (__elements.back()->size==32) __elements.push_back(new Element());
         __elements.back()->state[__elements.back()->size] = state;
         __elements.back()->info[__elements.back()->size] = info;
+        __elements.back()->position[__elements.back()->size] = postiion;
         __elements.back()->size++;
     }
-    void DrawingStorage::setType(const int& index, const BlockCatogary& type) {
+    void BlockDrawingStorage::setType(const int& index, const BlockCatogary& type) {
         if (index>=size()) return ;
         int i = index%32, n = index/32;
         __elements[n]->info[i].w = type;
     }
-    void DrawingStorage::setState(const int& index, const glm::mat4& state) {
+    void BlockDrawingStorage::setState(const int& index, const glm::mat4& state) {
         if (index>=size()) return ;
         int i = index%32, n = index/32;
         __elements[n]->state[i] = state;
     }
-    void DrawingStorage::remove(const int& index) {
+    void BlockDrawingStorage::remove(const int& index) {
         if (index>=size()) return ;
         int i = index%32, n = index/32;
         std::swap(__elements[n]->state[i], __elements.back()->state[__elements.back()->size-1]);
         std::swap(__elements[n]->info[i], __elements.back()->info[__elements.back()->size-1]);
+        std::swap(__elements[n]->position[i], __elements.back()->position[__elements.back()->size-1]);
         __elements.back()->size--;
         if (!__elements.back()->size) {
             delete __elements.back();
             __elements.pop_back();
         }
     }
-    void DrawingStorage::setLight(const int& index, const float& indensity) {
+    void BlockDrawingStorage::setLight(const int& index, const float& indensity) {
         if (index>=size()) return ;
         int i = index%32, n = index/32;
         __elements[n]->info[i].x = indensity;
     }
-    glm::mat4& DrawingStorage::getState(const int& index) {
+    glm::mat4& BlockDrawingStorage::getState(const int& index) {
         if (index>=size()) 
             throw std::runtime_error("Out of range!");
         int i = index%32, n = index/32;
         return __elements[n]->state[i];
     }
 
-    const glm::mat4& DrawingStorage::getState(const int& index) const {
+    const glm::mat4& BlockDrawingStorage::getState(const int& index) const {
         if (index>=size()) 
             throw std::runtime_error("Out of range!");
         int i = index%32, n = index/32;
         return __elements[n]->state[i];
     }
-    ItemType DrawingStorage::getType(const int& index) const {
+    ItemType BlockDrawingStorage::getType(const int& index) const {
         if (index>=size()) 
             throw std::runtime_error("Out of range!");
         int i = index%32, n = index/32;
         return ItemType(__elements[n]->info[i].w);
     }
-    glm::vec3 DrawingStorage::getPosition(const int& index) const {
+    glm::vec3 BlockDrawingStorage::getPosition(const int& index) const {
         if (index>=size()) 
             throw std::runtime_error("Out of range!");
         int i = index%32, n = index/32;
-        return __elements[n]->state[i][3];
+        return __elements[n]->position[i];
     }
 
-    DrawingStorage::Element::Element(): size(0) {}
+    BlockDrawingStorage::Element::Element(): size(0) {}
 
+    WaterDrawingStorage::Element::Element(): size(0) {}
+    WaterDrawingStorage::WaterDrawingStorage() {}
+    WaterDrawingStorage::~WaterDrawingStorage() {
+        for (auto i : __elements) delete i;
+        __elements.clear();
+    }
+    void WaterDrawingStorage::push(const glm::vec3& position, const glm::vec4& height, const float& lightness) {
+        if (__elements.empty() || __elements.back()->size == 32) __elements.push_back(new Element());
+        __elements.back()->position[__elements.back()->size] = glm::vec4(position, 1);
+        __elements.back()->info[__elements.back()->size] = glm::vec4(lightness, 0,0,0);
+        __elements.back()->height[__elements.back()->size] = height;
+        if (height.x > height.w && height.y > height.z) {
+            __elements.back()->info[__elements.back()->size].w = 1;
+        }
+        if (height.w > height.x && height.w > height.z) {
+            __elements.back()->info[__elements.back()->size].w = 1;
+        }
+        if (height.y>height.x && height.y> height.z) {
+            __elements.back()->info[__elements.back()->size].w = 1;
+        }
+        if (height.w > height.x && height.w>height.z) {
+            __elements.back()->info[__elements.back()->size].w = 1;
+        }
+        __elements.back()->size++;
+    }
     DrawingCenter* DrawingCenter::Default;
     DrawingCenter::DrawingCenter() {
         glGenVertexArrays(1, &__vertexArray);
@@ -131,6 +158,21 @@ namespace MyCraft {
         glBindBuffer(GL_UNIFORM_BUFFER, Default->__positionBuffer);
         glBindBufferBase(GL_UNIFORM_BUFFER, 1, Default->__positionBuffer);
     }
+
+    void DrawingCenter::BindWater(const MyBase::Texture& texture) {
+        getInstance();
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetWaterShader());
+        glBindVertexArray(Default->__vertexArray);
+        glBindBuffer(GL_ARRAY_BUFFER, MyBase3D::PointSet::getInstance().getRectangle3DIndices());
+        glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
+        glEnableVertexAttribArray(0);
+
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, MyBase3D::PointSet::getInstance().getRectangle3DSet());
+
+        texture.Bind();
+        glBindBuffer(GL_UNIFORM_BUFFER, Default->__positionBuffer);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 1, Default->__positionBuffer);
+    }
     void DrawingCenter::BindMargin() {
         getInstance();
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetMarginShader());
@@ -159,11 +201,18 @@ namespace MyCraft {
         }
         MyBase::ShapeManager::getInstance().removeColor(color);
     }
-    void DrawingCenter::DrawCubes(const DrawingStorage& storage) {
+    void DrawingCenter::DrawCubes(const BlockDrawingStorage& storage) {
         getInstance();
         for (int i = 0; i<storage.__elements.size(); i++) {
             glBufferSubData(GL_UNIFORM_BUFFER,0,(sizeof(glm::mat4)+sizeof(glm::vec4))*32, storage.__elements[i]);
             glDrawArrays(GL_TRIANGLES, 0, 36*storage.__elements[i]->size);
+        }
+    }
+    void DrawingCenter::DrawWater(const WaterDrawingStorage& storage) {
+        getInstance();
+        for (int i = 0; i<storage.__elements.size(); i++) {
+            glBufferSubData(GL_UNIFORM_BUFFER,0,(3*sizeof(glm::vec4))*32, storage.__elements[i]);
+            glDrawArrays(GL_TRIANGLES, 0, 6*storage.__elements[i]->size);
         }
     }
 };
