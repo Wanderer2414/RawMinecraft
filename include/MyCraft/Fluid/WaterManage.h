@@ -16,14 +16,10 @@ namespace MyCraft {
         void place(const glm::ivec3& position);
     protected:
     private:
-        MyBase::Texture     __waterTexture;
         ChunkManage&        __manage;
         MyBase::Clock       __flowClock;
-        WaterDrawingStorage __water;
         std::queue<glm::ivec3> __waterFlow;
         bool handle(GLFWwindow* window) override;
-        void glDrawTransparent() const override;
-        void __push(const glm::ivec3& position, const float& height);
     };
 }
 #endif

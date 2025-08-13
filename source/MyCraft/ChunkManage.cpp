@@ -14,6 +14,8 @@ namespace MyCraft {
                 for (int k = 0; k<world_side; k++) 
                     __chunkIndices[i][j][k] = i*world_side*world_side + j*world_side + k;
         __texture.load("assets/images/blockCatogary.png", false);
+        __waterStillTexture.load("assets/images/WaterFlow.png", false);
+        __animationClock.setDuration(100);
     }
     ChunkManage::~ChunkManage() {
         for (auto& chunk:__chunks) {
@@ -21,10 +23,21 @@ namespace MyCraft {
             delete chunk;
         }
     }
+    
     bool ChunkManage::contains(const glm::ivec3& position) const {
         glm::ivec3 offset(floor(position.x/16.f), floor(position.y/16.f), floor(position.z/16.f));
         offset -= getPosition()/16;
         return (offset.x >= 0 && offset.x < world_side && offset.y >= 0 && offset.y < world_side && offset.z >= 0 && offset.z < world_side  && __chunks[__chunkIndices[offset.x][offset.y][offset.z]]);
+    }
+    bool ChunkManage::handle(GLFWwindow* window) {
+        bool is_changed = MyBase3D::Container3D::handle(window);
+        if (__animationClock.get()) {
+            __animationClock.restart();
+            for (int i = 0; i<__chunks.size(); i++)
+                if (__chunks[i]) __chunks[i]->flowWater();
+            is_changed = true;
+        }
+        return is_changed;
     }
     const std::vector<glm::vec4>& ChunkManage::getChunks() const {
         return __chunkPositions;
@@ -234,6 +247,8 @@ namespace MyCraft {
         DrawingCenter::BindCube(__texture);
         glLineWidth(0);
         for (auto& chunk:__chunks) chunk->glDrawTransparent();
+        DrawingCenter::BindWater(__waterStillTexture);
+        for (auto& chunk:__chunks) chunk->drawWater();
     }
     Chunk& ChunkManage::getChunk(const glm::ivec3& position) {
         glm::ivec3 offset(floor(position.x/16.f), floor(position.y/16.f), floor(position.z/16.f));

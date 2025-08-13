@@ -97,7 +97,9 @@ namespace MyCraft {
         glm::ivec3 offset = position-__position;
         if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
             throw std::runtime_error("Out range of chunk");
-        return __waterHeight[offset.x][offset.y][offset.z]/10.f;
+        if (__waterHeight[offset.x][offset.y][offset.z])
+            return (__waterHeight[offset.x][offset.y][offset.z]-1)/10.f;
+        return 0;
     }
     const glm::ivec3& Chunk::getPosition() const {
         return __position;
@@ -127,6 +129,9 @@ namespace MyCraft {
             if (isTransparent(__blockTypes[pos.x][pos.y][pos.z]))
                 __transparent.setLight(index, indensity*5/255.f);
             else __normal.setLight(index, indensity*5/255.f);
+        }
+        else if (__waterHeight[pos.x][pos.y][pos.z]) {
+            __water.setLight(__tableIndexes[pos.x][pos.y][pos.z], indensity*5/255.f);
         }
     }
     void Chunk::save() {
@@ -201,11 +206,22 @@ namespace MyCraft {
             __normal.setType(__tableIndexes[offset.x][offset.y][offset.z], type);
         }
     }
-    void Chunk::setWater(const glm::ivec3& position, const float& height) {
+    void Chunk::flowWater() {
+        __water.increase();
+    }
+    void Chunk::setWater(const glm::ivec3& position, const glm::vec4& height) {
         glm::ivec3 offset = position - __position;
         if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
             throw std::runtime_error("Out range of chunk");
-        __waterHeight[offset.x][offset.y][offset.z] = height*10;
+        float h = 10.f*std::min(height.x, std::min(height.y, std::min(height.z, height.w)))+1;
+        if (glm::length(height) && __waterHeight[offset.x][offset.y][offset.z]<h) {
+            if (!__waterHeight[offset.x][offset.y][offset.z]) {
+                __tableIndexes[offset.x][offset.y][offset.z] = __water.size();
+                __water.push(position, height);
+            }
+            __waterHeight[offset.x][offset.y][offset.z] = h;
+            __water.setLight(__tableIndexes[offset.x][offset.y][offset.z] ,__container->getLightIndensity(position)*5.f/255);
+        }
     }
     void Chunk::setState(const glm::ivec3& pos, const glm::mat4& state) {
         if (state != glm::mat4(1)) {
@@ -309,6 +325,9 @@ namespace MyCraft {
     }
     void Chunk::glDrawTransparent() const {
         DrawingCenter::DrawCubes(__transparent);
+    }
+    void Chunk::drawWater() const {
+        DrawingCenter::DrawWater(__water);
     }
 
 

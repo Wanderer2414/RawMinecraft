@@ -15,7 +15,7 @@ namespace MyCraft {
         void setType(const glm::ivec3& pos, const BlockCatogary& type)          override;
         void setState(const glm::ivec3& pos, const glm::mat4& state)            override;
         void setLight(const glm::ivec3& position, const float& indensity)       override;
-        void setWater(const glm::ivec3& position, const float& height)          override;
+        void setWater(const glm::ivec3& position, const glm::vec4& height)      override;
         float getWaterHeight(const glm::ivec3& position) const                  override;
         glm::mat4 getState(const glm::ivec3&) const                             override;
         static Chunk* Load(ChunkLoader* loader, const std::string& src, const glm::ivec3& position);
@@ -24,9 +24,10 @@ namespace MyCraft {
         const BlockCatogary&                getType(const glm::ivec3& pos) const   override;
         const BlockCatogary&                getType(const glm::ivec3& pos)      override;
         std::bitset<16>::reference          getBit(const glm::ivec3& pos)       override;
-        void enableBit(const glm::ivec3& position)                                   override;
-        void disableBit(const glm::ivec3& position)                                  override;
-
+        void enableBit(const glm::ivec3& position)                              override;
+        void disableBit(const glm::ivec3& position)                             override;
+        void drawWater() const;
+        void flowWater();
         const glm::ivec3& getPosition() const                                   override;
     protected:
     private:
@@ -40,6 +41,7 @@ namespace MyCraft {
         std::bitset<16>             __bits[16][16];
         std::string                 __source;
         BlockDrawingStorage         __normal, __transparent;
+        WaterDrawingStorage         __water;
         std::unordered_set<int>     __lightSource;
         std::map<unsigned int, glm::mat4>   __specialState;
         ChunkLoader                 *__container;

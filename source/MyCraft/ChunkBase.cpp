@@ -103,8 +103,28 @@ namespace MyCraft {
             }
         }
     }
-    void ChunkLoader::setWater(const glm::ivec3& position, const float& height) {
-        getChunk(position).setWater(position, height);
+    void ChunkLoader::setWater(const glm::ivec3& position, const glm::vec4& height) {
+        if (getChunk(position).getType(position)==Air || getChunk(position).getType(position)==Water) {
+            glm::vec4 heights(height);
+            heights[0] = std::max(heights[0], getWaterHeight(position-glm::ivec3(1,0,0)));
+            heights[0] = std::max(heights[0], getWaterHeight(position-glm::ivec3(0,1,0)));
+            heights[0] = std::max(heights[0], getWaterHeight(position-glm::ivec3(1,1,0)));
+
+            heights[1] = std::max(heights[1], getWaterHeight(position+glm::ivec3(1,0,0)));
+            heights[1] = std::max(heights[1], getWaterHeight(position-glm::ivec3(0,1,0)));
+            heights[1] = std::max(heights[1], getWaterHeight(position+glm::ivec3(1,-1,0)));
+
+            heights[2] = std::max(heights[2], getWaterHeight(position+glm::ivec3(1,0,0)));
+            heights[2] = std::max(heights[2], getWaterHeight(position+glm::ivec3(0,1,0)));
+            heights[2] = std::max(heights[2], getWaterHeight(position+glm::ivec3(1,1,0)));
+
+            heights[3] = std::max(heights[3], getWaterHeight(position-glm::ivec3(1,0,0)));
+            heights[3] = std::max(heights[3], getWaterHeight(position+glm::ivec3(0,1,0)));
+            heights[3] = std::max(heights[3], getWaterHeight(position+glm::ivec3(-1,1,0)));
+            
+            getChunk(position).setWater(position, heights);
+
+        }
     }
     float ChunkLoader::getWaterHeight(const glm::ivec3& position) const {
         return getChunk(position).getWaterHeight(position);

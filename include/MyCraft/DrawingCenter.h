@@ -38,9 +38,14 @@ namespace MyCraft {
     public:
         WaterDrawingStorage();
         ~WaterDrawingStorage();
+        int size() const;
         WaterDrawingStorage(const WaterDrawingStorage&) = delete;
         WaterDrawingStorage& operator=(const WaterDrawingStorage&) const = delete; 
-        void push(const glm::vec3& position, const glm::vec4& height, const float& lightness);
+        glm::vec3 getPosition(const int& index) const;
+        void increase();
+        void push(const glm::vec3& position, const glm::vec4& height);
+        void setLight(const int& index, const float& indensity);
+        void remove(const int& index);
         friend class DrawingCenter;
     protected:
     private:
