@@ -306,6 +306,7 @@ namespace MyCraft {
 
         }
     }
+    void ChunkLoader::pushDynamicWater(const glm::ivec3& position) {}
     void ChunkLoader::enableBit(const glm::ivec3& position) {
         getChunk(position).enableBit(position);
     }

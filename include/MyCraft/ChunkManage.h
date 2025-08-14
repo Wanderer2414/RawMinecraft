@@ -15,7 +15,7 @@ namespace MyCraft {
         const std::vector<glm::vec4>& getChunks() const;
         void playerAt(const glm::ivec3& position);
         Chunk&          getChunk(const glm::ivec3&)         override;
-        void            pushDynamicWater(const glm::ivec3& position);
+        void            pushDynamicWater(const glm::ivec3& position) override;
         const Chunk&    getChunk(const glm::ivec3&) const   override;
         const glm::ivec3& getPosition() const override;
     protected:
@@ -38,6 +38,7 @@ namespace MyCraft {
         bool handle(GLFWwindow* window) override;
         void glDraw() const override;
         void glDrawTransparent() const override;
+        void __loadWater(Chunk* chunk);
 
     };
 }

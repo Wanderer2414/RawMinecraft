@@ -31,6 +31,7 @@ namespace MyCraft {
         void disableBit(const glm::ivec3& position)                             override;
         void drawWater() const;
         void flowWater();
+        void loadWater();
         const glm::ivec3& getPosition() const                                   override;
     protected:
     private:
@@ -50,8 +51,6 @@ namespace MyCraft {
         ChunkLoader                 *__container;
         void __add_block(const glm::ivec3& position);
         void __remove_block(const glm::ivec3& position);
-        // void __add_water(const glm::ivec3& position);
-        // void __remove_water(const glm::ivec3& position);
     };
 
 

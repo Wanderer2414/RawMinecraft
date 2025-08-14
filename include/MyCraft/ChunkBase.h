@@ -49,11 +49,13 @@ namespace MyCraft {
         void setType(const glm::ivec3&, const BlockCatogary& type) override;
         void setState(const glm::ivec3& pos, const glm::mat4& state) override;
         bool pourWater(const glm::ivec3& position, const glm::vec4& height)  override;
+        
         float getWaterHeight(const glm::ivec3& position) const          override;
         glm::mat4 getState(const glm::ivec3&) const                 override;
         std::bitset<16>::reference  getBit(const glm::ivec3&)     override;
         void                    enableBit(const glm::ivec3&)       override;
         void                    disableBit(const glm::ivec3&)      override;
+        virtual void            pushDynamicWater(const glm::ivec3& position);
         void setLight(const glm::ivec3& position, const float& indensity) override;
         void removeLight(const glm::ivec3& position);
         virtual Chunk&          getChunk(const glm::ivec3&)         = 0;

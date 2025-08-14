@@ -80,6 +80,14 @@ namespace MyCraft {
                 }
             }
         }
+
+        for (int i = 1; i<world_side-1; i++) {
+            for (int j = 1; j<world_side-1; j++) {
+                for (int k = 1; k<world_side-1; k++) {
+                    __chunks[__chunkIndices[i][j][k]]->loadWater();
+                }
+            }
+        }
     }
     void ChunkManage::__movePositiveX() {
         __position.x+=16;
@@ -103,6 +111,13 @@ namespace MyCraft {
                 glm::ivec3  origin =  __position/16 + glm::ivec3(world_side-1, j,k);
                 __chunks[index] = Chunk::Load(this, __sourceFolder, origin);;
                 __chunkPositions[index] = glm::ivec4(16*origin, 16);
+            }
+        }
+        for (int j = 1; j<world_side-1; j++) {
+            for (int k = 1; k<world_side-1; k++) {
+                int index = __chunkIndices[world_side-2][j][k];
+                glm::ivec3  origin =  __position/16 + glm::ivec3(world_side-1, j,k);
+                __chunks[index]->loadWater();
             }
         }
     }
@@ -130,6 +145,12 @@ namespace MyCraft {
                 __chunkPositions[index] = glm::ivec4(16*origin, 16);
             }
         }
+        for (int j = 1; j<world_side-1; j++) {
+            for (int k = 1; k<world_side-1; k++) {
+                int index = __chunkIndices[1][j][k];
+                __chunks[index]->loadWater();
+            }
+        }
     }
     void ChunkManage::__movePositiveY() {
         __position.y+=16;
@@ -153,6 +174,12 @@ namespace MyCraft {
                 glm::ivec3  origin =  __position/16 + glm::ivec3(i, world_side-1,k);
                 __chunks[index] = Chunk::Load(this, __sourceFolder, origin);;
                 __chunkPositions[index] = glm::ivec4(16*origin, 16);
+            }
+        }
+        for (int i = 1; i<world_side-1; i++) {
+            for (int k = 1; k<world_side-1; k++) {
+                int index = __chunkIndices[i][world_side-2][k];
+                __chunks[index]->loadWater();
             }
         }
     }
@@ -181,6 +208,12 @@ namespace MyCraft {
                 __chunkPositions[index] = glm::ivec4(16*origin, 16);
             }
         }
+        for (int i = 1; i<world_side-1; i++) {
+            for (int k = 1; k<world_side-1; k++) {
+                int index = __chunkIndices[i][1][k];
+                __chunks[index]->loadWater();
+            }
+        }
     }
     void ChunkManage::__movePositiveZ() {
         __position.z+=16;
@@ -207,6 +240,12 @@ namespace MyCraft {
                 __chunkPositions[index] = glm::ivec4(16*origin, 16);
             }
         }
+        for (int i = 1; i<world_side-1; i++) {
+            for (int j = 1; j<world_side-1; j++) {
+                int index = __chunkIndices[i][j][world_side-2];
+                __chunks[index]->loadWater();
+            }
+        }
     }
     void ChunkManage::__moveNegativeZ() {
         __position.z-=16;
@@ -230,6 +269,12 @@ namespace MyCraft {
                 glm::ivec3  origin =  __position/16 + glm::ivec3(i, j,0);
                 __chunks[index] = Chunk::Load(this, __sourceFolder, origin);;
                 __chunkPositions[index] = glm::ivec4(16*origin, 16);
+            }
+        }
+        for (int i = 1; i<world_side-1; i++) {
+            for (int j = 1; j<world_side-1; j++) {
+                int index = __chunkIndices[i][j][1];
+                __chunks[index]->loadWater();
             }
         }
     }
@@ -268,5 +313,4 @@ namespace MyCraft {
     const glm::ivec3& ChunkManage::getPosition() const {
         return __position;
     };
-
 }

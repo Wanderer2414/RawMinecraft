@@ -9,6 +9,9 @@ namespace MyCraft {
 
     Chunk::Chunk(): __isChange(false), __numBlock(0), __numBit(0), __enableQueue(true), __container(0) {
         memset(__waterHeight, 0, 4096);
+        memset(__blockTypes, 0, 4096);
+        for (int i = 0; i<16; i++) for (int j = 0; j<16; j++) for (int k = 0; k<16; k++)
+            __tableIndexes[i][j][k] = -1;
     }
     Chunk::~Chunk() {
         for (int code: __lightSource) {
@@ -34,7 +37,7 @@ namespace MyCraft {
                 file.read((char*)&buffer[0], 128*sizeof(int));
             }
             file.read((char*)&new_chunk->__numBlock, sizeof(int));
-            file.read((char*)&new_chunk->__blockTypes[0][0][0], sizeof(BlockCatogary)*4096);
+            if (new_chunk->__numBlock) file.read((char*)&new_chunk->__blockTypes[0][0][0], sizeof(BlockCatogary)*4096);
             
             unsigned int numState = 0;
             file.read((char*)&numState, sizeof(int));
@@ -60,6 +63,11 @@ namespace MyCraft {
                 loader->setLight(position, I);
             }
             delete[] lightsrc;
+            size = 0;
+            file.read((char*)&size, sizeof(int));
+            if (size) {
+                file.read((char*)&new_chunk->__waterHeight, 4096);
+            }
             file.close();
             if (new_chunk->__numBit) {
                 for (int i = 0; i<16; i++)
@@ -81,7 +89,6 @@ namespace MyCraft {
         else {
             new_chunk->__position = position*16;
             new_chunk->__container = loader;
-            memset(new_chunk->__blockTypes, Air, sizeof(BlockCatogary)*4096);
             if (src == "bin/test/" && position.z < 0) {
                 new_chunk->__numBlock = 4096;
                 memset(new_chunk->__blockTypes, Grass, 4096);
@@ -139,14 +146,13 @@ namespace MyCraft {
                 __transparent.setLight(index, indensity*5/255.f);
             else __normal.setLight(index, indensity*5/255.f);
         }
-        else if (isInWater(position)) {
-            static std::unordered_set<int> set;
+        else if (isInWater(position) && __tableIndexes[pos.x][pos.y][pos.z]>=0 && __tableIndexes[pos.x][pos.y][pos.z]<__water.size()) {
             __water.setLight(__tableIndexes[pos.x][pos.y][pos.z], indensity*5/255.f);
         }
     }
     void Chunk::save() {
         if (!__isChange) return ;
-        if (__numBlock) {
+        if (__numBlock || __water.size()) {
             std::ofstream file(__source, std::ios::binary | std::ios::out);
             file.write((char*)&__position, sizeof(glm::vec3));
             file.write((char*)&__numBit, sizeof(int));
@@ -160,7 +166,7 @@ namespace MyCraft {
                 file.write((char*)&buffer[0], sizeof(int)*128);
             }
             file.write((char*)&__numBlock, sizeof(int));
-            file.write((char*)&__blockTypes[0][0][0], sizeof(BlockCatogary)*4096);
+            if (__numBlock) file.write((char*)&__blockTypes[0][0][0], sizeof(BlockCatogary)*4096);
             unsigned int size = __specialState.size();
             file.write((char*)&size, sizeof(int));
             for (auto& element: __specialState) {
@@ -170,6 +176,9 @@ namespace MyCraft {
             size = __lightSource.size();
             file.write((char*)&size, sizeof(int));
             for (auto& i:__lightSource) file.write((char*)&i, sizeof(int));
+            size = __water.size();
+            file.write((char*)&size, sizeof(int));
+            if (size) file.write((char*)&__waterHeight, 4096);
             file.close();
         }
         else MyBase::DeleteFile(__source);
@@ -227,7 +236,7 @@ namespace MyCraft {
         float h = 10.f*std::min(height.x, std::min(height.y, std::min(height.z, height.w)))+1;
         if (glm::length(height)) {
             int index = __tableIndexes[offset.x][offset.y][offset.z];
-            if (!__waterHeight[offset.x][offset.y][offset.z]) {
+            if (!__waterHeight[offset.x][offset.y][offset.z] || index<0 || index>=__water.size()) {
                 index = __tableIndexes[offset.x][offset.y][offset.z] = __water.size();
                 __water.push(position, height);
                 is_changed = true;
@@ -238,6 +247,7 @@ namespace MyCraft {
             }
             __waterHeight[offset.x][offset.y][offset.z] = h;
         }
+        __isChange = __isChange || is_changed;
         return is_changed;
     }
     void Chunk::enableWaterPlane(const glm::ivec3& position, const unsigned char& plane) {
@@ -255,7 +265,7 @@ namespace MyCraft {
             throw std::runtime_error("Out range of chunk");
         if (__waterHeight[offset.x][offset.y][offset.z]) {
             int index = __tableIndexes[offset.x][offset.y][offset.z];
-            __water.removeSide(index, plane);
+            if (index>=0 && index<__water.size()) __water.removeSide(index, plane);
         }
     }
     void Chunk::setState(const glm::ivec3& pos, const glm::mat4& state) {
@@ -354,6 +364,17 @@ namespace MyCraft {
             }
         }
 
+    }
+    void Chunk::loadWater() {
+        for (int i = 0; i<16; i++) {
+            for (int j = 0; j<16; j++) {
+                for (int k = 0; k<16; k++) {
+                    glm::ivec3 position = __position + glm::ivec3(i,j,k);
+                    if (__waterHeight[i][j][k]) 
+                        __container->pourWater(position, glm::vec4(getWaterHeight(position)));
+                }
+            }
+        }
     }
     void Chunk::glDraw() const {
         DrawingCenter::DrawCubes(__normal);
