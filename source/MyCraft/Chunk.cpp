@@ -68,6 +68,12 @@ namespace MyCraft {
             if (size) {
                 file.read((char*)&new_chunk->__waterHeight, 4096);
             }
+            file.read((char*)&size, sizeof(int));
+            for (int i = 0; i<size; i++) {
+                glm::ivec4 position;
+                file.read((char*)&position, sizeof(glm::vec4));
+                new_chunk->__waterFlowing.push(position);
+            }
             file.close();
             if (new_chunk->__numBit) {
                 for (int i = 0; i<16; i++)
@@ -179,11 +185,26 @@ namespace MyCraft {
             size = __water.size();
             file.write((char*)&size, sizeof(int));
             if (size) file.write((char*)&__waterHeight, 4096);
+            size = __waterFlowing.size();
+            file.write((char*)&size, sizeof(int));
+            while (__waterFlowing.size()) {
+                glm::ivec4 position = __waterFlowing.front();
+                file.write((char*)&position, sizeof(glm::vec4));
+                __waterFlowing.pop();
+            }
             file.close();
         }
         else MyBase::DeleteFile(__source);
         __isChange = false;
     }
+
+    void Chunk::pushDynamicWater(const glm::ivec4& position) {
+        __waterFlowing.push(position);
+    }
+    void Chunk::popDynamicWater(const glm::ivec4& position) {
+        __waterFlowing.pop();
+    }
+
     const BlockCatogary& Chunk::getType(const glm::ivec3& pos) const {
         glm::ivec3 offset = pos - __position;
         return __blockTypes[offset.x][offset.y][offset.z];
@@ -374,6 +395,13 @@ namespace MyCraft {
                         __container->pourWater(position, glm::vec4(getWaterHeight(position)));
                 }
             }
+        }
+        int size = __waterFlowing.size();
+        for (int i = 0; i<size; i++) {
+            glm::ivec4 position = __waterFlowing.front();
+            __waterFlowing.pop();
+            __container->placeDynamicWater(position);
+            __waterFlowing.push(position);
         }
     }
     void Chunk::glDraw() const {

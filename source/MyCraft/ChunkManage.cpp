@@ -278,14 +278,14 @@ namespace MyCraft {
             }
         }
     }
+    void ChunkManage::placeDynamicWater(const glm::ivec4& position) {
+        __waterManage.place(position);
+    }
     void ChunkManage::glDraw() const {
         MyBase3D::Container3D::glDraw();
         DrawingCenter::BindCube(__texture);
         glLineWidth(0);
         for (auto& chunk:__chunks) chunk->glDraw();
-    }
-    void ChunkManage::pushDynamicWater(const glm::ivec3& position) {
-        __waterManage.place(position);
     }
     void ChunkManage::glDrawTransparent() const {
         MyBase3D::Container3D::glDrawTransparent();

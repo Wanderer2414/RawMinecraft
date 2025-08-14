@@ -82,10 +82,11 @@ namespace MyCraft {
     }
 
     void WorldRender::place(const BlockCatogary& type) {
-        if (type == Water) __chunkLoader.pushDynamicWater(__placePosition);
+        if (type == Water) __chunkLoader.placeDynamicWater(glm::vec4(__placePosition,10));
         else if (type && isValid(type, __hoverPlane)) {
             __chunkLoader.setType(__placePosition, type);
-            if (isMultiState(type)) __chunkLoader.setState(__placePosition, getState(type, __hoverPlane));
+            if (isMultiState(type)) 
+                __chunkLoader.setState(__placePosition, getState(type, __hoverPlane));
         }
     }
     void WorldRender::unplace() {

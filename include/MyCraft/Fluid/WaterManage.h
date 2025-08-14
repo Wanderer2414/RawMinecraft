@@ -13,12 +13,12 @@ namespace MyCraft {
         ~WaterManage();
         WaterManage(const WaterManage&) = delete;
         WaterManage& operator=(const WaterManage&) const = delete; 
-        void place(const glm::ivec3& position);
+        void place(const glm::ivec4& position);
     protected:
     private:
         ChunkManage&        __manage;
         MyBase::Clock       __flowClock;
-        std::queue<glm::ivec3> __waterFlow;
+        std::queue<glm::ivec4> __waterFlow;
         bool handle(GLFWwindow* window) override;
     };
 }

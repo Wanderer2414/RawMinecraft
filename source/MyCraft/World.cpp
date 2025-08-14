@@ -86,7 +86,7 @@ namespace MyCraft {
     void CrackBlockCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
         AttackMessage* package = (AttackMessage*)message;
         if (__world.__worldRender.isHover()) {
-            BlockCatogary type = __world.__worldRender.getHoverType();
+            BlockCatogary type =__world.__worldRender.getHoverType();
             __world.__crackingManage.setCrackBlock(__world.__worldRender.getHoverBlock(), type);
             float percent = getPowerness(package->rightItem)/getHardness(type);
             if (!isAdaptive(package->rightItem, type)) percent /= 1.5;

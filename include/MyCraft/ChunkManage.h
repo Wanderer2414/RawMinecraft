@@ -1,5 +1,6 @@
 #ifndef CHUNK_MANAGE_H
 #define CHUNK_MANAGE_H
+#include "Block.h"
 #include "ChunkBase.h"
 #include "Clock.h"
 #include "Container3D.h"
@@ -15,8 +16,8 @@ namespace MyCraft {
         const std::vector<glm::vec4>& getChunks() const;
         void playerAt(const glm::ivec3& position);
         Chunk&          getChunk(const glm::ivec3&)         override;
-        void            pushDynamicWater(const glm::ivec3& position) override;
         const Chunk&    getChunk(const glm::ivec3&) const   override;
+        void placeDynamicWater(const glm::ivec4& position) override;
         const glm::ivec3& getPosition() const override;
     protected:
     private:

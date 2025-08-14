@@ -18,8 +18,10 @@ namespace MyCraft {
         virtual void setType(const glm::ivec3&, const BlockCatogary& type)      = 0;
         virtual void setState(const glm::ivec3& position, const glm::mat4& state) = 0;
         virtual void setLight(const glm::ivec3& position, const float& indensity) = 0;
-        virtual bool pourWater(const glm::ivec3& position, const glm::vec4& height)  = 0;
-        virtual float getWaterHeight(const glm::ivec3& position) const          = 0;
+        virtual bool pourWater(const glm::ivec3& position, const glm::vec4& height) = 0;
+        virtual float getWaterHeight(const glm::ivec3& position) const              = 0;
+        virtual void pushDynamicWater(const glm::ivec4& position)                   = 0;
+        virtual void popDynamicWater(const glm::ivec4& position)                    = 0;
         virtual glm::mat4 getState(const glm::ivec3&) const = 0;
         const BlockCatogary&            getLocalType(const glm::ivec3&) const   ;
         const BlockCatogary&            getLocalType(const glm::ivec3&)         ;
@@ -46,7 +48,7 @@ namespace MyCraft {
         virtual bool contains(const glm::ivec3& position) const = 0;
         const BlockCatogary&    getType(const glm::ivec3&) const   override;
         const BlockCatogary&    getType(const glm::ivec3&)         override;
-        void setType(const glm::ivec3&, const BlockCatogary& type) override;
+        virtual void setType(const glm::ivec3&, const BlockCatogary& type) override;
         void setState(const glm::ivec3& pos, const glm::mat4& state) override;
         bool pourWater(const glm::ivec3& position, const glm::vec4& height)  override;
         
@@ -55,9 +57,12 @@ namespace MyCraft {
         std::bitset<16>::reference  getBit(const glm::ivec3&)     override;
         void                    enableBit(const glm::ivec3&)       override;
         void                    disableBit(const glm::ivec3&)      override;
-        virtual void            pushDynamicWater(const glm::ivec3& position);
+        void                    pushDynamicWater(const glm::ivec4& position) override;
+        void                    popDynamicWater(const glm::ivec4& position) override;
+        
         void setLight(const glm::ivec3& position, const float& indensity) override;
         void removeLight(const glm::ivec3& position);
+        virtual void            placeDynamicWater(const glm::ivec4& position);
         virtual Chunk&          getChunk(const glm::ivec3&)         = 0;
         virtual const Chunk&    getChunk(const glm::ivec3&) const   = 0;
         float getLightIndensity(const glm::ivec3& position) const;

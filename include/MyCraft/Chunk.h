@@ -32,6 +32,8 @@ namespace MyCraft {
         void drawWater() const;
         void flowWater();
         void loadWater();
+        void pushDynamicWater(const glm::ivec4& position)                       override;
+        void popDynamicWater(const glm::ivec4& position)                        override;
         const glm::ivec3& getPosition() const                                   override;
     protected:
     private:
@@ -48,6 +50,7 @@ namespace MyCraft {
         WaterDrawingStorage         __water;
         std::unordered_set<int>     __lightSource;
         std::map<unsigned int, glm::mat4>   __specialState;
+        std::queue<glm::ivec4>      __waterFlowing;
         ChunkLoader                 *__container;
         void __add_block(const glm::ivec3& position);
         void __remove_block(const glm::ivec3& position);

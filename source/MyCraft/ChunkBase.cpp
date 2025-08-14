@@ -47,6 +47,7 @@ namespace MyCraft {
     void ChunkLoader::setState(const glm::ivec3& pos, const glm::mat4& state) {
         getChunk(pos).setState(pos, state);
     }
+    void ChunkLoader::placeDynamicWater(const glm::ivec4& position) {}
     void ChunkLoader::setType(const glm::ivec3& pos, const BlockCatogary& type) {
         if (!type) {
             if (getType(pos)) {
@@ -306,7 +307,12 @@ namespace MyCraft {
 
         }
     }
-    void ChunkLoader::pushDynamicWater(const glm::ivec3& position) {}
+    void ChunkLoader::pushDynamicWater(const glm::ivec4& position) {
+        getChunk(position).pushDynamicWater(position);
+    }
+    void ChunkLoader::popDynamicWater(const glm::ivec4& position) {
+        getChunk(position).popDynamicWater(position);
+    }
     void ChunkLoader::enableBit(const glm::ivec3& position) {
         getChunk(position).enableBit(position);
     }
