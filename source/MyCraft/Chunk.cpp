@@ -3,6 +3,7 @@
 #include "DrawingCenter.h"
 #include "General.h"
 #include "MapCreator.h"
+#include <unordered_set>
 
 namespace MyCraft {
 
@@ -71,7 +72,7 @@ namespace MyCraft {
                             int k = std::log2(data);
                             glm::ivec3 position(new_chunk->__position);
                             position.x += i; position.y += j; position.z += k;
-                            new_chunk->__add(position);
+                            new_chunk->__add_block(position);
                             data -= 1<<k;
                         }
                     }
@@ -93,12 +94,20 @@ namespace MyCraft {
         }
         return new_chunk;
     }
+    bool Chunk::isInWater(const glm::ivec3& position) const {
+        glm::ivec3 offset = position-__position;
+        if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
+            throw std::runtime_error("Out range of chunk");
+        return __waterHeight[offset.x][offset.y][offset.z];
+    }
     float Chunk::getWaterHeight(const glm::ivec3& position) const {
         glm::ivec3 offset = position-__position;
         if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
             throw std::runtime_error("Out range of chunk");
-        if (__waterHeight[offset.x][offset.y][offset.z])
+        
+        if (__waterHeight[offset.x][offset.y][offset.z]) {
             return (__waterHeight[offset.x][offset.y][offset.z]-1)/10.f;
+        }
         return 0;
     }
     const glm::ivec3& Chunk::getPosition() const {
@@ -116,7 +125,7 @@ namespace MyCraft {
             for (int y = 0; y<16; y++) {
                 for (int z = 0; z<16; z++) {
                     if (__bits[x][y][z]) {
-                        __add(glm::ivec3(x,y,z) + __position);
+                        __add_block(glm::ivec3(x,y,z) + __position);
                     }
                 }
             }
@@ -130,7 +139,8 @@ namespace MyCraft {
                 __transparent.setLight(index, indensity*5/255.f);
             else __normal.setLight(index, indensity*5/255.f);
         }
-        else if (__waterHeight[pos.x][pos.y][pos.z]) {
+        else if (isInWater(position)) {
+            static std::unordered_set<int> set;
             __water.setLight(__tableIndexes[pos.x][pos.y][pos.z], indensity*5/255.f);
         }
     }
@@ -209,18 +219,43 @@ namespace MyCraft {
     void Chunk::flowWater() {
         __water.increase();
     }
-    void Chunk::setWater(const glm::ivec3& position, const glm::vec4& height) {
+    bool Chunk::pourWater(const glm::ivec3& position, const glm::vec4& height) {
         glm::ivec3 offset = position - __position;
         if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
             throw std::runtime_error("Out range of chunk");
+        bool is_changed = false;
         float h = 10.f*std::min(height.x, std::min(height.y, std::min(height.z, height.w)))+1;
-        if (glm::length(height) && __waterHeight[offset.x][offset.y][offset.z]<h) {
+        if (glm::length(height)) {
+            int index = __tableIndexes[offset.x][offset.y][offset.z];
             if (!__waterHeight[offset.x][offset.y][offset.z]) {
-                __tableIndexes[offset.x][offset.y][offset.z] = __water.size();
+                index = __tableIndexes[offset.x][offset.y][offset.z] = __water.size();
                 __water.push(position, height);
+                is_changed = true;
+            }
+            else if (glm::length(__water.getHeights(index)-height)>0.1) {
+                __water.setHeight(__tableIndexes[offset.x][offset.y][offset.z], height);
+                is_changed = true;
             }
             __waterHeight[offset.x][offset.y][offset.z] = h;
-            __water.setLight(__tableIndexes[offset.x][offset.y][offset.z] ,__container->getLightIndensity(position)*5.f/255);
+        }
+        return is_changed;
+    }
+    void Chunk::enableWaterPlane(const glm::ivec3& position, const unsigned char& plane) {
+        glm::ivec3 offset = position - __position;
+        if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
+            throw std::runtime_error("Out range of chunk");
+        if (__waterHeight[offset.x][offset.y][offset.z]) {
+            int index = __tableIndexes[offset.x][offset.y][offset.z];
+            __water.pushSide(index, plane, __container->getLightIndensity(position)*5.f/255);
+        }
+    }
+    void Chunk::disableWaterPlane(const glm::ivec3& position, const unsigned char& plane) {
+        glm::ivec3 offset = position - __position;
+        if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
+            throw std::runtime_error("Out range of chunk");
+        if (__waterHeight[offset.x][offset.y][offset.z]) {
+            int index = __tableIndexes[offset.x][offset.y][offset.z];
+            __water.removeSide(index, plane);
         }
     }
     void Chunk::setState(const glm::ivec3& pos, const glm::mat4& state) {
@@ -256,7 +291,7 @@ namespace MyCraft {
             __isChange = true;
             __numBit++;
             __bits[offset.x][offset.y][offset.z] = 1;
-            if (__enableQueue) __add(pos);
+            if (__enableQueue) __add_block(pos);
         };
     }
     void Chunk::disableBit(const glm::ivec3& pos) {
@@ -265,13 +300,13 @@ namespace MyCraft {
             throw std::runtime_error("Out range of chunk!");
         if (__bits[offset.x][offset.y][offset.z]) {
             __isChange = true;
-            if (__enableQueue) __remove(pos);
+            if (__enableQueue) __remove_block(pos);
             __numBit--;
             __bits[offset.x][offset.y][offset.z] = 0;
         }
     }
 
-    void Chunk::__add(const glm::ivec3& position) {
+    void Chunk::__add_block(const glm::ivec3& position) {
         glm::ivec3 offset = position - __position;
         if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
             throw std::runtime_error("Out range of chunk!");
@@ -295,7 +330,7 @@ namespace MyCraft {
             }
         }
     }
-    void Chunk::__remove(const glm::ivec3& position) {
+    void Chunk::__remove_block(const glm::ivec3& position) {
         glm::ivec3 offset = position - __position;
         if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
             throw std::runtime_error("Out range of chunk!");

@@ -4,6 +4,7 @@
 #include "DrawingCenter.h"
 #include "Message.h"
 #include "PlayerModelController.h"
+#include "glm/geometric.hpp"
 
 namespace MyCraft {
     WorldRender::WorldRender(const std::string& src): __chunkLoader(src), __isHover(false) {
@@ -53,6 +54,32 @@ namespace MyCraft {
     glm::ivec3 WorldRender::getPlaceBlock() const {
         return __placePosition;
     }
+    glm::vec3 WorldRender::getWaterDirection(const glm::vec3& pos) const {
+        glm::ivec3 position(floor(pos.x), floor(pos.y), floor(pos.z));
+        glm::vec3 dir(0);
+        float cur = __chunkLoader.getWaterHeight(position);
+        float left = __chunkLoader.getWaterHeight(position-glm::ivec3(1,0,0));
+        float right = __chunkLoader.getWaterHeight(position+glm::ivec3(1,0,0));
+        float dx = 0;
+        if (left && right) dx = left-right;
+        else if (left) dx = left-cur;
+        else if (right) dx = cur - right;
+        float front = __chunkLoader.getWaterHeight(position+glm::ivec3(0,1,0));
+        float back = __chunkLoader.getWaterHeight(position-glm::ivec3(0,1,0));
+        float dy =  0;
+        if (front && back) dy = back - front;
+        else if (front) dy = cur - front;
+        else if (back) dy = back - cur;
+        dir += glm::vec3(dx/5.f, dy/5.f, -abs(dx+dy)/5.f);
+        return dir;
+    }
+    float WorldRender::getWaterHeight(const glm::vec3& position) const {
+        return __chunkLoader.getWaterHeight(position);
+    }
+    bool WorldRender::isInWater(const glm::vec3& pos) const {
+        glm::ivec3 position(floor(pos.x), floor(pos.y), floor(pos.z));
+        return __chunkLoader.isInWater(position);
+    }
 
     void WorldRender::place(const BlockCatogary& type) {
         if (type == Water) __chunkLoader.pushDynamicWater(__placePosition);
@@ -64,7 +91,6 @@ namespace MyCraft {
     void WorldRender::unplace() {
         __chunkLoader.setType(__hoverBlock, Air);
     }
-    
     void WorldRender::setHoverBlock(const glm::vec3& pos, const glm::vec3& place) {
         __hoverBlock = pos;
         __placePosition = place;
@@ -124,6 +150,11 @@ namespace MyCraft {
         bool below_result = true, above_result = true;
         auto shape = request->rectangleBox;
         glm::vec3 dir = glm::vec3(request->direction, 0);
+        glm::vec3 center = request->rectangleBox[0] + request->rectangleBox[1]/2.f + request->rectangleBox[2]/2.f;
+        if (__world.isInWater(center)) {
+            dir += __world.getWaterDirection(center);
+            dir.z = 0;
+        }
         //Below check
         glm::vec3 npos = shape[0] + dir, epos = npos + shape[1];
         glm::vec3 delta = (epos-npos)/10.f;
@@ -198,6 +229,7 @@ namespace MyCraft {
                 }
             }
         }
+
         if (below_result) {
             shape[3] = shape[0] + shape[2];
             shape[3][2]--;
@@ -228,11 +260,16 @@ namespace MyCraft {
         RequestFallMessage* request = (RequestFallMessage*)message;
         float z = request->zVelocity;
         auto shape = request->rectangleBox;
+        glm::vec3 center = shape[0] + shape[1]/2.f + shape[2]/2.f;
+        float minHeight = 0;
+        if (__world.isInWater(center)) {
+            z += __world.getWaterDirection(center).z;
+        }
         if (z<=0) {
-            z -= 0.06;
+            if (__world.isInWater(center)) z -= 0.01;
+            else z -= 0.06;
             shape[0].z += z;
             bool isFall = true;
-            float minHeight = 0;
             shape[3] = shape[0] + shape[2];
             if (__world.isBusy(shape[3])) {
                 isFall = false; 
@@ -254,8 +291,10 @@ namespace MyCraft {
                 minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[0]))[2].z);
             }
             if (isFall) mine.send(source, new FallMessage(std::max(z, -0.8f)));
-            else {   
-                float delta = shape[0][2] - z - ceil(shape[0][2])+1-minHeight;
+            else {
+                shape[0].z -= z;   
+                float delta = shape[0].z - (floor(shape[0].z-1)+minHeight);
+
                 if (delta) {
                     mine.send(source, new FallMessage(-delta));
                     mine.send(source, new StopFallMessage());
@@ -276,7 +315,9 @@ namespace MyCraft {
                 !__world.isBusy(shape[1]) && 
                 !__world.isBusy(shape[2]) && 
                 !__world.isBusy(shape[3])) {
-                    mine.send(source, new FallMessage(z-0.035));
+                    if (__world.isInWater(center)) z -= 0.05;
+                    else z -= 0.035;
+                    mine.send(source, new FallMessage(z));
             }
             else {
                 float delta = floor(shape[0][2]) - shape[0][2];

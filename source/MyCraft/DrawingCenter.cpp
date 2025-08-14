@@ -6,6 +6,7 @@
 #include "ShaderStorage.h"
 #include "ShapeManager.h"
 #include "Texture.h"
+#include <stdexcept>
 
 namespace MyCraft {
 
@@ -13,7 +14,6 @@ namespace MyCraft {
     BlockDrawingStorage::~BlockDrawingStorage() {
         clear();
     }
-
     void BlockDrawingStorage::clear() {
         for (int i = 0; i<__elements.size(); i++) delete __elements[i];
         __elements.clear();
@@ -88,64 +88,199 @@ namespace MyCraft {
     WaterDrawingStorage::Element::Element(): size(0) {}
     WaterDrawingStorage::WaterDrawingStorage() {}
     WaterDrawingStorage::~WaterDrawingStorage() {
-        for (auto i : __elements) delete i;
-        __elements.clear();
+        for (auto i : __side) delete i;
+        __side.clear();
+        for (auto i:__sideIndices) delete i;
+        __sideIndices.clear();
+    }
+
+    WaterDrawingStorage::ListSide::ListSide(): size(0) {
+        for (int i = 0; i<32; i++) 
+            side[i][0] = side[i][1] = side[i][2] = side[i][3] = side[i][4] = side[i][5] = -1;
     }
     int WaterDrawingStorage::size() const {
-        if (__elements.size()) return (__elements.size()-1)*32 + __elements.back()->size;
+        if (__sideIndices.size()) return (__sideIndices.size()-1)*32 + __sideIndices.back()->size;
+        return 0;
+    }
+    int WaterDrawingStorage::numberOfSide() const {
+        if (__side.size()) return (__side.size()-1)*32 + __side.back()->size;
         return 0;
     }
     void WaterDrawingStorage::push(const glm::vec3& position, const glm::vec4& height) {
-        if (__elements.empty() || __elements.back()->size == 32) __elements.push_back(new Element());
-        __elements.back()->position[__elements.back()->size] = glm::vec4(position, 1);
-        __elements.back()->info[__elements.back()->size] = glm::vec4(0);
-        __elements.back()->height[__elements.back()->size] = height;
-        if (height.x > height.w && height.y > height.z) {
-            __elements.back()->info[__elements.back()->size].w = 1;
+        if (__sideIndices.empty() || __sideIndices.back()->size == 32)
+            __sideIndices.push_back(new ListSide());
+        __sideIndices.back()->heights[__sideIndices.back()->size] = height;
+        __sideIndices.back()->position[__sideIndices.back()->size] = position;
+        __sideIndices.back()->size++;
+    }
+    glm::vec4 WaterDrawingStorage::getHeights(const int& index) const {
+        if (index>=size()) 
+            throw std::runtime_error("Out of range!");
+        int i = index%32, n = index/32;
+        return __sideIndices[n]->heights[i];
+    }
+    void WaterDrawingStorage::setHeight(const int& index, const glm::vec4& height) {
+        if (index>=size()) 
+            throw std::runtime_error("Out of range!");
+        int i = index%32, n = index/32;
+        if (glm::length(__sideIndices[n]->heights[i] - height)>0.1) {
+            __sideIndices[n]->heights[i] = height;
+            for (int k = 0; k<6; k++) {
+                if (__sideIndices[n]->side[i][k]!=-1) {
+                    int index = __sideIndices[n]->side[i][k];
+                    auto [info, h] = __transformHeight(height, k);
+                    __side[index/32]->info[index%32].z = info.z;
+                    __side[index/32]->info[index%32].w = info.w;
+                    __side[index/32]->heights[index%32] = h;
+                }
+            }
         }
-        if (height.w > height.x && height.w > height.z) {
-            __elements.back()->info[__elements.back()->size].w = 1;
+    }
+    std::pair<glm::vec4,glm::vec4> WaterDrawingStorage::__transformHeight(const glm::vec4& h, const unsigned char& plane) const {
+        glm::vec4 height= h;
+        switch (plane) {
+            case 0: {
+                glm::vec4 info(0);
+
+                if (height.y>height.x && height.z> height.w) info.w = 1;
+                else if (height.x>height.y && height.w > height.z) info.w = 3;
+                else if (height.y > height.x && height.y > height.z) info.w = 1;
+
+                if (height.w > height.x && height.z>height.y) info.w = 2;
+                else if (height.w > height.x && height.w > height.z) info.w = 1;
+                return {info, height};
+            }
+            break;
+            case 1: {
+                height.z = height.w = 0;
+                return {glm::vec4(0,0,1,0), height};
+            }
+            break;
+            case 2: {
+                glm::vec4 info(0, 0, 2, 0);
+                height.y = height.z = 0;
+                return {info, height};
+            }
+            break;
+            case 3: {
+                glm::vec4 info(0, 0, 3, 0);
+                height.x = height.y;
+                height.y = 0;
+                height.w = height.z;
+                height.z = 0;
+                return {info, height};
+            }
+            break;
+            case 4: {
+                glm::vec4 info(0, 0, 4, 0);
+                height.y = height.z;
+                height.z = 0;
+                height.x = height.w;
+                height.w = 0;
+                return {info, height};
+            }
+            break;
+            case 5: {
+                return {glm::vec4(0,0,5,0), glm::vec4(0)};
+            }
+            break;
         }
-        if (height.y>height.x && height.y> height.z) {
-            __elements.back()->info[__elements.back()->size].w = 1;
+        return {glm::vec4(0), glm::vec4(0)};
+    }
+    void WaterDrawingStorage::pushSide(const int& index, const unsigned char& plane, const float& lightness) {
+        if (index>=size() || plane<0 || plane>5) 
+            throw std::runtime_error("Out of range!");
+        int i = index%32, n = index/32;
+        if (__sideIndices[n]->side[i][plane]!=-1) return ;
+        
+        auto [info, height] = __transformHeight(__sideIndices[n]->heights[i], plane);
+
+        info.x = lightness;
+        __sideIndices[n]->side[i][plane] = numberOfSide();
+        __add_side(__sideIndices[n]->position[i], info, height);
+        __side.back()->indices[__side.back()->size-1] = index*6+plane;
+    }
+    void WaterDrawingStorage::__add_side(const glm::vec3& position, const glm::vec4& info, const glm::vec4& height) {
+        if (__side.empty() || __side.back()->size == 32) __side.push_back(new Element());
+        
+        __side.back()->position[__side.back()->size] = glm::vec4(position, 1);
+        __side.back()->info[__side.back()->size] = info;
+        __side.back()->heights[__side.back()->size] = height;
+        
+        __side.back()->size++;
+    }
+    void WaterDrawingStorage::removeSide(const int& index, const unsigned char& plane) {
+        if (index>=size() || plane<0 || plane>5) 
+            throw std::runtime_error("Out of range!");
+        int i = index%32, n = index/32;
+        if (__sideIndices[n]->side[i][plane] != -1) {
+            __remove_side(__sideIndices[n]->side[i][plane]);
+            __sideIndices[n]->side[i][plane] = -1;
         }
-        if (height.w > height.x && height.w>height.z) {
-            __elements.back()->info[__elements.back()->size].w = 1;
+    }
+    void WaterDrawingStorage::__remove_side(const int& index) {
+        if (index>=numberOfSide()) 
+            throw std::runtime_error("Out of range!");
+        int n = index/32, i = index%32;
+        if (index < numberOfSide()-1) {
+            std::swap(__side[n]->indices[i], __side.back()->indices[__side.back()->size-1]);
+            std::swap(__side[n]->heights[i], __side.back()->heights[__side.back()->size-1]);
+            std::swap(__side[n]->info[i], __side.back()->info[__side.back()->size-1]);
+            std::swap(__side[n]->position[i], __side.back()->position[__side.back()->size-1]);
+            int blockIndex = __side[n]->indices[i];
+            int n = blockIndex/6/32, i = blockIndex/6%32;
+            __sideIndices[n]->side[i][blockIndex%6] = index;
         }
-        __elements.back()->size++;
+        __side.back()->size--;
+        if (!__side.back()->size) __side.pop_back();
     }
 
     glm::vec3 WaterDrawingStorage::getPosition(const int& index) const {
         if (index>=size()) 
             throw std::runtime_error("Out of range!");
         int i = index%32, n = index/32;
-        return __elements[n]->position[i];
+        return __sideIndices[n]->position[i];
     }
 
     void WaterDrawingStorage::setLight(const int& index, const float& indensity) {
         if (index>=size()) return ;
         int i = index%32, n = index/32;
-        __elements[n]->info[i].x = indensity;
+        for (int k = 0; k<6; k++) {
+            if (__sideIndices[n]->side[i][k]!=-1) {
+                int index = __sideIndices[n]->side[i][k];
+                __side[index/32]->info[index%32].x = indensity;
+            }
+        }
     }
 
     void WaterDrawingStorage::remove(const int& index) {
         if (index>=size()) 
             throw std::runtime_error("Out of range!");
-        if (index>=size()) return ;
         int i = index%32, n = index/32;
-        std::swap(__elements[n]->height[i], __elements.back()->height[__elements.back()->size-1]);
-        std::swap(__elements[n]->info[i], __elements.back()->info[__elements.back()->size-1]);
-        std::swap(__elements[n]->position[i], __elements.back()->position[__elements.back()->size-1]);
-        __elements.back()->size--;
-        if (!__elements.back()->size) {
-            delete __elements.back();
-            __elements.pop_back();
+        for (int k = 0; k<6; k++) {
+            if (__sideIndices[n]->side[i][k]!=-1) removeSide(index, k);
+        }
+        if (index!=size()-1) {
+            std::swap(__sideIndices[n]->side[i], __sideIndices.back()->side[i]);
+            std::swap(__sideIndices[n]->heights[i], __sideIndices.back()->heights[i]);
+            std::swap(__sideIndices[n]->position[i], __sideIndices.back()->position[i]);
+            for (int k = 0; k<6; k++) {
+                if (__sideIndices[n]->side[i][k]!=-1) {
+                    int sideIndex = __sideIndices[n]->side[i][k];
+                    __side[sideIndex/32]->indices[sideIndex%32] = index*6+k;
+                }
+            }
+        }
+        __sideIndices.back()->size--;
+        if (!__sideIndices.back()->size) {
+            delete __sideIndices.back();
+            __sideIndices.pop_back();
         }
     }
     void WaterDrawingStorage::increase() {
-        for (int i = 0 ;i<__elements.size(); i++) {
-            for (int j = 0; j<__elements[i]->size; j++) {
-                __elements[i]->info[j].y = int(__elements[i]->info[j].y+1)%32;
+        for (int i = 0 ;i<__side.size(); i++) {
+            for (int j = 0; j<__side[i]->size; j++) {
+                __side[i]->info[j].y = int(__side[i]->info[j].y+1)%32;
             }
         }
     }
@@ -249,9 +384,9 @@ namespace MyCraft {
     }
     void DrawingCenter::DrawWater(const WaterDrawingStorage& storage) {
         getInstance();
-        for (int i = 0; i<storage.__elements.size(); i++) {
-            glBufferSubData(GL_UNIFORM_BUFFER,0,(3*sizeof(glm::vec4))*32, storage.__elements[i]);
-            glDrawArrays(GL_TRIANGLES, 0, 6*storage.__elements[i]->size);
+        for (int i = 0; i<storage.__side.size(); i++) {
+            glBufferSubData(GL_UNIFORM_BUFFER,0,(3*sizeof(glm::vec4))*32, storage.__side[i]);
+            glDrawArrays(GL_TRIANGLES, 0, 6*storage.__side[i]->size);
         }
     }
 };

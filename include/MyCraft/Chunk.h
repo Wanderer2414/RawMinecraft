@@ -9,13 +9,16 @@ namespace MyCraft {
     class Chunk: public ChunkObject {
     public:
         ~Chunk();
+        bool isInWater(const glm::ivec3& position) const override;
         void save();
         void disableList();
         void enableList();
         void setType(const glm::ivec3& pos, const BlockCatogary& type)          override;
         void setState(const glm::ivec3& pos, const glm::mat4& state)            override;
         void setLight(const glm::ivec3& position, const float& indensity)       override;
-        void setWater(const glm::ivec3& position, const glm::vec4& height)      override;
+        bool pourWater(const glm::ivec3& position, const glm::vec4& height)      override;
+        void enableWaterPlane(const glm::ivec3& position, const unsigned char& plane);
+        void disableWaterPlane(const glm::ivec3& position, const unsigned char& plane);
         float getWaterHeight(const glm::ivec3& position) const                  override;
         glm::mat4 getState(const glm::ivec3&) const                             override;
         static Chunk* Load(ChunkLoader* loader, const std::string& src, const glm::ivec3& position);
@@ -45,8 +48,10 @@ namespace MyCraft {
         std::unordered_set<int>     __lightSource;
         std::map<unsigned int, glm::mat4>   __specialState;
         ChunkLoader                 *__container;
-        void __add(const glm::ivec3& position);
-        void __remove(const glm::ivec3& position);
+        void __add_block(const glm::ivec3& position);
+        void __remove_block(const glm::ivec3& position);
+        // void __add_water(const glm::ivec3& position);
+        // void __remove_water(const glm::ivec3& position);
     };
 
 

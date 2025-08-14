@@ -77,8 +77,8 @@ namespace MyCraft {
             dir.z = 0;
             dir = glm::normalize(dir)*__speed;
             rotate(dir);
-            send(new RequestGotoMessage(getShape(), dir));
         }
+        send(new RequestGotoMessage(getShape(), dir));
         if (!isFall()) {
             if (glfwGetKey(window, GLFW_KEY_SPACE)) {
                 //Jump here

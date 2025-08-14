@@ -16,6 +16,9 @@ namespace MyCraft {
         BlockCatogary getHoverType() const;
         glm::ivec3 getHoverBlock() const;
         glm::ivec3 getPlaceBlock() const;
+        bool isInWater(const glm::vec3& position) const;
+        float getWaterHeight(const glm::vec3& position) const;
+        glm::vec3 getWaterDirection(const glm::vec3& position) const;
         void place(const BlockCatogary& type);
         void unplace();
         void save();

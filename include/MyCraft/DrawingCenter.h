@@ -39,13 +39,18 @@ namespace MyCraft {
         WaterDrawingStorage();
         ~WaterDrawingStorage();
         int size() const;
+        int numberOfSide() const;
         WaterDrawingStorage(const WaterDrawingStorage&) = delete;
         WaterDrawingStorage& operator=(const WaterDrawingStorage&) const = delete; 
         glm::vec3 getPosition(const int& index) const;
+        glm::vec4 getHeights(const int& index) const;
         void increase();
         void push(const glm::vec3& position, const glm::vec4& height);
         void setLight(const int& index, const float& indensity);
+        void pushSide(const int& index, const unsigned char& plane,const float& lightness);
         void remove(const int& index);
+        void removeSide(const int& index, const unsigned char& plane);
+        void setHeight(const int& index, const glm::vec4& height);
         friend class DrawingCenter;
     protected:
     private:
@@ -53,10 +58,22 @@ namespace MyCraft {
             Element();
             glm::vec4  position[32];
             glm::vec4  info[32];
-            glm::vec4  height[32];
+            glm::vec4  heights[32];
+            int        indices[32];
             unsigned int size;
         };
-        std::vector<Element*> __elements;
+        struct ListSide {
+            ListSide();
+            int         side[32][6];
+            glm::vec3   position[32];
+            glm::vec4   heights[32];
+            unsigned int size;
+        };
+        std::pair<glm::vec4, glm::vec4> __transformHeight(const glm::vec4& height, const unsigned char& plane) const;
+        std::vector<ListSide*> __sideIndices;
+        std::vector<Element*> __side;
+        void __add_side(const glm::vec3& position, const glm::vec4& info, const glm::vec4& height);
+        void __remove_side(const int& index);
     };
     class DrawingCenter {
     public:
