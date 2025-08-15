@@ -23,6 +23,8 @@ namespace MyBase {
 
             void EnableScissorMode(const glm::vec2& position, const glm::vec2& size) const;
             void DisableScissorMode()   const;
+            void EnableFullScreenMode();
+            void DisableFullScreenMode();
 
             static void EnableMouse(GLFWwindow*);
             static void CenteringMouse(GLFWwindow*);
@@ -52,7 +54,7 @@ namespace MyBase {
             static ControlCenter& getInstance();
             static void close();
         private: 
-            bool            __isKeyPressed, __isMouseClicked, __isDoubleClick;
+            bool            __isKeyPressed, __isMouseClicked, __isDoubleClick, __isFullScreen;
             unsigned char   __majorVerson, __minorVerson, __clickCount, __isMaximize;
             char            __charInput;
             float           __fpsInterval;

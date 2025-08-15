@@ -15,6 +15,7 @@ namespace MyCraft {
         MyBase::ControlCenter::getInstance().OpenGLrequire(4, 6);
         MyBase::ControlCenter::getInstance().LimitFPS(0);
         MyBase::ControlCenter::getInstance(). Maximize();
+        MyBase::ControlCenter::getInstance(). EnableFullScreenMode();
         __window = MyBase::ControlCenter::getInstance().InitWindow(width, height, "MyCraft");
         MyBase::ControlCenter::getInstance().EnableTransparent();
 

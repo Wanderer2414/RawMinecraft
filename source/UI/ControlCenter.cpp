@@ -101,6 +101,7 @@ namespace MyBase {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, __majorVerson);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, __minorVerson);
         glfwWindowHint(GLFW_MAXIMIZED, __isMaximize);
+        glfwWindowHint(GLFW_DECORATED, !__isFullScreen);
         GLFWwindow* window = glfwCreateWindow(__windowSize.x, __windowSize.y, __programName.c_str(), nullptr, nullptr);
         if (!__homeScreen) __homeScreen = window;
         glfwMakeContextCurrent(window);
@@ -136,6 +137,13 @@ namespace MyBase {
     }
     GLFWwindow* ControlCenter::getHomeScreeen() const {
         return __homeScreen;
+    }
+    
+    void ControlCenter::EnableFullScreenMode() {
+        __isFullScreen = true;
+    }
+    void ControlCenter::DisableFullScreenMode() {
+        __isFullScreen = false;
     }
     void ControlCenter::CloseWindow() {
         glDeleteTextures(1, &__screenTexture);
