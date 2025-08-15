@@ -238,7 +238,7 @@ namespace MyCraft {
             __lightSource.erase(offset.x*65536+offset.y*4096+offset.z*256 + getLightIndensity(__blockTypes[offset.x][offset.y][offset.z]));
         }
 
-        if (__waterHeight[offset.x][offset.y][offset.z]) {
+        if (__waterHeight[offset.x][offset.y][offset.z] && type != Water) {
             __waterHeight[offset.x][offset.y][offset.z] = 0;
             int index = __tableIndexes[offset.x][offset.y][offset.z];
             __water.remove(index);
@@ -264,33 +264,32 @@ namespace MyCraft {
         if (offset.x < 0 || offset.x >= 16 || offset.y < 0 ||  offset.y >= 16 || offset.z < 0 ||  offset.z >= 16) 
             throw std::runtime_error("Out range of chunk");
         bool is_changed = false;
-        if (!__blockTypes[offset.x][offset.y][offset.z] || __blockTypes[offset.x][offset.y][offset.z] == Water) {
-            float h = 10.f*std::min(height.x, std::min(height.y, std::min(height.z, height.w)))+1;
-            if (glm::length(height)) {
-                int index = __tableIndexes[offset.x][offset.y][offset.z];
-                if (!__waterHeight[offset.x][offset.y][offset.z] || index<0 || index>=__water.size()) {
-                    index = __tableIndexes[offset.x][offset.y][offset.z] = __water.size();
-                    __water.push(position, height);
-                    is_changed = true;
-                }
-                else if (glm::length(__water.getHeights(index)-height)>0.1) {
-                    __water.setHeight(__tableIndexes[offset.x][offset.y][offset.z], height);
-                    is_changed = true;
-                }
-                __waterHeight[offset.x][offset.y][offset.z] = h;
-            }
-            else if (__waterHeight[offset.x][offset.y][offset.z]) {
-                __waterHeight[offset.x][offset.y][offset.z] = 0;
-                int index = __tableIndexes[offset.x][offset.y][offset.z];
-                if (index>=0 && index< __water.size()) {
-                    __water.remove(index);
-                    if (index!=__water.size()) {
-                        glm::ivec3 offset = (glm::ivec3)__water.getPosition(index) - __position;
-                        __tableIndexes[offset.x][offset.y][offset.z] = index;
-                    }
-                }
+
+        float h = 10.f*std::min(height.x, std::min(height.y, std::min(height.z, height.w)))+1;
+        if (glm::length(height)) {
+            int index = __tableIndexes[offset.x][offset.y][offset.z];
+            if (!__waterHeight[offset.x][offset.y][offset.z] || index<0 || index>=__water.size()) {
+                index = __tableIndexes[offset.x][offset.y][offset.z] = __water.size();
+                __water.push(position, height);
                 is_changed = true;
             }
+            else if (glm::length(__water.getHeights(index)-height)>0.1) {
+                __water.setHeight(__tableIndexes[offset.x][offset.y][offset.z], height);
+                is_changed = true;
+            }
+            __waterHeight[offset.x][offset.y][offset.z] = h;
+        }
+        else if (__waterHeight[offset.x][offset.y][offset.z]) {
+            __waterHeight[offset.x][offset.y][offset.z] = 0;
+            int index = __tableIndexes[offset.x][offset.y][offset.z];
+            if (index>=0 && index< __water.size()) {
+                __water.remove(index);
+                if (index!=__water.size()) {
+                    glm::ivec3 offset = (glm::ivec3)__water.getPosition(index) - __position;
+                    __tableIndexes[offset.x][offset.y][offset.z] = index;
+                }
+            }
+            is_changed = true;
             __isChange = __isChange || is_changed;
         }
         return is_changed;

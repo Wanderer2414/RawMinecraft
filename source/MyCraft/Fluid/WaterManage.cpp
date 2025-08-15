@@ -9,8 +9,7 @@ namespace MyCraft {
     }
     WaterManage::~WaterManage() {}
     void WaterManage::place(const glm::ivec4& position) {
-        if (__manage.getWaterHeight(position)<1) {
-            __manage.pourWater(position, glm::vec4(position.w/10.f));
+        if (__manage.pourWater(position, glm::vec4(position.w/10.f))) {
             __waterFlow.push(position);
             __manage.pushDynamicWater(position);
             __flowClock.restart();

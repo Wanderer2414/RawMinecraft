@@ -41,6 +41,14 @@ namespace MyCraft {
         }
         return false;
     }
+    bool isPlaceable(const BlockCatogary& type) {
+        switch (type) {
+            case Water:
+            case Air:
+                return true;
+            default: return false;
+        }
+    }
     bool isMultiState(const BlockCatogary& type) {
         switch (type) {
             case Torch:
