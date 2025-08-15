@@ -9,6 +9,7 @@ namespace MyCraft {
     bool isSpecial(const BlockCatogary& type) {
         switch (type) {
             case Torch:
+            case Water:
                 return true;
             default: return false;
         }
@@ -16,15 +17,25 @@ namespace MyCraft {
     }
     bool isCollistion(const BlockCatogary& type) {
         switch (type) {
-            case Torch: return false;
+            case Torch: 
+            case Water:
+            case Air: return false;
+            default: return true;
+        }
+    }
+
+    bool isVisible(const BlockCatogary& type) {
+        switch (type) {
+            case Water:
             case Air: return false;
             default: return true;
         }
     }
     bool isTransparent(const BlockCatogary& type) {
         switch (type) {
-            case Air: return true;
-            case OakLeaf: return true;
+            case Air:
+            case OakLeaf:
+            case Water:
             case Torch: return true;
             default: return false;
         }

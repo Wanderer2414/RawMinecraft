@@ -2,6 +2,7 @@
 #include "Block.h"
 #include "Chunk.h"
 #include "ChunkManage.h"
+#include "glm/geometric.hpp"
 namespace MyCraft {
 
     ChunkObject::~ChunkObject() {}
@@ -73,6 +74,7 @@ namespace MyCraft {
                     if (!getBit(position) && getType(position)) enableBit(position);
                 }
                 if (isLightSource(currentType)) setLight(pos, 0);
+                if (currentType == Water) placeDynamicWater(glm::vec4(pos, 0));
             }
         }
         else {
@@ -99,6 +101,9 @@ namespace MyCraft {
                 if (isLightSource(type)) {
                     setLight(pos, MyCraft::getLightIndensity(type));
                 }
+                if (type == Water) {
+                    placeDynamicWater(glm::vec4(pos, 10));
+                }
             }
             else {
                 setType(pos, Air);
@@ -108,30 +113,38 @@ namespace MyCraft {
     }
     bool ChunkLoader::pourWater(const glm::ivec3& position, const glm::vec4& height) {
         bool is_changed = false;
-        if (getChunk(position).getType(position)==Air || getChunk(position).getType(position)==Water) {
-            glm::vec4 heights(height);
+        glm::vec4 heights(0);
+        if (getChunk(position).getType(position)!=Water && !isInWater(position+glm::ivec3(0,0,1))) {
             heights[0] = std::max(heights[0], getWaterHeight(position-glm::ivec3(1,0,0)));
             heights[0] = std::max(heights[0], getWaterHeight(position-glm::ivec3(0,1,0)));
             heights[0] = std::max(heights[0], getWaterHeight(position-glm::ivec3(1,1,0)));
-            heights[0] = std::max(heights[0], getWaterHeight(position));
 
             heights[1] = std::max(heights[1], getWaterHeight(position+glm::ivec3(1,0,0)));
             heights[1] = std::max(heights[1], getWaterHeight(position-glm::ivec3(0,1,0)));
             heights[1] = std::max(heights[1], getWaterHeight(position+glm::ivec3(1,-1,0)));
-            heights[1] = std::max(heights[1], getWaterHeight(position));
 
             heights[2] = std::max(heights[2], getWaterHeight(position+glm::ivec3(1,0,0)));
             heights[2] = std::max(heights[2], getWaterHeight(position+glm::ivec3(0,1,0)));
             heights[2] = std::max(heights[2], getWaterHeight(position+glm::ivec3(1,1,0)));
-            heights[2] = std::max(heights[2], getWaterHeight(position));
 
             heights[3] = std::max(heights[3], getWaterHeight(position-glm::ivec3(1,0,0)));
             heights[3] = std::max(heights[3], getWaterHeight(position+glm::ivec3(0,1,0)));
             heights[3] = std::max(heights[3], getWaterHeight(position+glm::ivec3(-1,1,0)));
-            heights[3] = std::max(heights[3], getWaterHeight(position));
+        }
+        else heights = glm::vec4(1);
+        
+        if (glm::length(heights) || isInWater(position)) {
+            float M = std::max(heights.x, std::max(heights.y, std::max(heights.z, heights.w)));
+            if (heights[0]<M-0.2) heights[0]=M-0.2;
+            if (heights[1]<M-0.2) heights[1]=M-0.2;
+            if (heights[2]<M-0.2) heights[2]=M-0.2;
+            if (heights[3]<M-0.2) heights[3]=M-0.2;
 
             is_changed = getChunk(position).pourWater(position, heights);
+            if (isInWater(position)) {
+                getChunk(position).enableWaterPlane(position, 0);
 
+            }
             glm::ivec3 cur = position;
             cur.x++;
             if (isInWater(cur)) {
@@ -175,7 +188,20 @@ namespace MyCraft {
             else if (isTransparent(getType(cur)))
                 getChunk(position).enableWaterPlane(position, 5);
         }
+        
         return is_changed;
+    }
+    bool ChunkLoader::takeWater(const glm::ivec3& position) {
+        if (isInWater(position)) {
+            float M = 0;
+            M = std::max(M, getWaterHeight(position+glm::ivec3(1,0,0)));
+            M = std::max(M, getWaterHeight(position+glm::ivec3(-1,0,0)));
+            M = std::max(M, getWaterHeight(position+glm::ivec3(0,1,0)));
+            M = std::max(M, getWaterHeight(position+glm::ivec3(0,-1,0)));
+            if (M<=getWaterHeight(position)) 
+                return getChunk(position).takeWater(position);
+        }
+        return false;
     }
     float ChunkLoader::getWaterHeight(const glm::ivec3& position) const {
         return getChunk(position).getWaterHeight(position);

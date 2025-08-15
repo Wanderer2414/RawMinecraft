@@ -17,6 +17,7 @@ namespace MyCraft {
         void setState(const glm::ivec3& pos, const glm::mat4& state)            override;
         void setLight(const glm::ivec3& position, const float& indensity)       override;
         bool pourWater(const glm::ivec3& position, const glm::vec4& height)      override;
+        bool takeWater(const glm::ivec3& position)                              override;
         void enableWaterPlane(const glm::ivec3& position, const unsigned char& plane);
         void disableWaterPlane(const glm::ivec3& position, const unsigned char& plane);
         float getWaterHeight(const glm::ivec3& position) const                  override;

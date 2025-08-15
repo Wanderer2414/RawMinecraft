@@ -261,9 +261,9 @@ namespace MyCraft {
             if (__sideIndices[n]->side[i][k]!=-1) removeSide(index, k);
         }
         if (index!=size()-1) {
-            std::swap(__sideIndices[n]->side[i], __sideIndices.back()->side[i]);
-            std::swap(__sideIndices[n]->heights[i], __sideIndices.back()->heights[i]);
-            std::swap(__sideIndices[n]->position[i], __sideIndices.back()->position[i]);
+            std::swap(__sideIndices[n]->side[i], __sideIndices.back()->side[__sideIndices.back()->size-1]);
+            std::swap(__sideIndices[n]->heights[i], __sideIndices.back()->heights[__sideIndices.back()->size-1]);
+            std::swap(__sideIndices[n]->position[i], __sideIndices.back()->position[__sideIndices.back()->size-1]);
             for (int k = 0; k<6; k++) {
                 if (__sideIndices[n]->side[i][k]!=-1) {
                     int sideIndex = __sideIndices[n]->side[i][k];

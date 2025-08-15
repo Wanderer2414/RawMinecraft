@@ -19,6 +19,7 @@ namespace MyCraft {
         virtual void setState(const glm::ivec3& position, const glm::mat4& state) = 0;
         virtual void setLight(const glm::ivec3& position, const float& indensity) = 0;
         virtual bool pourWater(const glm::ivec3& position, const glm::vec4& height) = 0;
+        virtual bool takeWater(const glm::ivec3& position) = 0;
         virtual float getWaterHeight(const glm::ivec3& position) const              = 0;
         virtual void pushDynamicWater(const glm::ivec4& position)                   = 0;
         virtual void popDynamicWater(const glm::ivec4& position)                    = 0;
@@ -51,7 +52,7 @@ namespace MyCraft {
         virtual void setType(const glm::ivec3&, const BlockCatogary& type) override;
         void setState(const glm::ivec3& pos, const glm::mat4& state) override;
         bool pourWater(const glm::ivec3& position, const glm::vec4& height)  override;
-        
+        bool takeWater(const glm::ivec3& position) override;
         float getWaterHeight(const glm::ivec3& position) const          override;
         glm::mat4 getState(const glm::ivec3&) const                 override;
         std::bitset<16>::reference  getBit(const glm::ivec3&)     override;

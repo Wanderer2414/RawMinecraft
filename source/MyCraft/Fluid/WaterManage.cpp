@@ -25,53 +25,30 @@ namespace MyCraft {
                 __waterFlow.pop();
                 if (__manage.contains(position)) {
                     __manage.popDynamicWater(position);
-                    float height = position.w/10.f;
+                    float height = std::max(position.w/10.f, __manage.getWaterHeight(position))- 0.2f;
                     if (isCollistion(__manage.getType(position-glm::ivec4(0,0,1, 0)))) {
-                        if (height) {
-                            glm::ivec4 cur = position+glm::ivec4(1,0,0, -2);
-                            if (__manage.pourWater(cur, glm::vec4(height-0.2))) {
-                                __waterFlow.push(cur);
-                                __manage.pushDynamicWater(cur);
-                            }
-                            cur.x -= 2;
-                            if (__manage.pourWater(cur, glm::vec4(height-0.2))) {
-                                __waterFlow.push(cur);
-                                __manage.pushDynamicWater(cur);
-                            }
-                            
-
-                            cur += glm::ivec4(1, 1, 0, 0);
-                            if (__manage.pourWater(cur, glm::vec4(height-0.2))) {
-                                __waterFlow.push(cur);
-                                __manage.pushDynamicWater(cur);
-                            }
-                            cur.y -= 2;
-                            if (__manage.pourWater(cur, glm::vec4(height-0.2))) {
-                                __waterFlow.push(cur);
-                                __manage.pushDynamicWater(cur);
-                            }
+                        glm::ivec4 cur = position+glm::ivec4(1,0,0, -2);
+                        if (__manage.pourWater(cur, glm::vec4(height))) {
+                            __waterFlow.push(cur);
+                            __manage.pushDynamicWater(cur);
                         }
-                        else {
-                            glm::ivec3 cur = position+glm::ivec4(1,0,0,0);
-                            if (!__manage.getWaterHeight(cur)) {
-                                __manage.pourWater(cur, glm::vec4(0));
-                            }
-                            cur.x -= 2;
-                            if (!__manage.getWaterHeight(cur)) {
-                                __manage.pourWater(cur, glm::vec4(0));
-                            }
-
-                            cur += glm::ivec3(1, 1, 0);
-                            if (!__manage.getWaterHeight(cur)) {
-                                __manage.pourWater(cur, glm::vec4(0));
-                            }
-
-                            cur.y -= 2;
-                            if (!__manage.getWaterHeight(cur)) {
-                                __manage.pourWater(cur, glm::vec4(0));
-                            }
+                        cur.x -= 2;
+                        if (__manage.pourWater(cur, glm::vec4(height))) {
+                            __waterFlow.push(cur);
+                            __manage.pushDynamicWater(cur);
                         }
+                        
 
+                        cur += glm::ivec4(1, 1, 0, 0);
+                        if (__manage.pourWater(cur, glm::vec4(height))) {
+                            __waterFlow.push(cur);
+                            __manage.pushDynamicWater(cur);
+                        }
+                        cur.y -= 2;
+                        if (__manage.pourWater(cur, glm::vec4(height))) {
+                            __waterFlow.push(cur);
+                            __manage.pushDynamicWater(cur);
+                        }
                     }
                     else {
                         if (__manage.pourWater(position-glm::ivec4(0,0,1,0), glm::vec4(1))) {

@@ -27,21 +27,23 @@ namespace MyCraft {
         BlockCatogary type = __chunkLoader.getType(pos);
         if (!isCollistion(type)) return false;
         if (!isSpecial(type)) return type;
-        else {
+        else if (MyCraft::isVisible(type)) {
             glm::mat4 inverse = glm::inverse(__chunkLoader.getState(pos));
             glm::vec3 cPosition = inverse*glm::vec4(position,1);
             return (cPosition.x>=0 && cPosition.x<=1 && cPosition.y>=0 && cPosition.y<=1 && cPosition.z>=0 && cPosition.z<1);
         }
+        return false;
     }
     bool WorldRender::isHover(const glm::vec3& position) const {
         glm::ivec3 pos(floor(position.x), floor(position.y), floor(position.z));
         BlockCatogary type = __chunkLoader.getType(pos);
         if (!isSpecial(type)) return type;
-        else {
+        else if (MyCraft::isVisible(type)) {
             glm::mat4 inverse = glm::inverse(__chunkLoader.getState(pos));
             glm::vec3 cPosition = inverse*glm::vec4(position,1);
             return (cPosition.x>=0 && cPosition.x<=1 && cPosition.y>=0 && cPosition.y<=1 && cPosition.z>=0 && cPosition.z<1);
         }
+        return false;
     }
 
     BlockCatogary WorldRender::getType(const glm::vec3& position) const {
@@ -82,8 +84,7 @@ namespace MyCraft {
     }
 
     void WorldRender::place(const BlockCatogary& type) {
-        if (type == Water) __chunkLoader.placeDynamicWater(glm::vec4(__placePosition,10));
-        else if (type && isValid(type, __hoverPlane)) {
+        if (type && isValid(type, __hoverPlane)) {
             __chunkLoader.setType(__placePosition, type);
             if (isMultiState(type)) 
                 __chunkLoader.setState(__placePosition, getState(type, __hoverPlane));
