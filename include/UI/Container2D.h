@@ -9,12 +9,12 @@ class Container2D: public Controller2D {
         Container2D();
         ~Container2D();
         virtual bool    setHover(const glm::vec2& position)      override,
-                        setHover(const bool& hover)                 override;
+                        setHover(const bool& hover)              override;
         Controller2D*   getCurrentFocus() const;
         const int&      getCurrentFocusIndex() const;
         std::size_t     size()                                      const;
         virtual void    setFocus(const bool& focus)                 override;
-        const glm::vec2&       getChildrenPosition() const;
+        const glm::vec2& getChildrenPosition() const;
         Controller2D* operator[](const std::size_t& index);
     protected:
         void            clear();

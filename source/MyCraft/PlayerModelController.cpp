@@ -1,6 +1,8 @@
 #include "PlayerModelController.h"
 #include "Camera.h"
 #include "ControlCenter.h"
+#include "HealthBar.h"
+#include "HealthModule.h"
 #include "Item.h"
 #include "Message.h"
 #include "Global.h"
@@ -14,7 +16,7 @@
 namespace MyCraft {
     PlayerModelController::PlayerModelController(): __position(0), __direction(0, -1, 0), __runTime(0), __handTime(0), __isChanged(false),
         __isLeftAttack(0), __isRightAttack(0), __animation(ModelStorage::getInstance().getPlayerModel().getNodeCount(), 1), __eye_direction(0, -1, 0),
-        __isCrouch(false), __isDrawable(true) {
+        __isCrouch(false), __isDrawable(true), HealthModule(100) {
         ModelStorage::getInstance().getPlayerModel().apply(__animation, "walk", __runTime);
         __animationClock.setDuration(30);
         __attack__cooldown.setDuration(250);
@@ -35,6 +37,7 @@ namespace MyCraft {
         add(new HoldItemCommand(this));
         add(new DiveCommand());
         add(new OnGroundCommand());
+        add(new DamageCommand(*this));
 }
     PlayerModelController::~PlayerModelController() {}
     bool PlayerModelController::isCrounch() const {
@@ -178,6 +181,16 @@ namespace MyCraft {
             ans[2] = ans[2]*1.8f;
         } 
         return ans;
+    }
+
+    void PlayerModelController::__damage() {
+        send(new UpdateHealthBarMessage(getHealthPercent()));
+    }
+    void PlayerModelController::__dead() {
+        
+    }
+    void PlayerModelController::__heal() {
+        
     }
     void PlayerModelController::reset() {
         __isChanged = false;

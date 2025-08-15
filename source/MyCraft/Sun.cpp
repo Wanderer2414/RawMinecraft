@@ -31,7 +31,7 @@ namespace MyCraft {
         __sunContainer.setPosition({0, -1.5});
         MyBase::ShapeManager::getInstance().createShape(__sun, {0.1/MyBase::ControlCenter::getInstance().GetWindowRatio(),0.1});
 
-        __clock.setDuration(100);
+        __clock.setDuration(300);
         __buffer.base_light = -0.7;
 
         add(new SunMoveCommand(*this));

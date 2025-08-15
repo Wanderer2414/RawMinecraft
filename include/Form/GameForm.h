@@ -7,6 +7,7 @@
 #include "Font.h"
 #include "Form3D.h"
 #include "GamePauseForm.h"
+#include "HealthBar.h"
 #include "HitBoxCenter.h"
 #include "InteractiveForm.h"
 #include "Inventory.h"
@@ -45,6 +46,7 @@ namespace MyCraft {
             Inventory       __inventory;
             InventoryForm   __inventoryForm;
             Sun             __sun;
+            HealthBar       __healthBar;
 
             void __open(GLFWwindow*) override;
             void glDraw() const override;

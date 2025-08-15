@@ -2,6 +2,7 @@
 #include "Block.h"
 #include "ChunkManage.h"
 #include "DrawingCenter.h"
+#include "HealthModule.h"
 #include "Message.h"
 #include "PlayerModelController.h"
 
@@ -343,6 +344,7 @@ namespace MyCraft {
                 float delta = shape[0].z - (floor(shape[0].z-1)+minHeight);
 
                 if (delta) {
+                    mine.send(new DamageMessage(-request->zVelocity*10));
                     mine.send(source, new FallMessage(-delta));
                     mine.send(source, new StopFallMessage());
                 }

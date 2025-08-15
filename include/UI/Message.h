@@ -7,7 +7,7 @@ namespace MyBase {
     class Network;
     class World;
     class Command;
-    #define MessageTypeSize 25
+    #define MessageTypeSize 28
     enum MessageType: unsigned char {
         RequestGoto, RequestFall, RequestJump,
         Move, Fall,  StopFall, Jump,
@@ -19,7 +19,8 @@ namespace MyBase {
         PrepareOpenInventory, OpenInventoryBlock,
         DropItem, ReceiveItem, AddItem,
         HoldItem,
-        DiveView, Dive, OngroundView, OnGround
+        DiveView, Dive, OngroundView, OnGround,
+        Damage, Health, UpdateHealth
     };
     class Port {
     public:

@@ -30,6 +30,8 @@ namespace MyCraft {
         MyBase::Network::match(&__inventoryForm);
         MyBase::Network::match(&__inventory);
         MyBase::Network::match(&__sun);
+        MyBase::Network::match(&__model);
+        MyBase::Network::match(&__healthBar);
         MyBase::Network::match(&MyBase3D::Camera::Instance());
 
         __label.setFont(__font);
@@ -58,6 +60,7 @@ namespace MyCraft {
         __positionLabel.setTextColor(RED);
         __positionLabel.setScale({0.04, 0.06});
         insert(&__positionLabel);
+        insert(&__healthBar);
         __fpsClock.setDuration(500);
         MyBase::File file(src+"info.bin");
         if (!file.isNew()) {

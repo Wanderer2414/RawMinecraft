@@ -116,7 +116,7 @@ namespace MyCraft {
         if (tool == ItemType::WoodenHoe) return 30;
         if (tool == ItemType::StoneHoe) return 40;
         if (tool == ItemType::IronHoe) return 60;
-        if (tool == ItemType::GlodenHoe) return 80;
+        if (tool == ItemType::Golden) return 80;
         if (tool == ItemType::DiamonHoe) return 70;
         if (tool == ItemType::NetheriteHoe) return 90;
 
@@ -127,7 +127,7 @@ namespace MyCraft {
         if (tool == ItemType::DiamonSword) return 72;
         if (tool == ItemType::NetheriteSword) return 100;
 
-        return 400;
+        return 20;
     }
 
 

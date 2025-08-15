@@ -1,41 +1,42 @@
 #include <fstream>
 
 enum class ItemType: unsigned char {
-    Air, Dirt, Grass, 
-    CobbleStone, Stone, OakLog, 
-    OakLeaf,BedRock, Sand, 
-    SandStone, Obsidian, DeepSlate, 
-    Ice, Podzol, DirtPath, 
-    FarmLand, FarmLandHydrad, SmoothStone,
-    SmoothStoneSlab, StoneBrick, CoalOre, 
-    IronOre, StrippedOakLog, OakPlank,
-    SpruceLog, StrippedSpruceLog, SprucePlank,
-    BirchLog, StrippedBirchLog, BirchPlank,
-    AcaciaLog, StrippedAcaciaLog, AcaciaPlank,
-    CraftTable, Furnace, Smoker,
-    BlastFurnace, Chest, WoodedAxe,
-    StoneAxe, IronAxe, GoldenAxe, 
-    DiamonAxe, NetheriteAxe, WoodenHoe,
-    StoneHoe, IronHoe, GoldenHoe,
-    DiamonHoe, NetheriteHoe, WoodPickaxe,
-    StonePickaxe, IronPickaxe, GoldenPickaxe,
-    DianmonPickaxe, NetheritePickaxe, WoodenShovel,
-    StoneShovel, IronShovel, GoldenShovel,
-    DiamonShovel, NetheriteShovel, FlintAndSteel,
-    Shears, LeatherCap, ChainmailCap, 
-    IronCap, GoldenCap, DiamonCap,
-    NetheriteCap, LeatherChestplate, ChainmailChestplate, 
-    IronChestplate, GoldenChestplate, DiamonChestplate,
-    NetheriteChestplate,LeatherLeggings, ChainmailLeggings, 
-    IronLeggings, GoldenLeggings, DiamonLeggings,
-    NetheriteLeggings, LeatherBoots, ChainmailBoots, 
-    IronBoots, GoldenBoots, DiamonBoots,
-    NetheriteBoots, WoodedSword, StoneSword, 
-    IronSword, GoldenSword, DiamonSword,
-    NetheriteSword, Bow, Bow1, 
-    Bow2, Bow3, Arrow, 
-    Stick, Coal, IronIngot,
-    GoldenIngot, NetheriteIngot
+        Air, Dirt, Grass, 
+        CobbleStone, Stone, OakLog, 
+        OakLeaf,BedRock, Sand, 
+        SandStone, Obsidian, DeepSlate, 
+        Ice, Podzol, DirtPath, 
+        FarmLand, FarmLandHydrad, SmoothStone,
+        SmoothStoneSlab, StoneBrick, CoalOre, 
+        IronOre, StrippedOakLog, OakPlank,
+        SpruceLog, StrippedSpruceLog, SprucePlank,
+        BirchLog, StrippedBirchLog, BirchPlank,
+        AcaciaLog, StrippedAcaciaLog, AcaciaPlank,
+        CraftTable, Furnace, Smoker,
+        BlastFurnace, Chest,  Torch, 
+        Water, WoodenAxe, StoneAxe,
+        IronAxe, GoldenAxe,  DiamonAxe,
+        NetheriteAxe, WoodenHoe, StoneHoe,
+        IronHoe, GoldenHoe, DiamonHoe,
+        NetheriteHoe, WoodenPickaxe, StonePickaxe,
+        IronPickaxe, GoldenPickaxe, DianmonPickaxe,
+        NetheritePickaxe, WoodenShovel, StoneShovel,
+        IronShovel, GoldenShovel, DiamonShovel,
+        NetheriteShovel, FlintAndSteel, Shears,
+        LeatherCap, ChainmailCap,  IronCap,
+        GoldenCap, DiamonCap, NetheriteCap,
+        LeatherChestplate, ChainmailChestplate,  IronChestplate,
+        GoldenChestplate, DiamonChestplate, NetheriteChestplate,
+        LeatherLeggings, ChainmailLeggings,  IronLeggings,
+        GoldenLeggings, DiamonLeggings, NetheriteLeggings,
+        LeatherBoots, ChainmailBoots,  IronBoots,
+        GoldenBoots, DiamonBoots, NetheriteBoots,
+        WoodedSword, StoneSword,  IronSword,
+        GoldenSword, DiamonSword, NetheriteSword,
+        Bow, Bow1,  Bow2,
+        Bow3, Arrow,  Stick,
+        Coal, IronIngot, GoldenIngot,
+        NetheriteIngot
 };
 #include <vector>
 void write(std::ofstream& file, std::vector<std::pair<unsigned char, ItemType>>& type, const std::pair<unsigned char,ItemType>& output) {
@@ -52,7 +53,7 @@ void Pickaxe(std::ofstream& file) {
             {0, ItemType::Air},      {1, ItemType::Stick},    {0, ItemType::Air},
             {0, ItemType::Air},      {1, ItemType::Stick}
         };
-        write(file, items, {1, ItemType::WoodPickaxe});
+        write(file, items, {1, ItemType::WoodenPickaxe});
     }
 
     {   
@@ -100,7 +101,7 @@ void Axe(std::ofstream& file) {// Wooden Axe
             {1, ItemType::OakPlank}, {1, ItemType::Stick},    {0, ItemType::Air},
             {0, ItemType::Air},      {1, ItemType::Stick}
         };
-        write(file, items, {1, ItemType::WoodedAxe});
+        write(file, items, {1, ItemType::WoodenAxe});
     }
 
     // Stone Axe

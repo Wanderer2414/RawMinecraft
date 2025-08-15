@@ -21,7 +21,7 @@ namespace MyCraft {
         Water, WoodenAxe, StoneAxe,
         IronAxe, GoldenAxe,  DiamonAxe,
         NetheriteAxe, WoodenHoe, StoneHoe,
-        IronHoe, GlodenHoe, DiamonHoe,
+        IronHoe, Golden, DiamonHoe,
         NetheriteHoe, WoodenPickaxe, StonePickaxe,
         IronPickaxe, GoldenPickaxe, DianmonPickaxe,
         NetheritePickaxe, WoodenShovel, StoneShovel,

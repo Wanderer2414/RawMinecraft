@@ -2,13 +2,13 @@
 #define PLAYER_MODEL_H
 #include "Block.h"
 #include "Clock.h"
-#include "Inventory.h"
+#include "HealthModule.h"
 #include "Item.h"
 #include "Message.h"
 #include "ModelController.h"
 #include "PlayerInventoryModule.h"
 namespace MyCraft {
-    class PlayerModelController: public ModelController, public MyBase::Port, public PlayerInventoryModule {
+    class PlayerModelController: public ModelController, public MyBase::Port, public PlayerInventoryModule, public HealthModule {
     public: 
         PlayerModelController();
         ~PlayerModelController();
@@ -43,6 +43,9 @@ namespace MyCraft {
         BlockCatogary   __type;
         glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
         bool            __moveManage(GLFWwindow* window);
+        void            __damage() override;
+        void            __dead() override;
+        void            __heal() override;
         
         bool            handle(GLFWwindow* window) override;
         bool            catchEvent(GLFWwindow* window) override;
