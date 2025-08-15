@@ -8,10 +8,10 @@
 #include "Texture.h"
 
 namespace MyCraft {
-    Sun::Sun(): __time(0), __offset(0,0) {
+    Sun::Sun(): __time(0), __offset(0,0), __isDive(false) {
         glGenBuffers(1,&__lightBuffer);
         glBindBuffer(GL_UNIFORM_BUFFER, __lightBuffer);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(float)*2, 0, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(Buffer), 0, GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, 10, __lightBuffer);
         glBindBuffer(GL_UNIFORM_BUFFER, __lightBuffer);
         update();
@@ -32,19 +32,37 @@ namespace MyCraft {
         MyBase::ShapeManager::getInstance().createShape(__sun, {0.1/MyBase::ControlCenter::getInstance().GetWindowRatio(),0.1});
 
         __clock.setDuration(100);
+        __buffer.base_light = -0.7;
+
         add(new SunMoveCommand(*this));
+        add(new DiveLightCommnand(*this));
+        add( new OnGroundLightCommnand(*this));
     }
     Sun::~Sun() {
         glDeleteBuffers(1, &__lightBuffer);
         MyBase::ShapeManager::getInstance().removeShape(__coverSky, {2,2});
         MyBase::ShapeManager::getInstance().removeShape(__sun, {0.1/MyBase::ControlCenter::getInstance().GetWindowRatio(),0.1});
     }
-
+    void Sun::setViewPosition(const glm::vec3& position) {
+        __offset = position;
+    }
+    void Sun::dive() {
+        __isDive = true;
+        __buffer.view_color = {0, 0, 70.f/255, 0.7};
+        __buffer.base_light = -1;
+    }
+    void Sun::undive() {
+        __isDive = false;
+        __buffer.view_color = {0, 0, 0, 0};
+        __buffer.base_light = -0.7;
+    }
     void Sun::update() {
         glBindBuffer(GL_UNIFORM_BUFFER, __lightBuffer);
-        float light[2] = {-0.7, 0.7f*(1-2*abs(0.5f-__time))};
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float)*2, &light[0]);
-        __skyContainer.setFillColor({0,0,0, (unsigned char)(255.f*2*abs(__time-0.5f))});
+        __buffer.sun_lightness = 0.7f*(1-2*abs(0.5f-__time));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Buffer), &__buffer);
+        float transparent = 255.f*2*abs(__time-0.5f);
+        if (__isDive) transparent = std::min(transparent+100, 255.f);
+        __skyContainer.setFillColor({0,0,0, (unsigned char)transparent});
 
         float angle = 2*M_PI*__time - M_PI_2;
         glm::vec3 position = glm::vec3(__offset.x+100*cos(angle),__offset.y - (__offset.y)/1000,100*sin(angle));
@@ -75,7 +93,42 @@ namespace MyCraft {
     }
     void SunMoveCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         MyBase::SetCameraMessage* package = (MyBase::SetCameraMessage*)message;
-        __sun.__offset = package->position;
+        __sun.setViewPosition(package->position);
+        __sun.update();
+    }
+
+    
+    DiveLightMessage::DiveLightMessage() {}
+    DiveLightMessage::~DiveLightMessage() {}
+    MyBase::MessageType DiveLightMessage::getType() const {
+        return MyBase::DiveView;
+    }
+
+    DiveLightCommnand::DiveLightCommnand(Sun& sun): __sun(sun) {}
+    DiveLightCommnand::~DiveLightCommnand() {}
+
+    MyBase::MessageType DiveLightCommnand::getType() const {
+        return MyBase::DiveView;
+    }
+    void DiveLightCommnand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        __sun.dive();
+        __sun.update();
+    }
+
+    OnGroundLightMessage::OnGroundLightMessage() {}
+    OnGroundLightMessage::~OnGroundLightMessage() {}
+    MyBase::MessageType OnGroundLightMessage::getType() const {
+        return MyBase::OngroundView;
+    }
+
+    OnGroundLightCommnand::OnGroundLightCommnand(Sun& sun): __sun(sun) {}
+    OnGroundLightCommnand::~OnGroundLightCommnand() {}
+
+    MyBase::MessageType OnGroundLightCommnand::getType() const {
+        return MyBase::OngroundView;
+    }
+    void OnGroundLightCommnand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        __sun.undive();
         __sun.update();
     }
 }

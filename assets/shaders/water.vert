@@ -17,6 +17,7 @@ layout(set=0, binding=2) uniform Corner {
     vec4 abovePlane[4];
 };
 layout(set=0, binding=10) uniform Lightness {
+    vec4 view_color;
     float lightness_dark;
     float lightness_offset;
 };

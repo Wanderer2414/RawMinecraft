@@ -4,6 +4,12 @@ layout(location = 1) in float lightness;
 layout(binding=0) uniform sampler2D tex;
 layout(location = 0) out vec4 frag_color;
 
+layout(set=0, binding=10) uniform Lightness {
+    vec4 view_color;
+    float lightness_dark;
+    float lightness_offset;
+};
+
 vec3 hsl2rgb(vec3 hsl) {
     float h = hsl.x;
     float s = hsl.y;
@@ -64,6 +70,17 @@ vec3 rgb2hsl(vec3 rgb) {
 
     return vec3(h, s, l);
 }
+vec4 alphaBlend(vec4 fg, vec4 bg) {
+    float outAlpha = fg.a + bg.a * (1.0 - fg.a);
+
+    // Avoid divide-by-zero when resulting alpha is 0
+    if (outAlpha < 0.0001)
+        return vec4(0.0);
+
+    vec3 outRGB = (fg.rgb * fg.a + bg.rgb * bg.a * (1.0 - fg.a)) / outAlpha;
+    
+    return vec4(outRGB, outAlpha);
+}
 
 void main() {
     frag_color = texture(tex, uv);
@@ -74,5 +91,5 @@ void main() {
     else if (lightness + hsl.z < 1) hsl.z += lightness;
     else hsl.z = 1;
 
-    frag_color = vec4(hsl2rgb(hsl), frag_color.w);
+    frag_color = alphaBlend(view_color, vec4(hsl2rgb(hsl), frag_color.w));
 }

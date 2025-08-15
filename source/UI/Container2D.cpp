@@ -169,7 +169,7 @@ namespace MyBase{
     }
 
     void Container2D::update() {
-        for (auto& [child, layer]:__children) child->update();
         for (auto& child:__permanentChildren) child->update();
+        for (auto& [child, layer]:__children) child->update();
     }
 }

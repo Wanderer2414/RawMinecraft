@@ -97,8 +97,12 @@ namespace MyCraft {
             new_chunk->__container = loader;
             if (src == "bin/test/" && position.z < 0) {
                 new_chunk->__numBlock = 4096;
-                memset(new_chunk->__blockTypes, Grass, 4096);
                 if (position.z == -1) {
+                    memset(new_chunk->__blockTypes, Water, 4096);
+                    memset(new_chunk->__waterHeight, 1, 4096);
+                }
+                else memset(new_chunk->__blockTypes, Grass, 4096);
+                if (position.z == -2) {
                     for (glm::ivec3 pos(0,0,15); pos.x<16; pos.x++) {
                         for (pos.y=0;pos.y<16; pos.y++) new_chunk->enableLocalBit(pos);
                     }

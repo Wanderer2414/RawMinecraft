@@ -17,14 +17,23 @@ namespace MyCraft {
         void update();
         bool handle(GLFWwindow* window);
         void glDraw() const            ;
-        friend class SunMoveCommand;
+        void setViewPosition(const glm::vec3& position);
+        void dive();
+        void undive();
     private:    
+        struct Buffer {
+            glm::vec4 view_color;
+            float base_light;
+            float sun_lightness;
+        };
+        bool                        __isDive;
         glm::vec2                   __offset;
         float                       __time;
         MyBase::Clock               __clock;
         GLuint                      __lightBuffer;
         MyBase::Rectangle           __coverSky;
         MyBase::Ellipse             __sun;
+        Buffer                      __buffer;
         MyBase::ShapeContainer      __skyContainer, __sunContainer;
     };
 
@@ -32,6 +41,41 @@ namespace MyCraft {
     public:
         SunMoveCommand(Sun& sun);
         ~SunMoveCommand();
+
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private:
+        Sun& __sun;
+    };
+    class DiveLightMessage: public MyBase::Message {
+    public:
+        DiveLightMessage();
+        ~DiveLightMessage();
+        MyBase::MessageType getType() const override;
+    private:
+    };
+    class DiveLightCommnand: public MyBase::Command {
+    public:
+        DiveLightCommnand(Sun& sun);
+        ~DiveLightCommnand();
+
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private:
+        Sun& __sun;
+    };
+
+    class OnGroundLightMessage: public MyBase::Message {
+    public:
+        OnGroundLightMessage();
+        ~OnGroundLightMessage();
+        MyBase::MessageType getType() const override;
+    private:
+    };
+    class OnGroundLightCommnand: public MyBase::Command {
+    public:
+        OnGroundLightCommnand(Sun& sun);
+        ~OnGroundLightCommnand();
 
         MyBase::MessageType getType() const override;
         void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;

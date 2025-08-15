@@ -4,7 +4,6 @@
 #include "DrawingCenter.h"
 #include "Message.h"
 #include "PlayerModelController.h"
-#include "glm/geometric.hpp"
 
 namespace MyCraft {
     WorldRender::WorldRender(const std::string& src): __chunkLoader(src), __isHover(false) {
@@ -13,6 +12,7 @@ namespace MyCraft {
         add(new CheckFallCommand(*this));
         add(new CheckHoverCommand(*this));
         add(new WorldMoveCommand(*this));
+        add( new RequestJumpCommand(*this));
     }
     
     WorldRender::~WorldRender() {}
@@ -131,6 +131,46 @@ namespace MyCraft {
         return __chunkLoader.getType(__hoverBlock);
     }
 
+
+    RequestJumpMessage::RequestJumpMessage(const glm::mat4x3& s, const float& z): shape(s), zVelocity(z) {}
+    RequestJumpMessage::~RequestJumpMessage() {}
+    MyBase::MessageType RequestJumpMessage::getType() const {
+        return MyBase::RequestJump;
+    }
+    
+    RequestJumpCommand::RequestJumpCommand(WorldRender& world): __world(world) {}
+    RequestJumpCommand::~RequestJumpCommand() {}
+    MyBase::MessageType RequestJumpCommand::getType() const {
+        return MyBase::RequestJump;
+    }
+    void RequestJumpCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
+        RequestJumpMessage* package = (RequestJumpMessage*)message;
+        glm::vec3 center = package->shape[0] + package->shape[1]/2.f + package->shape[2];
+        if (__world.isInWater(center)) {
+            if (__world.isInWater(center + glm::vec3(0,0,package->zVelocity+0.5)))
+                mine.send(des, new JumpMessage(package->zVelocity));
+        }
+        else {
+            glm::vec3 cur = package->shape[0];
+            cur.z -= 0.1;
+            bool isJump = false;
+            isJump = __world.isBusy(cur) && !__world.isBusy(package->shape[0]) || isJump;
+            isJump = __world.isBusy(cur+package->shape[1]) && !__world.isBusy(package->shape[0]+package->shape[1]) || isJump;
+            isJump = __world.isBusy(cur+package->shape[2]) && !__world.isBusy(package->shape[0]+package->shape[2]) || isJump;
+            isJump = __world.isBusy(cur+package->shape[1]+package->shape[2]) && !__world.isBusy(package->shape[0] + package->shape[1] + package->shape[2]) || isJump;
+            if (isJump) {
+                mine.send(des, new JumpMessage(package->zVelocity));
+            }
+        }
+    }
+
+    JumpMessage::JumpMessage(const float& z): zVelocity(z) {}
+    JumpMessage::~JumpMessage() {}
+
+    MyBase::MessageType JumpMessage::getType() const {
+        return MyBase::Jump;
+    }
+
     RequestGotoMessage::RequestGotoMessage(const glm::mat4x3& p, const glm::vec2& d): rectangleBox(p), direction(d) {}
     RequestGotoMessage::~RequestGotoMessage() {}
 
@@ -156,7 +196,12 @@ namespace MyCraft {
         if (__world.isInWater(center)) {
             dir += __world.getWaterDirection(center);
             dir.z = 0;
+            
+            if (__world.isInWater(center+glm::vec3(0,0,2))) 
+                mine.send(source, new DiveMessage());
+            else mine.send(source, new OnGroundMessage());
         }
+        else mine.send(source, new OnGroundMessage());
         //Below check
         glm::vec3 npos = shape[0] + dir, epos = npos + shape[1];
         glm::vec3 delta = (epos-npos)/10.f;

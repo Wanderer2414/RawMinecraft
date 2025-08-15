@@ -115,5 +115,32 @@ namespace MyCraft {
     private:
         WorldRender& __world;
     };
+    class RequestJumpMessage: public MyBase::Message {
+    public:
+        RequestJumpMessage(const glm::mat4x3& shape, const float& z);
+        ~RequestJumpMessage();
+        const glm::mat4x3 shape;
+        const float zVelocity;
+        MyBase::MessageType getType() const override;
+    private:
+    };
+    class RequestJumpCommand: public MyBase::Command {
+    public:
+        RequestJumpCommand(WorldRender& world);
+        ~RequestJumpCommand();
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
+    private:
+        WorldRender& __world;
+    };
+    class JumpMessage: public MyBase::Message {
+    public:
+        JumpMessage(const float& z);
+        ~JumpMessage();
+
+        const float zVelocity;
+
+        MyBase::MessageType getType() const override;
+    };
 }
 #endif

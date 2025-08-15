@@ -24,6 +24,7 @@ layout(set=0, binding=4) uniform TexCoord {
     vec2 eachSize;
 };
 layout(set=0, binding=10) uniform Lightness {
+    vec4 view_color;
     float lightness_dark;
     float lightness_offset;
 };

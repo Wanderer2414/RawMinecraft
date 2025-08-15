@@ -68,8 +68,10 @@ namespace MyCraft {
         }
         return is_changed;
     }
-    void ToolBar::glDraw() const {
+    void ToolBar::glDraw() const {}
+    void ToolBar::glDrawTransparent() const {
         MyBase::Container2D::glDraw();
+        MyBase::Container2D::glDrawTransparent();
         for (int i = 0; i<10; i++)
             if (__items.getToolBar(i)) __items.getToolBar(i)->draw();
     }

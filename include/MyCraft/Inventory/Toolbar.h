@@ -24,6 +24,7 @@ namespace MyCraft {
         bool contains(const glm::vec2& position) const override;
         bool catchEvent(GLFWwindow*)                override;
         void glDraw() const                         override;
+        void glDrawTransparent() const              override;
         int __chosenIndex;
         ItemTable& __items;
         MyBase::TextureViewer __toolBarTexture, __chosenTexture;

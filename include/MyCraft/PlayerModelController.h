@@ -111,5 +111,34 @@ namespace MyCraft {
     private:
         MyCraft::PlayerModelController*      __model;
     };
+    class DiveMessage: public MyBase::Message {
+    public:
+        DiveMessage();
+        ~DiveMessage();
+        MyBase::MessageType getType()                               const override;
+    };
+    class DiveCommand: public MyBase::Command {
+    public:
+        DiveCommand();
+        ~DiveCommand();
+        MyBase::MessageType getType()                               const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
+    private:
+    };
+
+    class OnGroundMessage: public MyBase::Message {
+    public:
+        OnGroundMessage();
+        ~OnGroundMessage();
+        MyBase::MessageType getType()                               const override;
+    };
+    class OnGroundCommand: public MyBase::Command {
+    public:
+        OnGroundCommand();
+        ~OnGroundCommand();
+        MyBase::MessageType getType()                               const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
+    private:
+    };
 }
 #endif

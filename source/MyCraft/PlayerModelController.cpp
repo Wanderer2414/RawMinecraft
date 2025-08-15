@@ -8,6 +8,7 @@
 #include "ModelLoader.h"
 #include "ModelStorage.h"
 #include "PlayerInventoryModule.h"
+#include "Sun.h"
 #include "WorldRender.h"
 
 namespace MyCraft {
@@ -27,10 +28,13 @@ namespace MyCraft {
         add(new PlayerMoveCommand(this));
         add(new FallCommand(this));
         add(new StopFallCommand(this));
+        add(new JumpCommand(this));
         add (new ResetCameraCommand(this));
         add(new PrepareOpenInventoryCommand(this));
         add(new ReceiveItemCommand(this));
         add(new HoldItemCommand(this));
+        add(new DiveCommand());
+        add(new OnGroundCommand());
 }
     PlayerModelController::~PlayerModelController() {}
     bool PlayerModelController::isCrounch() const {
@@ -79,17 +83,13 @@ namespace MyCraft {
             rotate(dir);
         }
         send(new RequestGotoMessage(getShape(), dir));
-        if (!isFall()) {
-            if (glfwGetKey(window, GLFW_KEY_SPACE)) {
-                //Jump here
-                setZVelocity(0.35);
-                send(new RequestFallMessage(getShape(), getZVelocity()));
-            }
+
+        if (glfwGetKey(window, GLFW_KEY_SPACE)) {
+            //Jump here
+            send(new RequestJumpMessage(getShape(), 0.35));
         }
-        else {
-            //Auto fall
-            send(new RequestFallMessage(getShape(), getZVelocity()));
-        }
+        //Auto fall
+        send(new RequestFallMessage(getShape(), getZVelocity()));
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) {
             if (!__isCrouch) {
                 __animationClock.setDuration(40);
@@ -343,5 +343,35 @@ namespace MyCraft {
                 mine.send(new RequestFallMessage(model, __model->getZVelocity()));
             }
         }
+    }
+
+    DiveMessage::DiveMessage() {}
+    DiveMessage::~DiveMessage() {}
+    MyBase::MessageType DiveMessage::getType() const {
+        return MyBase::Dive;;
+    }
+    DiveCommand::DiveCommand() {}
+    DiveCommand::~DiveCommand() {}
+    MyBase::MessageType DiveCommand::getType() const {
+        return MyBase::Dive;
+    }
+    void DiveCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)  {
+        mine.send(new DiveLightMessage());
+    }
+
+    OnGroundMessage::OnGroundMessage() {}
+    OnGroundMessage::~OnGroundMessage() {}
+    MyBase::MessageType OnGroundMessage::getType() const {
+        return MyBase::OnGround;
+    }
+    
+    
+    OnGroundCommand::OnGroundCommand() {}
+    OnGroundCommand::~OnGroundCommand() {}
+    MyBase::MessageType OnGroundCommand::getType() const {
+        return MyBase::OnGround;
+    }
+    void OnGroundCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)  {
+        mine.send(new OnGroundLightMessage());
     }
 }
