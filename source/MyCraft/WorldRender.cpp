@@ -306,51 +306,79 @@ namespace MyCraft {
         
     void CheckFallCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         RequestFallMessage* request = (RequestFallMessage*)message;
-        float z = request->zVelocity;
+        float zVelocity = request->zVelocity;
         auto shape = request->rectangleBox;
         glm::vec3 center = shape[0] + shape[1]/2.f + shape[2]/2.f;
         float minHeight = 0;
         if (__world.isInWater(center)) {
-            z += __world.getWaterDirection(center).z;
+            zVelocity += __world.getWaterDirection(center).z;
         }
-        if (z<=0) {
-            if (__world.isInWater(center)) z -= 0.01;
-            else z -= 0.06;
-            shape[0].z += z;
+        if (zVelocity<=0) {
+            if (__world.isInWater(center)) zVelocity -= 0.01;
+            else zVelocity -= 0.06;
             bool isFall = true;
-            shape[3] = shape[0] + shape[2];
-            if (__world.isBusy(shape[3])) {
-                isFall = false; 
-                minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[3]))[2].z);
-            }
-            shape[2] += shape[0] + shape[1];
-            if (__world.isBusy(shape[2])) {
-                isFall = false;
-                minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[2]))[2].z);
-            }
-            shape[1] += shape[0];   
-            if (__world.isBusy(shape[1])) {
-                isFall = false; 
-                minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[1]))[2].z);
-            }
+            float zMin = request->rectangleBox[0].z + zVelocity;
+            float z = 0;
+            for (z = request->rectangleBox[0].z; z>=zMin && isFall; z-=0.1) {
+                shape = request->rectangleBox;
+                shape[0].z = z;
+                shape[3] = shape[0] + shape[2];
+                if (__world.isBusy(shape[3])) {
+                    isFall = false; 
+                    minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[3]))[2].z);
+                }
+                shape[2] += shape[0] + shape[1];
+                if (__world.isBusy(shape[2])) {
+                    isFall = false;
+                    minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[2]))[2].z);
+                }
+                shape[1] += shape[0];   
+                if (__world.isBusy(shape[1])) {
+                    isFall = false; 
+                    minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[1]))[2].z);
+                }
 
-            if (__world.isBusy(shape[0])) {
-                isFall = false; 
-                minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[0]))[2].z);
+                if (__world.isBusy(shape[0])) {
+                    isFall = false; 
+                    minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[0]))[2].z);
+                }
             }
-            if (isFall) mine.send(source, new FallMessage(std::max(z, -0.8f)));
+            {
+                shape = request->rectangleBox;
+                shape[0].z = zMin;
+                shape[3] = shape[0] + shape[2];
+                if (__world.isBusy(shape[3])) {
+                    isFall = false; 
+                    minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[3]))[2].z);
+                }
+                shape[2] += shape[0] + shape[1];
+                if (__world.isBusy(shape[2])) {
+                    isFall = false;
+                    minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[2]))[2].z);
+                }
+                shape[1] += shape[0];   
+                if (__world.isBusy(shape[1])) {
+                    isFall = false; 
+                    minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[1]))[2].z);
+                }
+
+                if (__world.isBusy(shape[0])) {
+                    isFall = false; 
+                    minHeight = std::max(minHeight, getSpecialState(__world.getType(shape[0]))[2].z);
+                }
+            }
+            if (isFall) mine.send(source, new FallMessage(zVelocity));
             else {
-                shape[0].z -= z;   
-                float delta = shape[0].z - (floor(shape[0].z-1)+minHeight);
+                float delta = request->rectangleBox[0].z - (floor(z)+minHeight) - 0.005;
 
-                if (delta) {
-                    mine.send(new DamageMessage(-request->zVelocity*10));
+                if (abs(delta)>=0.005) {
+                    if (zVelocity <= -0.5) mine.send(new DamageMessage(-zVelocity*50));
                     mine.send(source, new FallMessage(-delta));
                     mine.send(source, new StopFallMessage());
                 }
             }
         }
-        else if (z>0) {
+        else if (zVelocity>0) {
             shape[0] += shape[3];
 
             shape[3] = shape[0] + shape[2];
@@ -364,9 +392,9 @@ namespace MyCraft {
                 !__world.isBusy(shape[1]) && 
                 !__world.isBusy(shape[2]) && 
                 !__world.isBusy(shape[3])) {
-                    if (__world.isInWater(center)) z -= 0.05;
-                    else z -= 0.035;
-                    mine.send(source, new FallMessage(z));
+                    if (__world.isInWater(center)) zVelocity -= 0.05;
+                    else zVelocity -= 0.035;
+                    mine.send(source, new FallMessage(zVelocity));
             }
             else {
                 float delta = floor(shape[0][2]) - shape[0][2];
