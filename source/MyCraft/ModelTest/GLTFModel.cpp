@@ -1,6 +1,8 @@
 #include "GLTFModel.h"
+#include "Global.h"
 #include "UI/ShaderStorage.h"
 #include "UI/Controller3D.h"
+#include "config.h"
 #include <iostream>
 
 GLTFModel::GLTFModel(const std::string& modelPath, float scale) 
@@ -31,18 +33,38 @@ void GLTFModel::draw(const glm::mat4& modelMatrix,
 
     std::cout<<"Shape of GLTFModel: "<<std::endl;
     // Kích hoạt shader và truyền uniform
-    GLuint shaderProgram = MyBase3D::ShaderStorage::getInstance().GetDefaultShader();
+
+    // PLEASE USING AND EDITTING MODEL SHADER (DONT USE DEFAULT SHADER)
+    GLuint shaderProgram = MyBase3D::ShaderStorage::getInstance().getModelShader();
     glUseProgram(shaderProgram);
     std::cout << "Using shader program: " << std::endl;
 
+    // OLD VERSION OPENGL??? => MODERN OPENGL/OPENGL 4.6
     // Truyền các ma trận vào shader
-    GLuint modelLoc = glGetUniformLocation(shaderProgram, "model");
-    GLuint viewLoc = glGetUniformLocation(shaderProgram, "view");
-    GLuint projLoc = glGetUniformLocation(shaderProgram, "projection");
+    // GLuint modelLoc = glGetUniformLocation(shaderProgram, "model");
+    // GLuint viewLoc = glGetUniformLocation(shaderProgram, "view");
+    // GLuint projLoc = glGetUniformLocation(shaderProgram, "projection");
 
-    if (modelLoc != -1) glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(finalModelMatrix));
-    if (viewLoc != -1) glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-    if (projLoc != -1) glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    //Create uniform buffer
+
+    // SEE INPUT MATRIX AND ATTRIBUTE IN model.vert AND model.frag
+    // OVERWRITE AND COMPILE BY glslangValidator -V model.vert -o model.vert.spv OR glslangValidator -V model.frag -o model.frag.spv
+    GLuint buffer;
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_UNIFORM_BUFFER, buffer);
+    glm::mat4 clipPlane = projectionMatrix*viewMatrix;
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), &clipPlane, GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffer);
+
+    GLuint finalPos;
+    glGenBuffers(1, &finalPos);
+    glBindBuffer(GL_UNIFORM_BUFFER, finalPos);
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), &finalModelMatrix, GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, finalPos);
+
+    // if (modelLoc != -1) glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(finalModelMatrix));
+    // if (viewLoc != -1) glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+    // if (projLoc != -1) glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
     std::cout << "preparing for drawing..." << std::endl;
     // Vẽ model
@@ -50,6 +72,10 @@ void GLTFModel::draw(const glm::mat4& modelMatrix,
     std::cout << "Drawing mesh..." << std::endl;
     m_mesh.draw();
     std::cout << "GLTFModel drawn successfully!" << std::endl;
+   
+    //REMEMBER TO DELETE BUFFER => CHANGE TO CLASS ATTRIBUTE => BUFFER RELATED TO CAMERA IS CAPSULATED IN CAMERA CLASS
+    glDeleteBuffers(1, &buffer);
+    glDeleteBuffers(1, &finalPos);
 }
 
 glm::mat4x3 GLTFModel::getShape() {

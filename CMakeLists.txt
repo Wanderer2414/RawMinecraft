@@ -5,29 +5,23 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
+file(GLOB_RECURSE SOURCES "source/*.cpp" "glad/*.c")
+file(GLOB_RECURSE HEADER_FILE "include/*.h")
+
+# Filter directories only
+set(HEADERS "")
+foreach(PATH ${HEADER_FILE})
+    get_filename_component(FOLDER ${PATH} DIRECTORY)
+    list(APPEND HEADERS ${FOLDER})
+endforeach()
+
 include_directories(
+    ${HEADERS}
     ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/include/UI
-    ${CMAKE_SOURCE_DIR}/include/Logic
-    ${CMAKE_SOURCE_DIR}/include/Form
-    ${CMAKE_SOURCE_DIR}/include/MyCraft
-    ${CMAKE_SOURCE_DIR}/include/MyCraft/ModelTest
-    ${CMAKE_SOURCE_DIR}/include/Extended
     ${CMAKE_SOURCE_DIR}/glad/include
     ${CMAKE_SOURCE_DIR}/glm-master
-    ${CMAKE_SOURCE_DIR}/glfw/include
 )
-file(GLOB SOURCES 
-    ${CMAKE_SOURCE_DIR}/source/*
-    ${CMAKE_SOURCE_DIR}/source/MyCraft/*
-    ${CMAKE_SOURCE_DIR}/source/MyCraft/ModelTest/*
-    ${CMAKE_SOURCE_DIR}/source/UI/*
-    ${CMAKE_SOURCE_DIR}/source/Logic/*
-    ${CMAKE_SOURCE_DIR}/source/Extended/*
-    ${CMAKE_SOURCE_DIR}/source/FormLogic/*
-    ${CMAKE_SOURCE_DIR}/source/FormDesign/*
-    ${CMAKE_SOURCE_DIR}/glad/src/*.c
-)
+
 set(LIB glfw)
 if (UNIX) 
     set(LIB X11 glfw)

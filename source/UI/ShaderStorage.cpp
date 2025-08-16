@@ -9,7 +9,7 @@ namespace MyBase3D {
         __chunkShader = createProgram("assets/shaders/chunk.vert.spv", "assets/shaders/shader.frag.spv");
         __marginShader = createProgram("assets/shaders/margin.vert.spv", "assets/shaders/shader.frag.spv");
         __point2DShader = createProgram("assets/shaders/Point2D.vert.spv", "assets/shaders/Point2D.frag.spv");
-        __modelShader = createProgram("assets/shaders/model.vert.spv", "assets/shaders/shader.frag.spv");
+        __modelShader = createProgram("assets/shaders/model.vert.spv", "assets/shaders/model.frag.spv");
         __fontShader = createProgram("assets/shaders/font2D.vert.spv", "assets/shaders/font2D.frag.spv");
     }
     ShaderStorage::~ShaderStorage() {

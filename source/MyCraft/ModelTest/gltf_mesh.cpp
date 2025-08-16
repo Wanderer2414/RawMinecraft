@@ -1,4 +1,5 @@
 #include "MyCraft/ModelTest/gltf_mesh.h"
+#include "Global.h"
 
 GLTFStaticMesh::GLTFStaticMesh(const char* filename, float scale){
     tinygltf::TinyGLTF loader;
@@ -62,8 +63,10 @@ void GLTFStaticMesh::bindMesh(std::map<int, unsigned int> & ebos, tinygltf::Mesh
 
         unsigned int ebo;
         glGenBuffers(1, &ebo);
+        glBindBuffer(bufferView.target, ebo);
         ebos[i] = ebo;
-        glBufferData(bufferView.target, bufferView.byteLength, &buffer.data.at(0) + bufferView.byteOffset, GL_STATIC_DRAW);
+        glBufferData(bufferView.target, bufferView.byteLength, buffer.data.data() + bufferView.byteOffset, GL_STATIC_DRAW);
+        glBindBuffer(bufferView.target, 0);
 
     }
 
@@ -88,7 +91,8 @@ void GLTFStaticMesh::bindMesh(std::map<int, unsigned int> & ebos, tinygltf::Mesh
             } else if(attrib.first.compare("NORMAL") == 0) {
                 attribute = 2;
             }
-            if(attribute > 0){
+            // >0 ???
+            if(attribute >= 0){
                 glEnableVertexAttribArray(attribute);
                 glVertexAttribPointer(attribute, size, accessor.componentType, accessor.normalized? GL_TRUE : GL_FALSE, byteStride, (char*)NULL + accessor.byteOffset);
             }
@@ -130,11 +134,21 @@ void GLTFStaticMesh::drawModelNodes(tinygltf::Node & node) {
 }
 
 void GLTFStaticMesh::drawMesh(const std::map<int, unsigned int> & ebos, tinygltf::Mesh & mesh) {
+    // WHERE APPLYING TRANSFORMATIONS OF PARENT NODES???
     for(size_t i = 0; i < mesh.primitives.size(); ++i) {
         tinygltf::Primitive & primitive = mesh.primitives[i];
         tinygltf::Accessor& indexAccessor = model.accessors[primitive.indices];
 
+        tinygltf::BufferView bufferView = model.bufferViews[indexAccessor.bufferView];
+        tinygltf::Buffer buffer = model.buffers[bufferView.buffer];
+        glm::vec3* position = (glm::vec3*)(buffer.data.data() + indexAccessor.byteOffset);
+        //List all positions drawed
+        for (int i = 0; i< indexAccessor.count; i++) {
+            std::cout << "Position: " << position[i].x << ", " << position[i].y << ", " << position[i].z << std::endl;
+        }
+        std::cout << std::endl;
+        
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebos.at(indexAccessor.bufferView));
-        glDrawElements(primitive.mode, indexAccessor.count, indexAccessor.componentType, (char*)NULL + indexAccessor.byteOffset);
+        glDrawElements(GL_LINES, indexAccessor.count, indexAccessor.componentType, (char*)NULL + indexAccessor.byteOffset);
     }
 }

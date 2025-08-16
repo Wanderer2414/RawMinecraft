@@ -32,9 +32,11 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 // Biến camera
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+// CAMERA UP VECTOR IS FOLLOWING TO Z-AXIS
+// TAKE CARE OF TRUE CAMERA POSITION AND CAMERA DIRECTION
+glm::vec3 cameraPos = glm::vec3(-1.0f, -1.0f, 0.0f);
+glm::vec3 cameraFront = glm::vec3(1.0f, 1.0f, 0.f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 0.f, 1.0f);
 float yaw = -90.0f;
 float pitch = 0.0f;
 float lastX = SCR_WIDTH / 2.0f;
