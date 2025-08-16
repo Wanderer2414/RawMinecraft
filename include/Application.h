@@ -10,7 +10,7 @@ namespace MyCraft {
             void run();
         private:
             GLFWwindow* __window;
-            GLTFStaticMesh myModel;
+            //GLTFStaticMesh myModel;
     };
 };
 #endif

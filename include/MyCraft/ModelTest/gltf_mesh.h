@@ -1,29 +1,22 @@
-// #pragma once
-// #include "Extended/tiny_gltf.h"
-// #include <GL/glew.h>
-// #include <glm/glm.hpp>
-// #include <vector>
-// #include <map>
+#pragma once
+#include "config.h"
+#include "Extended/tiny_gltf.h"
 
-// class GLTFStaticMesh {
-// public:
-//     tinygltf::Model model;
-//     std::vector<GLuint> VAOs; // VAO cho mỗi primitive
-//     std::map<int, GLuint> buffers; // Lưu VBO và EBO
-//     std::vector<GLuint> textures; // Lưu texture
-//     std::vector<glm::mat4> nodeTransforms; // Transform của mỗi node
-//     float scale;
-//     glm::vec3 position; // Vị trí thực thể trong thế giới
+class GLTFStaticMesh {
+public:
+    tinygltf::Model model;
+    std::pair<unsigned int, std::map<int, unsigned int>> VAO_and_EBOs;
+    float scale;
+    std::pair<unsigned int, std::map<int, unsigned int>> bindModel();
+    float prepareForDrawing();
+    void draw();
 
-//     GLTFStaticMesh(const char* filename, float scale = 1.0f);
-//     ~GLTFStaticMesh();
-
-//     void Draw(GLuint shaderProgram, const glm::mat4& view, const glm::mat4& projection, float time);
-
-// private:
-//     void loadTextures();
-//     void bindModel(size_t& vaoIndex);
-//     void bindMesh(const tinygltf::Mesh& mesh, size_t& vaoIndex);
-//     void bindModelNodes(const tinygltf::Node& node, size_t& vaoIndex);
-//     void applyAnimation(float time);
-// };
+    GLTFStaticMesh(const char* filename, float scale = 1.0f);
+    ~GLTFStaticMesh();
+    
+private:
+    void bindModelNodes(std::map<int, unsigned int> & ebos, tinygltf::Node &);
+    void bindMesh(std::map<int, unsigned int> & ebos, tinygltf::Mesh & mesh);
+    void drawModelNodes(tinygltf::Node & node);
+    void drawMesh(const std::map<int, unsigned int> & ebos, tinygltf::Mesh & mesh);
+};

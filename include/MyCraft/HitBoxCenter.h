@@ -3,6 +3,8 @@
 #include "Message.h"
 #include "Controller.h"
 #include "ModelController.h"
+#include "ModelTest/gltf_mesh.h"
+#include "ModelTest/GLTFModel.h"
 namespace MyCraft {
     class HitBoxCenter: public MyBase3D::Controller3D, public MyBase::Network {
         public:
@@ -15,6 +17,7 @@ namespace MyCraft {
         private:
             glm::vec3              __colors;
             std::vector<ModelController*> __models;
+            GLTFModel * modelTest;
     };
 }
 #endif

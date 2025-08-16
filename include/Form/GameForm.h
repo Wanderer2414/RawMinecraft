@@ -9,6 +9,7 @@
 #include "ModelController.h"
 #include "PlayerModelController.h"
 #include "World.h"
+#include "MyCraft/ModelTest/gltf_mesh.h"
 
 namespace MyCraft {
 
@@ -28,6 +29,7 @@ namespace MyCraft {
             MyBase::Label   __label;
             World           pWorld;
             PlayerModelController     __model;
+            //GLTFStaticMesh __gltfModel;
             HitBoxCenter    __hitbox;
             float           pSpeed;
         };

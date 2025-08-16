@@ -11,6 +11,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/include/Logic
     ${CMAKE_SOURCE_DIR}/include/Form
     ${CMAKE_SOURCE_DIR}/include/MyCraft
+    ${CMAKE_SOURCE_DIR}/include/MyCraft/ModelTest
     ${CMAKE_SOURCE_DIR}/include/Extended
     ${CMAKE_SOURCE_DIR}/glad/include
     ${CMAKE_SOURCE_DIR}/glm-master
@@ -19,6 +20,7 @@ include_directories(
 file(GLOB SOURCES 
     ${CMAKE_SOURCE_DIR}/source/*
     ${CMAKE_SOURCE_DIR}/source/MyCraft/*
+    ${CMAKE_SOURCE_DIR}/source/MyCraft/ModelTest/*
     ${CMAKE_SOURCE_DIR}/source/UI/*
     ${CMAKE_SOURCE_DIR}/source/Logic/*
     ${CMAKE_SOURCE_DIR}/source/Extended/*

@@ -1,6 +1,6 @@
-#include "config.h"
-#define STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
+// ĐẶT CÁC MACRO Ở ĐÂY TRƯỚC KHI INCLUDE
+#define TINYGLTF_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image.h"
-#include "tiny_gltf.h"
+#define STBI_MSC_SECURE_CRT
+// Không cần include config.h ở đây
