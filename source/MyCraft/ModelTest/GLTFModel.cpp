@@ -20,6 +20,7 @@ GLTFModel::~GLTFModel() {
 void GLTFModel::draw(const glm::mat4& modelMatrix, 
                     const glm::mat4& viewMatrix, 
                     const glm::mat4& projectionMatrix) {
+    std::cout << "Drawing GLTFModel..." << std::endl;
     // Tạo ma trận model kết hợp vị trí, tỉ lệ và xoay
     glm::mat4 finalModelMatrix = modelMatrix;
     
@@ -28,9 +29,11 @@ void GLTFModel::draw(const glm::mat4& modelMatrix,
     finalModelMatrix = glm::rotate(finalModelMatrix, m_rotationAngle, m_rotationAxis);
     finalModelMatrix = glm::scale(finalModelMatrix, glm::vec3(m_scale));
 
+    std::cout<<"Shape of GLTFModel: "<<std::endl;
     // Kích hoạt shader và truyền uniform
     GLuint shaderProgram = MyBase3D::ShaderStorage::getInstance().GetDefaultShader();
     glUseProgram(shaderProgram);
+    std::cout << "Using shader program: " << std::endl;
 
     // Truyền các ma trận vào shader
     GLuint modelLoc = glGetUniformLocation(shaderProgram, "model");
@@ -41,9 +44,12 @@ void GLTFModel::draw(const glm::mat4& modelMatrix,
     if (viewLoc != -1) glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(viewMatrix));
     if (projLoc != -1) glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
+    std::cout << "preparing for drawing..." << std::endl;
     // Vẽ model
     m_mesh.prepareForDrawing();
+    std::cout << "Drawing mesh..." << std::endl;
     m_mesh.draw();
+    std::cout << "GLTFModel drawn successfully!" << std::endl;
 }
 
 glm::mat4x3 GLTFModel::getShape() {

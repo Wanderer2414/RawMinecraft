@@ -23,6 +23,7 @@ namespace MyBase3D {
     }
 
     ShaderStorage& ShaderStorage::getInstance() {
+        std::cout << "ShaderStorage::getInstance() called." << std::endl;
         if (!ShaderStorage::Default) ShaderStorage::Default = new ShaderStorage();
         return *ShaderStorage::Default;
     }
@@ -33,6 +34,7 @@ namespace MyBase3D {
         }
     }
     GLuint ShaderStorage::GetDefaultShader() const {
+        std::cout<<"GetDefaultShader called."<<std::endl;
         return __defaultShader;
     }
     GLuint ShaderStorage::GetCubeShader() const {
