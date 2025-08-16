@@ -16,6 +16,6 @@ namespace MyBase3D {
         return delta == _delta || -delta == _delta;
     }
     float Line::distance(const glm::vec3& position) const {
-        return glm::length(det(position-_origin, _delta))/glm::length(_delta);
+        return glm::length(glm::cross(position-_origin, _delta))/glm::length(_delta);
     } 
 }

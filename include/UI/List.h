@@ -20,7 +20,7 @@ namespace MyBase {
         void setHoverColor(const Color& color);
         void setClickColor(const Color& color);
         void setFont(const Font& font);
-        void clear() override;
+        void clear();
         void setPosition(const glm::vec2& position);
         glm::vec2 getSize() const override, getPosition() const override;
     private:

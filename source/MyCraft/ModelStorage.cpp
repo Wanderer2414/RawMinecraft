@@ -4,7 +4,7 @@
 #include "ShaderStorage.h"
 namespace MyCraft {
     ModelStorage* ModelStorage::Default;
-    ModelStorage::ModelStorage(): __playerModel("assets/models/Model/chicken_model.gltf") {
+    ModelStorage::ModelStorage(): __playerModel("assets/models/Model/Playermodel.gltf") {
         glGenBuffers(1, &__nodeState);
         glBindBuffer(GL_UNIFORM_BUFFER, __nodeState);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), 0, GL_DYNAMIC_DRAW);
@@ -28,7 +28,7 @@ namespace MyCraft {
     }
 
     void ModelStorage::DrawModel(std::vector<glm::mat4>& state, const ModelLoader& model) {
-        glUseProgram(MyBase3D::ShaderStorage::getInstance().getModelShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetModelShader());
         const tinygltf::Scene& scene = model.__model.scenes[model.__model.defaultScene];
         __drawNode(scene.nodes.back(), state, model);
     }

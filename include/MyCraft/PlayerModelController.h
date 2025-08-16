@@ -1,45 +1,58 @@
 #ifndef PLAYER_MODEL_H
 #define PLAYER_MODEL_H
-#include "Camera.h"
+#include "Block.h"
 #include "Clock.h"
+#include "HealthModule.h"
+#include "Item.h"
 #include "Message.h"
 #include "ModelController.h"
+#include "PlayerInventoryModule.h"
 namespace MyCraft {
-    class PlayerModelController: public ModelController, public MyBase::Port {
+    class PlayerModelController: public ModelController, public MyBase::Port, public PlayerInventoryModule, public HealthModule {
     public: 
         PlayerModelController();
         ~PlayerModelController();
         bool        isCrounch() const;
-        bool        sensitiveHandle(GLFWwindow* window) override;
-        bool        handle(GLFWwindow* window) override;
-        glm::vec3   getModelPosition() const override,
+        bool        isRun() const;
+        glm::vec3   getModelPosition() const    override,
                     getDirection() const;
         void        move(const glm::vec3& delta) override,
-                    rotate(const float& angle) override,
+                    rotate(const float& angle)  override,
+                    teleport(const glm::vec3& position),
                     rotate(const glm::vec3& dir),
                     rightAttack(),
                     leftAttack(),
                     see(const glm::vec3& dir) override,
                     seeRotate(const float& horizontal, const float& vertical),
                     setDrawAble(const bool& drawable),
-                    glDraw() const override;
-        
+                    glDraw() const override,
+                    
+                    setHoverBlock(const glm::vec3& hover, const glm::vec3& place, const BlockCatogary& type);
         glm::mat4x3 getShape() const override;
-        
     private:
-        bool            __isRun, __isDrawable,
+        bool            __isRun, __isDrawable, __isChanged,
                         __isLeftAttack, __isRightAttack,
                         __isCrouch;
         float           __runTime, __handTime, __speed;
         glm::vec3       __position, __diagonal;
         glm::vec3       __direction, __eye_direction;
         std::vector<glm::mat4> __animation;
-        MyBase::Clock   __animationClock,
+        MyBase::Clock   __animationClock, __speedControl,
                         __runCooldown,
                         __attack__cooldown;
+        BlockCatogary   __type;
         glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
+        bool            __moveManage(GLFWwindow* window);
+        void            __damage() override;
+        void            __dead() override;
+        void            __heal() override;
+        
+        bool            handle(GLFWwindow* window) override;
+        bool            catchEvent(GLFWwindow* window) override;
+        void            reset() override;
         void            update() override;
     };
+
     class ResetCameraCommand: public MyBase::Command {
     public:
         ResetCameraCommand(MyCraft::PlayerModelController* model);
@@ -49,6 +62,7 @@ namespace MyCraft {
     private:
         MyCraft::PlayerModelController* __model;
     };
+
     class MoveMessage: public MyBase::Message {
     public:
         MoveMessage(const glm::vec3& direction);
@@ -71,46 +85,23 @@ namespace MyCraft {
         MyBase::MessageType     getType() const override;
     };
     
-    class RequestGotoMessage: public MyBase::Message {
-    public:
-        RequestGotoMessage(const glm::mat4x3& rectangleBox, const glm::vec2& direction);
-        ~RequestGotoMessage();
-        MyBase::MessageType     getType() const override;
-        const glm::vec2       direction;
-        const glm::mat4x3     rectangleBox;
-    private:
-    };
 
-    class RequestFallMessage: public MyBase::Message {
+    class PlaceMessage: public MyBase::Message {
     public:
-        RequestFallMessage(const glm::mat4x3& rectangleBox, const float& zVelocity);
-        ~RequestFallMessage();
-        MyBase::MessageType     getType() const override;
-        const glm::mat4x3 rectangleBox;
-        float zVelocity;
-    };
-
-    class RightAttackMessage: public MyBase::Message {
-    public:
-        RightAttackMessage(const glm::vec3& pos, const glm::vec3& dir);
-        ~RightAttackMessage();
+        PlaceMessage(const glm::vec3& position, const glm::vec3& direction, const ItemType& left, const ItemType& right);
+        ~PlaceMessage();
         MyBase::MessageType getType() const override;
-        const glm::vec3 posistion, direction;
+        const glm::vec3 position, direction;
+        const ItemType rightItem, leftItem;
     };
 
-    class LeftAttackMessage: public MyBase::Message {
+    class AttackMessage: public MyBase::Message {
     public:
-        LeftAttackMessage();
-        ~LeftAttackMessage();
-        MyBase::MessageType     getType() const override;
-    };
-
-    class CheckHoverMessage: public MyBase::Message {
-    public:
-        CheckHoverMessage(const glm::vec3& pos, const glm::vec3& dir);
-        ~CheckHoverMessage();
+        AttackMessage(const glm::vec3& position, const glm::vec3& direction, const ItemType& left, const ItemType& right);
+        ~AttackMessage();
         MyBase::MessageType     getType() const override;
         const glm::vec3 position, direction;
+        const ItemType rightItem, leftItem;
     };
 
     class PlayerMoveCommand: public MyBase::Command {
@@ -122,6 +113,35 @@ namespace MyCraft {
         void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
     private:
         MyCraft::PlayerModelController*      __model;
+    };
+    class DiveMessage: public MyBase::Message {
+    public:
+        DiveMessage();
+        ~DiveMessage();
+        MyBase::MessageType getType()                               const override;
+    };
+    class DiveCommand: public MyBase::Command {
+    public:
+        DiveCommand();
+        ~DiveCommand();
+        MyBase::MessageType getType()                               const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
+    private:
+    };
+
+    class OnGroundMessage: public MyBase::Message {
+    public:
+        OnGroundMessage();
+        ~OnGroundMessage();
+        MyBase::MessageType getType()                               const override;
+    };
+    class OnGroundCommand: public MyBase::Command {
+    public:
+        OnGroundCommand();
+        ~OnGroundCommand();
+        MyBase::MessageType getType()                               const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
+    private:
     };
 }
 #endif

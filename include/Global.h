@@ -9,12 +9,17 @@
 #include <vector>
 #include <stb_image.h>
 #include <stb_truetype.h>
+#include <stb_image_write.h>
 #include <chrono>
 #include "tiny_gltf.h"
 #include <stack>
 #include <queue>
 #include <limits>
 #include <bitset>
+#include <mutex>
+#include <thread>
+#include <filesystem>
+#include <stdexcept>
 
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"

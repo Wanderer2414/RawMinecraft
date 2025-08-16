@@ -1,68 +1,75 @@
 #include "Font.h"
+#include "FlyweightStorage.h"
 #include "Global.h"
-#include "PointSet.h"
-#include "ShaderStorage.h"
 #include "stb_truetype.h"
 
 namespace MyBase {
-    Font::Font(const std::string& source) {
-        if (source.size()) loadFont(source);
-    }
-    Font::~Font() {
-        glDeleteTextures(1, &__textmap);
-    }
-    void Font::loadFont(const std::string& source) {
-        std::ifstream fstream(source);
-        if (!fstream.is_open()) {
-            std::cerr << "Cant load font: " << source << std::endl;
-            exit(0);
-        }
-        else std::cout << "Load font successful: " << source << std::endl;
+    FlyWeightCore* Font::create(const std::string& src) const {
+        FontCore* core = new FontCore();
+        std::ifstream fstream(src);
+        if (!fstream.is_open()) throw std::runtime_error("Cant load font: " + src);
+        
         fstream.seekg(0, std::ios::end);
         int sz = fstream.tellg();
         fstream.seekg(0);
         unsigned char data[1<<20];
         fstream.read((char*)&data, sz);
-        unsigned char bitmap[512*512];
-        stbtt_BakeFontBitmap(data, 0, 32, bitmap, 512, 512, 32, 96, __data);
+        unsigned char *bitmap = new unsigned char[font_resolution*font_resolution];
+        stbtt_BakeFontBitmap(data, 0, font_height, bitmap, font_resolution, font_resolution, 32, 96, core->__data);
 
-        glGenTextures(1, &__textmap);
-        glBindTexture(GL_TEXTURE_2D, __textmap);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 512, 512, 0, GL_RED, GL_UNSIGNED_BYTE,  bitmap);
+        glGenTextures(1, &core->__textmap);
+        glBindTexture(GL_TEXTURE_2D, core->__textmap);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, font_resolution, font_resolution, 0, GL_RED, GL_UNSIGNED_BYTE,  bitmap);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         
         glBindTexture(GL_TEXTURE_2D, 0);
+        delete[] bitmap;
+        return core;
     }
-    void Font::Bind() const {
+    FontCore::FontCore() {}
+    FontCore::~FontCore() {
+        glDeleteTextures(1, &__textmap);
+    }
+    void FontCore::Bind() const {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, __textmap);
     }
-    glm::vec2 Font::MeasureText(const std::string& text) const {
+    Font::Font(const std::string& src) {
+        if (src.size()) load(src);
+    };
+    Font::~Font() {};
+    void Font::Bind() const {
+        return ((FontCore*)getCore())->Bind();
+    }
+    char* Font::getBuffer(const std::string& text, glm::vec2& size) const {
+        return ((FontCore*)getCore())->getBuffer(text, size);
+    }
+    glm::vec2 FontCore::MeasureText(const std::string& text) const {
         auto map = __utf_to_codepoint(text);
         glm::vec2 size = {0, 0};
-        float y = 0;
+        float y = 0, x = 0;
         for (int i = 0; i<map.size(); i++) {
             stbtt_aligned_quad q;
-            stbtt_GetBakedQuad(__data, 512, 512, map[i]-32, &size.x, &y, &q, 1);
-            size.y = std::max(size.y, (q.y0-q.y1)/512/32);
+            stbtt_GetBakedQuad(__data, font_resolution, font_resolution, map[i]-32, &x, &y, &q, 1);
+            size.y = std::max(size.y, (q.y0 - q.y1)/font_height);
         }
+        size.x = x/font_height;
         return size;
     }
-    char* Font::getBuffer(const std::string& text, glm::vec2& size) const{
+    char* FontCore::getBuffer(const std::string& text, glm::vec2& size) const{
         auto map = __utf_to_codepoint(text);
         size = {0, 0};
-        float x = 0, y = 0, minY = 0;
+        float x = 0, y = 0;
         char* buffer = new char[text.size()*(sizeof(glm::vec2)*2)*6];
         glm::vec2* positions = (glm::vec2*)buffer;
         glm::vec2* uvs = (glm::vec2*)(buffer + text.size()*sizeof(glm::vec2)*6);
         for (int i = 0; i<map.size(); i++) {
             stbtt_aligned_quad q;
-            stbtt_GetBakedQuad(__data, 512, 512, map[i]-32, &x, &y, &q, 1);
-            q.x0=q.x0/512; q.y0 = - (q.y0+32.f)/512/32;
-            q.x1=q.x1/512; q.y1 = - (q.y1+32.f)/512/32;
-            size.y = std::max(size.y, q.y0-q.y1);
-            minY = std::min(minY, q.y1);
+            stbtt_GetBakedQuad(__data, font_resolution, font_resolution, map[i]-32, &x, &y, &q, 1);
+            q.y0 = - q.y0;
+            q.y1 = - q.y1;
+            size.y = std::max(size.y, q.y0 - q.y1);
             positions[6*i] = {q.x0, q.y0};   uvs[6*i] = {q.s0, q.t0};
             positions[6*i+1] = {q.x0, q.y1}; uvs[6*i+1] = {q.s0, q.t1};
             positions[6*i+2] = {q.x1, q.y1}; uvs[6*i+2] = {q.s1, q.t1};
@@ -70,11 +77,12 @@ namespace MyBase {
             positions[6*i+4] = {q.x1, q.y1}; uvs[6*i+4] = {q.s1, q.t1};
             positions[6*i+5] = {q.x1, q.y0}; uvs[6*i+5] = {q.s1, q.t0};
         }
-        for (int i = 0; i<map.size()*6; i++) positions[i].y -= minY;
-        size.x = x/512;
+        for (int i = 0; i<6*map.size(); i++) positions[i]/=font_height;
+        size.x = x/font_height;
+        size.y /= font_height;
         return buffer;
     }
-    std::vector<int> Font::__utf_to_codepoint(const std::string& text) const {
+    std::vector<int> FontCore::__utf_to_codepoint(const std::string& text) const {
         std::vector<int> ans;
         for (int i = 0; i<text.size();) {        
             unsigned char c = text[i];

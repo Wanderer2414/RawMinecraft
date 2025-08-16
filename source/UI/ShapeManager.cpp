@@ -39,6 +39,8 @@ namespace MyBase {
                 __rectangles.erase(pairs);
             }
         }
+        rectangle.__VAO = 0;
+        rectangle.__VBO = 0;
     }
     void ShapeManager::createShape(Ellipse& ellipse, const glm::vec2& size) {
         std::pair<float, float> pairs = {size.x, size.y};
@@ -58,6 +60,8 @@ namespace MyBase {
                 __ellipses.erase(pairs);
             }
         }
+        ellipse.__VAO = 0;
+        ellipse.__VBO = 0;
     }
     void ShapeManager::createShape(RoundedRectangle& rectangle, const glm::vec2& size, const float& radius) {
         std::tuple<float, float, float> trips = {size.x, size.y, radius};
@@ -77,6 +81,8 @@ namespace MyBase {
                 __rrectangles.erase(trips);
             }
         }
+        rectangle.__VAO = 0;
+        rectangle.__VBO = 0;
     }
     const GLuint& ShapeManager::createColor(const Color& color) {
         int code = *(int*)&color;

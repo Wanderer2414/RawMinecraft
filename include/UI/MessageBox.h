@@ -1,30 +1,39 @@
 #ifndef MESSAGE_BOX_H
 #define MESSAGE_BOX_H
-#include "Button.h"
 #include "Clock.h"
 #include "Container2D.h"
+#include "RoundedRectangle.h"
+#include "Global.h"
+#include "Shape.h"
 namespace MyBase {
-    class MessageBox: public Container2D, private ShapeContainer {
+    class MessageBox: public Container2D, public ShapeContainer {
     public:
         MessageBox();
+        MessageBox(const MessageBox&) = delete;
         ~MessageBox();
+        MessageBox& operator=(const MessageBox&) = delete;
 
         glm::vec2       getPosition() const override,
                         getSize() const override;
-        void setSize(const glm::vec2& size);
-        void setPosition(const glm::vec2& position);
+        void setSize(const glm::vec2& size, const float& roundness);
 
-       void open(GLFWwindow* window);
+       int open(GLFWwindow* window);
        void close();
-       
     protected:
+        virtual bool __exitCondition();
+        int getReturnValue() const;
+        void setReturnValue(const int& returnValue);
+        virtual void __open(GLFWwindow*), __close(GLFWwindow*);
+        virtual bool catchEvent(GLFWwindow* window) override;
+        virtual void glDraw() const override;
+        virtual void glDrawTransparent() const override;
     private:
-        Clock           __sensitiveClock;
-        glm::vec2       __position, __size;
-        bool __isOpen;
+        bool                __isOpen;
+        int                 __returnValue;
+        float               __roundness;
+        glm::vec2           __size;
+        RoundedRectangle    __background;
         bool contains(const glm::vec2& position) const override;
-        bool catchEvent(GLFWwindow* window) override;
-        void glDraw() const override;
     };
 }
 #endif

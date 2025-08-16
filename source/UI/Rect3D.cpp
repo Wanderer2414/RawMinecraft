@@ -14,9 +14,9 @@ namespace MyBase3D {
     
     }
     bool Rect3f::isIntersect(const Ray3f& ray) const {
-        glm::vec3 normal = det(__B-__A, __C-__B);
-        if (ray*normal == 0) return false;
-        float normalSide = ray*normal/glm::length(normal);
+        glm::vec3 normal = glm::cross(__B-__A, __C-__B);
+        if (glm::dot((glm::vec3)ray,normal) == 0) return false;
+        float normalSide = glm::dot((glm::vec3)ray,normal)/glm::length(normal);
         float times = std::abs(distance(ray.getOrigin())/normalSide);
         glm::vec3 pos = ray.getOrigin() + times*(glm::vec3)ray;
         return contains(pos);
@@ -32,8 +32,8 @@ namespace MyBase3D {
     }
     float Rect3f::distance(const glm::vec3& position) const {
         glm::vec3 delta = position-__A;
-        glm::vec3 normal = det(__B-__A, __C-__B);
-        return delta*normal/glm::length(normal);
+        glm::vec3 normal = glm::cross(__B-__A, __C-__B);
+        return glm::dot(delta,normal)/glm::length(normal);
     }
     glm::vec3 Rect3f::operator[](const unsigned int& index) const {
         switch (index) {
@@ -52,11 +52,11 @@ namespace MyBase3D {
         return (__A+__C)/2.f;
     }
     glm::vec3 Rect3f::getNormal() const {
-        return det(__B-__A, __C-__B);
+        return glm::cross(__B-__A, __C-__B);
     }
     glm::vec3 Rect3f::getIntersect(const Ray3f& ray) const {
-        glm::vec3 normal = det(__B-__A, __C-__B);
-        float normalSide = ray*normal/glm::length(normal);
+        glm::vec3 normal = glm::cross(__B-__A, __C-__B);
+        float normalSide = glm::dot((glm::vec3)ray,normal)/glm::length(normal);
         float times = std::abs(distance(ray.getOrigin())/normalSide);
         glm::vec3 pos = ray.getOrigin() + times*(glm::vec3)ray;
         return pos;

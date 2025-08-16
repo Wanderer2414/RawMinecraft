@@ -6,11 +6,6 @@ namespace MyBase3D {
     Container3D::~Container3D() {
     
     }
-    bool Container3D::sensitiveHandle(GLFWwindow* window) {
-        bool is_changed = Controller3D::sensitiveHandle(window);
-        for (auto& child:__children) is_changed = child->sensitiveHandle(window) || is_changed;
-        return is_changed;
-    }
     bool Container3D::catchEvent(GLFWwindow* window) {
         bool is_changed = Controller3D::catchEvent(window);
         for (auto& i:__children) is_changed = i->catchEvent(window) || is_changed;
@@ -36,13 +31,20 @@ namespace MyBase3D {
         while (i<__children.size() && __children[i] != controller) i++;
         __children.erase(__children.begin() + i);
     }
-
+    void Container3D::reset() {
+        Controller3D::reset();
+        for (auto& child:__children) child->reset();
+    }
     void Container3D::clear() {
         __children.clear();
     }
     void Container3D::glDraw() const {
+        for (int i = __children.size()-1; i>=0; i--)
+            __children[i]->glDraw();
+    }
+    void Container3D::glDrawTransparent() const {
         for (auto& child:__children) 
-            if (child->isVisible()) child->glDraw();
+            if (child->isVisible()) child->glDrawTransparent();
     }
     void Container3D::update() {
         for (auto& child:__children) child->update();

@@ -6,6 +6,7 @@
 namespace MyBase {
     Text::Text(): __font(0), __color(BLACK), __position(0, 0), __scale(1,1) {
         glGenVertexArrays(1, &__VAO);
+        glGenBuffers(1, &__VBO);
         
         glGenBuffers(1, &__POSITION);
         glBindBuffer(GL_UNIFORM_BUFFER, __POSITION);
@@ -18,45 +19,23 @@ namespace MyBase {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
         
         __COLOR = ShapeManager::getInstance().createColor(__color);
-    }
-    Text::Text(const Text& text): __color(WHITE), __position(text.__position), __scale(text.__scale) {
-        glGenVertexArrays(1, &__VAO);
-
-        glGenBuffers(1, &__POSITION);
-        glBindBuffer(GL_UNIFORM_BUFFER, __POSITION);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec2), &__position, GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-        glGenBuffers(1, &__SCALE);
-        glBindBuffer(GL_UNIFORM_BUFFER, __SCALE);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec2), &__scale, GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-        __COLOR = ShapeManager::getInstance().createColor(__color);
-        setTextColor(text.__color);
-        setFont(*text.__font);
     }
     Text::~Text() {
         glDeleteVertexArrays(1, &__VAO);
+        glDeleteBuffers(1, &__VBO);
         glDeleteBuffers(1, &__POSITION);
         glDeleteBuffers(1, &__SCALE);
         ShapeManager::getInstance().removeColor(__color);
     }
-    Text& Text::operator=(const Text& text) {
-        setPosition(text.__position);
-        setScale(text.__scale);
-        setTextColor(text.__color);
-        setFont(*text.__font);
-        return *this;
-    }
     glm::vec2 Text::getPosition() const {
         return __position;
     }
+    const std::string& Text::getText() const {
+        return __text;
+    }
     void Text::setScale(const glm::vec2& scale) {
         if (__scale!=scale) {
-            __size /= __scale;
             __scale = scale;
-            __size *= __scale;
             glBindBuffer(GL_UNIFORM_BUFFER, __SCALE);
             glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec2), &__scale);
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -93,13 +72,15 @@ namespace MyBase {
     }
     void Text::update() {
         if (!__font) return ;
+        glDeleteVertexArrays(1, &__VAO);
         glDeleteBuffers(1, &__VBO);
-        glGenBuffers(1, &__VBO);
-        
+
+        glGenVertexArrays(1, &__VAO);
         glBindVertexArray(__VAO);
+
+        glGenBuffers(1, &__VBO);
         glBindBuffer(GL_ARRAY_BUFFER, __VBO);
         char* buffer = __font->getBuffer(__text, __size);
-        __size *= __scale;
         glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2)*2*6*__text.size(), buffer, GL_STATIC_DRAW);
         glEnableVertexArrayAttrib(__VAO, 0);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
@@ -113,7 +94,7 @@ namespace MyBase {
     }
     void Text::draw() const {
         if (!__font) return ;
-        glUseProgram(MyBase3D::ShaderStorage::getInstance().getFontShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetFontShader());
         glBindVertexArray(__VAO);
         __font->Bind();
         glBindBuffer(GL_ARRAY_BUFFER, __VBO);
@@ -124,6 +105,6 @@ namespace MyBase {
         glBindVertexArray(0);
     }
     glm::vec2 Text::getSize() const {
-        return __size;
+        return __size*__scale;
     }
 }

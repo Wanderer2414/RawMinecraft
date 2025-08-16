@@ -15,7 +15,7 @@ namespace MyCraft{
     }
 
     void NPCStorage::DrawModel(std::vector<glm::mat4>& state, const ModelLoader& model) {
-        glUseProgram(MyBase3D::ShaderStorage::getInstance().getModelShader());
+        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetModelShader());
         const tinygltf::Scene& scene = model.__model.scenes[model.__model.defaultScene];
         __drawNode(scene.nodes.back(), state, model);
     }

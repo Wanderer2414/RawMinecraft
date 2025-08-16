@@ -21,7 +21,7 @@ namespace MyBase {
     }
     bool VerticalBar::catchEvent(GLFWwindow* window) {
         bool is_changed = Container2D::catchEvent(window);
-        float y = -ControlCenter::Default->getScroll().y/2.f;
+        float y = -ControlCenter::getInstance().getScroll().y/2.f;
         if (y) {
             y*=__maxValues;
             __value += y;
@@ -31,11 +31,11 @@ namespace MyBase {
         }
         if (__scrollButton.isPressed()) {
             __isScrollDown = true;
-            __mouseStartDrag = ControlCenter::Default->getCursorPos(window).y - __scrollButton.getPosition().y;
+            __mouseStartDrag = ControlCenter::getInstance().getCursorPos(window).y - __scrollButton.getPosition().y;
         }
         if (__scrollButton.isReleased()) __isScrollDown = false;
         if (__isScrollDown) {
-            glm::vec2 mousePos = ControlCenter::Default->getCursorPos(window);
+            glm::vec2 mousePos = ControlCenter::getInstance().getCursorPos(window);
             __value = (1-(mousePos.y - __mouseStartDrag - getPosition().y)/(__height-0.2))*__maxValues;
             __value = std::clamp(__value, 0.f, __maxValues);
             update();

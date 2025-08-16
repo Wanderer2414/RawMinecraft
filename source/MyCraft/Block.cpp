@@ -1,82 +1,221 @@
 #include "Block.h"
-#include "Global.h"
 namespace MyCraft {
-    BlockCatogary* BlockCatogary::Default;
-    BlockCatogary::BlockCatogary() {
-        __ptr.resize(3, 0);
-        __ptr[0] = 0;
-        int width, height, nrChannels;
-        unsigned char* data = stbi_load("assets/images/Dirt.png", &width, &height, &nrChannels, 0);
-        if (!data) {
-            std::cout << "Failed to load texture" << std::endl;
-            exit(0);
-        }
-        glGenTextures(1, &__ptr[1]);
-        glBindTexture(GL_TEXTURE_2D, __ptr[1]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width,height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        stbi_image_free(data);
-        data = stbi_load("assets/images/Grass.png", &width, &height, &nrChannels, 0);
-        if (!data) {
-            std::cout << "Failed to load texture" << std::endl;
-            exit(0);
-        }
-        glGenTextures(1, &__ptr[2]);
-        glBindTexture(GL_TEXTURE_2D, __ptr[2]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        stbi_image_free(data);
-
-        glm::vec4 tex_coord[14];
-        tex_coord[0] = {1.0/3, 0, 0,0};
-        tex_coord[1] = {2.0/3, 0, 0,0};
-        tex_coord[2] = {2.0/3, 3.0/4, 0,0};
-        tex_coord[3] = {1.0/3, 3.0/4, 0,0};
-        tex_coord[4] = {1.0/3, 1.0/4, 0,0};
-        tex_coord[5] = {2.0/3, 1.0/4, 0,0};
-        tex_coord[6] = {2.0/3, 2.0/4, 0,0};
-        tex_coord[7] = {1.0/3, 2.0/4, 0,0};
-        tex_coord[8] = {1.0/3, 1, 0,0};
-        tex_coord[9] = {2.0/3, 1, 0,0};
-        tex_coord[10] = {0, 1.0/4, 0,0};
-        tex_coord[11] = {1, 1.0/4, 0,0};
-        tex_coord[12] = {1, 2.0/4, 0,0};
-        tex_coord[13] = {0, 2.0/4, 0,0};
-
-        glGenBuffers(1, &__blockTexture);
-        glBindBuffer(GL_UNIFORM_BUFFER, __blockTexture);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)*14*4, &tex_coord[0], GL_STATIC_DRAW);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    }
-    MyCraft::BlockCatogary::~BlockCatogary() {
-        glDeleteTextures(1, &__ptr[1]);
-        glDeleteTextures(1, &__ptr[2]);
-        glDeleteBuffers(1, &__blockTexture);
-    }
-    BlockCatogary& BlockCatogary::getInstance() {
-        if (!Default) Default = new BlockCatogary();
-        return *Default;
-    }
-    void BlockCatogary::close() {
-        if (Default) {
-            delete Default;
-            Default = 0;
+    bool isLightSource(const BlockCatogary &type) {
+        switch (type) {
+            case Torch: return true;
+            default: return false;
         }
     }
-    GLuint MyCraft::BlockCatogary::getBlock(const int& index) const {
-        return __ptr[index];
+    bool isSpecial(const BlockCatogary& type) {
+        switch (type) {
+            case Torch:
+            case Water:
+                return true;
+            default: return false;
+        }
+        return false;
+    }
+    bool isCollistion(const BlockCatogary& type) {
+        switch (type) {
+            case Torch: 
+            case Water:
+            case Air: return false;
+            default: return true;
+        }
     }
 
-    GLuint MyCraft::BlockCatogary::getTexCoord() const {
-        return __blockTexture;
+    bool isVisible(const BlockCatogary& type) {
+        switch (type) {
+            case Water:
+            case Air: return false;
+            default: return true;
+        }
+    }
+    bool isTransparent(const BlockCatogary& type) {
+        switch (type) {
+            case Air:
+            case OakLeaf:
+            case Water:
+            case Torch: return true;
+            default: return false;
+        }
+        return false;
+    }
+    bool isPlaceable(const BlockCatogary& type) {
+        switch (type) {
+            case Water:
+            case Air:
+                return true;
+            default: return false;
+        }
+    }
+    bool isMultiState(const BlockCatogary& type) {
+        switch (type) {
+            case Torch:
+                return true;
+            default: return false;
+        }
+    }
+    bool isValid(const BlockCatogary& type, const unsigned char& plane) {
+        switch (type) {
+            case Torch: {
+                if (plane == 5) return false;
+                return true;
+            }
+            default: return true;
+        }
+    }
+    float getTransparentConst(const BlockCatogary& type) {
+        switch (type) {
+            case OakLeaf: return 0.98;
+            default: return 0;
+        }
+    }
+    unsigned char getLightIndensity(const BlockCatogary &type) {
+        switch (type) {
+            case Torch: return 30;
+            default: return 0;
+        }
+    }
+    BlockCatogary getBrokenResult(const BlockCatogary& block) {
+        // Blocks that break into Dirt
+        if (block == Grass) return Dirt;
+        if (block == Podzol) return Dirt;
+        if (block == DirtPath) return Dirt;
+        if (block == FarmLand) return Dirt;
+        if (block == FarmLandHydrad) return Dirt;
+
+        // Ice breaks into nothing (non-recoverable without Silk Touch)
+        if (block == Ice) return Air;
+
+        // Leaves break into nothing (chance to drop saplings, but no block)
+        if (block == OakLeaf) return Air;
+
+        // Slabs drop as full block item (assuming no stacking)
+        if (block == SmoothStoneSlab) return SmoothStoneSlab;
+
+        // Logs, planks, stripped logs drop themselves
+        if (
+            block == OakLog || block == StrippedOakLog || block == OakPlank ||
+            block == SpruceLog || block == StrippedSpruceLog || block == SprucePlank ||
+            block == BirchLog || block == StrippedBirchLog || block == BirchPlank ||
+            block == AcaciaLog || block == StrippedAcaciaLog || block == AcaciaPlank
+        ) return block;
+
+        // Stone turns into cobblestone
+        if (block == Stone) return CobbleStone;
+
+        // SmoothStone breaks into cobblestone (if not Silk Touch)
+        if (block == SmoothStone) return CobbleStone;
+
+        // Stone variants return themselves
+        if (block == CobbleStone || block == StoneBrick || block == SandStone) return block;
+
+        // Ores drop nothing without correct tool (simulate as breaking to Air)
+        if (block == CoalOre || block == IronOre) return Air;
+
+        // Obsidian drops nothing unless mined correctly
+        if (block == Obsidian) return Air;
+
+        // DeepSlate simulates dropping cobbled variant
+        if (block == DeepSlate) return CobbleStone;
+
+        // Sand breaks to itself
+        if (block == Sand) return Sand;
+
+        // Functional blocks drop themselves
+        if (
+            block == CraftingTable || block == Furnace ||
+            block == Smoker || block == BlastFurnace ||
+            block == Chest
+        ) return block;
+
+        // Air returns Air (no item)
+        if (block == Air) return Air;
+
+        // Everything else: assume it drops itself
+        return block;
     }
 
-    // void MyCraft::Block::glDraw() const {
-    //     if (__hoverPlane!=-1) {
-    //     }
-    //     glDeleteVertexArrays(1, &VAO);
-    //     glDeleteBuffers(1, &originPoint);
-    // }
+    glm::mat4 getState(const BlockCatogary& type, const unsigned char& plane) {
+        switch (type) {
+            case Torch: {
+                switch (plane) {
+                    case 0: return glm::mat4({1,0,0,0}, {0,1,0,0},{0,0,1,0},{0.4,0.4,0,1});
+                    case 1: return glm::mat4({cos(M_PI/6), 0, -sin(M_PI/6),0}, {0,1,0,0},{sin(M_PI/6),0,cos(M_PI/6),0},{-0.1,0.4,0.3,1});
+                    case 2: return glm::mat4({1, 0, 0 ,0}, {0, cos(M_PI/6), -sin(M_PI/6),0}, {0, sin(M_PI/6),cos(M_PI/6),0} ,{0.4,-0.1,0.3,1});
+                    case 3: return glm::mat4({1, 0, 0 ,0}, {0, cos(M_PI/6), sin(M_PI/6),0}, {0, -sin(M_PI/6),cos(M_PI/6),0} ,{0.4,0.9,0.3,1});
+                    case 4: return glm::mat4({cos(M_PI/6), 0, sin(M_PI/6),0}, {0,1,0,0},{-sin(M_PI/6),0,cos(M_PI/6),0},{0.9,0.4,0.3,1});
+                    default: return glm::mat4(1);
+                }
+            }
+            break;
+            default: return glm::mat4(1);
+        }
+    }
+
+    glm::mat4 getSpecialState(const BlockCatogary& type) {
+        switch (type) {
+            case Torch: return glm::mat4({0.2,0,0,0}, {0,0.2, 0,0},{0,0,0.75,0},{0,0,0,1});
+            default: return glm::mat4(1);
+        }
+    }
+
+    float getHardness(const BlockCatogary& type) {
+        switch (type) {
+            case Torch: return 10;
+            case Dirt: return 100;
+            case Grass: return 100;
+            case Sand: return 100;
+            case Podzol: return 100;
+            case FarmLand: return 100;
+            case FarmLandHydrad: return 100;
+            case Ice: return 100;
+
+            case DirtPath: return 130;
+            case SandStone: return 160;
+
+            case OakLeaf: return 40;
+
+            case Stone: return 300;
+            case StoneBrick: return 300;
+
+            case CobbleStone: return 400;
+            case SmoothStone: return 400;
+            case SmoothStoneSlab: return 400;
+
+            case OakLog: return 400;
+            case StrippedOakLog: return 400;
+            case OakPlank: return 400;
+
+            case SpruceLog: return 400;
+            case StrippedSpruceLog: return 400;
+            case SprucePlank: return 400;
+
+            case BirchLog: return 400;
+            case StrippedBirchLog: return 400;
+            case BirchPlank: return 400;
+
+            case AcaciaLog: return 400;
+            case StrippedAcaciaLog: return 400;
+            case AcaciaPlank: return 400;
+
+            case CraftingTable: return 500;
+            case Chest: return 500;
+
+            case CoalOre: return 600;
+            case IronOre: return 600;
+            case DeepSlate: return 600;
+
+            case Furnace: return 700;
+            case Smoker: return 700;
+            case BlastFurnace: return 700;
+
+            case Obsidian: return 10000;
+
+            case BedRock: return std::numeric_limits<float>::max();
+
+            default: return std::numeric_limits<float>::max();
+        }
+    }
 }

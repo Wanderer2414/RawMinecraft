@@ -66,10 +66,13 @@ namespace MyBase{
         if (Controller2D::setHover(hover)) {
             if (!hover) {
                 for (auto& child:__permanentChildren) child->setHover(false);
-                if (__currentHover!=-1) __children[__currentHover].first->setHover(false);
+                if (__currentHover!=-1) {
+                    __children[__currentHover].first->setHover(false);
+                }
                 return true;
             }
             else for (auto& child:__permanentChildren) child->setHover(true);
+            __currentHover = -1;
         }
         return false;
     }
@@ -90,17 +93,8 @@ namespace MyBase{
         for (auto& i:__permanentChildren) i->reset();
         for (auto& i:__children) i.first->reset();
     }
-    bool Container2D::sensitiveHandle(GLFWwindow* window) {
-        bool is_changed = Controller::sensitiveHandle(window);
-        for (auto& child:__permanentChildren) is_changed = child->sensitiveHandle(window) || is_changed;
-        for (int i = 0; i<__children.size(); i++) { 
-            is_changed = __children[i].first->sensitiveHandle(window) || is_changed;
-            if (__children[i].first->isFocus()) __currentFocus = i;
-        }
-        return is_changed;
-    }
     bool Container2D::catchEvent(GLFWwindow* window) {
-        bool is_changed = Controller2D::catchEvent(window);
+        bool is_changed = false;
         for (auto& i:__permanentChildren) is_changed = i->catchEvent(window) || is_changed;
         if (__currentFocus>=0) {
             is_changed = __children[__currentFocus].first->catchEvent(window) || is_changed;
@@ -110,15 +104,18 @@ namespace MyBase{
             is_changed = __children[__currentHover].first->catchEvent(window) || is_changed;
             if (__children[__currentHover].first->isFocus()) __currentFocus = __currentHover;
         }
+        is_changed = Controller2D::catchEvent(window) || is_changed;
         return is_changed;
     }
     bool Container2D::handle(GLFWwindow* window) {
-        bool is_changed = Controller::handle(window);
-        for (auto& i: __permanentChildren) is_changed = i->handle(window) || is_changed;
+        bool is_changed = false;
+        for (auto& i: __permanentChildren) 
+            is_changed = i->handle(window) || is_changed;
         for (int i = 0; i<__children.size(); i++)  {
-            __children[i].first->handle(window) || is_changed;
+            is_changed = __children[i].first->handle(window) || is_changed;
             if (__children[i].first->isFocus()) __currentFocus = i;
         }
+        is_changed = Controller::handle(window) || is_changed;
         return is_changed;
     }
     std::size_t Container2D::size() const {
@@ -153,11 +150,6 @@ namespace MyBase{
     void Container2D::insertPermanent(Controller2D* controller) {
         __permanentChildren.push_back(controller);
     }
-    void Container2D::erasePermanent(Controller2D* controller) {
-        int i = 0;
-        while (i<__permanentChildren.size() && __permanentChildren[i] != controller) i++;
-        if (i<__permanentChildren.size()) __permanentChildren.erase(__permanentChildren.begin()+i);
-    }
     void Container2D::clear() {
         __children.clear();
     }
@@ -168,8 +160,16 @@ namespace MyBase{
             if (i!=__currentFocus && __children[i].first->isVisible()) __children[i].first->glDraw();
         if (__currentFocus>=0 && __children[__currentFocus].first->isVisible()) __children[__currentFocus].first->glDraw();
     }
+    void Container2D::glDrawTransparent() const {
+        for (auto& child:__permanentChildren) 
+            if (child->isVisible()) child->glDrawTransparent();
+        for (int i = __children.size()-1; i>=0; i--) 
+            if (i!=__currentFocus && __children[i].first->isVisible()) __children[i].first->glDrawTransparent();
+        if (__currentFocus>=0 && __children[__currentFocus].first->isVisible()) __children[__currentFocus].first->glDrawTransparent();
+    }
+
     void Container2D::update() {
-        for (auto& [child, layer]:__children) child->update();
         for (auto& child:__permanentChildren) child->update();
+        for (auto& [child, layer]:__children) child->update();
     }
 }

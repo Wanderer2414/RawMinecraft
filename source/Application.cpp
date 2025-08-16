@@ -2,37 +2,38 @@
 #include "Block.h"
 #include "ControlCenter.h"
 #include "DrawingCenter.h"
-#include "GameForm.h"
+#include "FlyweightStorage.h"
 #include "IntroForm.h"
+#include "MediateForm.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
 #include "ModelStorage.h"
 #include "ShapeManager.h"
 
-MyBase::ControlCenter* MyBase::ControlCenter::Default;
 namespace MyCraft {
-    Application::Application(const float& width, const float& height) 
- {
-        auto& Default = MyBase::ControlCenter::Default = new MyBase::ControlCenter(width, height, "MyCraft");
-        Default->OpenGLrequire(4, 6);
-        Default->LimitFPS(0);
-        __window = Default->InitWindow();
-        Default->EnableTransparent();
+    Application::Application(const float& width, const float& height) {
+        MyBase::ControlCenter::getInstance().OpenGLrequire(4, 6);
+        MyBase::ControlCenter::getInstance().LimitFPS(0);
+        MyBase::ControlCenter::getInstance(). Maximize();
+        MyBase::ControlCenter::getInstance(). EnableFullScreenMode();
+        __window = MyBase::ControlCenter::getInstance().InitWindow(width, height, "MyCraft");
+        MyBase::ControlCenter::getInstance().EnableTransparent();
+
     }
     Application::~Application() {
-        MyCraft::DrawingCenter::close();
         MyBase::ShapeManager::close();
         MyBase3D::PointSet::close();
         MyBase3D::ShaderStorage::close();
-        MyCraft::BlockCatogary::close();
         MyCraft::ModelStorage::close();
-        MyBase::ControlCenter::Default->CloseWindow();
-        delete MyBase::ControlCenter::Default;
+        DrawingCenter::Close();
+        MyBase::FlyweightStorage::close();
+        MyBase::ControlCenter::getInstance().CloseWindow();
+        MyBase::ControlCenter::close();
     }
 
     void Application::run() {
         int formIndex = 0;
-        while (!glfwWindowShouldClose(__window)) {
+        while (!glfwWindowShouldClose(__window) && formIndex>-1) {
             switch (formIndex) {
                 case 0: {
                     IntroForm introForm(__window, 0);
@@ -40,12 +41,8 @@ namespace MyCraft {
                 }
                 break;
                 case 1: {
-                    GameForm gameForm(__window, 1);
-                    formIndex = gameForm.run(__window);
-                    // glm::mat4 modelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(myModel.scale));
-                    // //shader.setMat4("model", modelMatrix);
-
-                    // myModel.Draw();
+                    MediateForm mediateForm(__window, 1);
+                    formIndex = mediateForm.run(__window);
                 }
                 break;
             }

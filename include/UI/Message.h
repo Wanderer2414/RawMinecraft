@@ -7,19 +7,25 @@ namespace MyBase {
     class Network;
     class World;
     class Command;
-    #define MessageTypeSize 11
+    #define MessageTypeSize 28
     enum MessageType: unsigned char {
-        RequestGoto, RequestFall,
-        Move, Fall,  StopFall,
+        RequestGoto, RequestFall, RequestJump,
+        Move, Fall,  StopFall, Jump,
         SetCamera, ResetCamera,
-        LeftAttack, RightAttack,
-        Placeblock,
-        CheckHover
+        Attack, Place,
+        AcceptPlace, AcceptDestroy,
+        CheckHover,
+        WorldMove,
+        PrepareOpenInventory, OpenInventoryBlock,
+        DropItem, ReceiveItem, AddItem,
+        HoldItem,
+        DiveView, Dive, OngroundView, OnGround,
+        Damage, Health, UpdateHealth
     };
     class Port {
     public:
         Port(Network* network = 0);
-        ~Port();
+        virtual ~Port();
 
         virtual void match(Network* network);
 
@@ -38,14 +44,17 @@ namespace MyBase {
 
     class Network {
     public:
-        Network();
-        ~Network();
-        virtual void match(Port* port);
+        static void match(Port* port);
         virtual void receive(Port& source, Message* Message);
         virtual void receive(Port& source, Port& destination, Message* Message);
+        static void close();
     private:
+        Network();
+        ~Network();
+        static Network& get();
         std::vector<std::vector<Port*>>             __ports;
         void send(Port& source, Port& destination, Message* Message);
+        static Network* network;
     };
     
     class Message {
@@ -56,6 +65,7 @@ namespace MyBase {
     };
     class Command {
     public:
+        Command();
         virtual MessageType getType()      const = 0;
         virtual void execute(Port& mine, Port& source, Message* message) = 0;
         virtual ~Command() = 0;

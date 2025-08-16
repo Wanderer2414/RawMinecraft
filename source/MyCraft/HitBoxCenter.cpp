@@ -9,15 +9,22 @@ namespace MyCraft {
     
     HitBoxCenter::HitBoxCenter() {
         __colors = glm::vec3(1,0,0);
-        modelTest = new GLTFModel("assets/models/pig_model.gltf", 1.0f);
-        if(!modelTest) {
-            std::cerr << "Failed to load test model." << std::endl;
-        } else {
-            std::cout << "Test model loaded successfully." << std::endl;
-        }
+        // modelTest = new GLTFModel("assets/models/pig_model.gltf", 1.0f);
+        // if(!modelTest) {
+        //     std::cerr << "Failed to load test model." << std::endl;
+        // } else {
+        //     std::cout << "Test model loaded successfully." << std::endl;
+        // }
     }
     HitBoxCenter::~HitBoxCenter() {
-        delete modelTest;
+        // delete modelTest;
+    }
+
+    bool HitBoxCenter::isBusyBlock(const glm::ivec3& position) const {
+        return false;
+    }
+    bool HitBoxCenter::isColistion(const glm::vec3& position) const {
+        return false;
     }
     void HitBoxCenter::insert(ModelController* model) {
         __models.push_back(model);
@@ -25,7 +32,6 @@ namespace MyCraft {
     void HitBoxCenter::erase(ModelController* model) {
     }
     void HitBoxCenter::glDraw() const {
-        std::cout<<"Hitbox Center::glDraw() called"<<std::endl;
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDefaultShader());
         for (auto& model: __models) {
             glm::mat4x3 mat = model->getShape();

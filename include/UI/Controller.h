@@ -11,11 +11,12 @@ namespace MyBase {
         friend Container;
     protected:
         Controller();
-        ~Controller();
+        virtual ~Controller();
         virtual bool    catchEvent(GLFWwindow* window);
-        virtual bool    sensitiveHandle(GLFWwindow* window);
         virtual bool    handle(GLFWwindow* window);
-        virtual void    glDraw() const = 0;
+        virtual void    reset();
+        virtual void    glDraw() const;
+        virtual void    glDrawTransparent() const;
     private:
     };
 };

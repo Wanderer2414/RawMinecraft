@@ -14,6 +14,7 @@ namespace MyBase {
         virtual glm::vec2 getPoint(const size_t& index) const = 0;
         virtual glm::vec2 getCenter() const = 0;
         friend class ShapeContainer;
+        friend class ShapeManager;
     protected:
         void update();
     private:
@@ -25,17 +26,20 @@ namespace MyBase {
         ~ShapeContainer();
         Color getColor() const;
         glm::vec2 getPosition() const;
-        
+        float getMarginWidth() const;
         void move(const glm::vec2& offset);
+        void setMarginWidth(const float& width);
+        void setMarginColor(const Color& color);
         void setPosition(const glm::vec2& position);
         void setFillColor(const Color& color);
 
-    protected:
         void draw(const Shape& shape) const;
+    protected:
     private:
+        float       __marginWidth;
         glm::vec2   __position;
-        Color       __color;
-        GLuint      __colorCode, __positionCode;
+        Color       __color, __marginColor;
+        GLuint      __colorCode, __positionCode, __marginColorCode;
     };
 }
 #endif

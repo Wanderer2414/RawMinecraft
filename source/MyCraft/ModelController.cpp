@@ -1,6 +1,7 @@
 #include "ModelController.h"
 #include "Message.h"
 #include "PlayerModelController.h"
+#include "WorldRender.h"
 
 namespace MyCraft {
     ModelController::ModelController(): __isFall(false), __zVelocity(0) {}
@@ -27,7 +28,7 @@ namespace MyCraft {
     void MoveCommand::execute(MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message)   {
         MoveMessage* moveMessage = (MoveMessage*)message;
         __model->move(moveMessage->direction);
-        if (!__model->isFall())
+        if (!__model->isFall()) 
             mine.send(new RequestFallMessage(__model->getShape(), __model->getZVelocity()));
     }
     
@@ -53,4 +54,17 @@ namespace MyCraft {
         __model->setFall(false);
         __model->setZVelocity(0);
     }   
+
+    JumpCommand::JumpCommand(ModelController* model): __model(model) {}
+    JumpCommand::~JumpCommand() {}
+
+    MyBase::MessageType JumpCommand::getType() const {
+        return MyBase::Jump;
+    }
+    void JumpCommand::execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message) {
+        JumpMessage* package = (JumpMessage*)message;
+        __model->setFall(true);
+        __model->setZVelocity(package->zVelocity);
+        __model->move({0,0,package->zVelocity});
+    }
 }

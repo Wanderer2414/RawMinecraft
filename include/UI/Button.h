@@ -5,6 +5,7 @@
 #include "Rectangle.h"
 #include "RoundedRectangle.h"
 #include "Text.h"
+#include "Texture.h"
 
 namespace MyBase  {
     template<typename T>
@@ -12,7 +13,6 @@ namespace MyBase  {
     public:
         Button();
         ~Button();
-        bool setHover(const bool& hover) override;
         glm::vec2 getSize() const override;
         glm::vec2 getPosition() const override;
         void setPosition(const glm::vec2& position);
@@ -24,12 +24,15 @@ namespace MyBase  {
         void setText(const std::string& text);
         void setScale(const glm::vec2& scale);
     protected:
-        void update() override;
+        virtual void update() override;
+        virtual bool    __mouseClicked(GLFWwindow*) override,
+                        __hover() override,
+                        __lostHover() override,
+                        __mouseRelease(GLFWwindow*) override;
+        virtual void        glDraw() const override;
     private:
         virtual T&          getShape() = 0;
         virtual const T&    getShape() const = 0;
-        virtual void        glDraw() const override;
-        virtual bool        catchEvent(GLFWwindow* window) override;
         bool                contains(const glm::vec2& position) const override;
         Color   __hoverColor, __clickColor, __normalColor;
     };
@@ -71,6 +74,22 @@ namespace MyBase  {
         Ellipse& getShape() override;
         const Ellipse& getShape() const override;
         Ellipse __shape;
+    };
+
+    class TextureButton: public RoundedRectangleButton, private TextureContainer {
+    public:
+        TextureButton();
+        ~TextureButton();
+        using TextureContainer::setTextureImportSize;
+        using TextureContainer::setTextureExportSize;
+        using TextureContainer::setTexture;
+        void setTextureOrigin(const glm::vec2& position);
+    protected:
+        virtual void update() override;
+        virtual bool __hover() override, __lostHover() override, __mouseClicked(GLFWwindow* window) override, __mouseRelease(GLFWwindow* window) override;
+    private:
+        glm::vec2       __textureOrigin;
+        void glDraw() const override;
     };
 }
 #endif

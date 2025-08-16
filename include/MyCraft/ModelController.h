@@ -17,9 +17,11 @@ namespace MyCraft {
                             rotate(const float& angle) = 0;
             virtual glm::vec3 getModelPosition() const = 0;
             virtual glm::mat4x3 getShape() const = 0;
+            
             friend class MoveCommand;
             friend class FallCommand;
             friend class StopFallCommand;
+            friend class JumpCommand;
         protected:
             virtual void update() = 0;
             void setZVelocity(const float& z);
@@ -53,7 +55,17 @@ namespace MyCraft {
         StopFallCommand(MyCraft::ModelController* model);
         ~StopFallCommand();
 
-         MyBase::MessageType getType()                               const override;
+        MyBase::MessageType getType()                               const override;
+        void execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message)   override;
+    private:
+        MyCraft::ModelController*      __model;
+    };
+    class JumpCommand: public MyBase::Command {
+    public:
+        JumpCommand(ModelController* model);
+        ~JumpCommand();
+
+        MyBase::MessageType getType()                               const override;
         void execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message)   override;
     private:
         MyCraft::ModelController*      __model;

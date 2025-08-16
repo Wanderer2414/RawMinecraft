@@ -4,81 +4,53 @@
 #include "Block.h"
 #include "Clock.h"
 #include "Controller3D.h"
+#include "CrackingManage.h"
+#include "DroppedItem.h"
+#include "HitBoxCenter.h"
+#include "Item.h"
 #include "Message.h"
+#include "WorldRender.h"
 
 namespace MyCraft {
-class World: public MyBase3D::Controller3D, public MyBase::Port {
-    #define world_side 5
+class World: public MyBase3D::Container3D, public MyBase::Port {
     public:
-        World(const int& x, const int& y, const int& z);
+        World(const int& x, const int& y, const int& z, const std::string& src);
         ~World();
-        const BlockCatogary::Catogary&    at(const int& x, const int& y, const int& z) const;
-        const BlockCatogary::Catogary&    at(const glm::vec3& pos) const;
-        void                    set(const int& x, const int& y, const int& z, const BlockCatogary::Catogary& type);
-        void                    set(const glm::vec3& pos, const BlockCatogary::Catogary& type);
-        void                    setHoverBlock(const glm::vec3& pos, const glm::vec3& placePosition),
-                                unHoverBlock();
-        friend class PlaceblockCommand;
-        friend class CheckHoverCommand;
+        
+        bool isBusyBlock(const glm::ivec3& position);
+        void teleport(const glm::ivec3& position);
+        friend class PlaceBlockCommand;
+        friend class CrackBlockCommand;
     protected:
-        bool handle(GLFWwindow* window) override;
-        virtual void glDraw() const override;
     private:
-        bool                    __isHoverBlock;
-        glm::vec3               __hoverBlock, __placePosition, __cameraPosition, __cameraDir;
-        std::map<BlockCatogary::Catogary,std::vector<glm::vec4>>  __list;
-        BlockCatogary::Catogary                 ***__blockTypes;
-        std::vector<std::vector<std::vector<int>>> __tableIndexes;
-        std::bitset<16*world_side>              **__bits;
-        glm::vec3               __position;
-        MyBase::Clock           pFrameAlarm;
-        std::vector<glm::vec4>  __chunkPositions;
+        HitBoxCenter            __hitbox;
+        WorldRender             __worldRender;
+        CrackingManage          __crackingManage;
+        DropItemManage          __dropItemManage;
+        glm::ivec3              __placePosition;
+        glm::vec3               __cameraPosition, __cameraDir;
 
-        void __enableBit(const int& x, const int& y, const int& z);
-        void __disableBit(const int& x, const int& y, const int& z);
-    };
-    class CheckEmptyCommand: public MyBase::Command {
-    public:
-        CheckEmptyCommand(MyCraft::World* world);
-        ~CheckEmptyCommand();
-
-        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
-        MyBase::MessageType getType() const override;
-    private:
-        World*  __world;
     };
 
-    class CheckFallCommand: public MyBase::Command {
-    public:
-        CheckFallCommand(MyCraft::World* world);
-        ~CheckFallCommand();
 
-        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
-        MyBase::MessageType getType() const override;
-    private:
-        World*  __world;
-    };
-
-    class CheckHoverCommand: public MyBase::Command {
+    class PlaceBlockCommand: public MyBase::Command {
     public:
-        CheckHoverCommand(MyCraft::World* world);
-        ~CheckHoverCommand();
+        PlaceBlockCommand(MyCraft::World& world);
+        ~PlaceBlockCommand();
         MyBase::MessageType getType() const override;
         void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
     private:
-        World* __world;
+        World& __world;
     };
 
-    class PlaceblockCommand: public MyBase::Command {
+    class CrackBlockCommand: public MyBase::Command {
     public:
-        PlaceblockCommand(MyCraft::World* world);
-        ~PlaceblockCommand();
+        CrackBlockCommand(World& world);
+        ~CrackBlockCommand();
         MyBase::MessageType getType() const override;
         void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
     private:
-        World* __world;
+        World& __world;
     };
-
-    
 }
 #endif
