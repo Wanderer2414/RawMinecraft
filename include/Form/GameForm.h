@@ -18,7 +18,6 @@
 #include "PlayerModelController.h"
 #include "Sun.h"
 #include "World.h"
-#include "MyCraft/ModelTest/gltf_mesh.h"
 
 namespace MyCraft {
     class GameForm: public MyBase3D::Form3D {

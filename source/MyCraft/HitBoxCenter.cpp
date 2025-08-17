@@ -32,6 +32,7 @@ namespace MyCraft {
     void HitBoxCenter::erase(ModelController* model) {
     }
     void HitBoxCenter::glDraw() const {
+        __playerModel.draw();
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDefaultShader());
         for (auto& model: __models) {
             glm::mat4x3 mat = model->getShape();

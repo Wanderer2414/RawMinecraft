@@ -16,7 +16,8 @@ namespace MyBase {
         fstream.read((char*)&data, sz);
         unsigned char *bitmap = new unsigned char[font_resolution*font_resolution];
         stbtt_BakeFontBitmap(data, 0, font_height, bitmap, font_resolution, font_resolution, 32, 96, core->__data);
-
+        fstream.close();
+        
         glGenTextures(1, &core->__textmap);
         glBindTexture(GL_TEXTURE_2D, core->__textmap);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, font_resolution, font_resolution, 0, GL_RED, GL_UNSIGNED_BYTE,  bitmap);

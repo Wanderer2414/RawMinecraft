@@ -4,7 +4,7 @@
 #include "ShaderStorage.h"
 namespace MyCraft {
     ModelStorage* ModelStorage::Default;
-    ModelStorage::ModelStorage(): __playerModel("assets/models/Model/Playermodel.gltf") {
+    ModelStorage::ModelStorage(): __playerModel("assets/models/Player/Steve.gltf") {
         glGenBuffers(1, &__nodeState);
         glBindBuffer(GL_UNIFORM_BUFFER, __nodeState);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), 0, GL_DYNAMIC_DRAW);
