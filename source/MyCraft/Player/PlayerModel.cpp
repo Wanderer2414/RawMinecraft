@@ -1,13 +1,127 @@
 #include "PlayerModel.h"
+#include "General.h"
+#include "glm/geometric.hpp"
 
 namespace MyCraft {
-    PlayerModel::PlayerModel(): GLTFModel("assets/models/Player/Steve.gltf") {
-        __skin.load("assets/models/Player/Steve.png", false);
-    }
-    PlayerModel::~PlayerModel() {}
+    namespace Player {
+        Model::Model(): GLTFModel("assets/models/Player/Steve.gltf"), 
+            __walk(Animations("walk")), 
+            __left_attack(Animations("left_attack")),
+            __right_attack(Animations("right_attack")),
+            __isChanged(false), __position(0),
+            __isCrouch(false),  __moveTime(0), __isRightAttack(false), __isLeftAttack(false) 
+        {
+            __skin.load("assets/models/Player/Steve.png", false);
+            __move_clock.setDuration(40);
+            __attack_clock.setDuration(250);
+        }
+        Model::~Model() {}
 
-    void PlayerModel::draw() const {
-        __skin.Bind();
-        Draw(glm::mat4(0));
+        bool Model::isCrouch() const {
+            return __isCrouch;
+        }
+        bool Model::reset() {
+            if (__move_clock.get() && __moveTime) {
+                __moveTime = 0;
+                __isChanged = true;
+                return true;
+            }
+            return false;
+        }
+        bool Model::apply() {
+            if (!__move_clock.get() || !__attack_clock.get()) __isChanged = true;
+            if (__isChanged) {
+                __walk.apply(States(), __moveTime);
+
+                if (!__attack_clock.get()) {
+                    if (__isRightAttack) __right_attack.apply(States(), (GetTime()-__start_attack_time)/250.f);
+                    else if (__isLeftAttack) __left_attack.apply(States(), (GetTime()-__start_attack_time)/250.f);
+                }
+                else __isLeftAttack = __isRightAttack = false;
+                {
+                    glm::vec3 xy(__eye_direction.x, __eye_direction.y, 0);
+                    xy = glm::normalize(xy);
+                    float angle = glm::angle(xy, glm::vec3(1,0,0)), __angle = glm::angle(__direction, glm::vec3(1,0,0));
+                    if (xy.y>0) angle = -angle;
+                    if (__direction.y>0) __angle = -__angle;
+
+                    angle = __angle - angle;
+                    if (angle<-M_PI*0.75) angle = -0.75*M_PI;
+                    else if (angle>M_PI*0.75) angle = M_PI*0.75;
+                    States()[3] = glm::rotate(angle, glm::vec3(0,0,1));
+
+                    angle = glm::angle(__eye_direction, xy);
+                    if (__eye_direction.z<0) angle = -angle;
+
+                    States()[3] *= glm::rotate(angle, glm::vec3(1, 0, 0));
+                }
+                {
+                    States()[12] = glm::mat4(1);
+                    States()[12][3] = glm::vec4(__position,1);
+                }
+                {
+                    float angle = glm::angle(__direction, glm::vec3(0,1,0));
+                    if (__direction.x > 0) angle = -angle;
+                    States()[12] *= glm::rotate(angle, glm::vec3(0,0,1));
+                }
+                __isChanged = false;
+                return true;   
+            }
+            return false;
+        };
+        glm::mat4x3 Model::getShape()              const {
+            return glm::mat4x3(1);
+        }
+        glm::vec3 Model::getPosition() const {
+            return __position;
+        }
+        void Model::rotate(const glm::vec3& direction) {
+            __direction = direction;
+            __isChanged = true;
+        }
+        void Model::crouch() {
+            __isCrouch = true;
+        }
+        void Model::uncrouch() {
+            __isCrouch = false;
+        }
+        void Model::attack() {
+            if (__attack_clock.get()) {
+                __attack_clock.restart();
+                __start_attack_time = GetTime();
+                __isChanged = true;
+                __isRightAttack = !(__isLeftAttack = false);
+            }
+        }
+        void Model::left_attack() {
+            if (__attack_clock.get()) {
+                __attack_clock.restart();
+                __start_attack_time = GetTime();
+                __isChanged = true;
+                __isLeftAttack = !(__isRightAttack = false);
+            }
+        }
+        void Model::look(const glm::vec3& position)         {
+            
+        }
+        void Model::see(const glm::vec3& dir)                 {
+            __eye_direction = dir;
+            __isChanged = true;
+        }
+        void Model::move(const glm::vec3& dir)       {
+            glm::vec2 direction = dir;
+            __position += dir;
+            __moveTime += glm::length(direction)/4;
+            while (__moveTime>1) __moveTime--;
+            __move_clock.restart();
+        }
+        void Model::setPosition(const glm::vec3& position) {
+            __position = position;
+            __isChanged = true;
+        }
+        void Model::draw() const {
+            __skin.Bind();
+            GLTFModel::draw();
+        }
     }
 }

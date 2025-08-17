@@ -7,7 +7,6 @@
 #include "MediateForm.h"
 #include "PointSet.h"
 #include "ShaderStorage.h"
-#include "ModelStorage.h"
 #include "ShapeManager.h"
 
 namespace MyCraft {
@@ -24,7 +23,6 @@ namespace MyCraft {
         MyBase::ShapeManager::close();
         MyBase3D::PointSet::close();
         MyBase3D::ShaderStorage::close();
-        MyCraft::ModelStorage::close();
         DrawingCenter::Close();
         MyBase::FlyweightStorage::close();
         MyBase::ControlCenter::getInstance().CloseWindow();

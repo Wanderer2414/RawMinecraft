@@ -2,6 +2,8 @@
 #include "Global.h"
 
 namespace MyCraft {
+
+    GLTFNodeAnimation::~GLTFNodeAnimation() {}
     NodeRotation::NodeRotation(const tinygltf::Model& model, const tinygltf::Animation& animation, const tinygltf::AnimationChannel& channel): __root(0), __cur(0) {
         if (channel.target_path != "rotation") 
             throw std::runtime_error("Wrong type of animation");
@@ -11,12 +13,12 @@ namespace MyCraft {
         const tinygltf::BufferView& TimeView = model.bufferViews[TimeAccessor.bufferView];
         const tinygltf::BufferView& ValueView = model.bufferViews[ValueAccessor.bufferView];
         
-        float* time = (float*)model.buffers[TimeView.buffer].data.data() + TimeView.byteOffset + TimeAccessor.byteOffset;
+        float* time = (float*)(model.buffers[TimeView.buffer].data.data() + TimeView.byteOffset + TimeAccessor.byteOffset);
         glm::quat* value = (glm::quat*)(model.buffers[ValueView.buffer].data.data() + ValueView.byteOffset + ValueAccessor.byteOffset);
 
         float length = time[TimeAccessor.count-1];
 
-        for (int i = TimeAccessor.count-2; i>=0; i--) {
+        for (int i = TimeAccessor.count-1; i>=0; i--) {
             __cur = new Node(__cur);
             if (!__root) __root = __cur;
             __cur->percent = time[i]/length;

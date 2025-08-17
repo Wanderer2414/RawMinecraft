@@ -1,6 +1,5 @@
 #ifndef GLTF_ANIMATION_H
 #define GLTF_ANIMATION_H
-#include "GLTFMesh.h"
 #include "GLTFNodeAnimation.h"
 #include "Global.h"
 namespace MyCraft {
@@ -10,7 +9,6 @@ namespace MyCraft {
         ~GLTFAnimation();
         GLTFAnimation& operator=(const GLTFAnimation&) const = delete; 
         GLTFAnimation(const GLTFAnimation&) = delete;
-    protected:
         glm::mat4 get(const float& node, const float& percent);
     private:
         std::vector<GLTFNodeAnimation*> __subAnimations;

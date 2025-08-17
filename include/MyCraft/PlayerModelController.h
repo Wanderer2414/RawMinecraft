@@ -7,19 +7,19 @@
 #include "Message.h"
 #include "ModelController.h"
 #include "PlayerInventoryModule.h"
+#include "PlayerModel.h"
 namespace MyCraft {
-    class PlayerModelController: public ModelController, public MyBase::Port, public PlayerInventoryModule, public HealthModule {
+    class PlayerModelController: public ModelController, public MyBase::Port, public PlayerInventoryModule, public HealthModule, public Player::Model {
     public: 
         PlayerModelController();
         ~PlayerModelController();
         bool        isCrounch() const;
-        bool        isRun() const;
-        glm::vec3   getModelPosition() const    override,
+        glm::vec3   getPosition() const    override,
                     getDirection() const;
         void        move(const glm::vec3& delta) override,
                     rotate(const float& angle)  override,
                     teleport(const glm::vec3& position),
-                    rotate(const glm::vec3& dir),
+                    rotate(const glm::vec3& dir) override,
                     rightAttack(),
                     leftAttack(),
                     see(const glm::vec3& dir) override,
@@ -30,15 +30,13 @@ namespace MyCraft {
                     setHoverBlock(const glm::vec3& hover, const glm::vec3& place, const BlockCatogary& type);
         glm::mat4x3 getShape() const override;
     private:
-        bool            __isRun, __isDrawable, __isChanged,
+        bool            __isDrawable, __isChanged,
                         __isLeftAttack, __isRightAttack,
                         __isCrouch;
-        float           __runTime, __handTime, __speed;
-        glm::vec3       __position, __diagonal;
+        float           __speed;
+        glm::vec3       __diagonal;
         glm::vec3       __direction, __eye_direction;
-        std::vector<glm::mat4> __animation;
         MyBase::Clock   __animationClock, __speedControl,
-                        __runCooldown,
                         __attack__cooldown;
         BlockCatogary   __type;
         glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;

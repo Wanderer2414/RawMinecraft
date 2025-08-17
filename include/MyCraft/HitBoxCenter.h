@@ -19,7 +19,6 @@ namespace MyCraft {
             void glDraw() const             override;
             glm::vec3              __colors;
             std::vector<ModelController*> __models;
-            PlayerModel     __playerModel;
             // GLTFModel * modelTest;
     };
 }

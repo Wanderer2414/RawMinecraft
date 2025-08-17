@@ -1,4 +1,5 @@
 #include "GLTFMesh.h"
+#include "GLTFAnimation.h"
 #include "Global.h"
 #include "ShaderStorage.h"
 
@@ -13,16 +14,26 @@ namespace MyCraft {
     const glm::mat4& GLTFStaticMesh::SetNode::operator[](const int& index) const {
         return __states[index];
     }
-    GLTFStaticMesh::SetNode::SetNode(const int& size) {
+    void GLTFStaticMesh::SetNode::reset() {
+        for (int i = 0; i<__size; i++) __states[i] = glm::mat4(1);
+    }
+    GLTFStaticMesh::SetNode::SetNode(const int& size):__size(size) {
         __states = new glm::mat4[size];
         for (int i = 0; i<size; i++) __states[i] = glm::mat4(1);
     }
     GLTFStaticMesh::SetNode::~SetNode() {
         delete[] __states;
     }
+    GLTFStaticMesh::SetNode& GLTFStaticMesh::States() {
+        return *__nodes;
+    }
+    GLTFAnimation& GLTFStaticMesh::Animations(const std::string& name) {
+        return *__animation.at(name);
+    }
 
     GLTFStaticMesh::GLTFStaticMesh(const tinygltf::Model& model):__VAO(0) {
         BindModel(model);
+        LoadAnimation(model);
 
         glGenBuffers(1, &__state);
         glBindBuffer(GL_UNIFORM_BUFFER, __state);
@@ -37,6 +48,7 @@ namespace MyCraft {
         glDeleteBuffers(__ebos.size(), __ebos.data());
         delete __nodes;
         delete __root;
+        for (auto& i:__animation) delete i.second;
     }
     void GLTFStaticMesh::BindModel(const tinygltf::Model& model) {
         __VAO.resize(model.meshes.size());
@@ -122,8 +134,8 @@ namespace MyCraft {
         glm::mat4 new_state = state;
         if (root->children.size()) {
             new_state = new_state*glm::translate(glm::mat4(1), root->translation);
+            new_state *= (*__nodes)[root->node];
         }
-        new_state *= (*__nodes)[root->node];
         for(size_t i = 0; i < root->children.size(); ++i) {
             DrawModelNodes(root->children[i], new_state);
         }
@@ -133,6 +145,11 @@ namespace MyCraft {
             glBindBufferBase(GL_UNIFORM_BUFFER, 1, __state);
             
             DrawMesh(root->node);
+        }
+    }
+    void GLTFStaticMesh::LoadAnimation(const tinygltf::Model& model) {
+        for (int i = 0; i<model.animations.size() ;i++) {
+            __animation[model.animations[i].name] = new GLTFAnimation(model, model.animations[i]);
         }
     }
 

@@ -1,19 +1,19 @@
-#ifndef PLAYER_ANIMATION_H
-#define PLAYER_ANIMATION_H
+#ifndef PLAYER_WALK_ANIMATION_h
+#define PLAYER_WALK_ANIMATION_h
 #include "GLTFAnimation.h"
 #include "GLTFMesh.h"
-#include "Global.h"
 namespace MyCraft {
     namespace Player {
-        class WalkAnimation: public GLTFAnimation {
+        class WalkAnimation {
         public:
-            WalkAnimation(const tinygltf::Model& model);
+            WalkAnimation(GLTFAnimation& animation);
             ~WalkAnimation();
             WalkAnimation(const WalkAnimation&) = delete;
             WalkAnimation& operator=(const WalkAnimation&) const = delete; 
-            void apply(GLTFStaticMesh& set, const float& percent);
+            void apply(GLTFStaticMesh::SetNode& node, const float& percent);
         protected:
         private:
+            GLTFAnimation& __animation;
         };
     }
 }

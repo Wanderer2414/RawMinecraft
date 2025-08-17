@@ -123,7 +123,7 @@ namespace MyCraft {
         if (__fpsClock.get()) {
             __fpsClock.restart();
             __label.setText(std::format("Fps: {}", (int)getCurrentFps()));
-            glm::vec3 position = __model.getModelPosition();
+            glm::vec3 position = __model.getPosition();
             position.x = floor(position.x/16);
             position.y = floor(position.y/16);
             position.z = floor(position.z/16);
@@ -136,10 +136,6 @@ namespace MyCraft {
         if (delta.x != 0 || delta.y != 0) {
             MyBase::ControlCenter::CenteringMouse(window);
             __model.seeRotate(-delta.x, delta.y);
-            is_changed = true;
-        }
-        if (__model.isRun()) {
-            __positionLabel.setText(std::format("Position: ({}, {}, {})", (int)__model.getModelPosition().x, (int)__model.getModelPosition().y, (int)__model.getModelPosition().z));
             is_changed = true;
         }
         return is_changed;

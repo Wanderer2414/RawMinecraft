@@ -7,23 +7,19 @@
 #include "Message.h"
 #include "Global.h"
 #include "ModelController.h"
-#include "ModelLoader.h"
-#include "ModelStorage.h"
 #include "PlayerInventoryModule.h"
+#include "PlayerModel.h"
 #include "Sun.h"
 #include "WorldRender.h"
 
 namespace MyCraft {
-    PlayerModelController::PlayerModelController(): __position(0), __direction(0, -1, 0), __runTime(0), __handTime(0), __isChanged(false),
-        __isLeftAttack(0), __isRightAttack(0), __animation(ModelStorage::getInstance().getPlayerModel().getNodeCount(), 1), __eye_direction(0, -1, 0),
+    PlayerModelController::PlayerModelController(): __direction(0, -1, 0), __isChanged(false),
+        __isLeftAttack(0), __isRightAttack(0), __eye_direction(0, -1, 0),
         __isCrouch(false), __isDrawable(true), HealthModule(100) {
-        ModelStorage::getInstance().getPlayerModel().apply(__animation, "walk", __runTime);
         __animationClock.setDuration(30);
         __attack__cooldown.setDuration(250);
-        __isRun = false;
         __speed = 0.2;
         __diagonal = {0.6, 0.4, 1.9};
-        __runCooldown.setDuration(30);
         __speedControl.setDuration(30);
 
 
@@ -45,16 +41,13 @@ namespace MyCraft {
     }
     bool PlayerModelController::catchEvent(GLFWwindow* window) {
         __isChanged = ModelController::catchEvent(window) || __isChanged;
-        if (MyBase::ControlCenter::getInstance().IsMouseClicked() || __isLeftAttack || __isRightAttack) {
-            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
-                leftAttack();
-                __isChanged = true;
-            }
-            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
-                rightAttack();
-                __isChanged = true;
-            }
-
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
+            leftAttack();
+            __isChanged = true;
+        }
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
+            rightAttack();
+            __isChanged = true;
         }
         return __isChanged;
     }
@@ -84,8 +77,8 @@ namespace MyCraft {
             dir.z = 0;
             dir = glm::normalize(dir)*__speed;
             rotate(dir);
+            send(new RequestGotoMessage(getShape(), dir));
         }
-        send(new RequestGotoMessage(getShape(), dir));
 
         if (glfwGetKey(window, GLFW_KEY_SPACE)) {
             //Jump here
@@ -103,9 +96,6 @@ namespace MyCraft {
         return __isChanged;
     }
     
-    bool PlayerModelController::isRun() const {
-        return __isRun;
-    }
     bool PlayerModelController::handle(GLFWwindow* window) {
         __isChanged = ModelController::handle(window) || __isChanged;
         if (__speedControl.get()) {
@@ -114,46 +104,29 @@ namespace MyCraft {
         }
         if (__animationClock.get()) {
             __animationClock.restart();
-            std::fill(__animation.begin(), __animation.end(), glm::mat4(1));
             if (__isCrouch) {
-                ModelStorage::getInstance().getPlayerModel().apply(__animation, "crouch", 0);
                 __speed = 0.05;
-                __isChanged = true;
-            }
-            if (__isRun) {
-                if (__runCooldown.get()) {
-                    __runCooldown.restart();
-                    __isRun = false;
-                    __runTime = 0;
-                }
-                else __runTime+=0.1;
-                if (__runTime>=1) __runTime -= 1;
-                ModelStorage::getInstance().getPlayerModel().apply(__animation, "walk", __runTime);
                 __isChanged = true;
             }
             if (__isRightAttack) {
                 if (__attack__cooldown.get()) {
                     __isRightAttack = false;
-                    __handTime = 0;
                 }
-                else __handTime += 0.03;
-                ModelStorage::getInstance().getPlayerModel().apply(__animation, "right_attack", __handTime);
                 __isChanged = true;
             }
             if (__isLeftAttack) {
                 if (__attack__cooldown.get()) {
                     __isLeftAttack = false;
-                    __handTime = 0;
                 }
-                else __handTime += 0.03;
-                ModelStorage::getInstance().getPlayerModel().apply(__animation, "left_attack", __handTime);
                 __isChanged = true;
             }
         }
+        __isChanged = Player::Model::reset() || __isChanged;
+        __isChanged = Player::Model::apply() || __isChanged;
         return __isChanged;
     }
-    glm::vec3 PlayerModelController::getModelPosition() const {
-        return __position;
+    glm::vec3 PlayerModelController::getPosition() const {
+        return Player::Model::getPosition();
     }
     glm::vec3 PlayerModelController::getDirection() const {
         return __eye_direction;
@@ -168,7 +141,7 @@ namespace MyCraft {
         if (__direction.x < 0) angle = -angle;
 
         glm::mat4x3 ans;
-        ans[0] = __position;
+        ans[0] = getPosition();
         ans[1] = {__diagonal.x, 0, 0};
         ans[2] = {0, __diagonal.y, 0};
         ans[3] = {0, 0, __diagonal.z};
@@ -198,54 +171,51 @@ namespace MyCraft {
     void PlayerModelController::leftAttack() {
         if (__attack__cooldown.get()) {
             __attack__cooldown.restart();
-            __handTime = 0;
+            Player::Model::left_attack();
             __isRightAttack = false;
             __isLeftAttack = true;
-            send(new PlaceMessage(__position, __eye_direction, getItemTypeLeftHand(), getItemTypeRightHand()));
-            send(new CheckHoverMessage(__position + glm::vec3(0,0,1.8), __eye_direction));
+            send(new PlaceMessage(getPosition(), __eye_direction, getItemTypeLeftHand(), getItemTypeRightHand()));
+            send(new CheckHoverMessage(getPosition() + glm::vec3(0,0,1.8), __eye_direction));
             send(new RequestFallMessage(getShape(), getZVelocity()));
         } 
     }
     void PlayerModelController::rightAttack() {
         if (__attack__cooldown.get()) {
             __attack__cooldown.restart();
-            __handTime = 0;
+            Player::Model::attack();
             __isRightAttack = false;
             __isRightAttack = true;
-            send(new AttackMessage(__position, __eye_direction, getItemTypeLeftHand(),getItemTypeRightHand()));
-            send(new CheckHoverMessage(__position + glm::vec3(0,0,1.8), __eye_direction));
+            send(new AttackMessage(getPosition(), __eye_direction, getItemTypeLeftHand(),getItemTypeRightHand()));
+            send(new CheckHoverMessage(getPosition() + glm::vec3(0,0,1.8), __eye_direction));
             send(new RequestFallMessage(getShape(), getZVelocity()));
         }
     }
     void PlayerModelController::teleport(const glm::vec3& position) {
-        __position = position;
+        setPosition(position);
     }
     void PlayerModelController::move(const glm::vec3& delta) {
-        __position += delta;
+        Player::Model::move(delta); 
         __isChanged = true;
         if (isCrounch()) {
-            send(new MyBase::SetCameraMessage(__position + glm::vec3(0,0,1.4), __eye_direction));
-            send(new CheckHoverMessage(__position + glm::vec3(0,0,1.4), __eye_direction));
+            send(new MyBase::SetCameraMessage(getPosition() + glm::vec3(0,0,1.4), __eye_direction));
+            send(new CheckHoverMessage(getPosition() + glm::vec3(0,0,1.4), __eye_direction));
         }
         else {
-            send(new MyBase::SetCameraMessage(__position + glm::vec3(0,0,1.8), __eye_direction));
-            send(new CheckHoverMessage(__position + glm::vec3(0,0,1.8), __eye_direction));
+            send(new MyBase::SetCameraMessage(getPosition() + glm::vec3(0,0,1.8), __eye_direction));
+            send(new CheckHoverMessage(getPosition() + glm::vec3(0,0,1.8), __eye_direction));
         }
-        send( new WorldMoveMessage(__position));
-        if (delta.x || delta.y) {
-            __runCooldown.restart();
-            __isRun = true;
-        }
+        send( new WorldMoveMessage(getPosition()));
     }
     void PlayerModelController::rotate(const glm::vec3& dir) {
         __direction = glm::normalize(dir);
+        Player::Model::rotate(__direction);
     }
     void PlayerModelController::rotate(const float& angle) {
         __direction = glm::rotate(__direction, angle, glm::vec3(0,0, 1));
+        Player::Model::rotate(__direction);
     }
     void PlayerModelController::see(const glm::vec3& dir) {
-        float angle = glm::angle(glm::vec3(0, 1, 0), glm::normalize(dir));
-        __animation[8] = glm::rotate(glm::mat4(1), angle, glm::vec3(1, 0, 0));
+        Player::Model::see(dir);
     }
     void PlayerModelController::seeRotate(const float& horizontal, const float& vertical) {
         __eye_direction = glm::rotate(__eye_direction, horizontal, glm::vec3(0, 0, 1));
@@ -255,54 +225,22 @@ namespace MyCraft {
         float angle = glm::angle(eye_direction, glm::vec3(0,0,-1));
         if (angle>M_PI/20 && angle < M_PI*0.95) {
             __eye_direction = eye_direction;
+            Player::Model::see(__eye_direction);
         }
         if (isCrounch()) {
-            send(new MyBase::SetCameraMessage(__position+glm::vec3(0,0,1.4), __eye_direction));
-            send(new CheckHoverMessage(__position + glm::vec3(0,0,1.8), __eye_direction));
+            send(new MyBase::SetCameraMessage(getPosition()+glm::vec3(0,0,1.4), __eye_direction));
+            send(new CheckHoverMessage(getPosition() + glm::vec3(0,0,1.8), __eye_direction));
         }
         else {
-            send(new MyBase::SetCameraMessage(__position+glm::vec3(0,0,1.8), __eye_direction));
-            send(new CheckHoverMessage(__position + glm::vec3(0,0,1.8), __eye_direction));
+            send(new MyBase::SetCameraMessage(getPosition()+glm::vec3(0,0,1.8), __eye_direction));
+            send(new CheckHoverMessage(getPosition() + glm::vec3(0,0,1.8), __eye_direction));
         }
     }
     void PlayerModelController::setDrawAble(const bool& drawable) {
         __isDrawable = drawable;
     }
     void PlayerModelController::glDraw() const {
-        if (__isDrawable) {
-
-            // GLuint VAO;
-            // glGenVertexArrays(1, &VAO);
-            // glBindVertexArray(VAO);
-            // const ModelLoader& model = ModelStorage::getInstance().getPlayerModel();
-            // auto state = __animation;
-            // state.back() = glm::translate(state.back(), __position);
-            // float angle = glm::angle(__direction, glm::vec3(0, -1, 0));
-            // if (__direction.x<0) angle=-angle;
-            // state.back() = glm::rotate(state.back(), angle, glm::vec3(0, 0, 1));
-    
-            // glm::vec3 tmp;
-            // auto& head = state[ModelStorage::getInstance().getPlayerModel().getHead()];
-            // // tmp = __eye_direction;
-            // // tmp.z = 0;
-            // // tmp = glm::normalize(tmp);
-            // // angle = glm::angle( tmp, __eye_direction);
-            // // if (angle) {
-            // //     glm::vec3 axis = glm::cross(__eye_direction, tmp);
-            // //     head = glm::rotate(head,angle, axis);
-            // // }
-            // tmp = __eye_direction;
-            // tmp.z = 0;
-            // tmp = glm::normalize(tmp);
-            // angle = glm::angle( tmp, __direction);
-            // if (angle>0.01) {
-            //     glm::vec3 axis = glm::cross(__direction, tmp);
-            //     head = glm::rotate(head,angle, axis);
-            // }
-    
-            // ModelStorage::getInstance().DrawModel(state, model);
-            // glDeleteVertexArrays(1, &VAO);
-        }
+        if (__isDrawable) Player::Model::draw();
     }
     void PlayerModelController::update() {}
 
@@ -315,8 +253,8 @@ namespace MyCraft {
         MyBase::ResetCameraMessage* package = (MyBase::ResetCameraMessage*)message;
         if (package->isFirstCamera) __model->setDrawAble(false);
         else __model->setDrawAble(true);
-        if (__model->isCrounch()) __model->send(new MyBase::SetCameraMessage(__model->getModelPosition() + glm::vec3(0,0,1.4), __model->getDirection()));
-        else __model->send(new MyBase::SetCameraMessage(__model->getModelPosition() + glm::vec3(0,0,1.8), __model->getDirection()));
+        if (__model->isCrounch()) __model->send(new MyBase::SetCameraMessage(__model->getPosition() + glm::vec3(0,0,1.4), __model->getDirection()));
+        else __model->send(new MyBase::SetCameraMessage(__model->getPosition() + glm::vec3(0,0,1.8), __model->getDirection()));
     }
 
 
