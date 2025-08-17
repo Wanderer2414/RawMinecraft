@@ -1,5 +1,5 @@
-#ifndef PLAYER_MODEL_H
-#define PLAYER_MODEL_H
+#ifndef PLAYER_MODEL_CONTROLLER_H
+#define PLAYER_MODEL_CONTROLLER_H
 #include "Block.h"
 #include "Clock.h"
 #include "HealthModule.h"

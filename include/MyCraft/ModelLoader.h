@@ -3,6 +3,7 @@
 #include "Global.h"
 namespace MyCraft {
     class ModelStorage;
+    class NPCStorage;
     class ModelLoader {
     public:
         class Animation {
@@ -25,7 +26,8 @@ namespace MyCraft {
         int getHead() const;
         bool apply(std::vector<glm::mat4>&, const std::string& name, const float& t);
         friend MyCraft::ModelStorage;
-    private:
+        friend MyCraft::NPCStorage;
+    private: 
         int     __head;
         tinygltf::Model     __model;
         std::vector<GLuint> __buffers;

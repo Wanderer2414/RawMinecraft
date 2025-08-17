@@ -13,6 +13,7 @@ namespace MyCraft {
         insert(&__worldRender);
         insert(&__dropItemManage);
         insert(&__crackingManage);
+        insert(&__hitbox);
         MyBase::Network::match(&__crackingManage);
         MyBase::Network::match(&__worldRender);
         MyBase::Network::match(&__dropItemManage);

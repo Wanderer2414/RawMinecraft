@@ -271,37 +271,37 @@ namespace MyCraft {
     void PlayerModelController::glDraw() const {
         if (__isDrawable) {
 
-            GLuint VAO;
-            glGenVertexArrays(1, &VAO);
-            glBindVertexArray(VAO);
-            const ModelLoader& model = ModelStorage::getInstance().getPlayerModel();
-            auto state = __animation;
-            state.back() = glm::translate(state.back(), __position);
-            float angle = glm::angle(__direction, glm::vec3(0, -1, 0));
-            if (__direction.x<0) angle=-angle;
-            state.back() = glm::rotate(state.back(), angle, glm::vec3(0, 0, 1));
+            // GLuint VAO;
+            // glGenVertexArrays(1, &VAO);
+            // glBindVertexArray(VAO);
+            // const ModelLoader& model = ModelStorage::getInstance().getPlayerModel();
+            // auto state = __animation;
+            // state.back() = glm::translate(state.back(), __position);
+            // float angle = glm::angle(__direction, glm::vec3(0, -1, 0));
+            // if (__direction.x<0) angle=-angle;
+            // state.back() = glm::rotate(state.back(), angle, glm::vec3(0, 0, 1));
     
-            glm::vec3 tmp;
-            auto& head = state[ModelStorage::getInstance().getPlayerModel().getHead()];
+            // glm::vec3 tmp;
+            // auto& head = state[ModelStorage::getInstance().getPlayerModel().getHead()];
+            // // tmp = __eye_direction;
+            // // tmp.z = 0;
+            // // tmp = glm::normalize(tmp);
+            // // angle = glm::angle( tmp, __eye_direction);
+            // // if (angle) {
+            // //     glm::vec3 axis = glm::cross(__eye_direction, tmp);
+            // //     head = glm::rotate(head,angle, axis);
+            // // }
             // tmp = __eye_direction;
             // tmp.z = 0;
             // tmp = glm::normalize(tmp);
-            // angle = glm::angle( tmp, __eye_direction);
-            // if (angle) {
-            //     glm::vec3 axis = glm::cross(__eye_direction, tmp);
+            // angle = glm::angle( tmp, __direction);
+            // if (angle>0.01) {
+            //     glm::vec3 axis = glm::cross(__direction, tmp);
             //     head = glm::rotate(head,angle, axis);
             // }
-            tmp = __eye_direction;
-            tmp.z = 0;
-            tmp = glm::normalize(tmp);
-            angle = glm::angle( tmp, __direction);
-            if (angle>0.01) {
-                glm::vec3 axis = glm::cross(__direction, tmp);
-                head = glm::rotate(head,angle, axis);
-            }
     
-            ModelStorage::getInstance().DrawModel(state, model);
-            glDeleteVertexArrays(1, &VAO);
+            // ModelStorage::getInstance().DrawModel(state, model);
+            // glDeleteVertexArrays(1, &VAO);
         }
     }
     void PlayerModelController::update() {}

@@ -3,6 +3,7 @@
 #include "Message.h"
 #include "Controller.h"
 #include "ModelController.h"
+#include "PlayerModel.h"
 namespace MyCraft {
     class HitBoxCenter: public MyBase3D::Controller3D {
         public:
@@ -18,6 +19,8 @@ namespace MyCraft {
             void glDraw() const             override;
             glm::vec3              __colors;
             std::vector<ModelController*> __models;
+            PlayerModel     __playerModel;
+            // GLTFModel * modelTest;
     };
 }
 #endif
