@@ -1,23 +1,21 @@
 #include <string>
 #include "HitBoxCenter.h"
+#include "Container3D.h"
 #include "General.h"
 #include "Global.h"
+#include "Message.h"
 #include "ModelController.h"
+#include "PigController.h"
 #include "ShaderStorage.h"
 
 namespace MyCraft {
     
     HitBoxCenter::HitBoxCenter() {
         __colors = glm::vec3(1,0,0);
-        // modelTest = new GLTFModel("assets/models/pig_model.gltf", 1.0f);
-        // if(!modelTest) {
-        //     std::cerr << "Failed to load test model." << std::endl;
-        // } else {
-        //     std::cout << "Test model loaded successfully." << std::endl;
-        // }
+        insert(new Pig::PigController());
     }
     HitBoxCenter::~HitBoxCenter() {
-        // delete modelTest;
+        for (int i = 0; i<__models.size(); i++) delete __models[i];
     }
 
     bool HitBoxCenter::isBusyBlock(const glm::ivec3& position) const {
@@ -28,10 +26,13 @@ namespace MyCraft {
     }
     void HitBoxCenter::insert(ModelController* model) {
         __models.push_back(model);
+        MyBase::Network::match(model);
+        Container3D::insert(model);
     }
     void HitBoxCenter::erase(ModelController* model) {
     }
     void HitBoxCenter::glDraw() const {
+        MyBase3D::Container3D::glDraw();
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDefaultShader());
         for (auto& model: __models) {
             glm::mat4x3 mat = model->getShape();

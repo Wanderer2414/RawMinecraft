@@ -79,7 +79,7 @@ namespace MyCraft {
         root = new Node();
         if (model.nodes[index].translation.size()) {
             const double* offset = model.nodes[index].translation.data();
-            root->translation = glm::vec3(offset[0], offset[2], offset[1]);
+            root->translation = glm::vec3(offset[0], -offset[2], offset[1]);
         }
         else root->translation = glm::vec3(0);
         if (model.nodes[index].children.size()) {

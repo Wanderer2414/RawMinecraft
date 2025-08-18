@@ -6,7 +6,7 @@
 
 namespace MyCraft {
     class HitBoxCenter;
-    class ModelController: public MyBase3D::Controller3D {
+    class ModelController: public MyBase3D::Controller3D, public MyBase::Port {
         public:
             ModelController();
             ~ModelController();

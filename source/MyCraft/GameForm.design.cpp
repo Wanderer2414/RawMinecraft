@@ -10,27 +10,26 @@
 #include "ControlCenter.h"
 #include "InventoryElement.h"
 #include "Message.h"
+#include "PlayerModelController.h"
 
 namespace MyCraft {
     GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src):
-        Form3D(index), __world(0, 0, 0, src), __pauseForm(__font),
+        Form3D(index), __world(0, 0, 0, src), __pauseForm(__font), __playerModel(new PlayerModelController()),
         __font("assets/fonts/SyneMono-Regular.ttf"), __biomeManage(src), 
-        __inventoryForm(__inventory, __model.getItems()) 
+        __inventoryForm(__inventory, __playerModel->getItems()) 
     {
+
+        __world.addModel(__playerModel);
         setBackgroundColor(BLACK);
         insert(&__world);
-        insert(&__model);
         insert(&__label);
         insert(&__biomeLabel);
-        insert(&__model);
         insert(&__cursor);
         insertPermanent(&__inventory);
-        MyBase::Network::match(&__model);
         MyBase::Network::match(&__world);
         MyBase::Network::match(&__inventoryForm);
         MyBase::Network::match(&__inventory);
         MyBase::Network::match(&__sun);
-        MyBase::Network::match(&__model);
         MyBase::Network::match(&__healthBar);
         MyBase::Network::match(&MyBase3D::Camera::Instance());
 
@@ -79,7 +78,7 @@ namespace MyCraft {
         MyBase::Network::close();     
     }
     void GameForm::__open(GLFWwindow* window) {
-        __model.teleport(__spawnPoint);
+        __playerModel->teleport(__spawnPoint);
         __world.teleport(__spawnPoint);
     }
     bool GameForm::move(const float& x, const float& y, const float& z) {
@@ -105,7 +104,7 @@ namespace MyCraft {
                 else if (value == 1) close();
             }
             else if (glfwGetKey(window, GLFW_KEY_E)) {
-                InventoryUI* ui = new Bag(__model.getItems());
+                InventoryUI* ui = new Bag(__playerModel->getItems());
                 __inventoryForm.setDefaultUI(ui);
                 __inventoryForm.open(window);
                 ui->close();
@@ -120,24 +119,18 @@ namespace MyCraft {
     bool GameForm::handle(GLFWwindow* window) {
         bool is_changed = Form3D::handle(window);
         is_changed = __sun.handle(window) || is_changed;
+        __label.setText(std::format("Fps: {}", (int)getCurrentFps()));
+        __positionLabel.setText(std::format("Position: {}, {}, {}", floor(__playerModel->getPosition().x), floor(__playerModel->getPosition().y), floor(__playerModel->getPosition().z)));
         if (__fpsClock.get()) {
             __fpsClock.restart();
-            __label.setText(std::format("Fps: {}", (int)getCurrentFps()));
-            glm::vec3 position = __model.getPosition();
-            position.x = floor(position.x/16);
-            position.y = floor(position.y/16);
-            position.z = floor(position.z/16);
-            __biomeLabel.setText(to_string(__biomeManage.getBiome(position).type));
+            // glm::vec3 position = __model.getPosition();
+            // position.x = floor(position.x/16);
+            // position.y = floor(position.y/16);
+            // position.z = floor(position.z/16);
+            // __biomeLabel.setText(to_string(__biomeManage.getBiome(position).type));
             is_changed = true;
         }
     
-        glm::vec2 delta = MyBase::ControlCenter::getInstance().getCursorPos(window);
-    
-        if (delta.x != 0 || delta.y != 0) {
-            MyBase::ControlCenter::CenteringMouse(window);
-            __model.seeRotate(-delta.x, delta.y);
-            is_changed = true;
-        }
         return is_changed;
     }
     void GameForm::update() {

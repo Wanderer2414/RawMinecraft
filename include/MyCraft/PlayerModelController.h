@@ -9,7 +9,7 @@
 #include "PlayerInventoryModule.h"
 #include "PlayerModel.h"
 namespace MyCraft {
-    class PlayerModelController: public ModelController, public MyBase::Port, public PlayerInventoryModule, public HealthModule, public Player::Model {
+    class PlayerModelController: public ModelController, public PlayerInventoryModule, public HealthModule, public Player::Model {
     public: 
         PlayerModelController();
         ~PlayerModelController();

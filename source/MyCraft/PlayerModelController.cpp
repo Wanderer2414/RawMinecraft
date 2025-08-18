@@ -1,5 +1,6 @@
 #include "PlayerModelController.h"
 #include "Camera.h"
+#include "ControlCenter.h"
 #include "HealthBar.h"
 #include "HealthModule.h"
 #include "Item.h"
@@ -36,6 +37,15 @@ namespace MyCraft {
     PlayerModelController::~PlayerModelController() {}
     bool PlayerModelController::catchEvent(GLFWwindow* window) {
         __isChanged = ModelController::catchEvent(window) || __isChanged;
+
+        glm::vec2 delta = MyBase::ControlCenter::getInstance().getCursorPos(window);
+    
+        if (delta.x != 0 || delta.y != 0) {
+            MyBase::ControlCenter::CenteringMouse(window);
+            seeRotate(-delta.x, delta.y);
+            __isChanged = true;
+        }
+        
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
             leftAttack();
             __isChanged = true;

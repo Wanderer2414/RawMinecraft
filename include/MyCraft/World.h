@@ -9,6 +9,7 @@
 #include "HitBoxCenter.h"
 #include "Item.h"
 #include "Message.h"
+#include "ModelController.h"
 #include "WorldRender.h"
 
 namespace MyCraft {
@@ -19,6 +20,7 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
         
         bool isBusyBlock(const glm::ivec3& position);
         void teleport(const glm::ivec3& position);
+        void addModel(ModelController* controller);
         friend class PlaceBlockCommand;
         friend class CrackBlockCommand;
     protected:

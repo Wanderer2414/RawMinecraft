@@ -25,6 +25,9 @@ namespace MyCraft {
     bool World::isBusyBlock(const glm::ivec3& position) {
         return false;
     }
+    void World::addModel(ModelController* controller) {
+        return __hitbox.insert(controller);
+    }
     void World::teleport(const glm::ivec3& position) {
         __worldRender.playerAt(position);
     }
