@@ -8,6 +8,8 @@ namespace MyCraft {
             __walk(Animations("walk")), 
             __left_attack(Animations("left_attack")),
             __right_attack(Animations("right_attack")),
+            __crouch(Animations("crouch")),
+            __swim(Animations("swim")),
             __isChanged(false), __position(0),
             __isCrouch(false),  __moveTime(0), __isRightAttack(false), __isLeftAttack(false) 
         {
@@ -28,16 +30,23 @@ namespace MyCraft {
             }
             return false;
         }
+        bool Model::isSwim() const {
+            return __isSwim;
+        }
         bool Model::apply() {
             if (!__move_clock.get() || !__attack_clock.get()) __isChanged = true;
             if (__isChanged) {
-                __walk.apply(States(), __moveTime);
+                States().reset();
+                if (__isSwim) __swim.apply(States(), 0.1 + __moveTime*0.8);
+                else __walk.apply(States(), __moveTime);
+                if (__isCrouch) __crouch.apply(States(), 1);
 
                 if (!__attack_clock.get()) {
                     if (__isRightAttack) __right_attack.apply(States(), (GetTime()-__start_attack_time)/250.f);
                     else if (__isLeftAttack) __left_attack.apply(States(), (GetTime()-__start_attack_time)/250.f);
                 }
                 else __isLeftAttack = __isRightAttack = false;
+
                 {
                     glm::vec3 xy(__eye_direction.x, __eye_direction.y, 0);
                     xy = glm::normalize(xy);
@@ -48,12 +57,12 @@ namespace MyCraft {
                     angle = __angle - angle;
                     if (angle<-M_PI*0.75) angle = -0.75*M_PI;
                     else if (angle>M_PI*0.75) angle = M_PI*0.75;
-                    States()[3] = glm::rotate(angle, glm::vec3(0,0,1));
+                    States()[5] *= glm::rotate(angle, glm::vec3(0,0,1));
 
                     angle = glm::angle(__eye_direction, xy);
                     if (__eye_direction.z<0) angle = -angle;
 
-                    States()[3] *= glm::rotate(angle, glm::vec3(1, 0, 0));
+                    States()[5] *= glm::rotate(angle, glm::vec3(1, 0, 0));
                 }
                 {
                     States()[12] = glm::mat4(1);
@@ -69,11 +78,23 @@ namespace MyCraft {
             }
             return false;
         };
+        glm::vec3 Model::getEyePosition() const {
+            if (__isCrouch) return {__position.x, __position.y, __position.z + 1.3};
+            else return {__position.x, __position.y, __position.z + 1.7};
+        }
         glm::mat4x3 Model::getShape()              const {
             return glm::mat4x3(1);
         }
         glm::vec3 Model::getPosition() const {
             return __position;
+        }
+        void Model::swim() {
+            __isSwim = true;
+            __isChanged = true;
+        }
+        void Model::walk() {
+            __isSwim = false;
+            __isChanged = true;
         }
         void Model::rotate(const glm::vec3& direction) {
             __direction = direction;
@@ -81,25 +102,31 @@ namespace MyCraft {
         }
         void Model::crouch() {
             __isCrouch = true;
+            __isChanged = true;
         }
         void Model::uncrouch() {
             __isCrouch = false;
+            __isChanged = true;
         }
-        void Model::attack() {
+        bool Model::attack() {
             if (__attack_clock.get()) {
                 __attack_clock.restart();
                 __start_attack_time = GetTime();
                 __isChanged = true;
                 __isRightAttack = !(__isLeftAttack = false);
+                return true;
             }
+            return false;
         }
-        void Model::left_attack() {
+        bool Model::left_attack() {
             if (__attack_clock.get()) {
                 __attack_clock.restart();
                 __start_attack_time = GetTime();
                 __isChanged = true;
                 __isLeftAttack = !(__isRightAttack = false);
+                return true;
             }
+            return false;
         }
         void Model::look(const glm::vec3& position)         {
             

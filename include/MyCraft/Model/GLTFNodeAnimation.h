@@ -32,5 +32,23 @@ namespace MyCraft {
         };
         Node* __root, *__cur;
     };
+    class NodeTranslation: public GLTFNodeAnimation {
+    public:
+        NodeTranslation(const tinygltf::Model& model, const tinygltf::Animation& animation, const tinygltf::AnimationChannel& channel);
+        ~NodeTranslation();
+        NodeTranslation(const NodeRotation&) = delete;
+        NodeTranslation& operator=(const NodeRotation&) const = delete; 
+        glm::mat4 operator[](const float& percent) override;
+    protected:
+    private:
+        struct Node {
+            float       percent;
+            glm::vec3   state;
+            Node*       next;
+            Node(Node*);
+            ~Node();
+        };
+        Node* __root, *__cur;  
+    };
 }
 #endif

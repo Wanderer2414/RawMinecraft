@@ -10,6 +10,6 @@ layout(set=0, binding=1) uniform Origin {
     mat4 origin;
 };
 void main() {
-    gl_Position = ClipPlane * origin * vec4(position.x, position.z, position.y, 1.0);
+    gl_Position = ClipPlane * origin * vec4(position.x, -position.z, position.y, 1.0);
     uv_out = uv;
 }

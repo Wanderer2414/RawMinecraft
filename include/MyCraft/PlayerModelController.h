@@ -13,7 +13,6 @@ namespace MyCraft {
     public: 
         PlayerModelController();
         ~PlayerModelController();
-        bool        isCrounch() const;
         glm::vec3   getPosition() const    override,
                     getDirection() const;
         void        move(const glm::vec3& delta) override,
@@ -30,14 +29,11 @@ namespace MyCraft {
                     setHoverBlock(const glm::vec3& hover, const glm::vec3& place, const BlockCatogary& type);
         glm::mat4x3 getShape() const override;
     private:
-        bool            __isDrawable, __isChanged,
-                        __isLeftAttack, __isRightAttack,
-                        __isCrouch;
+        bool            __isDrawable, __isChanged;
         float           __speed;
         glm::vec3       __diagonal;
         glm::vec3       __direction, __eye_direction;
-        MyBase::Clock   __animationClock, __speedControl,
-                        __attack__cooldown;
+        MyBase::Clock   __speedControl;
         BlockCatogary   __type;
         glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
         bool            __moveManage(GLFWwindow* window);
@@ -120,11 +116,12 @@ namespace MyCraft {
     };
     class DiveCommand: public MyBase::Command {
     public:
-        DiveCommand();
+        DiveCommand(PlayerModelController& model);
         ~DiveCommand();
         MyBase::MessageType getType()                               const override;
         void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
     private:
+        PlayerModelController& __model;
     };
 
     class OnGroundMessage: public MyBase::Message {
@@ -135,11 +132,12 @@ namespace MyCraft {
     };
     class OnGroundCommand: public MyBase::Command {
     public:
-        OnGroundCommand();
+        OnGroundCommand(PlayerModelController& model);
         ~OnGroundCommand();
         MyBase::MessageType getType()                               const override;
         void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
     private:
+        PlayerModelController& __model;
     };
 }
 #endif

@@ -12,7 +12,7 @@ namespace MyCraft {
         glm::mat4 get(const float& node, const float& percent);
     private:
         std::vector<GLTFNodeAnimation*> __subAnimations;
-        std::map<int, int> __indices;
+        std::map<int, std::vector<int>> __indices;
     };
 }
 #endif

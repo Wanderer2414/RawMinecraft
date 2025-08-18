@@ -9,7 +9,13 @@ namespace MyCraft {
             const tinygltf::AnimationChannel& channel = animation.channels[i];
             if (channel.target_path == "rotation") {
                 __subAnimations[i] = new NodeRotation(model, animation, channel);
-                __indices[channel.target_node] = i;
+                __indices[channel.target_node].push_back(i);
+            }
+            else if (channel.target_path == "translation") {
+                __subAnimations[i] = new NodeTranslation(model, animation,channel);
+                auto& vec = __indices[channel.target_node];
+                vec.push_back(i);
+                std::swap(vec.front(), vec.back());
             }
         }
     }
@@ -18,7 +24,9 @@ namespace MyCraft {
         float percent = p;
         while (percent>1) percent--;
         while (percent<0) percent++;
-        if (__indices.contains(node)) return (*__subAnimations[__indices[node]])[p];
-        return glm::mat4(1);
+        glm::mat4 final(1);
+        if (__indices.contains(node)) 
+            for (const int& i:__indices[node]) final=final*(*__subAnimations[i])[p];
+        return final;
     }
 }

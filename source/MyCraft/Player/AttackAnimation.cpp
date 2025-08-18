@@ -6,8 +6,8 @@ namespace MyCraft {
         AttackAnimation::~AttackAnimation() {}
 
         void AttackAnimation::apply(GLTFStaticMesh::SetNode& node, const float& percent) {
-            node[1] = __animation.get(1, percent);
-            node[5] = __animation.get(5, percent);
+            node[1] *= __animation.get(1, percent);
+            node[3] *= __animation.get(3, percent);
         }
     }
 }

@@ -194,13 +194,10 @@ namespace MyCraft {
         auto shape = request->rectangleBox;
         glm::vec3 dir = glm::vec3(request->direction, 0);
         glm::vec3 center = request->rectangleBox[0] + request->rectangleBox[1]/2.f + request->rectangleBox[2]/2.f;
-        if (__world.isInWater(center)) {
+        if (__world.isInWater(center) || __world.isInWater(center+glm::vec3(0,0,1))) {
             dir += __world.getWaterDirection(center);
             dir.z = 0;
-            
-            if (__world.isInWater(center+glm::vec3(0,0,2))) 
-                mine.send(source, new DiveMessage());
-            else mine.send(source, new OnGroundMessage());
+            mine.send(source, new DiveMessage());
         }
         else mine.send(source, new OnGroundMessage());
         //Below check

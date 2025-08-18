@@ -41,6 +41,7 @@ namespace MyBase3D {
             is_changed = setHover(MyBase::ControlCenter::getInstance().getCursorPos(window)) || is_changed;
             is_changed = catchEvent(window) || is_changed;
             is_changed = handle(window) || is_changed;
+
             if (is_changed) {
                 glm::vec4 color = __backgroundColor.getColor();
                 glClearColor(color.r, color.g, color.b, color.a);
