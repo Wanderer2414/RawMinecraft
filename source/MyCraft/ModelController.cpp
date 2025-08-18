@@ -2,6 +2,7 @@
 #include "Message.h"
 #include "PlayerModelController.h"
 #include "WorldRender.h"
+#include "glm/geometric.hpp"
 
 namespace MyCraft {
     ModelController::ModelController(): __zVelocity(0) {}
@@ -41,8 +42,11 @@ namespace MyCraft {
     }
     void MoveCommand::execute(MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message)   {
         MoveMessage* moveMessage = (MoveMessage*)message;
-        __model->__move(moveMessage->direction);
-        mine.send(new RequestFallMessage(__model->getShape(), __model->getZVelocity()));
+        
+        if (glm::length(moveMessage->direction) && moveMessage->depth<=1) {
+            __model->__move(moveMessage->direction);
+            mine.send(new RequestFallMessage(__model->getShape(), __model->getZVelocity()));
+        }
     }
     
     FallCommand::FallCommand(ModelController* model): __model(model) {}

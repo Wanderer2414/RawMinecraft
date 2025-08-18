@@ -26,9 +26,10 @@ namespace MyCraft {
                 shape[2] = glm::rotate(angle, glm::vec3(0,0,1))*glm::vec4(shape[2],1);
             }
 
-            shape[0] -= shape[1]/2.f;
-            shape[0] -= shape[2]/2.f;
-
+            shape[0] += shape[1]/2.f;
+            shape[0] += shape[2]/2.f;
+            shape[1] = -shape[1];
+            shape[2] = -shape[2];
             return shape;
         }
         glm::vec3   Model::getPosition()           const {
@@ -51,8 +52,12 @@ namespace MyCraft {
             __moveClock.restart();
         }
         void Model::rotate(const glm::vec3& direction) {
-            __direction = direction;
-            __isChanged = true;
+            if (direction.x || direction.y) {
+                __direction = direction;
+                __direction.z = 0;
+                __direction = glm::normalize(__direction);
+                __isChanged = true;
+            }
         }
         void Model::setPosition(const glm::vec3& position) {
 

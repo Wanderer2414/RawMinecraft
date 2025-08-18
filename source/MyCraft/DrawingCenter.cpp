@@ -1,4 +1,5 @@
 #include "DrawingCenter.h"
+#include "Block.h"
 #include "Color.h"
 #include "Global.h"
 #include "Item.h"
@@ -29,6 +30,12 @@ namespace MyCraft {
         __elements.back()->info[__elements.back()->size] = info;
         __elements.back()->position[__elements.back()->size] = postiion;
         __elements.back()->size++;
+    }
+    void BlockDrawingStorage::setPosition(const int& index, const glm::vec3& postiion) {
+        if (index>=size()) return ;
+        int i = index%32, n = index/32;
+        __elements[n]->position[i] = postiion;
+        __elements[n]->state[i][3] = glm::vec4(postiion, 1);
     }
     void BlockDrawingStorage::setType(const int& index, const BlockCatogary& type) {
         if (index>=size()) return ;

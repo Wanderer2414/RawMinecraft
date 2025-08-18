@@ -27,7 +27,8 @@ namespace MyCraft {
             float           __moveTime;
             MyBase::Texture __pigTexture;
             const glm::vec2 __diagonal;
-            glm::vec3       __position, __direction;
+            glm::vec3       __position;
+            glm::vec3       __direction;
             WalkAnimation __walk;
             MyBase::Clock __moveClock;
         };

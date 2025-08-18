@@ -243,8 +243,7 @@ namespace MyCraft {
                     if (__world.isBusy(npos+i*1.0f*delta)) above_result = false;
                 }
             }
-            if (below_result && above_result) 
-                dir.z = minHeight;
+            if (below_result && above_result) dir.z = minHeight+0.1;
             else {
                 //Check parallel Ox
                 npos = shape[0] + glm::vec3(dir.x, 0, 0); epos = npos + shape[1];
@@ -279,26 +278,12 @@ namespace MyCraft {
         }
 
         if (below_result) {
-            shape[3] = shape[0] + shape[2];
-            shape[3][2]--;
-            shape[2] += shape[0] + shape[1];
-            shape[2][2]--;
-            shape[1] += shape[0];
-            shape[1][2]--;
-            shape[0][2]--;
             float depth = 0;
-            while (!__world.isBusy(shape[0]) && 
-                !__world.isBusy(shape[1]) && 
-                !__world.isBusy(shape[2]) && 
-                !__world.isBusy(shape[3])) {
+            center.z--;
+            while (!__world.isBusy(center)) {
                     depth++;
-                    shape[0].z--;
-                    shape[1].z--;
-                    shape[2].z--;
-                    shape[3].z--;
+                    center.z--;
             }
-            if (depth) dir.z = -0.01;
-
             mine.send(source, new MoveMessage(dir, depth));
         }
     }
@@ -377,7 +362,7 @@ namespace MyCraft {
                 float delta = request->rectangleBox[0].z - (floor(z)+minHeight) - 0.005;
 
                 if (abs(delta)>=0.005) {
-                    if (zVelocity <= -0.5) mine.send(new DamageMessage(-zVelocity*50));
+                    if (zVelocity <= -0.5) mine.send(source, new DamageMessage(-zVelocity*50));
                     mine.send(source, new FallMessage(-delta));
                     mine.send(source, new StopFallMessage());
                 }

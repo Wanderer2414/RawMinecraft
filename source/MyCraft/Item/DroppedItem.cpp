@@ -34,7 +34,7 @@ namespace MyCraft {
             glm::mat4 state = getSpecialState(item);
             state = glm::scale(state, glm::vec3(0.4));
             state[3] = glm::vec4(position.x - state[0].x/2, position.y-state[1].y/2, position.z,1);
-            __normal.push(position, state, glm::vec4(0,0,0,item));
+            __normal.push(position, state, glm::vec4(0.5,0,0,item));
             __count.push_back(count);
         }
     }
@@ -58,7 +58,7 @@ namespace MyCraft {
             for (int i = 0; i<__normal.size(); i++) {
                 mat[0] = __normal.getPosition(i) - glm::vec3(0.15,0.15,0);
                 __currentFall = i;
-                send(new RequestFallMessage(mat, -0.03));
+                send(new RequestFallMessage(mat, 0));
             }
         }
         return is_changed;
@@ -133,6 +133,9 @@ namespace MyCraft {
     }
     void FallItemCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         FallMessage* package = (FallMessage*)message;
-        __manage.__normal.getState(__manage.__currentFall)[3].z += package->zVelocity;   
+        glm::vec3 position = __manage.__normal.getPosition(__manage.__currentFall);
+        position.z += package->zVelocity;
+        __manage.__normal.setPosition(__manage.__currentFall, position);   
+        
     }
 }

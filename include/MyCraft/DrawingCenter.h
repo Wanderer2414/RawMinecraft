@@ -19,6 +19,7 @@ namespace MyCraft {
         void setLight(const int& index, const float& indensity);
         void setType(const int& index, const BlockCatogary& type);
         void setState(const int& index, const glm::mat4& state);
+        void setPosition(const int& index, const glm::vec3& position);
         ItemType getType(const int& index) const;
         glm::vec3 getPosition(const int& index) const;
         glm::mat4& getState(const int& index);

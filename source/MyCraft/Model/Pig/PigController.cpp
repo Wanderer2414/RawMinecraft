@@ -2,6 +2,7 @@
 #include "ModelController.h"
 #include "PigModel.h"
 #include "WorldRender.h"
+#include "glm/geometric.hpp"
 namespace MyCraft {
     namespace Pig {
         PigController::PigController(): __isChanged(false), __speed(0.2) {
