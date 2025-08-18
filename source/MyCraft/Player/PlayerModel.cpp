@@ -4,7 +4,7 @@
 
 namespace MyCraft {
     namespace Player {
-        Model::Model(): GLTFModel("assets/models/Player/Steve.gltf"), 
+        Model::Model(): GLTFModel("assets/models/Player/Steve.gltf"), __diagonal(0.6, 0.4),
             __walk(Animations("walk")), 
             __left_attack(Animations("left_attack")),
             __right_attack(Animations("right_attack")),
@@ -82,8 +82,25 @@ namespace MyCraft {
             if (__isCrouch) return {__position.x, __position.y, __position.z + 1.3};
             else return {__position.x, __position.y, __position.z + 1.7};
         }
-        glm::mat4x3 Model::getShape()              const {
-            return glm::mat4x3(1);
+        glm::mat4x3 Model::getShape() const {
+            float angle = glm::angle(__direction, glm::vec3(0, -1, 0));
+            if (__direction.x < 0) angle = -angle;
+
+            glm::mat4x3 ans;
+            ans[0] = getPosition();
+            ans[1] = {__diagonal.x, 0, 0};
+            ans[2] = {0, __diagonal.y, 0};
+            if (isCrouch()) ans[3] = {0, 0, 1.4};
+            else ans[3] = {0, 0, 1.6};
+
+            ans[1] = glm::rotate(ans[1], angle, glm::vec3(0, 0, 1));
+            ans[2] = glm::rotate(ans[2], angle, glm::vec3(0, 0, 1));
+            ans[0] -= ans[1]/2.f+ans[2]/2.f;
+            if (isCrouch()) {
+                ans[0] -= ans[2];
+                ans[2] = ans[2]*1.8f;
+            } 
+            return ans;
         }
         glm::vec3 Model::getPosition() const {
             return __position;
@@ -128,17 +145,17 @@ namespace MyCraft {
             }
             return false;
         }
-        void Model::look(const glm::vec3& position)         {
-            
+        void Model::look(const glm::vec3& position) {
+            __eye_direction = position - __position;
         }
-        void Model::see(const glm::vec3& dir)                 {
+        void Model::see(const glm::vec3& dir) {
             __eye_direction = dir;
             __isChanged = true;
         }
         void Model::move(const glm::vec3& dir)       {
             glm::vec2 direction = dir;
             __position += dir;
-            __moveTime += glm::length(direction)/4;
+            __moveTime += glm::length(direction)/2;
             while (__moveTime>1) __moveTime--;
             __move_clock.restart();
         }

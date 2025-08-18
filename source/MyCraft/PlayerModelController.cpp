@@ -18,7 +18,6 @@ namespace MyCraft {
         __eye_direction(0, -1, 0),
         __isDrawable(true), HealthModule(100) {
         __speed = 0.2;
-        __diagonal = {0.6, 0.4, 1.9};
         __speedControl.setDuration(30);
 
 
@@ -64,22 +63,21 @@ namespace MyCraft {
             if (glfwGetKey(window, GLFW_KEY_A)) dir.y -= 1;
             if (glfwGetKey(window, GLFW_KEY_D)) dir.y += 1;
             if (glfwGetKey(window, GLFW_KEY_W)) dir.x += 1;
+            else __speed = 0.2;
             if (glfwGetKey(window, GLFW_KEY_S)) dir.x -= 1;
             
             if (glm::length(dir)) {
                 dir = __toAbsoluteCoordinate(dir);
                 if (isSwim() && dir.z) send(new RequestJumpMessage(getShape(), __speed*(dir.z)/abs(dir.z)/2));
                 else dir.z = 0;
-                dir = glm::normalize(dir)*__speed;
-                rotate(dir);
-                send(new RequestGotoMessage(getShape(), dir));
+                move(dir);
             }
 
             if (glfwGetKey(window, GLFW_KEY_SPACE)) {
                 //Jump here
                 send(new RequestJumpMessage(getShape(), 0.35));
             }
-        //Auto fall
+            //Auto fall
             send(new RequestFallMessage(getShape(), getZVelocity()));
 
         }
@@ -113,6 +111,18 @@ namespace MyCraft {
         __isChanged = Player::Model::apply() || __isChanged;
         return __isChanged;
     }
+
+    void PlayerModelController::see(const glm::vec3& dir) {
+        __see(dir);
+    }
+    void PlayerModelController::rotate(const glm::vec3& dir) {
+        __rotate(dir);
+    }
+    void PlayerModelController::move(const glm::vec3& dir) {
+        glm::vec3 direction = glm::normalize(dir)*__speed;
+        rotate(direction);
+        send(new RequestGotoMessage(getShape(), direction));        
+    }
     glm::vec3 PlayerModelController::getPosition() const {
         return Player::Model::getPosition();
     }
@@ -125,23 +135,7 @@ namespace MyCraft {
         return d;
     }
     glm::mat4x3 PlayerModelController::getShape() const {
-        float angle = glm::angle(__direction, glm::vec3(0, -1, 0));
-        if (__direction.x < 0) angle = -angle;
-
-        glm::mat4x3 ans;
-        ans[0] = getPosition();
-        ans[1] = {__diagonal.x, 0, 0};
-        ans[2] = {0, __diagonal.y, 0};
-        ans[3] = {0, 0, __diagonal.z};
-
-        ans[1] = glm::rotate(ans[1], angle, glm::vec3(0, 0, 1));
-        ans[2] = glm::rotate(ans[2], angle, glm::vec3(0, 0, 1));
-        ans[0] -= ans[1]/2.f+ans[2]/2.f;
-        if (isCrouch()) {
-            ans[0] -= ans[2];
-            ans[2] = ans[2]*1.8f;
-        } 
-        return ans;
+        return Player::Model::getShape();
     }
 
     void PlayerModelController::__damage() {
@@ -173,22 +167,18 @@ namespace MyCraft {
     void PlayerModelController::teleport(const glm::vec3& position) {
         setPosition(position);
     }
-    void PlayerModelController::move(const glm::vec3& delta) {
+    void PlayerModelController::__move(const glm::vec3& delta) {
         Player::Model::move(delta); 
         __isChanged = true;
         send(new MyBase::SetCameraMessage(getEyePosition(), __eye_direction));
         send(new CheckHoverMessage(getEyePosition(), __eye_direction));
         send( new WorldMoveMessage(getPosition()));
     }
-    void PlayerModelController::rotate(const glm::vec3& dir) {
+    void PlayerModelController::__rotate(const glm::vec3& dir) {
         __direction = glm::normalize(dir);
         Player::Model::rotate(__direction);
     }
-    void PlayerModelController::rotate(const float& angle) {
-        __direction = glm::rotate(__direction, angle, glm::vec3(0,0, 1));
-        Player::Model::rotate(__direction);
-    }
-    void PlayerModelController::see(const glm::vec3& dir) {
+    void PlayerModelController::__see(const glm::vec3& dir) {
         Player::Model::see(dir);
     }
     void PlayerModelController::seeRotate(const float& horizontal, const float& vertical) {
@@ -225,24 +215,6 @@ namespace MyCraft {
     }
 
 
-    MoveMessage::MoveMessage(const glm::vec3& d): direction(d) {}
-    MoveMessage::~MoveMessage() {}
-    MyBase::MessageType MoveMessage::getType() const {
-        return MyBase::MessageType::Move;
-    }
-
-    FallMessage::FallMessage(const float& z): zVelocity(z) {}
-    FallMessage::~FallMessage() {}
-    MyBase::MessageType FallMessage::getType() const  {
-        return MyBase::MessageType::Fall;
-    }
-
-    MyBase::MessageType StopFallMessage::getType() const {
-        return MyBase::MessageType::StopFall;
-    }
-    StopFallMessage::StopFallMessage() {};
-    StopFallMessage::~StopFallMessage() {};
-
     PlaceMessage::PlaceMessage(const glm::vec3& pos, const glm::vec3& dir, const ItemType& left, const ItemType& right): position(pos), direction(dir), rightItem(right), leftItem(left) {}
     PlaceMessage::~PlaceMessage() {}
     MyBase::MessageType PlaceMessage::getType() const {
@@ -265,11 +237,11 @@ namespace MyCraft {
         MoveMessage* moveMessage = (MoveMessage*)message;
         if (__model->isCrouch()) {
             if (moveMessage->direction.z==0) 
-                __model->move(moveMessage->direction);
+                __model->__move(moveMessage->direction);
         }
         else {
-            __model->move(moveMessage->direction);
-            if (!__model->isFall()) {
+            __model->__move(moveMessage->direction);
+            if (moveMessage->direction.z<0) {
                 auto model = __model->getShape();
                 mine.send(new RequestFallMessage(model, __model->getZVelocity()));
             }

@@ -13,7 +13,7 @@ namespace MyCraft {
         virtual glm::vec3   getPosition()           const   = 0;
         virtual void look(const glm::vec3& position)        = 0;
         virtual bool attack()                               = 0;
-        virtual void see(const glm::vec3&)                  = 0;
+        virtual void see(const glm::vec3& direction)        = 0;
         virtual void move(const glm::vec3& direction)       = 0;
         virtual void rotate(const glm::vec3& direction)     = 0;
         virtual void setPosition(const glm::vec3& position) = 0;

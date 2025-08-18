@@ -24,6 +24,18 @@ namespace MyCraft {
     bool HitBoxCenter::isColistion(const glm::vec3& position) const {
         return false;
     }
+    static glm::vec3 position = {0,0,0};
+    static float angle = 0;
+    bool HitBoxCenter::handle(GLFWwindow* window) {
+        bool is_changed = MyBase3D::Container3D::handle(window);
+        {
+            angle+=0.002;
+            __models[0]->move(glm::vec3(2*cos(angle), 2*sin(angle),0)-position);
+            position = glm::vec3(2*cos(angle), 2*sin(angle),0);
+        }
+        return true;
+    }
+
     void HitBoxCenter::insert(ModelController* model) {
         __models.push_back(model);
         MyBase::Network::match(model);

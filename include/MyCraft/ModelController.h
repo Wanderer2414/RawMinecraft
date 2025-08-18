@@ -10,14 +10,14 @@ namespace MyCraft {
         public:
             ModelController();
             ~ModelController();
-            bool isFall() const;
             float getZVelocity() const;
-            virtual void    see(const glm::vec3& dir) = 0,
-                            move(const glm::vec3& dir) = 0,
-                            rotate(const float& angle) = 0;
             virtual glm::vec3 getPosition() const = 0;
             virtual glm::mat4x3 getShape() const = 0;
             
+            virtual void    see(const glm::vec3& dir) = 0,
+                            move(const glm::vec3& dir) = 0,
+                            rotate(const glm::vec3& angle) = 0;
+                            
             friend class MoveCommand;
             friend class FallCommand;
             friend class StopFallCommand;
@@ -26,10 +26,35 @@ namespace MyCraft {
             virtual void update() = 0;
             void setZVelocity(const float& z);
         private:
-            bool    __isFall;
             float   __zVelocity;
-            void setFall(const bool& isFall);
+            virtual void    __see(const glm::vec3& dir) = 0,
+                            __move(const glm::vec3& dir) = 0,
+                            __rotate(const glm::vec3& angle) = 0;
     };
+
+    class MoveMessage: public MyBase::Message {
+    public:
+        MoveMessage(const glm::vec3& direction, const float& Depth);
+        ~MoveMessage();
+        MyBase::MessageType   getType() const override;
+        const glm::vec3       direction;
+        const float           depth;
+    };
+    class FallMessage: public MyBase::Message {
+    public:
+        FallMessage(const float& zVelocity);
+        ~FallMessage();
+        MyBase::MessageType     getType() const override;
+
+        const float zVelocity;
+    };
+    class StopFallMessage: public MyBase::Message {
+    public:
+        StopFallMessage();
+        ~StopFallMessage();
+        MyBase::MessageType     getType() const override;
+    };
+    
     class MoveCommand: public  MyBase::Command {
     public:
         MoveCommand(MyCraft::ModelController* model);

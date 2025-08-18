@@ -15,23 +15,23 @@ namespace MyCraft {
         ~PlayerModelController();
         glm::vec3   getPosition() const    override,
                     getDirection() const;
-        void        move(const glm::vec3& delta) override,
-                    rotate(const float& angle)  override,
-                    teleport(const glm::vec3& position),
-                    rotate(const glm::vec3& dir) override,
+        void        see(const glm::vec3& dir) override,
+                    move(const glm::vec3& dir) override,
+                    rotate(const glm::vec3& angle) override;
+                            
+        void        teleport(const glm::vec3& position),
                     rightAttack(),
                     leftAttack(),
-                    see(const glm::vec3& dir) override,
                     seeRotate(const float& horizontal, const float& vertical),
                     setDrawAble(const bool& drawable),
                     glDraw() const override,
                     
                     setHoverBlock(const glm::vec3& hover, const glm::vec3& place, const BlockCatogary& type);
         glm::mat4x3 getShape() const override;
+        friend class PlayerMoveCommand;
     private:
         bool            __isDrawable, __isChanged;
         float           __speed;
-        glm::vec3       __diagonal;
         glm::vec3       __direction, __eye_direction;
         MyBase::Clock   __speedControl;
         BlockCatogary   __type;
@@ -40,6 +40,9 @@ namespace MyCraft {
         void            __damage() override;
         void            __dead() override;
         void            __heal() override;
+        void            __move(const glm::vec3& delta) override,
+                        __rotate(const glm::vec3& dir)  override,
+                        __see(const glm::vec3& dir) override;
         
         bool            handle(GLFWwindow* window) override;
         bool            catchEvent(GLFWwindow* window) override;
@@ -56,29 +59,6 @@ namespace MyCraft {
     private:
         MyCraft::PlayerModelController* __model;
     };
-
-    class MoveMessage: public MyBase::Message {
-    public:
-        MoveMessage(const glm::vec3& direction);
-        ~MoveMessage();
-        MyBase::MessageType     getType() const override;
-        const glm::vec3       direction;
-    };
-    class FallMessage: public MyBase::Message {
-    public:
-        FallMessage(const float& zVelocity);
-        ~FallMessage();
-        MyBase::MessageType     getType() const override;
-
-        const float zVelocity;
-    };
-    class StopFallMessage: public MyBase::Message {
-    public:
-        StopFallMessage();
-        ~StopFallMessage();
-        MyBase::MessageType     getType() const override;
-    };
-    
 
     class PlaceMessage: public MyBase::Message {
     public:

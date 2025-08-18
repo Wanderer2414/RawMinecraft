@@ -8,6 +8,7 @@
 #include "SwimAnimation.h"
 #include "Texture.h"
 #include "WalkAnimation.h"
+#include "glm/fwd.hpp"
 namespace MyCraft {
     namespace Player {
         class Model: public GLTFModel {
@@ -39,6 +40,7 @@ namespace MyCraft {
         private:
             bool            __isCrouch,__isRightAttack, __isLeftAttack, __isChanged, __isSwim;
             float           __moveTime;
+            const glm::vec2 __diagonal;
             glm::vec3       __eye_direction, __position, __direction;
             size_t          __start_attack_time;
             MyBase::Texture __skin;

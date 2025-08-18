@@ -286,15 +286,20 @@ namespace MyCraft {
             shape[1] += shape[0];
             shape[1][2]--;
             shape[0][2]--;
-
-            if (!__world.isBusy(shape[0]) && 
+            float depth = 0;
+            while (!__world.isBusy(shape[0]) && 
                 !__world.isBusy(shape[1]) && 
                 !__world.isBusy(shape[2]) && 
                 !__world.isBusy(shape[3])) {
-                    dir.z = -0.01;
+                    depth++;
+                    shape[0].z--;
+                    shape[1].z--;
+                    shape[2].z--;
+                    shape[3].z--;
             }
+            if (depth) dir.z = -0.01;
 
-            mine.send(source, new MoveMessage(dir));
+            mine.send(source, new MoveMessage(dir, depth));
         }
     }
     MyBase::MessageType CheckEmptyCommand::getType() const {
