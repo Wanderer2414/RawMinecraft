@@ -4,25 +4,26 @@
 #include "Item.h"
 #include "Message.h"
 namespace MyCraft {
-    class PlayerInventoryModule {
-    public:
-        PlayerInventoryModule();
-        ~PlayerInventoryModule();
-        PlayerInventoryModule(PlayerInventoryModule&&) = delete;
-        PlayerInventoryModule(const PlayerInventoryModule&) = delete;
-        PlayerInventoryModule& operator=(const PlayerInventoryModule&) const = delete; 
+    namespace Player {
+        class InventoryModule {
+        public:
+            InventoryModule();
+            ~InventoryModule();
+            InventoryModule(InventoryModule&&) = delete;
+            InventoryModule(const InventoryModule&) = delete;
+            InventoryModule& operator=(const InventoryModule&) const = delete; 
 
-        ItemTable& getItems();
-        void setLeftHandItem(Item* item);
-        void setRightHandItem(Item* item);
-    protected:
-        ItemType        getItemTypeLeftHand() const;
-        ItemType        getItemTypeRightHand() const;
-    private:
-        ItemTable       __items;
-        Item            *__leftHandItem, *__rightHandItem;
-    };
-
+            ItemTable& getItems();
+            void setLeftHandItem(Item* item);
+            void setRightHandItem(Item* item);
+        protected:
+            ItemType        getItemTypeLeftHand() const;
+            ItemType        getItemTypeRightHand() const;
+        private:
+            ItemTable       __items;
+            Item            *__leftHandItem, *__rightHandItem;
+        };
+    }
     class PrepareOpenInventoryMessage: public MyBase::Message {
     public:
         PrepareOpenInventoryMessage(const glm::ivec3& position, const BlockCatogary& type);
@@ -34,13 +35,13 @@ namespace MyCraft {
 
     class PrepareOpenInventoryCommand: public MyBase::Command {
     public:
-        PrepareOpenInventoryCommand(PlayerInventoryModule* model);
+        PrepareOpenInventoryCommand(Player::InventoryModule* model);
         ~PrepareOpenInventoryCommand();
 
         MyBase::MessageType getType()                               const override;
         void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
     private:
-        MyCraft::PlayerInventoryModule* __model;
+        MyCraft::Player::InventoryModule* __model;
     };
 
     class ReceiveItemMessage: public MyBase::Message {
@@ -55,13 +56,13 @@ namespace MyCraft {
 
     class ReceiveItemCommand: public MyBase::Command {
     public:
-        ReceiveItemCommand(PlayerInventoryModule* model);
+        ReceiveItemCommand(Player::InventoryModule* model);
         ~ReceiveItemCommand();
 
         MyBase::MessageType getType()                               const override;
         void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
     private:
-        MyCraft::PlayerInventoryModule* __model;
+        MyCraft::Player::InventoryModule* __model;
     };
 
     class HoldItemMessage: public MyBase::Message {
@@ -76,13 +77,13 @@ namespace MyCraft {
     };
     class HoldItemCommand: public MyBase::Command {
     public:
-        HoldItemCommand(PlayerInventoryModule* module);
+        HoldItemCommand(Player::InventoryModule* module);
         ~HoldItemCommand();
 
         MyBase::MessageType getType()                               const override;
         void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
     private:
-        PlayerInventoryModule* module;
+        Player::InventoryModule* module;
     };
 }
 #endif

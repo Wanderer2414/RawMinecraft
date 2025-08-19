@@ -1,8 +1,6 @@
 #include "ModelController.h"
 #include "Message.h"
-#include "PlayerModelController.h"
 #include "WorldRender.h"
-#include "glm/geometric.hpp"
 
 namespace MyCraft {
     ModelController::ModelController(): __zVelocity(0) {}
@@ -33,7 +31,12 @@ namespace MyCraft {
     StopFallMessage::StopFallMessage() {};
     StopFallMessage::~StopFallMessage() {};
 
-    
+    FocusMessage::FocusMessage(const glm::vec3& pos): position(pos) {}
+    FocusMessage::~FocusMessage() {};
+    MyBase::MessageType FocusMessage::getType() const {
+        return MyBase::Focus;
+    }
+
     MoveCommand::MoveCommand(ModelController* model): __model(model) {}
     MoveCommand::~MoveCommand() {}
 
@@ -80,5 +83,39 @@ namespace MyCraft {
         JumpMessage* package = (JumpMessage*)message;
         __model->setZVelocity(package->zVelocity);
         __model->__move({0,0,package->zVelocity});
+    }
+
+    FocusCommand::FocusCommand(MyCraft::ModelController* model): __model(model) {};
+    FocusCommand::~FocusCommand() {};
+
+    MyBase::MessageType FocusCommand::getType() const {
+        return MyBase::Focus;
+    }
+    void FocusCommand::execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message) {
+        FocusMessage* package = (FocusMessage*)message;
+        __model->look(package->position);
+    }
+
+    DiveMessage::DiveMessage() {}
+    DiveMessage::~DiveMessage() {}
+    MyBase::MessageType DiveMessage::getType() const {
+        return MyBase::Dive;;
+    }
+    OnGroundMessage::OnGroundMessage() {}
+    OnGroundMessage::~OnGroundMessage() {}
+    MyBase::MessageType OnGroundMessage::getType() const {
+        return MyBase::OnGround;
+    }
+
+    AttackMessage::AttackMessage(const glm::vec3& pos, const glm::vec3& dir, const ItemType& left, const ItemType& right): position(pos), direction(dir), leftItem(left), rightItem(right) {}
+    AttackMessage::~AttackMessage() {}
+    MyBase::MessageType AttackMessage::getType() const{
+        return MyBase::MessageType::Attack;
+    }
+
+    PlaceMessage::PlaceMessage(const glm::vec3& pos, const glm::vec3& dir, const ItemType& left, const ItemType& right): position(pos), direction(dir), rightItem(right), leftItem(left) {}
+    PlaceMessage::~PlaceMessage() {}
+    MyBase::MessageType PlaceMessage::getType() const {
+        return MyBase::MessageType::Place;
     }
 }

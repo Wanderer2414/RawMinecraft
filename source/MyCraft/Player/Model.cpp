@@ -1,6 +1,5 @@
-#include "PlayerModel.h"
+#include "Player/Model.h"
 #include "General.h"
-#include "glm/geometric.hpp"
 
 namespace MyCraft {
     namespace Player {

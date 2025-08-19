@@ -1,7 +1,7 @@
 #ifndef PIG_MODEL_H
 #define PIG_MODEL_H
 #include "Clock.h"
-#include "PlayerModel.h"
+#include "GLTFModel.h"
 #include "Texture.h"
 #include "WalkAnimation.h"
 namespace MyCraft {
@@ -23,12 +23,12 @@ namespace MyCraft {
             bool apply()                                override;
             void draw() const;
         private:
-            bool            __isChanged;
+            bool            __isChanged, __isFocus;
             float           __moveTime;
             MyBase::Texture __pigTexture;
             const glm::vec2 __diagonal;
             glm::vec3       __position;
-            glm::vec3       __direction;
+            glm::vec3       __direction, __eye_focus;
             WalkAnimation __walk;
             MyBase::Clock __moveClock;
         };

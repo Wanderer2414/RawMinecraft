@@ -6,7 +6,7 @@
 #include "InventoryForm.h"
 #include "Item.h"
 #include "Message.h"
-#include "PlayerModelController.h"
+#include "Player/ModelController.h"
 
 namespace MyCraft {
     World::World(const int& x, const int& y, const int& z, const std::string& src): __worldRender(src) {

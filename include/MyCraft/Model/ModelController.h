@@ -2,6 +2,7 @@
 #define MODEL_H
 #include "Clock.h"
 #include "Controller3D.h"
+#include "Item.h"
 #include "Message.h"
 
 namespace MyCraft {
@@ -15,6 +16,7 @@ namespace MyCraft {
             virtual glm::mat4x3 getShape() const = 0;
             
             virtual void    see(const glm::vec3& dir) = 0,
+                            look(const glm::vec3& position) = 0,
                             move(const glm::vec3& dir) = 0,
                             rotate(const glm::vec3& angle) = 0;
                             
@@ -28,6 +30,7 @@ namespace MyCraft {
         private:
             float   __zVelocity;
             virtual void    __see(const glm::vec3& dir) = 0,
+                            __look(const glm::vec3& position) = 0,
                             __move(const glm::vec3& dir) = 0,
                             __rotate(const glm::vec3& angle) = 0;
     };
@@ -52,6 +55,14 @@ namespace MyCraft {
     public:
         StopFallMessage();
         ~StopFallMessage();
+        MyBase::MessageType     getType() const override;
+    };
+
+    class FocusMessage: public MyBase::Message {
+    public:
+        FocusMessage(const glm::vec3& pos);
+        ~FocusMessage();
+        const glm::vec3 position;
         MyBase::MessageType     getType() const override;
     };
     
@@ -95,6 +106,46 @@ namespace MyCraft {
     private:
         MyCraft::ModelController*      __model;
     };
-    
+    class FocusCommand: public  MyBase::Command {
+    public:
+        FocusCommand(MyCraft::ModelController* model);
+        ~FocusCommand();
+
+         MyBase::MessageType getType()                               const override;
+        void execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message)   override;
+    private:
+        MyCraft::ModelController*      __model;
+    };
+
+    class OnGroundMessage: public MyBase::Message {
+    public:
+        OnGroundMessage();
+        ~OnGroundMessage();
+        MyBase::MessageType getType()                               const override;
+    };
+    class DiveMessage: public MyBase::Message {
+    public:
+        DiveMessage();
+        ~DiveMessage();
+        MyBase::MessageType getType()                               const override;
+    };
+
+    class AttackMessage: public MyBase::Message {
+    public:
+        AttackMessage(const glm::vec3& position, const glm::vec3& direction, const ItemType& left, const ItemType& right);
+        ~AttackMessage();
+        MyBase::MessageType     getType() const override;
+        const glm::vec3 position, direction;
+        const ItemType rightItem, leftItem;
+    };
+
+    class PlaceMessage: public MyBase::Message {
+    public:
+        PlaceMessage(const glm::vec3& position, const glm::vec3& direction, const ItemType& left, const ItemType& right);
+        ~PlaceMessage();
+        MyBase::MessageType getType() const override;
+        const glm::vec3 position, direction;
+        const ItemType rightItem, leftItem;
+    };
 }
 #endif

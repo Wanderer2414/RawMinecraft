@@ -1,3 +1,5 @@
+#ifndef GLTF_MODEL_H
+#define GLTF_MODEL_H
 
 #include "FlyweightStorage.h"
 #include "GLTFAnimation.h"
@@ -26,3 +28,5 @@ namespace MyCraft {
         MyBase::FlyWeightCore* create(const std::string& src) const override;
     };
 }
+
+#endif

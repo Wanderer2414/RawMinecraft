@@ -8,7 +8,6 @@
 #include "SwimAnimation.h"
 #include "Texture.h"
 #include "WalkAnimation.h"
-#include "glm/fwd.hpp"
 namespace MyCraft {
     namespace Player {
         class Model: public GLTFModel {
@@ -27,8 +26,8 @@ namespace MyCraft {
             glm::mat4x3 getShape()              const   override;
             void crouch();
             void uncrouch();
-            void look(const glm::vec3& position)         override;
-            void see(const glm::vec3& dir)             override;
+            void look(const glm::vec3& position)        override;
+            void see(const glm::vec3& dir)              override;
             bool attack()                               override;
             bool left_attack();
             void move(const glm::vec3& direction)       override;

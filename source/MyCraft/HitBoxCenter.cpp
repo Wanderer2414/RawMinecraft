@@ -5,14 +5,14 @@
 #include "Global.h"
 #include "Message.h"
 #include "ModelController.h"
-#include "PigController.h"
+#include "Pig/ModelController.h"
 #include "ShaderStorage.h"
 
 namespace MyCraft {
     
     HitBoxCenter::HitBoxCenter() {
         __colors = glm::vec3(1,0,0);
-        insert(new Pig::PigController());
+        insert(new Pig::Controller());
     }
     HitBoxCenter::~HitBoxCenter() {
         for (int i = 0; i<__models.size(); i++) delete __models[i];

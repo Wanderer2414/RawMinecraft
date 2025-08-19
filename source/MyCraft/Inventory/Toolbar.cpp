@@ -4,8 +4,8 @@
 #include "Inventory.h"
 #include "InventoryElement.h"
 #include "Message.h"
-#include "PlayerInventoryModule.h"
-#include "PlayerModelController.h"
+#include "Player/InventoryModule.h"
+#include "Player/ModelController.h"
 #include "ToolItem.h"
 #include "World.h"
 namespace MyCraft {

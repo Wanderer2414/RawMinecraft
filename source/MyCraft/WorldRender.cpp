@@ -4,7 +4,7 @@
 #include "DrawingCenter.h"
 #include "HealthModule.h"
 #include "Message.h"
-#include "PlayerModelController.h"
+#include "ModelController.h"
 
 namespace MyCraft {
     WorldRender::WorldRender(const std::string& src): __chunkLoader(src), __isHover(false) {

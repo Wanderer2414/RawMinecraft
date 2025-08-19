@@ -10,11 +10,11 @@
 #include "ControlCenter.h"
 #include "InventoryElement.h"
 #include "Message.h"
-#include "PlayerModelController.h"
+#include "Player/ModelController.h"
 
 namespace MyCraft {
     GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src):
-        Form3D(index), __world(0, 0, 0, src), __pauseForm(__font), __playerModel(new PlayerModelController()),
+        Form3D(index), __world(0, 0, 0, src), __pauseForm(__font), __playerModel(new Player::ModelController()),
         __font("assets/fonts/SyneMono-Regular.ttf"), __biomeManage(src), 
         __inventoryForm(__inventory, __playerModel->getItems()) 
     {

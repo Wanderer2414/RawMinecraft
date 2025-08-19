@@ -1,4 +1,4 @@
-#include "WalkAnimation.h"
+#include "Player/WalkAnimation.h"
 
 namespace MyCraft {
     namespace Player {

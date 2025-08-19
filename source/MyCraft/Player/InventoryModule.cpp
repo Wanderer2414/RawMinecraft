@@ -1,4 +1,4 @@
-#include "PlayerInventoryModule.h"
+#include "InventoryModule.h"
 #include "ControlCenter.h"
 #include "DroppedItem.h"
 #include "Inventory.h"
@@ -7,37 +7,39 @@
 #include "Message.h"
 
 namespace MyCraft {
-    PlayerInventoryModule::PlayerInventoryModule(): __leftHandItem(0), __rightHandItem(0) {
-        __items.package.texture = MyBase::Texture("assets/images/blockItem.png");
-        __items.package.size = glm::vec2(102.f/940*1.2f/MyBase::ControlCenter::getInstance().GetWindowRatio(), 102.f/940*1.2)*0.8f;
-        __items.package.font = MyBase::Font("assets/fonts/SyneMono-Regular.ttf");
+    namespace Player {
+        InventoryModule::InventoryModule(): __leftHandItem(0), __rightHandItem(0) {
+            __items.package.texture = MyBase::Texture("assets/images/blockItem.png");
+            __items.package.size = glm::vec2(102.f/940*1.2f/MyBase::ControlCenter::getInstance().GetWindowRatio(), 102.f/940*1.2)*0.8f;
+            __items.package.font = MyBase::Font("assets/fonts/SyneMono-Regular.ttf");
 
-        __items.placeToolbar(0, Item::create(__items.package, 1, ItemType::Torch));
-        __items.placeToolbar(1, Item::create(__items.package, 32, ItemType::OakPlank));
-        __items.placeToolbar(2, Item::create(__items.package, 32, ItemType::StrippedAcaciaLog));
-        __items.placeToolbar(3, Item::create(__items.package, 32, ItemType::Water));
-    }
+            __items.placeToolbar(0, Item::create(__items.package, 1, ItemType::Torch));
+            __items.placeToolbar(1, Item::create(__items.package, 32, ItemType::OakPlank));
+            __items.placeToolbar(2, Item::create(__items.package, 32, ItemType::StrippedAcaciaLog));
+            __items.placeToolbar(3, Item::create(__items.package, 32, ItemType::Water));
+        }
 
-    PlayerInventoryModule::~PlayerInventoryModule() {}
+        InventoryModule::~InventoryModule() {}
 
-    ItemTable& PlayerInventoryModule::getItems() {
-        return __items;
-    }
-    ItemType PlayerInventoryModule::getItemTypeLeftHand() const {
-        if (__leftHandItem) return *__leftHandItem;
-        return ItemType::Air;
-    }
-    ItemType PlayerInventoryModule::getItemTypeRightHand() const {
-        if (__rightHandItem) return *__rightHandItem;
-        return ItemType::Air;
-    }
+        ItemTable& InventoryModule::getItems() {
+            return __items;
+        }
+        ItemType InventoryModule::getItemTypeLeftHand() const {
+            if (__leftHandItem) return *__leftHandItem;
+            return ItemType::Air;
+        }
+        ItemType InventoryModule::getItemTypeRightHand() const {
+            if (__rightHandItem) return *__rightHandItem;
+            return ItemType::Air;
+        }
 
-    void PlayerInventoryModule::setRightHandItem(Item* item) {
-        __rightHandItem = item;
-    }
+        void InventoryModule::setRightHandItem(Item* item) {
+            __rightHandItem = item;
+        }
 
-    void PlayerInventoryModule::setLeftHandItem(Item* item) {
-        __leftHandItem = item;
+        void InventoryModule::setLeftHandItem(Item* item) {
+            __leftHandItem = item;
+        }
     }
 
     PrepareOpenInventoryMessage::PrepareOpenInventoryMessage(const glm::ivec3& p, const BlockCatogary& t): position(p), type(t) {}
@@ -46,7 +48,7 @@ namespace MyCraft {
         return MyBase::PrepareOpenInventory;
     }
 
-    PrepareOpenInventoryCommand::PrepareOpenInventoryCommand(PlayerInventoryModule* model): __model(model) {}
+    PrepareOpenInventoryCommand::PrepareOpenInventoryCommand(Player::InventoryModule* model): __model(model) {}
     PrepareOpenInventoryCommand::~PrepareOpenInventoryCommand() {}
 
     MyBase::MessageType PrepareOpenInventoryCommand::getType() const {
@@ -63,7 +65,7 @@ namespace MyCraft {
         return MyBase::ReceiveItem;
     }
 
-    ReceiveItemCommand::ReceiveItemCommand(PlayerInventoryModule* model): __model(model) {}
+    ReceiveItemCommand::ReceiveItemCommand(Player::InventoryModule* model): __model(model) {}
     ReceiveItemCommand::~ReceiveItemCommand() {}
 
     MyBase::MessageType ReceiveItemCommand::getType() const {
@@ -87,7 +89,7 @@ namespace MyCraft {
         return MyBase::HoldItem;
     }
     
-    HoldItemCommand::HoldItemCommand(PlayerInventoryModule* m): module(m) {}
+    HoldItemCommand::HoldItemCommand(Player::InventoryModule* m): module(m) {}
     HoldItemCommand::~HoldItemCommand() {}
 
     MyBase::MessageType HoldItemCommand::getType() const {

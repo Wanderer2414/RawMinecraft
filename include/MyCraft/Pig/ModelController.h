@@ -1,16 +1,17 @@
 #ifndef PIG_CONTROLLER_H
 #define PIG_CONTROLLER_H
-#include "ModelController.h"
-#include "Pig/PigModel.h"
+#include "Model/ModelController.h"
+#include "Pig/Model.h"
 namespace MyCraft {
     namespace Pig {
-        class PigController: public ModelController, private Pig::Model {
+        class Controller: public ModelController, private Pig::Model {
         public:
-            PigController();
-            ~PigController();
+            Controller();
+            ~Controller();
 
             void    see(const glm::vec3& dir) override,
                     move(const glm::vec3& dir) override,
+                    look(const glm::vec3& position) override,
                     rotate(const glm::vec3& angle) override;
 
             void    update() override;
@@ -24,6 +25,7 @@ namespace MyCraft {
 
             void    __see(const glm::vec3& dir) override,
                     __move(const glm::vec3& dir) override,
+                    __look(const glm::vec3& pos) override,
                     __rotate(const glm::vec3& angle) override;
         };
     }
