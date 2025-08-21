@@ -1,6 +1,7 @@
 #include "General.h"
 #include "Global.h"
 #include "Application.h"
+#include "HitboxTree.h"
 #include <ctime>
 
 #define TINYGLTF_IMPLEMENTATION
