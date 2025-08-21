@@ -48,6 +48,7 @@ namespace MyCraft {
             CrouchAnimation __crouch;
             SwimAnimation   __swim;
             MyBase::Clock   __move_clock, __attack_clock;
+            void __updateShape();
         };
     }
 }

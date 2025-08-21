@@ -92,44 +92,81 @@ namespace MyCraft {
 
 
     float getPowerness(const ItemType& tool) {
-        if (tool == ItemType::WoodenAxe) return 30;
-        if (tool == ItemType::StoneAxe) return 40;
-        if (tool == ItemType::IronAxe) return 60;
-        if (tool == ItemType::GoldenAxe) return 80;
-        if (tool == ItemType::DiamonAxe) return 70;
-        if (tool == ItemType::NetheriteAxe) return 90;
-
-        if (tool == ItemType::WoodenPickaxe) return 30;
-        if (tool == ItemType::StonePickaxe) return 40;
-        if (tool == ItemType::IronPickaxe) return 60;
-        if (tool == ItemType::GoldenPickaxe) return 80;
-        if (tool == ItemType::DianmonPickaxe) return 70;
-        if (tool == ItemType::NetheritePickaxe) return 90;
-
-        if (tool == ItemType::WoodenShovel) return 30;
-        if (tool == ItemType::StoneShovel) return 40;
-        if (tool == ItemType::IronShovel) return 60;
-        if (tool == ItemType::GoldenShovel) return 80;
-        if (tool == ItemType::DiamonShovel) return 70;
-        if (tool == ItemType::NetheriteShovel) return 90;
-
-        if (tool == ItemType::WoodenHoe) return 30;
-        if (tool == ItemType::StoneHoe) return 40;
-        if (tool == ItemType::IronHoe) return 60;
-        if (tool == ItemType::Golden) return 80;
-        if (tool == ItemType::DiamonHoe) return 70;
-        if (tool == ItemType::NetheriteHoe) return 90;
-
-        if (tool == ItemType::WoodedSword) return 10;
-        if (tool == ItemType::StoneSword) return 20;
-        if (tool == ItemType::IronSword) return 40;
-        if (tool == ItemType::GoldenSword) return 80;
-        if (tool == ItemType::DiamonSword) return 72;
-        if (tool == ItemType::NetheriteSword) return 100;
-
-        return 20;
+        switch (tool) {
+            case (ItemType::WoodenAxe): return 30;
+            case (ItemType::StoneAxe): return 40;
+            case (ItemType::IronAxe): return 60;
+            case (ItemType::GoldenAxe): return 80;
+            case (ItemType::DiamondAxe): return 70;
+            case (ItemType::NetheriteAxe): return 90;
+            case (ItemType::WoodenPickaxe): return 30;
+            case (ItemType::StonePickaxe): return 40;
+            case (ItemType::IronPickaxe): return 60;
+            case (ItemType::GoldenPickaxe): return 80;
+            case (ItemType::DiamondPickaxe): return 70;
+            case (ItemType::NetheritePickaxe): return 90;
+            case (ItemType::WoodenShovel): return 30;
+            case (ItemType::StoneShovel): return 40;
+            case (ItemType::IronShovel): return 60;
+            case (ItemType::GoldenShovel): return 80;
+            case (ItemType::DiamondShovel): return 70;
+            case (ItemType::NetheriteShovel): return 90;
+            case (ItemType::WoodenHoe): return 30;
+            case (ItemType::StoneHoe): return 40;
+            case (ItemType::IronHoe): return 60;
+            case (ItemType::GoldenHoe): return 80;
+            case (ItemType::DiamondHoe): return 70;
+            case (ItemType::NetheriteHoe): return 90;
+            case (ItemType::WoodedSword): return 10;
+            case (ItemType::StoneSword): return 20;
+            case (ItemType::IronSword): return 40;
+            case (ItemType::GoldenSword): return 80;
+            case (ItemType::DiamonSword): return 72;
+            case (ItemType::NetheriteSword): return 100;
+            default: return 20;
+        }
     }
 
+float getSharpness(const ItemType& tool) {
+    switch (tool) {
+        case ItemType::WoodenAxe:      return 30;
+        case ItemType::StoneAxe:       return 40;
+        case ItemType::IronAxe:        return 60;
+        case ItemType::GoldenAxe:      return 80;
+        case ItemType::DiamondAxe:     return 70;
+        case ItemType::NetheriteAxe:   return 90;
+
+        case ItemType::WoodenPickaxe:     return 30;
+        case ItemType::StonePickaxe:      return 40;
+        case ItemType::IronPickaxe:       return 60;
+        case ItemType::GoldenPickaxe:     return 80;
+        case ItemType::DiamondPickaxe:    return 70;
+        case ItemType::NetheritePickaxe:  return 90;
+
+        case ItemType::WoodenShovel:     return 30;
+        case ItemType::StoneShovel:      return 40;
+        case ItemType::IronShovel:       return 60;
+        case ItemType::GoldenShovel:     return 80;
+        case ItemType::DiamondShovel:    return 70;
+        case ItemType::NetheriteShovel:  return 90;
+
+        case ItemType::WoodenHoe:     return 30;
+        case ItemType::StoneHoe:      return 40;
+        case ItemType::IronHoe:       return 60;
+        case ItemType::GoldenHoe:     return 80;
+        case ItemType::DiamondHoe:    return 70;
+        case ItemType::NetheriteHoe:  return 90;
+
+        case ItemType::WoodedSword:     return 10;
+        case ItemType::StoneSword:      return 20;
+        case ItemType::IronSword:       return 40;
+        case ItemType::GoldenSword:     return 80;
+        case ItemType::DiamonSword:    return 72;
+        case ItemType::NetheriteSword:  return 100;
+
+        default: return 20;
+    }
+}
 
     BlockCatogary to_block(const ItemType& type) {
         return (BlockCatogary)type;

@@ -17,8 +17,9 @@ namespace MyCraft {
         MyBase::Network::match(&__crackingManage);
         MyBase::Network::match(&__worldRender);
         MyBase::Network::match(&__dropItemManage);
-        add(new PlaceBlockCommand(*this));
-        add(new CrackBlockCommand(*this));
+        add(new HealthWorldCommand(*this));
+        add(new AttackWorldCommand(*this));
+        add(new CheckHoverCommand(*this));
     }
     World::~World() {}
 
@@ -33,12 +34,12 @@ namespace MyCraft {
     }
 
 
-    PlaceBlockCommand::PlaceBlockCommand(World& world): __world(world) {}
-    PlaceBlockCommand::~PlaceBlockCommand() {}
-    MyBase::MessageType PlaceBlockCommand::getType() const {
+    HealthWorldCommand::HealthWorldCommand(World& world): __world(world) {}
+    HealthWorldCommand::~HealthWorldCommand() {}
+    MyBase::MessageType HealthWorldCommand::getType() const {
         return MyBase::MessageType::Place;
     }
-    void PlaceBlockCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
+    void HealthWorldCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
         PlaceMessage* package = (PlaceMessage*)message;
         // bool below_result = true, above_result = true;
         // std::queue<glm::ivec3> q = rasterize(package->shape[0], package->shape[0]+package->shape[1]);
@@ -82,12 +83,12 @@ namespace MyCraft {
         }
     }
 
-    CrackBlockCommand::CrackBlockCommand(World& w): __world(w) {}
-    CrackBlockCommand::~CrackBlockCommand() {}
-    MyBase::MessageType CrackBlockCommand::getType() const {
+    AttackWorldCommand::AttackWorldCommand(World& w): __world(w) {}
+    AttackWorldCommand::~AttackWorldCommand() {}
+    MyBase::MessageType AttackWorldCommand::getType() const {
         return MyBase::Attack;
     }
-    void CrackBlockCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
+    void AttackWorldCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
         AttackMessage* package = (AttackMessage*)message;
         if (__world.__worldRender.isHover()) {
             BlockCatogary type =__world.__worldRender.getHoverType();
@@ -104,6 +105,54 @@ namespace MyCraft {
                 mine.send(des, new AcceptDestroyMessage(1/percent, type, position));
             }
         }
+        else if (__world.__hitbox.isHover()) {
+            __world.__hitbox.attackEntity(getSharpness(package->rightItem), package->direction);
+        }
     }
+
+
+    CheckHoverMessage::CheckHoverMessage(const glm::vec3& pos, const glm::vec3& dir): position(pos), direction(dir) {}
+    CheckHoverMessage::~CheckHoverMessage() {}
+    MyBase::MessageType CheckHoverMessage::getType() const {
+        return MyBase::MessageType::CheckHover;
+    }
+
+    CheckHoverCommand::CheckHoverCommand(World& world): __world(world) {}
+    CheckHoverCommand::~CheckHoverCommand() {}
+    MyBase::MessageType CheckHoverCommand::getType() const {
+        return MyBase::MessageType::CheckHover;
+    };
+    void CheckHoverCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
+        CheckHoverMessage* package = (CheckHoverMessage*)message;
+        glm::vec3 position = package->position;
+        glm::vec3 direction = package->direction;
+
+        auto* model = __world.__hitbox.isColistion(position+direction, direction*4.f);
+        if (model) {
+            __world.__hitbox.setHoverEntity(model);
+            __world.__worldRender.unHover();
+        }
+        else {
+            glm::vec3 delta = direction*4.f/20.f;
+            glm::ivec3 hoverPosition, placePosition;
+            bool hover = false;
+            
+            for (int i = 0; i<=20 && !hover; i++) {
+                glm::vec3 cur = position+i*1.0f*delta;
+                if (__world.__worldRender.isHover(cur)) {
+                    hover = true;
+                    hoverPosition = glm::ivec3(floor(cur.x), floor(cur.y), floor(cur.z));
+                }
+                else {
+                    placePosition = glm::ivec3(floor(cur.x), floor(cur.y), floor(cur.z));
+                }
+            }
+            if (hover) {
+                __world.__worldRender.setHoverBlock(hoverPosition, placePosition);
+            }
+            else __world.__worldRender.unHover();
+        }
+    }
+
 
 }

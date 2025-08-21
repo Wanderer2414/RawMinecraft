@@ -10,8 +10,8 @@ namespace MyCraft {
         bool isFullHealth() const;
         float getHealthPercent() const;
         unsigned char getHealth() const;
-        void damage(const unsigned int&);
-        void health(const unsigned int&);
+        virtual void damage(const unsigned int&);
+        virtual void heal(const unsigned int&);
     protected:
         virtual void __dead() = 0;
         virtual void __damage() = 0;

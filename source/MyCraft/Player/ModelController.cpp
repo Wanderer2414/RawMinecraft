@@ -4,19 +4,18 @@
 #include "ControlCenter.h"
 #include "HealthBar.h"
 #include "HealthModule.h"
-#include "Item.h"
 #include "Message.h"
 #include "Global.h"
 #include "ModelController.h"
 #include "Player/Model.h"
 #include "Sun.h"
-#include "WorldRender.h"
+#include "World.h"
 
 namespace MyCraft {
     namespace Player {
-        ModelController::ModelController(): __direction(0, -1, 0), __isChanged(false),
+        ModelController::ModelController(): MyCraft::ModelController(100), __direction(0, -1, 0), __isChanged(false),
             __eye_direction(0, -1, 0),
-            __isDrawable(true), HealthModule(100) {
+            __isDrawable(true) {
             __speed = 0.2;
             __speedControl.setDuration(30);
 
@@ -32,6 +31,7 @@ namespace MyCraft {
             add(new DiveCommand(*this));
             add(new OnGroundCommand(*this));
             add(new DamageCommand(*this));
+            update();
         }
         ModelController::~ModelController() {}
         bool ModelController::catchEvent(GLFWwindow* window) {
@@ -137,8 +137,9 @@ namespace MyCraft {
             d += delta.y*glm::normalize(glm::cross(__eye_direction, glm::vec3(0, 0, 1)));
             return d;
         }
+
         glm::mat4x3 ModelController::getShape() const {
-            return Player::Model::getShape();
+            return MyCraft::ModelController::getShape();
         }
 
         void ModelController::__damage() {
@@ -169,10 +170,12 @@ namespace MyCraft {
         }
         void ModelController::teleport(const glm::vec3& position) {
             setPosition(position);
+            update();
         }
         void ModelController::__move(const glm::vec3& delta) {
             Player::Model::move(delta); 
             __isChanged = true;
+            update();
             send(new MyBase::SetCameraMessage(getEyePosition(), __eye_direction));
             send(new CheckHoverMessage(getEyePosition(), __eye_direction));
             send(new FocusMessage(getPosition()));
@@ -181,6 +184,7 @@ namespace MyCraft {
         void ModelController::__rotate(const glm::vec3& dir) {
             __direction = glm::normalize(dir);
             Player::Model::rotate(__direction);
+            update();
         }
         void ModelController::__see(const glm::vec3& dir) {
             Player::Model::see(dir);
@@ -197,6 +201,7 @@ namespace MyCraft {
             if (angle>M_PI/20 && angle < M_PI*0.95) {
                 __eye_direction = eye_direction;
                 Player::Model::see(__eye_direction);
+                update();
             }
             send(new MyBase::SetCameraMessage(getEyePosition(), __eye_direction));
             send(new CheckHoverMessage(getEyePosition(), __eye_direction));
@@ -207,7 +212,9 @@ namespace MyCraft {
         void ModelController::glDraw() const {
             if (__isDrawable) Player::Model::draw();
         }
-        void ModelController::update() {}
+        void ModelController::update() {
+            setShape(Model::getShape());
+        }
 
 
         ResetCameraCommand::ResetCameraCommand(MyCraft::Player::ModelController* model): __model(model) {};

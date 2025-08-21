@@ -78,25 +78,6 @@ namespace MyCraft {
     private:
         WorldRender&  __world;
     };
-
-    class CheckHoverMessage: public MyBase::Message {
-    public:
-        CheckHoverMessage(const glm::vec3& pos, const glm::vec3& dir);
-        ~CheckHoverMessage();
-        MyBase::MessageType     getType() const override;
-        const glm::vec3 position, direction;
-    };
-
-    class CheckHoverCommand: public MyBase::Command {
-    public:
-        CheckHoverCommand(MyCraft::WorldRender& world);
-        ~CheckHoverCommand();
-        MyBase::MessageType getType() const override;
-        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
-    private:
-        WorldRender& __world;
-    };
-
     class WorldMoveMessage: public MyBase::Message {
     public:
         WorldMoveMessage(const glm::vec3& position);

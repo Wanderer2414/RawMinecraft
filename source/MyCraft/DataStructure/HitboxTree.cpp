@@ -1,4 +1,5 @@
 #include "HitboxTree.h"
+#include "Ray.h"
 #include "glm/geometric.hpp"
 #include <limits>
 #include <pthread.h>
@@ -27,12 +28,57 @@ namespace MyCraft {
         contains = contains && dummy<=length*length && dummy>=0;
         return contains;
     }
-    bool HitboxNode::isCollistion(const MyBase3D::Ray3f& ray) const {
-        glm::vec3 dir = ray, origin = ray.getOrigin();
-        
+    float HitboxNode::isCollistion(const glm::vec3& position, const glm::vec3& direction) const {
+        glm::vec3 origin = position - __shape[0];
+        bool contains = false;
+        float ans = std::numeric_limits<float>::max();
+        {
+            glm::mat3 mat(__shape[1], __shape[2], - direction);
+            glm::vec3 point = glm::inverse(mat)*origin;
+            contains = (point.x>=0 && point.x<=1 && point.y>=0 && point.y<=1 && point.z>=0 && point.z<=1);
+            if (contains) ans = std::min(ans, glm::length(point-origin));
+        }
+
+        {
+            glm::mat3 mat(__shape[1], __shape[3], - direction);
+            glm::vec3 point = glm::inverse(mat)*origin;
+            contains = (point.x>=0 && point.x<=1 && point.y>=0 && point.y<=1 && point.z>=0);
+            if (contains) ans = std::min(ans, glm::length(point-origin));
+        }
+
+        {
+            glm::mat3 mat(__shape[2], __shape[3], - direction);
+            glm::vec3 point = glm::inverse(mat)*origin;
+            contains = (point.x>=0 && point.x<=1 && point.y>=0 && point.y<=1 && point.z>=0);
+            if (contains) ans = std::min(ans, glm::length(point-origin));
+        }
+
+        origin -= __shape[1]+__shape[2]+__shape[3];
+
+        {
+            glm::mat3 mat(-__shape[1], -__shape[2], - direction);
+            glm::vec3 point = glm::inverse(mat)*origin;
+            contains = (point.x>=0 && point.x<=1 && point.y>=0 && point.y<=1 && point.z>=0);
+            if (contains) ans = std::min(ans, glm::length(point-origin));
+        }
+
+        {
+            glm::mat3 mat(-__shape[1], -__shape[3], - direction);
+            glm::vec3 point = glm::inverse(mat)*origin;
+            contains = (point.x>=0 && point.x<=1 && point.y>=0 && point.y<=1 && point.z>=0);
+            if (contains) ans = std::min(ans, glm::length(point-origin));
+        }
+
+        {
+            glm::mat3 mat(-__shape[2], -__shape[3], - direction);
+            glm::vec3 point = glm::inverse(mat)*origin;
+            contains = (point.x>=0 && point.x<=1 && point.y>=0 && point.y<=1 && point.z>=0);
+            if (contains) ans = std::min(ans, glm::length(point-origin));
+        }
+        return ans;
     }
     void HitboxNode::update() {
-        tree->update(this);
+        if (tree) tree->update(this);
     }
     void HitboxNode::setShape(const glm::mat4x3& shape) {
         __shape = shape;
@@ -81,12 +127,18 @@ namespace MyCraft {
     HitboxTree::HitboxTree(): __root(0) {}
     HitboxTree::~HitboxTree() {}
 
-    HitboxNode* HitboxTree::get(const glm::vec3& position) {
-
-        return 0;
+    std::vector<HitboxNode*> HitboxTree::get(const glm::vec3& position) const {
+        std::vector<HitboxNode*> ans;
+        __get(ans, __root, position);
+        return ans;
+    }
+    HitboxNode* HitboxTree::get(const glm::vec3& position, const glm::vec3& direction) const {
+        return __get(__root, position, direction).first;
     }
     void HitboxTree::insert(HitboxNode* model) {
+        model->tree = this;
         __insert(__root, model);
+        print();
     }
     void HitboxTree::print() const {
         __print(__root);
@@ -282,5 +334,33 @@ namespace MyCraft {
         std::cout << *root << std::endl;
         __print(root->left);
         __print(root->right);
+    }
+    void HitboxTree::__get(std::vector<HitboxNode*>& ans, HitboxNode* root, const glm::vec3& position) const {
+        if (!root) return ;
+        if (root->left->contains(position)) {
+            if (!root->left->height) ans.push_back(root->left);
+            else __get(ans, root->left, position);
+        }
+        if (root->right->contains(position)) {
+            if (!root->right->height) ans.push_back(root->right);
+            else __get(ans, root->right, position);
+        }
+    }
+    std::pair<HitboxNode*, float> HitboxTree::__get(HitboxNode* root, const glm::vec3& position, const glm::vec3& dir) const {
+        if (!root) return {0,0};
+        std::pair<HitboxNode*, float> ans = {0,std::numeric_limits<float>::max()};
+        if (float distance = root->left->isCollistion(position, dir); distance<=glm::length(dir)) {
+            std::pair<HitboxNode*, float> subans;
+            if (!root->left->height) subans = {root->left, distance};
+            else subans = __get(root->left, position, dir);
+            if (subans.second<ans.second) ans = subans;
+        }
+        if (float distance = root->right->isCollistion(position, dir); distance<=glm::length(dir)) {
+            std::pair<HitboxNode*, float> subans;
+            if (!root->right->height) subans = {root->right, distance};
+            else subans = __get(root->right, position, dir);
+            if (subans.second<ans.second) ans = subans;
+        }
+        return ans;
     }
 }

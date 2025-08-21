@@ -16,12 +16,34 @@ namespace MyCraft {
     HitBoxCenter::~HitBoxCenter() {
         for (int i = 0; i<__models.size(); i++) delete __models[i];
     }
-
+    bool HitBoxCenter::isHover() const {
+        return __hoverEntity;
+    }
     bool HitBoxCenter::isBusyBlock(const glm::ivec3& position) const {
         return false;
     }
     bool HitBoxCenter::isColistion(const glm::vec3& position) const {
         return false;
+    }
+
+    ModelController* HitBoxCenter::isColistion(const glm::vec3& position, const glm::vec3& direction) const {
+        return (ModelController*)__tree.get(position, direction);
+    }
+    void HitBoxCenter::setHoverEntity(ModelController* controller) {
+        __hoverEntity = controller;
+    }
+
+    void HitBoxCenter::attackEntity(const unsigned int& damage, const glm::vec3& direction) {
+        if (__hoverEntity) {
+            glm::vec3 dir = direction;
+            dir.z = 0.2;
+            dir = glm::normalize(dir)*0.5f;
+            __hoverEntity->move(dir);
+            __hoverEntity->damage(damage);
+        }
+    }
+    void HitBoxCenter::feedEntity(const unsigned int& health, const glm::vec3& direction) {
+        if (__hoverEntity) ;
     }
     static glm::vec3 position = {0,0,0};
     static float angle = 0;
@@ -39,6 +61,7 @@ namespace MyCraft {
         __models.push_back(model);
         MyBase::Network::match(model);
         Container3D::insert(model);
+        __tree.insert(model);
     }
     void HitBoxCenter::erase(ModelController* model) {
     }

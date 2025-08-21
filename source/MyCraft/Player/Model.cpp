@@ -9,7 +9,7 @@ namespace MyCraft {
             __right_attack(Animations("right_attack")),
             __crouch(Animations("crouch")),
             __swim(Animations("swim")),
-            __isChanged(false), __position(0), __isSwim(false),
+            __isChanged(false), __position(0), __isSwim(false), __direction(0, -1, 0),
             __isCrouch(false),  __moveTime(0), __isRightAttack(false), __isLeftAttack(false) 
         {
             __skin.load("assets/models/Player/Steve.png", false);

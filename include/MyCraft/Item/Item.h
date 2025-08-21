@@ -19,13 +19,13 @@ namespace MyCraft {
         CraftTable, Furnace, Smoker,
         BlastFurnace, Chest,  Torch, 
         Water, WoodenAxe, StoneAxe,
-        IronAxe, GoldenAxe,  DiamonAxe,
+        IronAxe, GoldenAxe,  DiamondAxe,
         NetheriteAxe, WoodenHoe, StoneHoe,
-        IronHoe, Golden, DiamonHoe,
+        IronHoe, GoldenHoe, DiamondHoe,
         NetheriteHoe, WoodenPickaxe, StonePickaxe,
-        IronPickaxe, GoldenPickaxe, DianmonPickaxe,
+        IronPickaxe, GoldenPickaxe, DiamondPickaxe,
         NetheritePickaxe, WoodenShovel, StoneShovel,
-        IronShovel, GoldenShovel, DiamonShovel,
+        IronShovel, GoldenShovel, DiamondShovel,
         NetheriteShovel, FlintAndSteel, Shears,
         LeatherCap, ChainmailCap,  IronCap,
         GoldenCap, DiamonCap, NetheriteCap,
@@ -55,6 +55,7 @@ namespace MyCraft {
     bool isHandAdaptive(const BlockCatogary& block);
     
     float getPowerness(const ItemType& type);
+    float getSharpness(const ItemType& type);
     class Item {
     public:
         Item(const ItemType& type, const unsigned char& count);

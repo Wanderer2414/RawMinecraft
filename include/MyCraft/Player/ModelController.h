@@ -2,8 +2,6 @@
 #define PLAYER_MODEL_CONTROLLER_H
 #include "Block.h"
 #include "Clock.h"
-#include "HealthModule.h"
-#include "Item.h"
 #include "Message.h"
 #include "InventoryModule.h"
 #include "Model/ModelController.h"
@@ -11,7 +9,7 @@
 
 namespace MyCraft {
     namespace Player {
-        class ModelController: public MyCraft::ModelController, public InventoryModule, public HealthModule, public Player::Model {
+        class ModelController: public MyCraft::ModelController, public InventoryModule, public Player::Model {
         public: 
             ModelController();
             ~ModelController();

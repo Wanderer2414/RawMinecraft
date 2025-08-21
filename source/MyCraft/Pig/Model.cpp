@@ -3,7 +3,7 @@
 namespace MyCraft {
     namespace Pig {
         Model::Model(): GLTFModel("assets/models/Pig/Pig.gltf"), 
-            __pigTexture("assets/models/Pig/Pig.png",false), 
+            __pigTexture("assets/models/Pig/Pig.png",false), __direction(0, 1, 0),
             __walk(Animations("Walk")), __eye_focus(0), __isFocus(false),
             __diagonal(0.5, 1.4), __position(0), __moveTime(0), __isChanged(false)
         {

@@ -11,7 +11,6 @@ namespace MyCraft {
         insert(&__chunkLoader);
         add(new CheckEmptyCommand(*this));
         add(new CheckFallCommand(*this));
-        add(new CheckHoverCommand(*this));
         add(new WorldMoveCommand(*this));
         add( new RequestJumpCommand(*this));
     }
@@ -396,41 +395,6 @@ namespace MyCraft {
     MyBase::MessageType CheckFallCommand::getType() const {
         return MyBase::MessageType::RequestFall;
     }
-
-    CheckHoverMessage::CheckHoverMessage(const glm::vec3& pos, const glm::vec3& dir): position(pos), direction(dir) {}
-    CheckHoverMessage::~CheckHoverMessage() {}
-    MyBase::MessageType CheckHoverMessage::getType() const {
-        return MyBase::MessageType::CheckHover;
-    }
-
-    CheckHoverCommand::CheckHoverCommand(WorldRender& world): __world(world) {}
-    CheckHoverCommand::~CheckHoverCommand() {}
-    MyBase::MessageType CheckHoverCommand::getType() const {
-        return MyBase::MessageType::CheckHover;
-    };
-    void CheckHoverCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
-        CheckHoverMessage* package = (CheckHoverMessage*)message;
-        glm::vec3 position = package->position;
-        glm::vec3 direction = package->direction;
-        glm::vec3 delta = direction*4.f/20.f;
-        bool hover = false;
-        glm::ivec3 hoverPosition, placePosition;
-        for (int i = 0; i<=20 && !hover; i++) {
-            glm::vec3 cur = position+i*1.0f*delta;
-            if (__world.isHover(cur)) {
-                hover = true;
-                hoverPosition = glm::ivec3(floor(cur.x), floor(cur.y), floor(cur.z));
-            }
-            else {
-                placePosition = glm::ivec3(floor(cur.x), floor(cur.y), floor(cur.z));
-            }
-        }
-        if (hover) {
-            __world.setHoverBlock(hoverPosition, placePosition);
-        }
-        else __world.unHover();
-    }
-
     WorldMoveMessage::WorldMoveMessage(const glm::vec3& pos): position(pos) {}
     WorldMoveMessage::~WorldMoveMessage() {}
     MyBase::MessageType WorldMoveMessage::getType() const {

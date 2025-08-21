@@ -28,7 +28,7 @@ namespace MyCraft {
             __damage();
         }
     }
-    void HealthModule::health(const unsigned int& h) {
+    void HealthModule::heal(const unsigned int& h) {
         if (__maxHealth - __health >= h) __health += h;
         else __health = __maxHealth;
         __heal();

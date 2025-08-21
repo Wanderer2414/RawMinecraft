@@ -19,40 +19,61 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
         ~World();
         
         bool isBusyBlock(const glm::ivec3& position);
+        
         void teleport(const glm::ivec3& position);
         void addModel(ModelController* controller);
-        friend class PlaceBlockCommand;
-        friend class CrackBlockCommand;
+        friend class HealthWorldCommand;
+        friend class AttackWorldCommand;
+        friend class CheckHoverCommand;
     protected:
     private:
         HitBoxCenter            __hitbox;
         WorldRender             __worldRender;
         CrackingManage          __crackingManage;
         DropItemManage          __dropItemManage;
-        glm::ivec3              __placePosition;
-        glm::vec3               __cameraPosition, __cameraDir;
 
     };
 
 
-    class PlaceBlockCommand: public MyBase::Command {
+    class HealthWorldCommand: public MyBase::Command {
     public:
-        PlaceBlockCommand(MyCraft::World& world);
-        ~PlaceBlockCommand();
+        HealthWorldCommand(MyCraft::World& world);
+        ~HealthWorldCommand();
         MyBase::MessageType getType() const override;
         void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
     private:
         World& __world;
     };
 
-    class CrackBlockCommand: public MyBase::Command {
+    class AttackWorldCommand: public MyBase::Command {
     public:
-        CrackBlockCommand(World& world);
-        ~CrackBlockCommand();
+        AttackWorldCommand(World& world);
+        ~AttackWorldCommand();
         MyBase::MessageType getType() const override;
         void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
     private:
         World& __world;
     };
+
+
+
+    class CheckHoverMessage: public MyBase::Message {
+    public:
+        CheckHoverMessage(const glm::vec3& pos, const glm::vec3& dir);
+        ~CheckHoverMessage();
+        MyBase::MessageType     getType() const override;
+        const glm::vec3 position, direction;
+    };
+
+    class CheckHoverCommand: public MyBase::Command {
+    public:
+        CheckHoverCommand(MyCraft::World& world);
+        ~CheckHoverCommand();
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
+    private:
+        World& __world;
+    };
+
 }
 #endif

@@ -1,16 +1,29 @@
 #include "GLTFModel.h"
+#include "Color.h"
 #include "GLTFMesh.h"
 #include "Global.h"
+#include "ShapeManager.h"
 
 namespace MyCraft {
-    GLTFModel::GLTFModel(const std::string& modelPath){
+    GLTFModel::GLTFModel(const std::string& modelPath): __baseColor(TRANSPARENCY) {
         if (modelPath.size()) load(modelPath);
+        __baseColorBuffer = MyBase::ShapeManager::getInstance().createColor(TRANSPARENCY);
     }
 
     GLTFModel::~GLTFModel() {
+        MyBase::ShapeManager::getInstance().removeColor(__baseColor);
+    }
+
+    void GLTFModel::setBaseColor(const MyBase::Color& color) {
+        if (color != __baseColor) {
+            MyBase::ShapeManager::getInstance().removeColor(__baseColor);
+            __baseColor = color;
+            __baseColorBuffer = MyBase::ShapeManager::getInstance().createColor(__baseColor);
+        }
     }
 
     void GLTFModel::draw() const {
+        glBindBufferBase(GL_UNIFORM_BUFFER, 2, __baseColorBuffer);
         ((GLTFStaticMesh*)getCore())->Draw();
     }
 

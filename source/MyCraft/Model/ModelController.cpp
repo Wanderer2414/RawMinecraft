@@ -1,9 +1,11 @@
 #include "ModelController.h"
+#include "HealthModule.h"
+#include "HitboxTree.h"
 #include "Message.h"
 #include "WorldRender.h"
 
 namespace MyCraft {
-    ModelController::ModelController(): __zVelocity(0) {}
+    ModelController::ModelController(const unsigned int& max_heal): HealthModule(max_heal), HitboxNode(0), __zVelocity(0) {}
     ModelController::~ModelController() {};
 
     float ModelController::getZVelocity() const {
