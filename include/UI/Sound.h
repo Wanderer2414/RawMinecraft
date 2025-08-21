@@ -1,6 +1,6 @@
 #pragma once
 #define BASS_STATIC
-#include <../bass24/c/bass.h>
+#include <bass.h>
 #include <string>
 #include <iostream>
 

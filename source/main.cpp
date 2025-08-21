@@ -49,11 +49,10 @@ int main(){
     // Khởi tạo hệ thống âm thanh (giả sử class Sound đã tự xử lý)
     Sound sound("assets/sounds/SoundEffect.mp3"); // Giả sử constructor không cần tham số
     // Hoặc nếu cần file: Sound sound("sound.wav");
-
     // Vòng lặp chính
     while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT);
-
+        glfwSwapBuffers(window);
+        glfwPollEvents();
         // Xử lý input
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
             sound.play();
@@ -71,8 +70,6 @@ int main(){
         }
 
         // Swap buffers và poll events
-        glfwSwapBuffers(window);
-        glfwPollEvents();
     }
 
     // Dọn dẹp
