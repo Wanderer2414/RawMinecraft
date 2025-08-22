@@ -1,15 +1,13 @@
-#ifndef INTROFORM_H
-#define INTROFORM_H
+#pragma once
 #include "Button.h"
 #include "Font.h"
 #include "Form.h"
 #include "Label.h"
-#include "../UI/Slider.h"
 namespace MyCraft {
-    class IntroForm: public MyBase::Form {
+    class SettingForm: public MyBase::Form {
     public:
-        IntroForm(GLFWwindow* window, const int& index);
-        ~IntroForm();
+        SettingForm(GLFWwindow* window, const int& index);
+        ~SettingForm();
     private:
         bool __mouseClicked(GLFWwindow*) override;
         bool catchEvent(GLFWwindow*) override;
@@ -18,4 +16,3 @@ namespace MyCraft {
         MyBase::Font font;
     };
 }
-#endif
