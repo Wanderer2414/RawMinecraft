@@ -20,7 +20,7 @@ namespace MyCraft {
                             look(const glm::vec3& position) = 0,
                             move(const glm::vec3& dir) = 0,
                             rotate(const glm::vec3& angle) = 0;
-                            
+            friend class Path;
             friend class MoveCommand;
             friend class FallCommand;
             friend class StopFallCommand;

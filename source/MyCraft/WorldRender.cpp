@@ -114,8 +114,8 @@ namespace MyCraft {
     }
 
     void WorldRender::glDraw() const {
-        DrawingCenter::BindMargin();
-        DrawingCenter::DrawMargins((void*)__chunkLoader.getChunks().data(), __chunkLoader.getChunks().size(), RED, 2);
+        // DrawingCenter::BindMargin();
+        // DrawingCenter::DrawMargins((void*)__chunkLoader.getChunks().data(), __chunkLoader.getChunks().size(), RED, 2);
         Container3D::glDraw();
     }
 

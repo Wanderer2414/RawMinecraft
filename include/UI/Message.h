@@ -64,6 +64,7 @@ namespace MyBase {
         virtual ~Message() = 0;
     private:
     };
+    
     class Command {
     public:
         Command();

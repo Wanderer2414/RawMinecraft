@@ -23,7 +23,7 @@ namespace MyCraft {
         private:
             bool    __isChanged, __isDamage;
             float   __speed;
-            MyBase::Clock __damageDuration;
+            MyBase::Clock __damageDuration, __fallCheckClock;
             bool handle(GLFWwindow* window) override;
             void glDraw() const override;
 

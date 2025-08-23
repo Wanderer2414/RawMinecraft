@@ -47,11 +47,7 @@ namespace MyCraft {
     }
     void MoveCommand::execute(MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message)   {
         MoveMessage* moveMessage = (MoveMessage*)message;
-        
-        if (glm::length(moveMessage->direction) && moveMessage->depth<=1) {
-            __model->__move(moveMessage->direction);
-            mine.send(new RequestFallMessage(__model->getShape(), __model->getZVelocity()));
-        }
+        __model->__move(moveMessage->direction);
     }
     
     FallCommand::FallCommand(ModelController* model): __model(model) {}

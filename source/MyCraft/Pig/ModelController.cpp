@@ -12,6 +12,7 @@ namespace MyCraft {
             add( new FocusCommand(this));
             update();
             __damageDuration.setDuration(200);
+            __fallCheckClock.setDuration(30);
         }
         Controller::~Controller() {}
 
@@ -21,6 +22,10 @@ namespace MyCraft {
                 __isDamage = false;
                 __isChanged = true;
                 setBaseColor(TRANSPARENCY);
+            }
+            if (__fallCheckClock.get()) {
+                __fallCheckClock.restart();
+                send(new RequestFallMessage(getShape(), getZVelocity()));
             }
             if (__isChanged) return !(__isChanged = false);
             return false;
@@ -48,7 +53,6 @@ namespace MyCraft {
         void Controller::move(const glm::vec3& dir) {
             if (dir.z) send(new RequestJumpMessage(getShape(), dir.z));
             send(new RequestGotoMessage(getShape(), dir));
-            send(new RequestFallMessage(getShape(), getZVelocity()));
         }
         void Controller::rotate(const glm::vec3& angle) {
 

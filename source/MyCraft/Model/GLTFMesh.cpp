@@ -140,6 +140,7 @@ namespace MyCraft {
             DrawModelNodes(root->children[i], new_state);
         }
         if (root->children.empty()) {
+            new_state *= glm::translate(glm::mat4(1), root->translation);
             glBindBuffer(GL_UNIFORM_BUFFER, __state);
             glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &new_state);
             glBindBufferBase(GL_UNIFORM_BUFFER, 1, __state);

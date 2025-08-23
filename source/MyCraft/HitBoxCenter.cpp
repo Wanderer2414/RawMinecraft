@@ -12,6 +12,7 @@ namespace MyCraft {
     HitBoxCenter::HitBoxCenter() {
         __colors = glm::vec3(1,0,0);
         insert(new Pig::Controller());
+        // insert(new SkeletonBoss::ModelController());
     }
     HitBoxCenter::~HitBoxCenter() {
         for (int i = 0; i<__models.size(); i++) delete __models[i];
@@ -36,8 +37,9 @@ namespace MyCraft {
     void HitBoxCenter::attackEntity(const unsigned int& damage, const glm::vec3& direction) {
         if (__hoverEntity) {
             glm::vec3 dir = direction;
+            dir.z = 0;
+            if (glm::length(dir)) dir = glm::normalize(dir)*0.5f;
             dir.z = 0.2;
-            dir = glm::normalize(dir)*0.5f;
             __hoverEntity->move(dir);
             __hoverEntity->damage(damage);
         }
