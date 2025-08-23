@@ -22,10 +22,7 @@ public:
     void setScale(float scale);
     void scale(float factor);
 
-    // Xoay model
-    void setRotation(float angle, const glm::vec3& axis);
-    void rotate(float angle, const glm::vec3& axis); 
-
+  
     // Lấy thông tin
     glm::vec3 getPosition() const;
     glm::vec3 getDimensions() const;
