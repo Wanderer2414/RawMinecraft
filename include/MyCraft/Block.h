@@ -2,22 +2,37 @@
 #define BLOCK_H
 #include "Global.h"
 namespace MyCraft {
-    class BlockCatogary {
-        public:
-            enum Catogary: unsigned char {
-                Air, Dirt, Grass
-            };
-            static BlockCatogary& getInstance();
-            static void close();
-        
-            GLuint      getBlock(const int& index) const,
-                        getTexCoord() const;
-        private:
-            BlockCatogary();
-            ~BlockCatogary();
-            static BlockCatogary* Default;
-            std::vector<GLuint> __ptr;
-            GLuint              __blockTexture;
-        };
+    enum BlockCatogary: unsigned char {
+        Air, Dirt, Grass, 
+        CobbleStone, Stone, OakLog, 
+        OakLeaf,BedRock, Sand, 
+        SandStone, Obsidian, DeepSlate, 
+        Ice, Podzol, DirtPath, 
+        FarmLand, FarmLandHydrad, SmoothStone,
+        SmoothStoneSlab, StoneBrick, CoalOre, 
+        IronOre, StrippedOakLog, OakPlank,
+        SpruceLog, StrippedSpruceLog, SprucePlank,
+        BirchLog, StrippedBirchLog, BirchPlank,
+        AcaciaLog, StrippedAcaciaLog, AcaciaPlank,
+        CraftingTable, Furnace, Smoker,
+        BlastFurnace, Chest, Torch, Water
+    };
+
+    bool isLightSource(const BlockCatogary& type);
+    bool isValid(const BlockCatogary& type, const unsigned char& plane);
+    bool isVisible(const BlockCatogary& type);
+    bool isPlaceable(const BlockCatogary& type);
+    bool isCollistion(const BlockCatogary& type);
+    bool isSpecial(const BlockCatogary& type);
+    bool isTransparent(const BlockCatogary& type);
+    bool isMultiState(const BlockCatogary& type);
+    float getHardness(const BlockCatogary& type);
+    float getTransparentConst(const BlockCatogary& type);
+    unsigned char getLightIndensity(const BlockCatogary& type);
+
+    BlockCatogary getBrokenResult(const BlockCatogary& type);
+
+    glm::mat4 getState(const BlockCatogary& type, const unsigned char& plane);
+    glm::mat4 getSpecialState(const BlockCatogary& type);
 }
 #endif
