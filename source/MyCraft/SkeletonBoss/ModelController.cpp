@@ -1,8 +1,11 @@
 #include "SkeletonBoss/ModelController.h"
+#include "HitboxTree.h"
 #include "Model/ModelController.h"
 namespace MyCraft {
     namespace SkeletonBoss {
-        ModelController::ModelController(): MyCraft::ModelController(500) {}
+        ModelController::ModelController(): MyCraft::ModelController(500) {
+            update();
+        }
         ModelController::~ModelController() {}
 
         void ModelController::see(const glm::vec3& dir) {
@@ -36,7 +39,10 @@ namespace MyCraft {
             Model::draw();
         }
 
-        void ModelController::update() {}
+        void ModelController::update() {
+            setShape(Model::getShape());
+            HitboxNode::update();
+        }
         glm::vec3 ModelController::getPosition() const {}
 
     }

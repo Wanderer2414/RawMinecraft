@@ -9,6 +9,7 @@ namespace MyBase {
         Wrapper(const Wrapper&) = delete;
         Wrapper& operator=(const Wrapper&) const = delete; 
         void changeState(Controller2D* controller);
+        bool                    isEmpty() const;
         virtual bool            isHovered()         const   override,
                                 isReleased()        const   override,
                                 isDoubleClick()     const   override,

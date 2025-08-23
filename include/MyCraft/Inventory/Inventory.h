@@ -32,10 +32,8 @@ namespace MyCraft {
         ~Inventory();
         Inventory(const Inventory&) = delete;
         Inventory& operator=(const Inventory&) const = delete; 
-        bool isEmpty() const;
     protected:
     private:
-        InventoryUI             *__currentUI;
     };
 
 

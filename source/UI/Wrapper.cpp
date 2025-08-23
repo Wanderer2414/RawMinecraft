@@ -3,6 +3,9 @@ namespace MyBase {
 
     Wrapper::Wrapper(Controller2D* controller): __controller(controller) {}
     Wrapper::~Wrapper() {}
+    bool Wrapper::isEmpty() const {
+        return !__controller;
+    }
     bool Wrapper::isDoubleClick() const {
         return __controller->isDoubleClick();
     }

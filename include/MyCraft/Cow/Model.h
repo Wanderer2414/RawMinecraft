@@ -1,16 +1,17 @@
-#ifndef SKELETON_BOSS_H
-#define SKELETON_BOSS_H
+#ifndef COW_MODEL_H
+#define COW_MODEL_H
+#include "Clock.h"
 #include "GLTFModel.h"
 #include "Texture.h"
+#include "Cow/WalkAnimation.h"
 namespace MyCraft {
-    namespace SkeletonBoss {
+    namespace Cow {
         class Model: public GLTFModel {
         public:
             Model();
             ~Model();
-            Model(const Model&) = delete;
-            Model& operator=(const Model&) const = delete; 
         protected:
+
             glm::mat4x3 getShape()              const   override;
             glm::vec3   getPosition()           const   override;
             void look(const glm::vec3& position)        override;
@@ -20,13 +21,17 @@ namespace MyCraft {
             void rotate(const glm::vec3& direction)     override;
             void setPosition(const glm::vec3& position) override;
             bool apply()                                override;
-
             void draw() const;
         private:
-            MyBase::Texture   __texture;
-            const glm::vec3 __diagonal;
-            glm::vec3       __position, __direction;
+            bool            __isChanged, __isFocus;
+            float           __moveTime;
+            MyBase::Texture __pigTexture;
+            const glm::vec2 __diagonal;
+            glm::vec3       __position;
+            glm::vec3       __direction, __eye_focus;
+            MyBase::Clock __moveClock;
+            WalkAnimation __walk;
         };
-    };
+    }
 }
 #endif

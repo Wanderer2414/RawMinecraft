@@ -1,18 +1,20 @@
 #include "HitBoxCenter.h"
 #include "Container3D.h"
+#include "Cow/ModelController.h"
 #include "General.h"
 #include "Global.h"
 #include "Message.h"
-#include "ModelController.h"
+#include "SkeletonBoss/ModelController.h"
 #include "Pig/ModelController.h"
 #include "ShaderStorage.h"
+#include "Zombie/ModelController.h"
 
 namespace MyCraft {
     
     HitBoxCenter::HitBoxCenter() {
         __colors = glm::vec3(1,0,0);
-        insert(new Pig::Controller());
-        // insert(new SkeletonBoss::ModelController());
+        insert(new Zombie::Controller());
+        insert(new SkeletonBoss::ModelController());
     }
     HitBoxCenter::~HitBoxCenter() {
         for (int i = 0; i<__models.size(); i++) delete __models[i];

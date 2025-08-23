@@ -54,10 +54,7 @@ namespace MyCraft {
         return item;
     }
 
-    Inventory::Inventory(): MyBase::Wrapper(0), __currentUI(0){}
+    Inventory::Inventory(): MyBase::Wrapper(0){}
     Inventory::~Inventory() { }
-    bool Inventory::isEmpty() const {
-        return !__currentUI;
-    }
 
 }

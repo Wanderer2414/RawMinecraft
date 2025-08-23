@@ -1,15 +1,15 @@
-#include "Pig/WalkAnimation.h"
+#include "Cow/WalkAnimation.h"
 
 namespace MyCraft {
-    namespace Pig {
+    namespace Cow {
         WalkAnimation::WalkAnimation(GLTFAnimation& animation): __animation(animation) {}
         WalkAnimation::~WalkAnimation() {}
 
         void WalkAnimation::apply(GLTFStaticMesh::SetNode& node, const float& percent) {
-            node[6] = __animation.get(6, percent);
-            node[8] = __animation.get(8, percent);
-            node[10] = __animation.get(10, percent);
-            node[12] = __animation.get(12, percent);
+            node[9] = __animation.get(9, percent);
+            node[11] = __animation.get(11, percent);
+            node[13] = __animation.get(13, percent);
+            node[15] = __animation.get(15, percent);
         }
     }
 }

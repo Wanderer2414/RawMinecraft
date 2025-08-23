@@ -133,6 +133,7 @@ namespace MyCraft {
             __world.__worldRender.unHover();
         }
         else {
+            __world.__hitbox.setHoverEntity(0);
             glm::vec3 delta = direction*4.f/20.f;
             glm::ivec3 hoverPosition, placePosition;
             bool hover = false;
