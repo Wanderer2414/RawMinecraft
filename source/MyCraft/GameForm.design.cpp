@@ -14,12 +14,12 @@
 
 namespace MyCraft {
     GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src):
-        Form3D(index), __world(0, 0, 0, src), __pauseForm(__font), __playerModel(new Player::ModelController()),
+        Form3D(index), __world(0, 0, 0, src), __pauseForm(__font),
         __font("assets/fonts/SyneMono-Regular.ttf"), __biomeManage(src), 
-        __inventoryForm(__inventory, __playerModel->getItems()) 
+        __inventoryForm(__inventory, __playerModel.getItems()) 
     {
 
-        __world.addModel(__playerModel);
+        __world.addPlayerModel(&__playerModel);
         setBackgroundColor(BLACK);
         insert(&__world);
         insert(&__label);
@@ -78,7 +78,7 @@ namespace MyCraft {
         MyBase::Network::close();     
     }
     void GameForm::__open(GLFWwindow* window) {
-        __playerModel->teleport(__spawnPoint);
+        __playerModel.teleport(__spawnPoint);
         __world.teleport(__spawnPoint);
     }
     bool GameForm::move(const float& x, const float& y, const float& z) {
@@ -104,7 +104,7 @@ namespace MyCraft {
                 else if (value == 1) close();
             }
             else if (glfwGetKey(window, GLFW_KEY_E)) {
-                InventoryUI* ui = new Bag(__playerModel->getItems());
+                InventoryUI* ui = new Bag(__playerModel.getItems());
                 __inventoryForm.setDefaultUI(ui);
                 __inventoryForm.open(window);
                 ui->close();
@@ -120,7 +120,7 @@ namespace MyCraft {
         bool is_changed = Form3D::handle(window);
         is_changed = __sun.handle(window) || is_changed;
         __label.setText(std::format("Fps: {}", (int)getCurrentFps()));
-        __positionLabel.setText(std::format("Position: {}, {}, {}", floor(__playerModel->getPosition().x), floor(__playerModel->getPosition().y), floor(__playerModel->getPosition().z)));
+        __positionLabel.setText(std::format("Position: {}, {}, {}", floor(__playerModel.getPosition().x), floor(__playerModel.getPosition().y), floor(__playerModel.getPosition().z)));
         if (__fpsClock.get()) {
             __fpsClock.restart();
             // glm::vec3 position = __model.getPosition();

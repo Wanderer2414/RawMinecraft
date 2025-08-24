@@ -3,6 +3,7 @@
 #include "Clock.h"
 #include "Model/ModelController.h"
 #include "Cow/Model.h"
+
 namespace MyCraft {
     namespace Cow {
         class Controller: public ModelController, private Model {
@@ -34,6 +35,7 @@ namespace MyCraft {
             void    __dead()                        override;
             void    __damage()                      override;
             void    __heal()                        override;
+            Path    *__path;
         };
     }
 }

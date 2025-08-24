@@ -2,9 +2,12 @@
 #include "Block.h"
 #include "ChunkManage.h"
 #include "DrawingCenter.h"
+#include "Global.h"
 #include "HealthModule.h"
 #include "Message.h"
 #include "ModelController.h"
+#include "glm/ext/matrix_transform.hpp"
+#include <limits>
 
 namespace MyCraft {
     WorldRender::WorldRender(const std::string& src): __chunkLoader(src), __isHover(false) {
@@ -13,6 +16,7 @@ namespace MyCraft {
         add(new CheckFallCommand(*this));
         add(new WorldMoveCommand(*this));
         add( new RequestJumpCommand(*this));
+        add( new RequestRotateCommand(*this));
     }
     
     WorldRender::~WorldRender() {}
@@ -45,7 +49,12 @@ namespace MyCraft {
         }
         return false;
     }
-
+    int WorldRender::getZHeight(const glm::vec3& position) const {
+        int z = floor(position.z);
+        while (contains({position.x, position.y, z}) && !isPlaceable(getType({position.x, position.y, z}))) z++;
+        if (!contains({position.x, position.y, z})) z = std::numeric_limits<int>::max();
+        return z;
+    }
     BlockCatogary WorldRender::getType(const glm::vec3& position) const {
         glm::ivec3 pos(floor(position.x), floor(position.y), floor(position.z));
         return __chunkLoader.getType(pos);
@@ -361,7 +370,7 @@ namespace MyCraft {
                 float delta = request->rectangleBox[0].z - (floor(z)+minHeight) - 0.005;
 
                 if (abs(delta)>=0.005) {
-                    if (zVelocity <= -0.5) mine.send(source, new DamageMessage(-zVelocity*50));
+                    if (zVelocity <= -0.8) mine.send(source, new DamageMessage(-zVelocity*50));
                     mine.send(source, new FallMessage(-delta));
                     mine.send(source, new StopFallMessage());
                 }
@@ -410,4 +419,55 @@ namespace MyCraft {
         WorldMoveMessage& package = *(WorldMoveMessage*)message;
         __world.playerAt(package.position);
     };
+
+    RequestRotateMessage::RequestRotateMessage(const glm::mat4x3& s, const float& a, const glm::vec3& dir): shape(s), angle(a), direction(dir) {}
+    RequestRotateMessage::~RequestRotateMessage() {}
+
+    MyBase::MessageType RequestRotateMessage::getType() const {
+        return MyBase::RequestRotate;
+    }
+    
+    RequestRotateCommand::RequestRotateCommand(WorldRender& render): __render(render) {}
+    RequestRotateCommand::~RequestRotateCommand() {}
+
+    MyBase::MessageType RequestRotateCommand::getType() const {
+        return MyBase::RequestRotate;
+    }
+    void RequestRotateCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        RequestRotateMessage* package = (RequestRotateMessage*)message;
+        glm::mat4 mat = glm::translate(glm::mat4(1), package->shape[1]/2.f + package->shape[2]/2.f);
+        mat*=glm::rotate(package->angle, glm::vec3(0,0,1));
+        mat*=glm::translate(glm::mat4(1), -package->shape[1]/2.f + -package->shape[2]/2.f);
+        glm::vec3 A = mat*glm::vec4(package->shape[0],1), B = mat*glm::vec4(package->shape[0] + package->shape[1], 1), 
+            C = mat*glm::vec4(package->shape[0] + package->shape[2],1), D = mat*glm::vec4(package->shape[0] + package->shape[1] + package->shape[2],1);
+        bool contains = true;
+        for (int i = 0; i<package->shape[3].z && contains; i++) {
+            for (float k =0 ;k<=10 && contains; k++) {
+                glm::vec3 cur = A + (B-A)*k/10.f;
+                cur.z+=i;
+                contains = contains && !__render.isBusy(cur);
+            }
+
+            for (float k =0 ;k<=10 && contains; k++) {
+                glm::vec3 cur = B + (D-B)*k/10.f;
+                cur.z+=i;
+                contains = contains && !__render.isBusy(cur);
+            }
+
+            for (float k =0 ;k<=10 && contains; k++) {
+                glm::vec3 cur = C + (D-C)*k/10.f;
+                cur.z+=i;
+                contains = contains && !__render.isBusy(cur);
+            }
+
+            for (float k =0 ;k<=10 && contains; k++) {
+                glm::vec3 cur = A + (C-A)*k/10.f;
+                cur.z+=i;
+                contains = contains && !__render.isBusy(cur);
+            }
+        }
+        if (contains) {
+            mine.send(source, new RotateMessage(package->direction));
+        }
+    }
 }

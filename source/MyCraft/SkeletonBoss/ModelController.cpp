@@ -43,7 +43,9 @@ namespace MyCraft {
             setShape(Model::getShape());
             HitboxNode::update();
         }
-        glm::vec3 ModelController::getPosition() const {}
+        glm::vec3 ModelController::getPosition() const {
+            return glm::vec3(0,0,0);
+        }
 
     }
 }

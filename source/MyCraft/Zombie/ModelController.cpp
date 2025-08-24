@@ -1,8 +1,11 @@
 #include "Zombie/ModelController.h"
 #include "Color.h"
+#include "HealthModule.h"
 #include "ModelController.h"
+#include "PathCreator.h"
 #include "Zombie/Model.h"
 #include "WorldRender.h"
+#include "Path.h"
 namespace MyCraft {
     namespace Zombie {
         Controller::Controller(): MyCraft::ModelController(50), __isChanged(false), __speed(0.2), __isDamage(false) {
@@ -10,9 +13,11 @@ namespace MyCraft {
             add(new FallCommand(this));
             add(new JumpCommand(this));
             add( new FocusCommand(this));
+            add(new RotateCommand(this));
             update();
             __damageDuration.setDuration(200);
             __fallCheckClock.setDuration(30);
+            __freeTime.setDuration(3000);
         }
         Controller::~Controller() {}
 
@@ -27,6 +32,22 @@ namespace MyCraft {
                 __fallCheckClock.restart();
                 send(new RequestFallMessage(getShape(), getZVelocity()));
             }
+            if (__folowController && !__path) {
+                float distance = glm::length(__folowController->getPosition()-getPosition());
+                if (distance > 1) {
+                    send(new CreateFollowPathMessage(this, __folowController->getPosition()));
+                }
+                else ModelController::attack();
+            }
+            if (__path) {
+                __freeTime.restart();
+                __isChanged = __path->handle(window) || __isChanged;
+                if (__path->size()<=1) {
+                    delete __path;
+                    __path = 0;
+                }
+            }
+            if (__freeTime.get()) send(new CreatePatrolPathMessage(this));
             if (__isChanged) return !(__isChanged = false);
             return false;
         }
@@ -52,10 +73,15 @@ namespace MyCraft {
         }
         void Controller::move(const glm::vec3& dir) {
             if (dir.z) send(new RequestJumpMessage(getShape(), dir.z));
+            rotate(dir);
             send(new RequestGotoMessage(getShape(), dir));
         }
-        void Controller::rotate(const glm::vec3& angle) {
-
+        void Controller::rotate(const glm::vec3& dir) {
+            float angle = glm::angle(dir, glm::vec3(0,1,0));
+            if (dir.x>0) angle   = -angle;
+            float __angle = glm::angle(getDirection(), glm::vec3(0,1,0));
+            if (dir.x>0) __angle = -__angle;
+            send(new RequestRotateMessage(getShape(), angle-__angle, dir));
         };
         void Controller::__see(const glm::vec3& dir) {
             
@@ -64,7 +90,6 @@ namespace MyCraft {
         void Controller::__move(const glm::vec3& dir) {
             Model::move(dir);
             update();
-            __rotate(dir);
         }
         void Controller::__look(const glm::vec3& pos) {
             Model::look(pos);
@@ -91,6 +116,23 @@ namespace MyCraft {
 
         }
         void Controller::__heal() {
+
+        }
+
+        FocusCommand::FocusCommand(MyCraft::ModelController* model): __model(model) {};
+        FocusCommand::~FocusCommand() {};
+
+        MyBase::MessageType FocusCommand::getType() const {
+            return MyBase::Focus;
+        }
+        void FocusCommand::execute(MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message) {
+            FocusMessage* package = (FocusMessage*)message;
+            __model->look(package->host->getPosition());
+            float distance = glm::length(package->host->getPosition()-__model->getPosition());
+            if (distance < 10) {
+                __model->folow(package->host);
+            }
+            else __model->folow(0);
 
         }
     }

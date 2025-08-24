@@ -10,6 +10,8 @@
 #include "Item.h"
 #include "Message.h"
 #include "ModelController.h"
+#include "PathContainer.h"
+#include "PathCreator.h"
 #include "WorldRender.h"
 
 namespace MyCraft {
@@ -21,12 +23,13 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
         bool isBusyBlock(const glm::ivec3& position);
         
         void teleport(const glm::ivec3& position);
-        void addModel(ModelController* controller);
+        void addPlayerModel(ModelController* controller);
         friend class HealthWorldCommand;
         friend class AttackWorldCommand;
         friend class CheckHoverCommand;
     protected:
     private:
+        PathCreator             __pathCreator;
         HitBoxCenter            __hitbox;
         WorldRender             __worldRender;
         CrackingManage          __crackingManage;

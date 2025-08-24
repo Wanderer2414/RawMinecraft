@@ -17,6 +17,7 @@ namespace MyCraft {
         glm::ivec3 getHoverBlock() const;
         glm::ivec3 getPlaceBlock() const;
         bool isInWater(const glm::vec3& position) const;
+        int getZHeight(const glm::vec3& position) const;
         float getWaterHeight(const glm::vec3& position) const;
         glm::vec3 getWaterDirection(const glm::vec3& position) const;
         void place(const BlockCatogary& type);
@@ -122,6 +123,27 @@ namespace MyCraft {
         const float zVelocity;
 
         MyBase::MessageType getType() const override;
+    };
+    class RequestRotateMessage: public MyBase::Message {
+    public:
+        RequestRotateMessage(const glm::mat4x3& shape, const float& angle, const glm::vec3& direction);
+        ~RequestRotateMessage();
+
+        const glm::mat4x3 shape;
+        const float angle;
+        const glm::vec3 direction;
+
+        MyBase::MessageType getType() const override;
+    };
+    class RequestRotateCommand: public MyBase::Command {
+    public:
+        RequestRotateCommand(WorldRender& render);
+        ~RequestRotateCommand();
+
+        MyBase::MessageType getType() const override;
+        virtual void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private: 
+        WorldRender &__render;
     };
 }
 #endif

@@ -10,15 +10,18 @@
 #include "Player/Model.h"
 #include "Sun.h"
 #include "World.h"
+#include "WorldRender.h"
+#include "glm/geometric.hpp"
 
 namespace MyCraft {
     namespace Player {
-        ModelController::ModelController(): MyCraft::ModelController(100), __direction(0, -1, 0), __isChanged(false),
+        ModelController::ModelController(): MyCraft::ModelController(100), 
+            __direction(0, -1, 0), __isChanged(false), __isDamage(false),
             __eye_direction(0, -1, 0),
             __isDrawable(true) {
             __speed = 0.2;
             __speedControl.setDuration(30);
-
+            __damageDuration.setDuration(50);
 
             add(new MoveCommand(this));
             add(new FallCommand(this));
@@ -31,6 +34,7 @@ namespace MyCraft {
             add(new DiveCommand(*this));
             add(new OnGroundCommand(*this));
             add(new DamageCommand(*this));
+            add(new RotateCommand(this));
             update();
         }
         ModelController::~ModelController() {}
@@ -70,7 +74,10 @@ namespace MyCraft {
                     dir = __toAbsoluteCoordinate(dir);
                     if (isSwim() && dir.z) send(new RequestJumpMessage(getShape(), __speed*(dir.z)/abs(dir.z)/2));
                     else dir.z = 0;
+                    
+                    dir = glm::normalize(dir)*__speed;
                     move(dir);
+                    rotate(dir);
                 }
 
                 if (glfwGetKey(window, GLFW_KEY_SPACE)) {
@@ -109,6 +116,13 @@ namespace MyCraft {
             __isChanged = __moveManage(window) || __isChanged;
             __isChanged = Player::Model::reset() || __isChanged;
             __isChanged = Player::Model::apply() || __isChanged;
+
+            if (__damageDuration.get() && __isDamage) {
+                __isDamage = false;
+                __isChanged = true;
+                setBaseColor(TRANSPARENCY);
+            }
+
             return __isChanged;
         }
 
@@ -119,12 +133,16 @@ namespace MyCraft {
             __look(position);
         }
         void ModelController::rotate(const glm::vec3& dir) {
-            __rotate(dir);
+            if (glm::length(dir)>0.001) {
+                float angle = glm::angle(glm::normalize(dir), glm::vec3(0,1,0));
+                if (dir.x>0) angle   = -angle;
+                float __angle = glm::angle(__direction, glm::vec3(0,1,0));
+                if (dir.x>0) __angle = -__angle;
+                send(new RequestRotateMessage(getShape(), angle-__angle, dir));
+            }
         }
         void ModelController::move(const glm::vec3& dir) {
-            glm::vec3 direction = glm::normalize(dir)*__speed;
-            rotate(direction);
-            send(new RequestGotoMessage(getShape(), direction));        
+            send(new RequestGotoMessage(getShape(), dir));        
         }
         glm::vec3 ModelController::getPosition() const {
             return Player::Model::getPosition();
@@ -143,6 +161,10 @@ namespace MyCraft {
         }
 
         void ModelController::__damage() {
+            __damageDuration.restart();
+            __isDamage = true;
+            __isChanged = true;
+            setBaseColor({255, 0, 0, 100});
             send(new UpdateHealthBarMessage(getHealthPercent()));
         }
         void ModelController::__dead() {
@@ -178,7 +200,7 @@ namespace MyCraft {
             update();
             send(new MyBase::SetCameraMessage(getEyePosition(), __eye_direction));
             send(new CheckHoverMessage(getEyePosition(), __eye_direction));
-            send(new FocusMessage(getPosition()));
+            send(new FocusMessage(this));
             send( new WorldMoveMessage(getPosition()));
         }
         void ModelController::__rotate(const glm::vec3& dir) {

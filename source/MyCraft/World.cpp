@@ -2,14 +2,14 @@
 #include "Block.h"
 #include "BlockItem.h"
 #include "InteractiveForm.h"
-#include "Inventory.h"
-#include "InventoryForm.h"
 #include "Item.h"
 #include "Message.h"
 #include "Player/ModelController.h"
 
 namespace MyCraft {
-    World::World(const int& x, const int& y, const int& z, const std::string& src): __worldRender(src) {
+    World::World(const int& x, const int& y, const int& z, const std::string& src): 
+        __worldRender(src), __pathCreator(__worldRender) 
+    {
         insert(&__worldRender);
         insert(&__dropItemManage);
         insert(&__crackingManage);
@@ -17,6 +17,7 @@ namespace MyCraft {
         MyBase::Network::match(&__crackingManage);
         MyBase::Network::match(&__worldRender);
         MyBase::Network::match(&__dropItemManage);
+        MyBase::Network::match(&__pathCreator);
         add(new HealthWorldCommand(*this));
         add(new AttackWorldCommand(*this));
         add(new CheckHoverCommand(*this));
@@ -26,8 +27,8 @@ namespace MyCraft {
     bool World::isBusyBlock(const glm::ivec3& position) {
         return false;
     }
-    void World::addModel(ModelController* controller) {
-        return __hitbox.insert(controller);
+    void World::addPlayerModel(ModelController* controller) {
+        return __hitbox.pushPlayerModel(controller);
     }
     void World::teleport(const glm::ivec3& position) {
         __worldRender.playerAt(position);

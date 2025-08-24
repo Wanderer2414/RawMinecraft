@@ -9,31 +9,42 @@
 
 namespace MyCraft {
     class HitBoxCenter;
+    class Path;
     class ModelController: public MyBase3D::Controller3D, public MyBase::Port, public HitboxNode, public HealthModule {
         public:
             ModelController(const unsigned int& max_heal);
             ~ModelController();
             float getZVelocity() const;
+            virtual float Powerness() const;
+            bool hasPath() const;
             virtual glm::vec3 getPosition() const = 0;
             
             virtual void    see(const glm::vec3& dir) = 0,
                             look(const glm::vec3& position) = 0,
                             move(const glm::vec3& dir) = 0,
                             rotate(const glm::vec3& angle) = 0;
+            void            setPath(Path* path);
+            void            attack();
+            void            folow(ModelController* model);
+            void            clearPath();
             friend class Path;
             friend class MoveCommand;
             friend class FallCommand;
             friend class StopFallCommand;
             friend class JumpCommand;
+            friend class RotateCommand;
         protected:
+            Path*               __path;
+            ModelController*    __folowController;
             virtual void update() = 0;
             void setZVelocity(const float& z);
         private:
-            float   __zVelocity;
+            float           __zVelocity;
             virtual void    __see(const glm::vec3& dir) = 0,
                             __look(const glm::vec3& position) = 0,
                             __move(const glm::vec3& dir) = 0,
                             __rotate(const glm::vec3& angle) = 0;
+            MyBase::Clock   __attackCooldown;
     };
 
     class MoveMessage: public MyBase::Message {
@@ -52,6 +63,14 @@ namespace MyCraft {
 
         const float zVelocity;
     };
+    class RotateMessage: public MyBase::Message {
+    public:
+        RotateMessage(const glm::vec3& direction);
+        ~RotateMessage();
+        MyBase::MessageType     getType() const override;
+
+        const glm::vec3 direction;
+    };
     class StopFallMessage: public MyBase::Message {
     public:
         StopFallMessage();
@@ -61,9 +80,9 @@ namespace MyCraft {
 
     class FocusMessage: public MyBase::Message {
     public:
-        FocusMessage(const glm::vec3& pos);
+        FocusMessage(ModelController* host);
         ~FocusMessage();
-        const glm::vec3 position;
+        ModelController* host;
         MyBase::MessageType     getType() const override;
     };
     
@@ -71,6 +90,16 @@ namespace MyCraft {
     public:
         MoveCommand(MyCraft::ModelController* model);
         ~MoveCommand();
+
+         MyBase::MessageType getType()                               const override;
+        void execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message)   override;
+    private:
+        MyCraft::ModelController*      __model;
+    };
+    class RotateCommand: public  MyBase::Command {
+    public:
+        RotateCommand(MyCraft::ModelController* model);
+        ~RotateCommand();
 
          MyBase::MessageType getType()                               const override;
         void execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message)   override;

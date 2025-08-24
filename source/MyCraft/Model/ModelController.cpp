@@ -2,17 +2,50 @@
 #include "HealthModule.h"
 #include "HitboxTree.h"
 #include "Message.h"
+#include "PathCreator.h"
 #include "WorldRender.h"
 
 namespace MyCraft {
-    ModelController::ModelController(const unsigned int& max_heal): HealthModule(max_heal), HitboxNode(0), __zVelocity(0) {}
+    ModelController::ModelController(const unsigned int& max_heal): HealthModule(max_heal), HitboxNode(0), 
+        __zVelocity(0), __path(0), __folowController(0) {
+        __attackCooldown.setDuration(30);
+    }
     ModelController::~ModelController() {};
+    float ModelController::Powerness() const {
+        return 0;
+    }
+    bool ModelController::hasPath() const {
+        return __path;
+    }
 
     float ModelController::getZVelocity() const {
         return __zVelocity;
     }
     void ModelController::setZVelocity(const float& z) {
         __zVelocity = z;
+    }
+    void ModelController::setPath(Path* path) {
+        __path = path;
+        __path->setModelHost(this);
+    }
+
+    void ModelController::clearPath() {
+        delete __path;
+        __path = 0;
+    }
+    void ModelController::attack() {
+        if (__attackCooldown.get() && __folowController) {
+            __attackCooldown.restart();
+            glm::vec3 dir = __folowController->getPosition() - getPosition();
+            dir.z = 0;
+            if (glm::length(dir)) dir = glm::normalize(dir)*1.f;
+            dir.z = 0.2;
+            __folowController->move(dir);
+            __folowController->damage(Powerness());
+        }
+    }
+    void ModelController::folow(ModelController* model) {
+        __folowController = model;
     }
 
     MoveMessage::MoveMessage(const glm::vec3& d, const float& Depth): direction(d), depth(Depth) {}
@@ -27,13 +60,19 @@ namespace MyCraft {
         return MyBase::MessageType::Fall;
     }
 
+    RotateMessage::RotateMessage(const glm::vec3& dir): direction(dir) {}
+    RotateMessage::~RotateMessage() {}
+    MyBase::MessageType RotateMessage::getType() const {
+        return MyBase::Rotate;
+    }
+
     MyBase::MessageType StopFallMessage::getType() const {
         return MyBase::MessageType::StopFall;
     }
     StopFallMessage::StopFallMessage() {};
     StopFallMessage::~StopFallMessage() {};
 
-    FocusMessage::FocusMessage(const glm::vec3& pos): position(pos) {}
+    FocusMessage::FocusMessage(ModelController* h): host(h) {}
     FocusMessage::~FocusMessage() {};
     MyBase::MessageType FocusMessage::getType() const {
         return MyBase::Focus;
@@ -83,6 +122,17 @@ namespace MyCraft {
         __model->__move({0,0,package->zVelocity});
     }
 
+    RotateCommand::RotateCommand(MyCraft::ModelController* model): __model(model) {}
+    RotateCommand::~RotateCommand() {}
+
+    MyBase::MessageType RotateCommand::getType() const {
+        return MyBase::Rotate;
+    }
+    void RotateCommand::execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message) {
+        RotateMessage* package = (RotateMessage*)message;
+        __model->__rotate(package->direction);
+    }
+
     FocusCommand::FocusCommand(MyCraft::ModelController* model): __model(model) {};
     FocusCommand::~FocusCommand() {};
 
@@ -91,7 +141,7 @@ namespace MyCraft {
     }
     void FocusCommand::execute( MyBase::Port& mine,  MyBase::Port& source,  MyBase::Message* message) {
         FocusMessage* package = (FocusMessage*)message;
-        __model->look(package->position);
+        __model->look(package->host->getPosition());
     }
 
     DiveMessage::DiveMessage() {}

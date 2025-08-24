@@ -17,6 +17,7 @@ namespace MyCraft {
             void attackEntity(const unsigned int& damage, const glm::vec3& direction);
             void feedEntity(const unsigned int& health, const glm::vec3& direction);
             ModelController* isColistion(const glm::vec3& position, const glm::vec3& direction) const;
+            void pushPlayerModel(ModelController* model);
             void insert(ModelController* model);
             void erase(ModelController* model);
         private:

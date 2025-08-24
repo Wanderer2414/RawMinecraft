@@ -31,10 +31,10 @@ namespace MyCraft {
             glm::mat4x3 getShape() const override;
             friend class MoveCommand;
         private:
-            bool            __isDrawable, __isChanged;
+            bool            __isDrawable, __isChanged, __isDamage;
             float           __speed;
             glm::vec3       __direction, __eye_direction;
-            MyBase::Clock   __speedControl;
+            MyBase::Clock   __speedControl, __damageDuration;
             BlockCatogary   __type;
             glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
             bool            __moveManage(GLFWwindow* window);

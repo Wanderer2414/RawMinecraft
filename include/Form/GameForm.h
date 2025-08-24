@@ -39,7 +39,7 @@ namespace MyCraft {
             MyBase::Font    __font;
             MyBase::Label   __label, __positionLabel, __biomeLabel;
             World           __world;
-            Player::ModelController *__playerModel;
+            Player::ModelController __playerModel;
             BiomeManage     __biomeManage;
             float           __speed;
             GamePauseForm   __pauseForm;
