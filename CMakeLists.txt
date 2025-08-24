@@ -26,7 +26,7 @@ if (WIN32)
     set(LIB glfw  ${CMAKE_SOURCE_DIR}/bass.dll)
 endif()
 if (UNIX) 
-    set(LIB X11 glfw)
+    set(LIB X11 glfw ${CMAKE_SOURCE_DIR}/libbass.so)
 endif()
 
 # ----------------------------
