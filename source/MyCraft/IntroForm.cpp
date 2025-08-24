@@ -55,11 +55,19 @@ namespace MyCraft {
         __exitButton.setPosition({-0.3,-0.51});
         __exitButton.setScale({0.06, 0.06});
 
+        __volumeBar.setPosition({0.4, -0.9});
+        __volumeBar.setWidth(0.4);
+        __volumeBar.setMaxValue(100);
+        __volumeBar.setMinValue(0);
+        __volumeBar.setFont(font);
+
+
         insert(&__programmeName);
         insert(&__startButton);
         insert(&__settingButton);
         insert(&__aboutusButton);
         insert(&__exitButton);
+        insert(&__volumeBar);
     }
     IntroForm::~IntroForm() {
 
