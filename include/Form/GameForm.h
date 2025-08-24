@@ -47,8 +47,10 @@ namespace MyCraft {
             InventoryForm   __inventoryForm;
             Sun             __sun;
             HealthBar       __healthBar;
+            std::string     __fileSource;
 
             void __open(GLFWwindow*) override;
+            void __close(GLFWwindow*) override;
             void glDraw() const override;
         };
 }

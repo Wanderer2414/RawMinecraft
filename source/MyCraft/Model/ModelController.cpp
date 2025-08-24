@@ -8,7 +8,7 @@
 namespace MyCraft {
     ModelController::ModelController(const unsigned int& max_heal): HealthModule(max_heal), HitboxNode(0), 
         __zVelocity(0), __path(0), __folowController(0) {
-        __attackCooldown.setDuration(30);
+        __attackCooldown.setDuration(500);
     }
     ModelController::~ModelController() {};
     float ModelController::Powerness() const {
@@ -38,7 +38,7 @@ namespace MyCraft {
             __attackCooldown.restart();
             glm::vec3 dir = __folowController->getPosition() - getPosition();
             dir.z = 0;
-            if (glm::length(dir)) dir = glm::normalize(dir)*1.f;
+            if (glm::length(dir)) dir = glm::normalize(dir)*2.f;
             dir.z = 0.2;
             __folowController->move(dir);
             __folowController->damage(Powerness());

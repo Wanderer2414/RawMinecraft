@@ -3,49 +3,50 @@
 #include "Model/ModelController.h"
 namespace MyCraft {
     namespace SkeletonBoss {
-        ModelController::ModelController(): MyCraft::ModelController(500) {
+        Controller::Controller(): MyCraft::ModelController(500) {
             update();
         }
-        ModelController::~ModelController() {}
+        Controller::~Controller() {}
 
-        void ModelController::see(const glm::vec3& dir) {
+        void Controller::see(const glm::vec3& dir) {
             
         }
-        void ModelController::look(const glm::vec3& position) {
+        void Controller::look(const glm::vec3& position) {
             
         }
-        void ModelController::move(const glm::vec3& dir) {
+        void Controller::move(const glm::vec3& dir) {
             
         }
-        void ModelController::rotate(const glm::vec3& angle) {
+        void Controller::rotate(const glm::vec3& angle) {
             
         }
-        void ModelController::__see(const glm::vec3& dir) {
+        void Controller::__see(const glm::vec3& dir) {
             
         }
-        void ModelController::__look(const glm::vec3& position) {
+        void Controller::__look(const glm::vec3& position) {
             
         }
-        void ModelController::__move(const glm::vec3& dir) {
+        void Controller::__move(const glm::vec3& dir) {
             
         }
-        void ModelController::__rotate(const glm::vec3& angle) {
+        void Controller::__rotate(const glm::vec3& angle) {
             
         }
-        void ModelController::__dead() {}
-        void ModelController::__damage() {}
-        void ModelController::__heal() {}
-        void ModelController::glDrawTransparent() const {
+        void Controller::__dead() {}
+        void Controller::__damage() {}
+        void Controller::__heal() {}
+        void Controller::glDrawTransparent() const {
             Model::draw();
         }
 
-        void ModelController::update() {
+        void Controller::update() {
             setShape(Model::getShape());
             HitboxNode::update();
         }
-        glm::vec3 ModelController::getPosition() const {
+        glm::vec3 Controller::getPosition() const {
             return glm::vec3(0,0,0);
         }
-
+        void Controller::save(std::ostream& cout) {}
+        void Controller::__load(std::istream& cin) {}
     }
 }

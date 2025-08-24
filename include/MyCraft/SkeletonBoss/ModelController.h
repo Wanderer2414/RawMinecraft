@@ -5,12 +5,12 @@
 
 namespace MyCraft {
     namespace SkeletonBoss {
-        class ModelController: public MyCraft::ModelController,public SkeletonBoss::Model {
+        class Controller: public MyCraft::ModelController,public SkeletonBoss::Model {
         public:
-            ModelController();
-            ModelController(const ModelController&) = delete;
-            ~ModelController();
-            ModelController& operator=(const ModelController&) const = delete; 
+            Controller();
+            Controller(const Controller&) = delete;
+            ~Controller();
+            Controller& operator=(const Controller&) const = delete; 
 
             virtual void    see(const glm::vec3& dir) override,
                             look(const glm::vec3& position) override,
@@ -18,6 +18,7 @@ namespace MyCraft {
                             rotate(const glm::vec3& angle) override;
             void            update() override;
             glm::vec3       getPosition() const override;
+            void save(std::ostream& cout) override;
         protected:
         private:
             virtual void    __see(const glm::vec3& dir) override,
@@ -30,6 +31,7 @@ namespace MyCraft {
             void            __heal() override;
 
             virtual void    glDrawTransparent() const override;
+            void __load(std::istream& cin)      override;
         };
     }
 }

@@ -16,6 +16,7 @@ namespace MyCraft {
         glm::vec2 getSize() const                   override;
         void open()                                 override;
         void close()                                override;
+        void update()                               override;
         friend class RightAttackCommand;
         friend class LeftAttackCommand;
         friend class AcceptPlaceCommand;

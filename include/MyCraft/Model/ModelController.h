@@ -10,6 +10,9 @@
 namespace MyCraft {
     class HitBoxCenter;
     class Path;
+    enum class Mobs: unsigned char {
+        Zombie, Skeleton, Pig, Cow
+    };
     class ModelController: public MyBase3D::Controller3D, public MyBase::Port, public HitboxNode, public HealthModule {
         public:
             ModelController(const unsigned int& max_heal);
@@ -33,6 +36,8 @@ namespace MyCraft {
             friend class StopFallCommand;
             friend class JumpCommand;
             friend class RotateCommand;
+            static ModelController* load(std::istream& cin);
+            virtual void    save(std::ostream& cout) = 0;
         protected:
             Path*               __path;
             ModelController*    __folowController;
@@ -45,6 +50,7 @@ namespace MyCraft {
                             __move(const glm::vec3& dir) = 0,
                             __rotate(const glm::vec3& angle) = 0;
             MyBase::Clock   __attackCooldown;
+            virtual void    __load(std::istream& cout) = 0;
     };
 
     class MoveMessage: public MyBase::Message {

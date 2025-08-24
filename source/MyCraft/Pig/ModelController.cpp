@@ -93,5 +93,8 @@ namespace MyCraft {
         void Controller::__heal() {
 
         }
+
+        void Controller::save(std::ostream& cout) {}
+        void Controller::__load(std::istream& cin) {}
     }
 }

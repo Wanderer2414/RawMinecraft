@@ -6,6 +6,7 @@
 #include "Zombie/Model.h"
 #include "WorldRender.h"
 #include "Path.h"
+#include "glm/geometric.hpp"
 namespace MyCraft {
     namespace Zombie {
         Controller::Controller(): MyCraft::ModelController(50), __isChanged(false), __speed(0.2), __isDamage(false) {
@@ -33,9 +34,10 @@ namespace MyCraft {
                 send(new RequestFallMessage(getShape(), getZVelocity()));
             }
             if (__folowController && !__path) {
+                glm::vec3 direction = glm::normalize(__folowController->getPosition() - getPosition());
                 float distance = glm::length(__folowController->getPosition()-getPosition());
                 if (distance > 1) {
-                    send(new CreateFollowPathMessage(this, __folowController->getPosition()));
+                    send(new CreateFollowPathMessage(this, __folowController->getPosition() - direction*0.5f));
                 }
                 else ModelController::attack();
             }
@@ -118,6 +120,8 @@ namespace MyCraft {
         void Controller::__heal() {
 
         }
+        void Controller::save(std::ostream& cout) {}
+        void Controller::__load(std::istream& cin) {}
 
         FocusCommand::FocusCommand(MyCraft::ModelController* model): __model(model) {};
         FocusCommand::~FocusCommand() {};

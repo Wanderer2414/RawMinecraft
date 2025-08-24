@@ -13,7 +13,7 @@ namespace MyCraft {
     HitBoxCenter::HitBoxCenter() {
         __colors = glm::vec3(1,0,0);
         insert(new Zombie::Controller());
-        insert(new SkeletonBoss::ModelController());
+        insert(new SkeletonBoss::Controller());
     }
     HitBoxCenter::~HitBoxCenter() {
         for (int i = 0; i<__models.size(); i++) delete __models[i];

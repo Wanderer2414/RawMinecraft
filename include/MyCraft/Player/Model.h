@@ -18,7 +18,9 @@ namespace MyCraft {
             bool isSwim() const;
             Model(const Model&) = delete;
             Model& operator=(const Model&) const = delete; 
-            glm::vec3 getEyePosition() const;
+            glm::vec3 getEyePosition() const; 
+            glm::vec3 getDirection() const;
+            glm::vec3 getEyeDirection() const;
             glm::vec3 getPosition() const override;
             void swim();
             void walk();

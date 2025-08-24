@@ -287,11 +287,15 @@ namespace MyCraft {
         return __inventoryTexture.getSize();
     }
 
-    void Bag::update() {}
+    void Bag::update() {
+        for (int i = 0; i<=3; i++) {
+            for (int j = 0; j<10; j++) 
+                if (__items.getBags({i,j})) 
+                    __items.getBags({i,j})->setPosition(getItemPosition({i,j}) + __items.package.size*0.125f);
+        }
+    }
     void Bag::open() {
-        for (int i = 0; i<10; i++) 
-            if (__items.getToolBar(i)) 
-                __items.getToolBar(i)->setPosition(getToolbarPosition(i) + __items.package.size*0.125f);
+        update();
     }
     void Bag::close() {
         for (int i = 0; i<9; i++) {

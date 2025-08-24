@@ -78,5 +78,24 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
         World& __world;
     };
 
+
+    class TeleportMessage: public MyBase::Message {
+    public:
+        TeleportMessage(const glm::vec3& pos);
+        ~TeleportMessage();
+        MyBase::MessageType     getType() const override;
+        const glm::vec3 position;
+    };
+
+    class TeleportCommand: public MyBase::Command {
+    public:
+        TeleportCommand(MyCraft::World& world);
+        ~TeleportCommand();
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) override;
+    private:
+        World& __world;
+    };
+
 }
 #endif

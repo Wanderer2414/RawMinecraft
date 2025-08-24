@@ -21,6 +21,7 @@ namespace MyCraft {
         add(new HealthWorldCommand(*this));
         add(new AttackWorldCommand(*this));
         add(new CheckHoverCommand(*this));
+        add(new TeleportCommand(*this));
     }
     World::~World() {}
 
@@ -154,6 +155,22 @@ namespace MyCraft {
             }
             else __world.__worldRender.unHover();
         }
+    }
+
+    TeleportMessage::TeleportMessage(const glm::vec3& pos): position(pos) {}
+    TeleportMessage::~TeleportMessage() {}
+    MyBase::MessageType TeleportMessage::getType() const {
+        return MyBase::Teleport;
+    }
+
+    TeleportCommand::TeleportCommand(MyCraft::World& world): __world(world) {}
+    TeleportCommand::~TeleportCommand() {}
+    MyBase::MessageType TeleportCommand::getType() const {
+        return MyBase::Teleport;
+    };
+    void TeleportCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
+        TeleportMessage* package = (TeleportMessage*)message;
+        __world.teleport(package->position);
     }
 
 

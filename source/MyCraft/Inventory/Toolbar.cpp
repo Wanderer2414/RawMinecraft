@@ -1,13 +1,9 @@
 #include "Toolbar.h"
 #include "ControlCenter.h"
-#include "DroppedItem.h"
 #include "Inventory.h"
 #include "InventoryElement.h"
 #include "Message.h"
 #include "Player/InventoryModule.h"
-#include "Player/ModelController.h"
-#include "ToolItem.h"
-#include "World.h"
 namespace MyCraft {
     ToolBar::ToolBar(ItemTable& table): __items(table), __chosenIndex(0) {
         MyBase::Texture texture = MyBase::Texture("assets/images/Inventory.png");
@@ -94,11 +90,13 @@ namespace MyCraft {
 
     void ToolBar::open() {
         send(new HoldItemMessage(__items.getToolBar(__chosenIndex), true));
+        update();
+    }
+    void ToolBar::close() {}
+    void ToolBar::update() {
         for (int i = 0; i<10; i++) if (__items.getToolBar(i)) 
             __items.getToolBar(i)->setPosition(getToolbarPosition(i) + __items.package.size*0.125f);
     }
-    void ToolBar::close() {}
-
     AcceptPlaceMessage::AcceptPlaceMessage(const BlockCatogary& t): type(t) {}
     AcceptPlaceMessage::~AcceptPlaceMessage() {}
 

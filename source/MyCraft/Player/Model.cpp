@@ -81,6 +81,12 @@ namespace MyCraft {
             if (__isCrouch) return {__position.x, __position.y, __position.z + 1.3};
             else return {__position.x, __position.y, __position.z + 1.7};
         }
+        glm::vec3 Model::getDirection() const {
+            return __direction;
+        }
+        glm::vec3 Model::getEyeDirection() const {
+            return __eye_direction;
+        }
         glm::mat4x3 Model::getShape() const {
             float angle = glm::angle(__direction, glm::vec3(0, -1, 0));
             if (__direction.x < 0) angle = -angle;

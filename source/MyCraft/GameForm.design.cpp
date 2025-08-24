@@ -8,6 +8,7 @@
 #include "Form3D.h"
 #include "GamePauseForm.h"
 #include "ControlCenter.h"
+#include "General.h"
 #include "InventoryElement.h"
 #include "Message.h"
 #include "Player/ModelController.h"
@@ -15,7 +16,7 @@
 namespace MyCraft {
     GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src):
         Form3D(index), __world(0, 0, 0, src), __pauseForm(__font),
-        __font("assets/fonts/SyneMono-Regular.ttf"), __biomeManage(src), 
+        __font("assets/fonts/SyneMono-Regular.ttf"), __biomeManage(src), __fileSource(src),
         __inventoryForm(__inventory, __playerModel.getItems()) 
     {
 
@@ -69,6 +70,7 @@ namespace MyCraft {
         }
         else {
             glm::ivec3 pos(0,0,0);
+            __spawnPoint = pos;
             file << pos.x << pos.y << pos.z;
         }
         
@@ -78,8 +80,21 @@ namespace MyCraft {
         MyBase::Network::close();     
     }
     void GameForm::__open(GLFWwindow* window) {
-        __playerModel.teleport(__spawnPoint);
-        __world.teleport(__spawnPoint);
+        if (MyBase::isFile(__fileSource + "/player.bin")) {
+            std::ifstream file(__fileSource + "/player.bin", std::ios::binary | std::ios::in);
+            __playerModel.load(file);
+            __inventory.update();
+            file.close();
+        }
+        else {
+            __playerModel.teleport(__spawnPoint);
+            __world.teleport(__spawnPoint);
+        }
+    }
+    void GameForm::__close(GLFWwindow* window) {
+        std::ofstream file(__fileSource + "/player.bin", std::ios::binary | std::ios::out);
+        __playerModel.save(file);
+        file.close();
     }
     bool GameForm::move(const float& x, const float& y, const float& z) {
         glm::vec3 delta = {0, 0, 0}, pos= MyBase3D::Camera::Instance().getCameraPosition();
