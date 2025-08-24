@@ -10,7 +10,7 @@ namespace MyCraft {
         public:
             Controller();
             ~Controller();
-
+            void    setPosition(const glm::vec3& pos)  override;
             void    see(const glm::vec3& dir) override,
                     move(const glm::vec3& dir) override,
                     look(const glm::vec3& position) override,

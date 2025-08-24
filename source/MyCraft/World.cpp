@@ -4,6 +4,8 @@
 #include "InteractiveForm.h"
 #include "Item.h"
 #include "Message.h"
+#include "ModelController.h"
+#include "Zombie/ModelController.h"
 #include "Player/ModelController.h"
 
 namespace MyCraft {
@@ -22,6 +24,8 @@ namespace MyCraft {
         add(new AttackWorldCommand(*this));
         add(new CheckHoverCommand(*this));
         add(new TeleportCommand(*this));
+        add(new EraseMobCommand(*this));
+        add(new SpawnMobCommand(*this));
     }
     World::~World() {}
 
@@ -33,6 +37,15 @@ namespace MyCraft {
     }
     void World::teleport(const glm::ivec3& position) {
         __worldRender.playerAt(position);
+    }
+
+    void World::pushMob(ModelController* model) {
+        __hitbox.insert(model);
+        __worldRender.pushMob(model);
+    }
+    void World::eraseMob(ModelController* model) {
+        __hitbox.erase(model);
+        __worldRender.eraseMob(model);
     }
 
 
@@ -173,5 +186,39 @@ namespace MyCraft {
         __world.teleport(package->position);
     }
 
+
+    SpawnMobMessage::SpawnMobMessage(ModelController* controller): model(controller) {}
+    SpawnMobMessage::~SpawnMobMessage() {}
+
+    MyBase::MessageType SpawnMobMessage::getType() const {
+        return MyBase::SpawnMob;
+    }
+    SpawnMobCommand::SpawnMobCommand(World& world): __world(world) {}
+    SpawnMobCommand::~SpawnMobCommand() {}
+    MyBase::MessageType SpawnMobCommand::getType() const {
+        return MyBase::SpawnMob;
+    }
+    void SpawnMobCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        SpawnMobMessage* package = (SpawnMobMessage*)message;
+        __world.pushMob(package->model);
+    }
+
+
+
+    EraseMobMessage::EraseMobMessage(ModelController* controller): model(controller) {}
+    EraseMobMessage::~EraseMobMessage() {}
+
+    MyBase::MessageType EraseMobMessage::getType() const {
+        return MyBase::EraseMob;
+    }
+    EraseMobCommand::EraseMobCommand(World& world): __world(world) {}
+    EraseMobCommand::~EraseMobCommand() {}
+    MyBase::MessageType EraseMobCommand::getType() const {
+        return MyBase::EraseMob;
+    }
+    void EraseMobCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        SpawnMobMessage* package = (SpawnMobMessage*)message;
+        __world.eraseMob(package->model);
+    }
 
 }

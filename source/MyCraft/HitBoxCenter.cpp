@@ -12,8 +12,6 @@
 namespace MyCraft {
     HitBoxCenter::HitBoxCenter() {
         __colors = glm::vec3(1,0,0);
-        insert(new Zombie::Controller());
-        insert(new SkeletonBoss::Controller());
     }
     HitBoxCenter::~HitBoxCenter() {}
     bool HitBoxCenter::isHover() const {
@@ -60,11 +58,9 @@ namespace MyCraft {
 
     void HitBoxCenter::insert(ModelController* model) {
         MyBase::Network::match(model);
-        Container3D::insert(model);
         __tree.insert(model);
     }
     void HitBoxCenter::erase(ModelController* model) {
-        MyBase3D::Container3D::erase(model);
         MyBase::Network::unmatch(model);
         __tree.remove(model);
     }
@@ -72,6 +68,9 @@ namespace MyCraft {
         MyBase3D::Container3D::glDraw();
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDefaultShader());
         for (auto model: __tree) {
+            if (model->parent && model->parent->left == model->parent->right && model->parent->left) {
+                throw "Error";
+            }
             glm::mat4x3 mat = model->getShape();
             DrawMargin(mat, __colors);
         }

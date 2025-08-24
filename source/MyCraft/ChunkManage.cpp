@@ -3,9 +3,14 @@
 #include "Chunk.h"
 #include "Container3D.h"
 #include "DrawingCenter.h"
-#include "General.h"
+#include "Message.h"
+#include "Sun.h"
+#include "Zombie/ModelController.h"
+#include "Pig/ModelController.h"
+#include "ModelController.h"
+#include "World.h"
 namespace MyCraft {
-    ChunkManage::ChunkManage(const std::string& src): __isLoaded(false), __sourceFolder(src), __waterManage(*this) {
+    ChunkManage::ChunkManage(const std::string& src): __isLoaded(false), __sourceFolder(src), __waterManage(*this), __time(0) {
         insert(&__waterManage);
         __chunks.resize(world_side*world_side*world_side, 0);
         __chunkPositions.resize(world_side*world_side*world_side);
@@ -16,6 +21,8 @@ namespace MyCraft {
         __texture.load("assets/images/blockCatogary.png", false);
         __waterStillTexture.load("assets/images/WaterFlow.png", false);
         __animationClock.setDuration(100);
+        __spawnClock.setDuration(1000);
+        add(new TimeReceiveCommand(*this));
     }
     ChunkManage::~ChunkManage() {
         for (auto& chunk:__chunks) {
@@ -23,11 +30,27 @@ namespace MyCraft {
             delete chunk;
         }
     }
+    void ChunkManage::setTime(const float& time) {
+        __time = time;
+    }
     
     bool ChunkManage::contains(const glm::ivec3& position) const {
         glm::ivec3 offset(floor(position.x/16.f), floor(position.y/16.f), floor(position.z/16.f));
         offset -= getPosition()/16;
         return (offset.x >= 0 && offset.x < world_side && offset.y >= 0 && offset.y < world_side && offset.z >= 0 && offset.z < world_side  && __chunks[__chunkIndices[offset.x][offset.y][offset.z]]);
+    }
+    bool ChunkManage::isDangerous(const glm::vec3& position) const {
+        glm::ivec3 offset(floor(position.x/16.f), floor(position.y/16.f), floor(position.z/16.f));
+        offset -= getPosition()/16;
+        return (offset.x == 0 || offset.x == world_side-1 ||
+                offset.y == 0 || offset.y == world_side-1 || 
+                offset.z == 0 || offset.z == world_side-1);
+    }
+    int ChunkManage::getZHeight(const glm::vec3& position) const {
+        int z = floor(position.z);
+        while (contains({position.x, position.y, z}) && !isPlaceable(getType({position.x, position.y, z}))) z++;
+        if (!contains({position.x, position.y, z})) z = std::numeric_limits<int>::max();
+        return z;
     }
     bool ChunkManage::handle(GLFWwindow* window) {
         bool is_changed = MyBase3D::Container3D::handle(window);
@@ -36,6 +59,39 @@ namespace MyCraft {
             for (int i = 0; i<__chunks.size(); i++)
                 if (__chunks[i]) __chunks[i]->flowWater();
             is_changed = true;
+        }
+        for (int i = __models.size()-1; i>=0; i--) {
+            is_changed = __models[i]->handle(window) || is_changed;
+            if (isDangerous(__models[i]->getPosition())) {
+                __dangerousModel.push_back(__models[i]);
+                __models.erase(__models.begin()+i);
+            }
+        }
+        if (__spawnClock.get() && __models.size() + __dangerousModel.size()<10) {
+            if (__time<0.25 || __time>0.75) {
+                glm::vec3 position(rand()%((world_side-2)*16)+16, rand()%((world_side-2)*16)+16, 2*16);
+                position += getPosition();
+                position.z = getZHeight(position);
+                float I = getLightIndensity(position);
+                if (I<50) {
+                    ModelController* controller = new Zombie::Controller();
+                    controller->setPosition(position);
+                    send(new SpawnMobMessage(controller));
+                }
+            }
+            else {
+                glm::vec3 position(rand()%((world_side-2)*16)+16, rand()%((world_side-2)*16)+16, 2*16);
+                position += getPosition();
+                position.z = getZHeight(position);
+                float I = getLightIndensity(position);
+
+                ModelController* controller;
+                if (rand()%2) controller = new Pig::Controller();
+                else controller = new Cow::Controller();
+
+                controller->setPosition(position);
+                send(new SpawnMobMessage(controller));
+            }
         }
         return is_changed;
     }
@@ -47,6 +103,9 @@ namespace MyCraft {
         glm::ivec3 delta = position - __position/16;
         float length = glm::length((glm::vec3)delta);
         if (!__isLoaded || length>2) {
+            __saveMobs();
+            __cleanDangerous();
+            __cleanSafe();
             if (!__isLoaded) __isLoaded = true;
             else {
                 for (auto& chunk: __chunks) {
@@ -59,6 +118,9 @@ namespace MyCraft {
             __loadDefault();
         }
         else if (length>=1) {
+            __saveMobs();
+            __cleanDangerous();
+            __cleanSafe();
             if (delta.x>0) __movePositiveX();
             else if (delta.x<0) __moveNegativeX();
 
@@ -70,6 +132,55 @@ namespace MyCraft {
         }
     }
 
+    void ChunkManage::pushMob(ModelController* controller) {
+        if (isDangerous(controller->getPosition())) __dangerousModel.push_back(controller);
+        else __models.push_back(controller);
+    }
+    void ChunkManage::eraseMob(ModelController* controller) {
+        bool isErased = true;
+        for (int i = 0; i<__models.size() && isErased; i++) 
+            if (__models[i] == controller) {
+                __models.erase(__models.begin() + i);
+                isErased = false;
+            }
+        for (int i = 0; i<__dangerousModel.size() && isErased; i++) 
+            if (__dangerousModel[i] == controller) {
+                __dangerousModel.erase(__dangerousModel.begin() + i);
+                break;
+            }
+    }
+    void ChunkManage::__cleanSafe() {
+        for (int i = __models.size()-1; i>=0; i--) {
+            if (isDangerous(__models[i]->getPosition())) {
+                __dangerousModel.push_back(__models[i]);
+                __models.erase(__models.begin()+i);
+            }
+        }
+    }
+    void ChunkManage::__cleanDangerous() {
+        int size = __dangerousModel.size();
+        size--; 
+        for (int i = size; i>=0; i--) {
+            if (!isDangerous(__dangerousModel[i]->getPosition())) {
+                __models.push_back(__dangerousModel[i]);
+                __dangerousModel.erase(__dangerousModel.begin()+i);
+            }
+        }
+    }
+    void ChunkManage::__saveMobs() {
+        int size = __dangerousModel.size();
+        size-=1;
+        for (int i = size; i>=0; i--) {
+            if (!contains(__dangerousModel[i]->getPosition())) {
+                send(new EraseMobMessage(__dangerousModel[i]));
+                if (__dangerousModel[i]->canSaved()) {
+                    getChunk(__dangerousModel[i]->getPosition()).pushMob(__dangerousModel[i]);
+                }
+                else delete __dangerousModel[i];
+                __dangerousModel.erase(__dangerousModel.begin()+i);
+            }
+        }
+    }
     void ChunkManage::__loadDefault() {
         for (int i = 0; i<world_side; i++) {
             for (int j = 0; j<world_side; j++) {
@@ -283,6 +394,8 @@ namespace MyCraft {
     }
     void ChunkManage::glDraw() const {
         MyBase3D::Container3D::glDraw();
+        for (int i = 0; i<__models.size(); i++) __models[i]->glDraw();
+        for (int i = 0; i<__dangerousModel.size(); i++) __dangerousModel[i]->glDraw();
         DrawingCenter::BindCube(__texture);
         glLineWidth(0);
         for (auto& chunk:__chunks) chunk->glDraw();
@@ -313,4 +426,15 @@ namespace MyCraft {
     const glm::ivec3& ChunkManage::getPosition() const {
         return __position;
     };
+
+    TimeReceiveCommand::TimeReceiveCommand(ChunkManage& manage): __manage(manage) {}
+    TimeReceiveCommand::~TimeReceiveCommand() {}
+
+    MyBase::MessageType TimeReceiveCommand::getType()      const {
+        return MyBase::TimeNotice;
+    }
+    void TimeReceiveCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        TimeMessage* package = (TimeMessage*)message;
+        __manage.setTime(package->time);
+    }
 }

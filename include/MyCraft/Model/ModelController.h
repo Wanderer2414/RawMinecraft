@@ -23,6 +23,7 @@ namespace MyCraft {
             virtual glm::vec3 getPosition() const = 0;
             
             virtual bool    canSaved() const;
+            virtual void    setPosition(const glm::vec3& position) = 0;
             virtual void    see(const glm::vec3& dir) = 0,
                             look(const glm::vec3& position) = 0,
                             move(const glm::vec3& dir) = 0,
@@ -39,6 +40,9 @@ namespace MyCraft {
             friend class RotateCommand;
             static ModelController* load(std::istream& cin);
             virtual void    save(std::ostream& cout) = 0;
+            using MyBase3D::Controller3D::glDraw;
+            using MyBase3D::Controller3D::handle;
+            using MyBase3D::Controller3D::catchEvent;
         protected:
             Path*               __path;
             ModelController*    __folowController;
@@ -183,6 +187,28 @@ namespace MyCraft {
         MyBase::MessageType getType() const override;
         const glm::vec3 position, direction;
         const ItemType rightItem, leftItem;
+    };
+
+    class TimeDarknessCommand: public MyBase::Command {
+    public:
+        TimeDarknessCommand(ModelController& darknessModel);
+        ~TimeDarknessCommand();
+
+        MyBase::MessageType getType()      const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private:
+        ModelController& __model;
+    };
+
+    class TimeLightnessCommand: public MyBase::Command {
+    public:
+        TimeLightnessCommand(ModelController& darknessModel);
+        ~TimeLightnessCommand();
+
+        MyBase::MessageType getType()      const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private:
+        ModelController& __model;
     };
 }
 #endif

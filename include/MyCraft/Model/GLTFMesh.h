@@ -9,6 +9,8 @@ namespace MyCraft {
     public:
         class SetNode {
         public:
+            SetNode(const int& size);
+            ~SetNode();
             SetNode(const SetNode&) = delete;
             SetNode& operator=(const SetNode&) const = delete; 
             glm::mat4& operator[](const int& index);
@@ -19,18 +21,17 @@ namespace MyCraft {
         private:
             glm::mat4* __states;
             unsigned int __size;
-            SetNode(const int& size);
-            ~SetNode();
         };
         ~GLTFStaticMesh();
         GLTFStaticMesh(const GLTFStaticMesh&)   = delete;
         GLTFStaticMesh(GLTFStaticMesh&&)        = delete;
         GLTFStaticMesh& operator=(const GLTFStaticMesh&) = delete;
 
-        SetNode& States();
+        int getNodeSize() const;
         GLTFAnimation& Animations(const std::string& name);
         friend class GLTFModel;
     private:
+        int     __nodeSize;
         struct Node {
             std::vector<Node*> children;
             glm::vec3 translation;
@@ -43,11 +44,10 @@ namespace MyCraft {
         void BindBuffer(const tinygltf::Model& model);
         void BindNodes(const int& index, Node*& root, const tinygltf::Model& model);
         void BindMesh(const tinygltf::Model& model, const int& index);
-        void DrawModelNodes(Node* root, const glm::mat4& state) const;
+        void DrawModelNodes(Node* root, const glm::mat4& state, const SetNode& node) const;
         void DrawMesh(const int& index) const;
         void LoadAnimation(const tinygltf::Model& model);
-        void Draw() const;
-        SetNode* __nodes;
+        void Draw(const SetNode& nodes) const;
         std::vector<GLuint> __VAO;
         std::vector<GLuint> __ebos;
         std::map<std::string,GLTFAnimation*> __animation;

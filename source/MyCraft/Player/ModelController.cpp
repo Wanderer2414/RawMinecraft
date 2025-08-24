@@ -40,6 +40,11 @@ namespace MyCraft {
             update();
         }
         ModelController::~ModelController() {}
+
+        void ModelController::setPosition(const glm::vec3& position) {
+            Model::setPosition(position);
+            update();
+        }
         bool ModelController::catchEvent(GLFWwindow* window) {
             __isChanged = MyCraft::ModelController::catchEvent(window) || __isChanged;
 

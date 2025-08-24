@@ -46,6 +46,11 @@ namespace MyCraft {
         glm::vec3 Controller::getPosition() const {
             return glm::vec3(0,0,0);
         }
+
+        void Controller::setPosition(const glm::vec3& position) {
+            Model::setPosition(position);
+            update();
+        }
         void Controller::save(std::ostream& cout) {}
         void Controller::__load(std::istream& cin) {}
     }

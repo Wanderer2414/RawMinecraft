@@ -12,6 +12,8 @@ namespace MyCraft {
             ~Controller();
             Controller& operator=(const Controller&) const = delete; 
 
+
+            void    setPosition(const glm::vec3& position) override;
             virtual void    see(const glm::vec3& dir) override,
                             look(const glm::vec3& position) override,
                             move(const glm::vec3& dir) override,

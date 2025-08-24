@@ -21,7 +21,10 @@ namespace MyCraft {
 
     HitboxTree::Iterator& HitboxTree::Iterator::operator++() {
         if (!__node || !__node->parent) __node = 0;
-        else if (__node->parent->right != __node) __node = __node->parent->right;
+        else if (__node->parent->right != __node) {
+            __node = __node->parent->right;
+            while (__node->left) __node = __node->left;
+        }
         else {
             while (__node->parent && __node->parent->right == __node) __node = __node->parent;
             if (!__node->parent) __node = 0;
@@ -64,6 +67,7 @@ namespace MyCraft {
         return contains;
     }
     float HitboxNode::isCollistion(const glm::vec3& position, const glm::vec3& direction) const {
+        if (contains(position)) return 0;
         glm::vec3 origin = position - __shape[0];
         bool contains = false;
         float ans = std::numeric_limits<float>::max();
@@ -173,7 +177,9 @@ namespace MyCraft {
     void HitboxTree::insert(HitboxNode* model) {
         model->tree = this;
         __insert(__root, model);
-        print();
+        if (model->parent && model->parent->left == model->parent->right) {
+            std::cout << "Error" << std::endl;
+        }
     }
     void HitboxTree::print() const {
         __print(__root);
@@ -184,7 +190,7 @@ namespace MyCraft {
     bool HitboxTree::__remove(HitboxNode*& root, HitboxNode* node) {
         if (!root) return false;
         else if (!root->height) {
-            if (root->getShape() == node->getShape()) {
+            if (root == node) {
                 root = 0;
                 return true;
             }
@@ -382,8 +388,8 @@ namespace MyCraft {
         }
     }
     std::pair<HitboxNode*, float> HitboxTree::__get(HitboxNode* root, const glm::vec3& position, const glm::vec3& dir) const {
-        if (!root) return {0,0};
         std::pair<HitboxNode*, float> ans = {0,std::numeric_limits<float>::max()};
+        if (!root || !root->left || !root->right) return ans;
         if (float distance = root->left->isCollistion(position, dir); distance<=glm::length(dir)) {
             std::pair<HitboxNode*, float> subans;
             if (!root->left->height) subans = {root->left, distance};

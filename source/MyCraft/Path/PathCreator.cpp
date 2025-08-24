@@ -55,7 +55,9 @@ namespace MyCraft {
         for (glm::vec3 position(xBound.x, yBound.x, zBound.x); position.x<=xBound.y && canContain; position.x++) {
             for (position.y = yBound.x; position.y<=yBound.y && canContain; position.y++) {
                 for (position.z = zBound.x; position.z <= zBound.y && canContain; position.z++) {
-                    canContain = canContain && isPlaceable(__worldRender.getType(position));
+                    if (__worldRender.contains(position))
+                        canContain = canContain && isPlaceable(__worldRender.getType(position));
+                    else canContain = false;
                 }
             }
         }
@@ -114,6 +116,6 @@ namespace MyCraft {
         glm::vec3 size = {glm::length(mat[1]), glm::length(mat[2]), glm::length(mat[3])};
         Path* path = __creator.FollowPath(size, package->controller->getPosition(), package->destination);
         package->controller->setPath(path);
-        path->setSpeed(0.2);
+        path->setSpeed(0.13);
     }
 }

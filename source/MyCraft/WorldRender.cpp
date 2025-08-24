@@ -11,6 +11,7 @@
 
 namespace MyCraft {
     WorldRender::WorldRender(const std::string& src): __chunkLoader(src), __isHover(false) {
+        MyBase::Network::match(&__chunkLoader);
         insert(&__chunkLoader);
         add(new CheckEmptyCommand(*this));
         add(new CheckFallCommand(*this));
@@ -22,6 +23,9 @@ namespace MyCraft {
     WorldRender::~WorldRender() {}
     bool WorldRender::contains(const glm::ivec3& pos) const {
         return __chunkLoader.contains(pos);
+    }
+    bool WorldRender::isDangerous(const glm::vec3& pos) const {
+        return __chunkLoader.isDangerous(pos);
     }
     bool WorldRender::isHover() const {
         return __isHover;
@@ -50,10 +54,7 @@ namespace MyCraft {
         return false;
     }
     int WorldRender::getZHeight(const glm::vec3& position) const {
-        int z = floor(position.z);
-        while (contains({position.x, position.y, z}) && !isPlaceable(getType({position.x, position.y, z}))) z++;
-        if (!contains({position.x, position.y, z})) z = std::numeric_limits<int>::max();
-        return z;
+        return __chunkLoader.getZHeight(position);
     }
     BlockCatogary WorldRender::getType(const glm::vec3& position) const {
         glm::ivec3 pos(floor(position.x), floor(position.y), floor(position.z));
@@ -101,6 +102,13 @@ namespace MyCraft {
     }
     void WorldRender::unplace() {
         __chunkLoader.setType(__hoverBlock, Air);
+    }
+
+    void WorldRender::pushMob(ModelController* model) {
+        __chunkLoader.pushMob(model);
+    }
+    void WorldRender::eraseMob(ModelController* model) {
+        __chunkLoader.eraseMob(model);
     }
     void WorldRender::setHoverBlock(const glm::vec3& pos, const glm::vec3& place) {
         __hoverBlock = pos;
@@ -435,9 +443,9 @@ namespace MyCraft {
     }
     void RequestRotateCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
         RequestRotateMessage* package = (RequestRotateMessage*)message;
-        glm::mat4 mat = glm::translate(glm::mat4(1), package->shape[1]/2.f + package->shape[2]/2.f);
+        glm::mat4 mat = glm::translate(glm::mat4(1), package->shape[1]/2.f + package->shape[2]/2.f + package->shape[0]);
         mat*=glm::rotate(package->angle, glm::vec3(0,0,1));
-        mat*=glm::translate(glm::mat4(1), -package->shape[1]/2.f + -package->shape[2]/2.f);
+        mat*=glm::translate(glm::mat4(1), -package->shape[1]/2.f -package->shape[2]/2.f - package->shape[0]);
         glm::vec3 A = mat*glm::vec4(package->shape[0],1), B = mat*glm::vec4(package->shape[0] + package->shape[1], 1), 
             C = mat*glm::vec4(package->shape[0] + package->shape[2],1), D = mat*glm::vec4(package->shape[0] + package->shape[1] + package->shape[2],1);
         bool contains = true;

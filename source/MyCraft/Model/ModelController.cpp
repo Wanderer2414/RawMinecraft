@@ -2,6 +2,7 @@
 #include "HealthModule.h"
 #include "HitboxTree.h"
 #include "Message.h"
+#include "Sun.h"
 #include "WorldRender.h"
 #include "Path.h"
 namespace MyCraft {
@@ -28,7 +29,7 @@ namespace MyCraft {
     }
     void ModelController::setPath(Path* path) {
         __path = path;
-        __path->setModelHost(this);
+        if (__path) __path->setModelHost(this);
     }
 
     void ModelController::clearPath() {
@@ -167,5 +168,31 @@ namespace MyCraft {
     PlaceMessage::~PlaceMessage() {}
     MyBase::MessageType PlaceMessage::getType() const {
         return MyBase::MessageType::Place;
+    }
+
+    TimeDarknessCommand::TimeDarknessCommand(ModelController& darknessModel): __model(darknessModel) {}
+    TimeDarknessCommand::~TimeDarknessCommand() {}
+
+    MyBase::MessageType TimeDarknessCommand::getType() const {
+        return MyBase::TimeNotice;
+    }
+    void TimeDarknessCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        TimeMessage* package = (TimeMessage*)message;
+        if (package->time>0.25 && package->time<=0.75) {
+            __model.damage(10);
+        }
+    }
+
+    TimeLightnessCommand::TimeLightnessCommand(ModelController& darknessModel): __model(darknessModel) {}
+    TimeLightnessCommand::~TimeLightnessCommand() {}
+
+    MyBase::MessageType TimeLightnessCommand::getType() const {
+        return MyBase::TimeNotice;
+    }
+    void TimeLightnessCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        TimeMessage* package = (TimeMessage*)message;
+        if (package->time<0.25 || package->time>0.75) {
+            __model.damage(10);
+        }
     }
 }

@@ -2,6 +2,7 @@
 #define HITBOX_H
 #include "Container3D.h"
 #include "HitboxTree.h"
+#include "Message.h"
 #include "ModelController.h"
 namespace MyCraft {
     class HitBoxCenter: public MyBase3D::Container3D {

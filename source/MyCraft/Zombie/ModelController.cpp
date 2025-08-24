@@ -1,8 +1,12 @@
 #include "Zombie/ModelController.h"
 #include "Color.h"
 #include "HealthModule.h"
+#include "HitboxTree.h"
+#include "Message.h"
 #include "ModelController.h"
 #include "PathCreator.h"
+#include "Sun.h"
+#include "World.h"
 #include "Zombie/Model.h"
 #include "WorldRender.h"
 #include "Path.h"
@@ -15,6 +19,7 @@ namespace MyCraft {
             add(new JumpCommand(this));
             add( new FocusCommand(this));
             add(new RotateCommand(this));
+            add(new TimeDarknessCommand(*this));
             update();
             __damageDuration.setDuration(200);
             __fallCheckClock.setDuration(30);
@@ -59,6 +64,7 @@ namespace MyCraft {
             __isDamage = true;
             __isChanged = true;
             setBaseColor({255, 0, 0, 100});
+            HealthModule::damage(damage);
         }
         void Controller::heal(const unsigned int& health) {
             
@@ -66,6 +72,7 @@ namespace MyCraft {
 
         void Controller::update() {
             setShape(Model::getShape());
+            HitboxNode::update();
         }
         void Controller::see(const glm::vec3& dir) {
 
@@ -112,13 +119,18 @@ namespace MyCraft {
         }
 
         void Controller::__dead() {
-
+            send(new EraseMobMessage(this));
         }
         void Controller::__damage() {
 
         }
         void Controller::__heal() {
 
+        }
+
+        void Controller::setPosition(const glm::vec3& position) {
+            Model::setPosition(position);
+            update();
         }
         void Controller::save(std::ostream& cout) {}
         void Controller::__load(std::istream& cin) {}
@@ -133,11 +145,12 @@ namespace MyCraft {
             FocusMessage* package = (FocusMessage*)message;
             __model->look(package->host->getPosition());
             float distance = glm::length(package->host->getPosition()-__model->getPosition());
-            if (distance < 10) {
+            if (distance < 20) {
                 __model->folow(package->host);
             }
             else __model->folow(0);
 
         }
+
     }
 }

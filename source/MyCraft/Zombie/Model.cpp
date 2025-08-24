@@ -68,7 +68,8 @@ namespace MyCraft {
             }
         }
         void Model::setPosition(const glm::vec3& position) {
-
+            __position = position;
+            __isChanged = true;
         }
         bool Model::apply() {
             if (__moveClock.get() && __moveTime) {

@@ -1,5 +1,6 @@
 #ifndef ZOMBIE_CONTROLLER_H
 #define ZOMBIE_CONTROLLER_H
+#include "ChunkManage.h"
 #include "Clock.h"
 #include "Message.h"
 #include "Model/ModelController.h"
@@ -11,6 +12,8 @@ namespace MyCraft {
             Controller();
             ~Controller();
 
+
+            void    setPosition(const glm::vec3& position) override;
             void    see(const glm::vec3& dir) override,
                     move(const glm::vec3& dir) override,
                     look(const glm::vec3& position) override,

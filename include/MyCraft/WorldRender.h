@@ -5,6 +5,7 @@
 #include "Controller3D.h"
 #include "ChunkManage.h"
 #include "Message.h"
+#include "ModelController.h"
 #include "WaterManage.h"
 namespace MyCraft {
     class WorldRender: public MyBase3D::Container3D, public MyBase::Port {
@@ -12,6 +13,7 @@ namespace MyCraft {
         WorldRender(const std::string& src);
         ~WorldRender();
         bool contains(const glm::ivec3& pos) const;
+        bool isDangerous(const glm::vec3& pos) const;
         bool isHover() const;
         BlockCatogary getHoverType() const;
         glm::ivec3 getHoverBlock() const;
@@ -29,6 +31,9 @@ namespace MyCraft {
         bool isBusy(const glm::vec3& position) const;
         bool isHover(const glm::vec3& position) const;
         BlockCatogary getType(const glm::vec3& position) const;
+
+        void pushMob(ModelController* model);
+        void eraseMob(ModelController* model);
     protected:
         void glDraw() const override;
         void glDrawTransparent() const override;

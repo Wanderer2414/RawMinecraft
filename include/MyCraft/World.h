@@ -24,6 +24,8 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
         
         void teleport(const glm::ivec3& position);
         void addPlayerModel(ModelController* controller);
+        void pushMob(ModelController* model);
+        void eraseMob(ModelController* model);
         friend class HealthWorldCommand;
         friend class AttackWorldCommand;
         friend class CheckHoverCommand;
@@ -97,5 +99,42 @@ class World: public MyBase3D::Container3D, public MyBase::Port {
         World& __world;
     };
 
+
+    class SpawnMobMessage: public MyBase::Message {
+    public:
+        SpawnMobMessage(ModelController* controller);
+        ~SpawnMobMessage();
+
+        ModelController* model;
+        MyBase::MessageType getType() const override;
+    };
+    class SpawnMobCommand: public MyBase::Command {
+    public:
+        SpawnMobCommand(World& world);
+        ~SpawnMobCommand();
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private:
+        World& __world;
+    };
+
+
+    class EraseMobMessage: public MyBase::Message {
+    public:
+        EraseMobMessage(ModelController* controller);
+        ~EraseMobMessage();
+
+        ModelController* model;
+        MyBase::MessageType getType() const override;
+    };
+    class EraseMobCommand: public MyBase::Command {
+    public:
+        EraseMobCommand(World& world);
+        ~EraseMobCommand();
+        MyBase::MessageType getType() const override;
+        void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private:
+        World& __world;
+    };
 }
 #endif
