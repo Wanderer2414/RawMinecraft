@@ -53,6 +53,16 @@ namespace MyBase {
         for (const auto& type: types)
             get().__ports[type].push_back(port);
     }
+    void Network::unmatch(Port *port) {
+        const auto& types = port->getTypes();
+        for (const auto& type: types) {
+            for (int i = get().__ports[type].size()-1; i>=0; i--)
+                if (get().__ports[type][i] == port) {
+                    get().__ports[type].erase(get().__ports[type].begin()+i);
+                    break;
+                }
+        }
+    }
     void Network::receive(Port& source, Message* Message) {
         auto& ports = __ports[Message->getType()];
         for (auto& port:ports) receive(source, *port, Message);

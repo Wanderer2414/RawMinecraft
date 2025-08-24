@@ -46,6 +46,7 @@ namespace MyBase {
     class Network {
     public:
         static void match(Port* port);
+        static void unmatch(Port* port);
         virtual void receive(Port& source, Message* Message);
         virtual void receive(Port& source, Port& destination, Message* Message);
         static void close();

@@ -24,7 +24,6 @@ namespace MyCraft {
             bool handle(GLFWwindow* window) override;
             void glDraw() const             override;
             glm::vec3                       __colors;
-            std::vector<ModelController*>   __models;
             HitboxTree                      __tree;
             ModelController                 *__hoverEntity;
     };

@@ -2,6 +2,7 @@
 #define CHUNK_H
 #include "ChunkBase.h"
 #include "DrawingCenter.h"
+#include "ModelController.h"
 #include <unordered_set>
 
 namespace MyCraft {
@@ -53,6 +54,8 @@ namespace MyCraft {
         std::map<unsigned int, glm::mat4>   __specialState;
         std::queue<glm::ivec4>      __waterFlowing;
         ChunkLoader                 *__container;
+        std::vector<ModelController*> __savableModel;
+        std::vector<ModelController*> __unsavableModel;
         void __add_block(const glm::ivec3& position);
         void __remove_block(const glm::ivec3& position);
     };

@@ -1,6 +1,5 @@
 #include "HitboxTree.h"
 #include "Ray.h"
-#include "glm/geometric.hpp"
 #include <limits>
 #include <pthread.h>
 namespace MyCraft {
@@ -14,6 +13,42 @@ namespace MyCraft {
     std::ostream& operator<<(std::ostream& cout, const HitboxNode& root) {
         return cout << "(" << root.x.x << " " << root.x.y << ", " << root.y.x << " " << root.y.y << ", " << root.z.x << " " << root.z.y << ")" ;
     }
+
+    HitboxTree::Iterator::Iterator(HitboxNode * node): __node(node) {}
+    HitboxNode* HitboxTree::Iterator::operator*() {
+        return __node;
+    }
+
+    HitboxTree::Iterator& HitboxTree::Iterator::operator++() {
+        if (!__node || !__node->parent) __node = 0;
+        else if (__node->parent->right != __node) __node = __node->parent->right;
+        else {
+            while (__node->parent && __node->parent->right == __node) __node = __node->parent;
+            if (!__node->parent) __node = 0;
+            else {
+                __node = __node->parent->right;
+                while (__node->left) __node = __node->left;
+            }
+        }
+        return *this;
+    }
+    bool HitboxTree::Iterator::operator==(const Iterator& iter) const {
+        return iter.__node == __node;
+    }
+    bool HitboxTree::Iterator::operator!=(const Iterator& iter) const {
+        return iter.__node != __node;
+    }
+
+    HitboxTree::Iterator HitboxTree::begin() const {
+        if (!__root) return 0;
+        HitboxNode* node = __root;
+        while (node->left) node = node->left;
+        return node;
+    } 
+    HitboxTree::Iterator HitboxTree::end() const {
+        return 0;
+    }
+
     bool HitboxNode::contains(const glm::vec3& position) const {
         glm::vec3 offset = position-__shape[0];
         bool contains = true;

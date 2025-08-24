@@ -15,9 +15,7 @@ namespace MyCraft {
         insert(new Zombie::Controller());
         insert(new SkeletonBoss::Controller());
     }
-    HitBoxCenter::~HitBoxCenter() {
-        for (int i = 0; i<__models.size(); i++) delete __models[i];
-    }
+    HitBoxCenter::~HitBoxCenter() {}
     bool HitBoxCenter::isHover() const {
         return __hoverEntity;
     }
@@ -61,17 +59,19 @@ namespace MyCraft {
     }
 
     void HitBoxCenter::insert(ModelController* model) {
-        __models.push_back(model);
         MyBase::Network::match(model);
         Container3D::insert(model);
         __tree.insert(model);
     }
     void HitBoxCenter::erase(ModelController* model) {
+        MyBase3D::Container3D::erase(model);
+        MyBase::Network::unmatch(model);
+        __tree.remove(model);
     }
     void HitBoxCenter::glDraw() const {
         MyBase3D::Container3D::glDraw();
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDefaultShader());
-        for (auto& model: __models) {
+        for (auto model: __tree) {
             glm::mat4x3 mat = model->getShape();
             DrawMargin(mat, __colors);
         }

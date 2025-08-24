@@ -2,15 +2,17 @@
 #include "HealthModule.h"
 #include "HitboxTree.h"
 #include "Message.h"
-#include "PathCreator.h"
 #include "WorldRender.h"
-
+#include "Path.h"
 namespace MyCraft {
     ModelController::ModelController(const unsigned int& max_heal): HealthModule(max_heal), HitboxNode(0), 
         __zVelocity(0), __path(0), __folowController(0) {
         __attackCooldown.setDuration(500);
     }
     ModelController::~ModelController() {};
+    bool ModelController::canSaved() const {
+        return false;
+    }
     float ModelController::Powerness() const {
         return 0;
     }

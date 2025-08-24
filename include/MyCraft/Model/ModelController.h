@@ -22,6 +22,7 @@ namespace MyCraft {
             bool hasPath() const;
             virtual glm::vec3 getPosition() const = 0;
             
+            virtual bool    canSaved() const;
             virtual void    see(const glm::vec3& dir) = 0,
                             look(const glm::vec3& position) = 0,
                             move(const glm::vec3& dir) = 0,
