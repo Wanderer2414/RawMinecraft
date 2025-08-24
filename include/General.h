@@ -12,7 +12,6 @@ std::size_t GetTime();
 std::ostream& operator<<(std::ostream& cout, const glm::vec3& pos);
 std::tuple<int,int,int> to_tuple(const glm::ivec3& vec);
 
-
 namespace MyBase {
     glm::vec2 getWindowSize();
 }
