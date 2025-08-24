@@ -1,8 +1,10 @@
 #include "UI/Sound.h"
+#include "Global.h"
 
 bool Sound::audio_device = false;
+int Sound::volume = 70;
 
-Sound::Sound(const std::string & filename) {
+Sound::Sound(const std::string & filename) : isPlaying(false) {
     if(!audio_device){
         if(!BASS_Init(-1, 44100, 0, nullptr, nullptr)){
             throw std::runtime_error("Failed to initialize audio device");
@@ -15,6 +17,7 @@ Sound::Sound(const std::string & filename) {
         throw std::runtime_error("Failed to create sound stream: " + filename);
 
     }
+    setVolume(volume);
 }
 
 Sound::~Sound(){
@@ -22,13 +25,27 @@ Sound::~Sound(){
 }
 
 void Sound::play(){
-    BASS_ChannelPlay(channel, FALSE);
+    if(!isPlaying){
+        BASS_ChannelPlay(channel, FALSE);
+        isPlaying = true;
+    }
 }
 
 void Sound::pause(){
-    BASS_ChannelPause(channel);
+    if(isPlaying){
+        BASS_ChannelPause(channel);
+        isPlaying = false;
+    }
 }   
 
 void Sound::stop(){
-    BASS_ChannelStop(channel);
+    if(isPlaying){
+        BASS_ChannelStop(channel);
+        isPlaying = false;
+    }
+}
+
+void Sound::setVolume(const float & volume){
+    float vol = std::clamp(volume, 0.f, 100.f);
+    BASS_ChannelSetAttribute(channel, BASS_ATTRIB_VOL, vol / 100.f);
 }
