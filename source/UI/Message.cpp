@@ -1,5 +1,4 @@
 #include "Message.h"
-#include "PlayerModelController.h"
 
 namespace MyBase {
     Port::Port(Network* network): __network(network) {}
@@ -17,6 +16,7 @@ namespace MyBase {
     }
     void Port::send(Port& port, Message* Message) {
         __network->receive(*this, port, Message);
+        delete Message;
     }
     std::vector<MessageType> Port::getTypes() const {
         std::vector<MessageType> types(__commands.size());
@@ -42,11 +42,16 @@ namespace MyBase {
 
     Network::Network(): __ports(MessageTypeSize) {}
     Network::~Network() {}
+    Network* Network::network = 0;
+    Network& Network::get() {
+        if (!network) network = new Network();
+        return *network;
+    }
     void Network::match(Port* port) {
-        port->match(this);
+        port->match(&get());
         const auto& types = port->getTypes();
         for (const auto& type: types)
-            __ports[type].push_back(port);
+            get().__ports[type].push_back(port);
     }
     void Network::receive(Port& source, Message* Message) {
         auto& ports = __ports[Message->getType()];
@@ -59,7 +64,11 @@ namespace MyBase {
     void Network::send(Port& source, Port& destination, Message* Message) {
         destination.receive(source, Message);
     }
-    
+    void Network::close() {
+        if (!network) delete network;
+        network = 0;
+    }
+    Command::Command() {}
     Command::~Command() {};
     Message::~Message() {};
     

@@ -1,31 +1,76 @@
-#include <string>
 #include "HitBoxCenter.h"
+#include "Container3D.h"
+#include "Cow/ModelController.h"
 #include "General.h"
 #include "Global.h"
-#include "ModelController.h"
+#include "Message.h"
+#include "SkeletonBoss/ModelController.h"
+#include "Pig/ModelController.h"
 #include "ShaderStorage.h"
+#include "Zombie/ModelController.h"
 
 namespace MyCraft {
     
     HitBoxCenter::HitBoxCenter() {
         __colors = glm::vec3(1,0,0);
-        modelTest = new GLTFModel("assets/models/pig_model.gltf", 1.0f);
-        if(!modelTest) {
-            std::cerr << "Failed to load test model." << std::endl;
-        } else {
-            std::cout << "Test model loaded successfully." << std::endl;
-        }
+        insert(new Zombie::Controller());
+        insert(new SkeletonBoss::ModelController());
     }
     HitBoxCenter::~HitBoxCenter() {
-        delete modelTest;
+        for (int i = 0; i<__models.size(); i++) delete __models[i];
     }
+    bool HitBoxCenter::isHover() const {
+        return __hoverEntity;
+    }
+    bool HitBoxCenter::isBusyBlock(const glm::ivec3& position) const {
+        return false;
+    }
+    bool HitBoxCenter::isColistion(const glm::vec3& position) const {
+        return false;
+    }
+
+    ModelController* HitBoxCenter::isColistion(const glm::vec3& position, const glm::vec3& direction) const {
+        return (ModelController*)__tree.get(position, direction);
+    }
+    void HitBoxCenter::setHoverEntity(ModelController* controller) {
+        __hoverEntity = controller;
+    }
+
+    void HitBoxCenter::attackEntity(const unsigned int& damage, const glm::vec3& direction) {
+        if (__hoverEntity) {
+            glm::vec3 dir = direction;
+            dir.z = 0;
+            if (glm::length(dir)) dir = glm::normalize(dir)*0.5f;
+            dir.z = 0.2;
+            __hoverEntity->move(dir);
+            __hoverEntity->damage(damage);
+        }
+    }
+    void HitBoxCenter::feedEntity(const unsigned int& health, const glm::vec3& direction) {
+        if (__hoverEntity) ;
+    }
+    static glm::vec3 position = {0,0,0};
+    static float angle = 0;
+    bool HitBoxCenter::handle(GLFWwindow* window) {
+        bool is_changed = MyBase3D::Container3D::handle(window);
+        {
+            angle+=0.002;
+            __models[0]->move(glm::vec3(2*cos(angle), 2*sin(angle),0)-position);
+            position = glm::vec3(2*cos(angle), 2*sin(angle),0);
+        }
+        return true;
+    }
+
     void HitBoxCenter::insert(ModelController* model) {
         __models.push_back(model);
+        MyBase::Network::match(model);
+        Container3D::insert(model);
+        __tree.insert(model);
     }
     void HitBoxCenter::erase(ModelController* model) {
     }
     void HitBoxCenter::glDraw() const {
-        std::cout<<"Hitbox Center::glDraw() called"<<std::endl;
+        MyBase3D::Container3D::glDraw();
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDefaultShader());
         for (auto& model: __models) {
             glm::mat4x3 mat = model->getShape();

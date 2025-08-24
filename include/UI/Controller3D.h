@@ -6,7 +6,7 @@ namespace MyBase3D {
     class Controller3D: public MyBase::Controller {
     public:
         Controller3D();
-        ~Controller3D();
+        virtual ~Controller3D();
         bool isVisible()         const;
         void setVisible(const bool& visible);
         friend class Container3D;

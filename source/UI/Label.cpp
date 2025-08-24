@@ -12,7 +12,7 @@ namespace MyBase {
     glm::vec2 Label::getSize() const {
         return Text::getSize();
     }
-    void Label::glDraw() const {
+    void Label::glDrawTransparent() const {
         Text::draw();
     }
 }

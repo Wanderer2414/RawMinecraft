@@ -7,20 +7,21 @@ namespace MyBase {
     class Text {
     public:
         Text();
-        Text(const Text& text);
+        Text(const Text& text) = delete;
         ~Text();
-        Text& operator=(const Text& text);
+        Text& operator=(const Text& text) = delete;
+        const std::string& getText() const;
         void setTextColor(const Color& color);
         void setFont(const Font& font);
         void setText(const std::string& text);
         void setScale(const glm::vec2& scale);
+        void draw() const;
         glm::vec2 getSize() const;
         const Font& getFont() const;
     protected:
         void move(const glm::vec2& offset);
         void setPosition(const glm::vec2& position);
         void update();
-        void draw() const;
         glm::vec2 getPosition() const;
     private:
         unsigned char __text_size;

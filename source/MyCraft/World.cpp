@@ -1,375 +1,159 @@
 #include "World.h"
 #include "Block.h"
-#include "DrawingCenter.h"
+#include "BlockItem.h"
+#include "InteractiveForm.h"
+#include "Inventory.h"
+#include "InventoryForm.h"
+#include "Item.h"
 #include "Message.h"
-#include "General.h"
-#include "PlayerModelController.h"
+#include "Player/ModelController.h"
 
 namespace MyCraft {
-    World::World(const int& x, const int& y, const int& z): __position(x-(world_side/2)*16, y-(world_side/2)*16, z-(world_side/2)*16), __isHoverBlock(false) {
-        __chunkPositions.resize(world_side*world_side*world_side);
-        __blockTypes = new BlockCatogary::Catogary**[16*world_side];
-        __bits = new std::bitset<16*world_side>*[16*world_side];
-        __tableIndexes.resize(16*world_side);
-        for (int i = 0; i<16*world_side; i++) {
-            __blockTypes[i] = new BlockCatogary::Catogary*[world_side*16];
-            __bits[i] = new std::bitset<16*world_side>[16*world_side];
-            __tableIndexes[i].resize(16*world_side);
-            for (int j =0; j<16*world_side; j++) {
-                __tableIndexes[i][j].resize(16*world_side, -1);
-                __blockTypes[i][j] = new BlockCatogary::Catogary[16*world_side];
-                memset(__blockTypes[i][j], 0, 16*world_side*sizeof(BlockCatogary::Catogary));
-            }
-        }
-        int curr = 0;
-        for (int i = 0; i<world_side; i++) {
-            for (int j = 0; j<world_side; j++) {
-                for (int k = 0; k<world_side; k++) {
-                    __chunkPositions[curr++] = {__position.x+i*16, __position.y+j*16, __position.z+k*16, 1};
-                }
-            }
-        }
+    World::World(const int& x, const int& y, const int& z, const std::string& src): __worldRender(src) {
+        insert(&__worldRender);
+        insert(&__dropItemManage);
+        insert(&__crackingManage);
+        insert(&__hitbox);
+        MyBase::Network::match(&__crackingManage);
+        MyBase::Network::match(&__worldRender);
+        MyBase::Network::match(&__dropItemManage);
+        add(new HealthWorldCommand(*this));
+        add(new AttackWorldCommand(*this));
+        add(new CheckHoverCommand(*this));
+    }
+    World::~World() {}
 
-        pFrameAlarm.setDuration(150);
-        add(new CheckFallCommand(this));
-        add(new CheckEmptyCommand(this));
-        add(new CheckHoverCommand(this));
-        add(new PlaceblockCommand(this));
-
+    bool World::isBusyBlock(const glm::ivec3& position) {
+        return false;
     }
-    World::~World() {
-        for (int i = 0; i<world_side*16; i++) {
-            for (int j = 0; j<world_side*16;j++) {
-                delete[] __blockTypes[i][j];
-            }
-            delete[] __blockTypes[i];
-            delete[] __bits[i];
-        }
-        delete[] __bits;
-        delete[] __blockTypes;
+    void World::addModel(ModelController* controller) {
+        return __hitbox.insert(controller);
     }
-    
-    bool World::handle(GLFWwindow* window) {
-        bool is_changed = Controller::handle(window);
-        if (pFrameAlarm.get()) {
-            if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
-            }
-        }
-        return is_changed;
-    }
-    const BlockCatogary::Catogary& World::at(const int& x, const int& y, const int& z) const {
-        int rX = (x-__position.x);
-        int rY = (y-__position.y);
-        int rZ = (z-__position.z);
-        return __blockTypes[rX][rY][rZ];
-    }
-    const BlockCatogary::Catogary& World::at(const glm::vec3& pos) const {
-        return at(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z));
+    void World::teleport(const glm::ivec3& position) {
+        __worldRender.playerAt(position);
     }
 
-    void World::set(const int& rx, const int& ry, const int& rz, const BlockCatogary::Catogary& type) {
-        int x = (rx-__position.x);
-        int y = (ry-__position.y);
-        int z = (rz-__position.z);
-        // pChunks[rX/16][rY/16][rZ/16].set(rX%16, rY%16, rZ%16, type);
 
-        if (!type) {
-            if (__blockTypes[x][y][z]) {
-                __disableBit(x, y, z);
-                __blockTypes[x][y][z] = BlockCatogary::Catogary::Air;
-                if (x>0 && !__bits[x-1][y][z] && __blockTypes[x-1][y][z]) __enableBit(x-1, y, z);
-                if (x<world_side*16-1 && !__bits[x+1][y][z] && __blockTypes[x+1][y][z]) __enableBit(x+1, y, z);
-
-                if (y>0 && !__bits[x][y-1][z] && __blockTypes[x][y-1][z]) __enableBit(x, y-1, z);
-                if (y<world_side*16-1 && !__bits[x][y+1][z] && __blockTypes[x][y+1][z]) __enableBit(x, y+1, z);
-                
-                if (z>0 && !__bits[x][y][z-1] && __blockTypes[x][y][z-1]) __enableBit(x, y, z-1);
-                if (z<world_side*16-1 && !__bits[x][y][z+1] && __blockTypes[x][y][z+1]) __enableBit(x, y, z+1);
+    HealthWorldCommand::HealthWorldCommand(World& world): __world(world) {}
+    HealthWorldCommand::~HealthWorldCommand() {}
+    MyBase::MessageType HealthWorldCommand::getType() const {
+        return MyBase::MessageType::Place;
+    }
+    void HealthWorldCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
+        PlaceMessage* package = (PlaceMessage*)message;
+        // bool below_result = true, above_result = true;
+        // std::queue<glm::ivec3> q = rasterize(package->shape[0], package->shape[0]+package->shape[1]);
+        // while (q.size() && below_result) {
+        //     if (q.front() == __world.getPlaceBlock()) below_result = false;
+        //     q.pop();
+        // }
+        // if (below_result) {
+        //     q = rasterize(package->shape[0]+package->shape[2], package->shape[0]+package->shape[1] + package->shape[2]);
+        //     while (q.size() && below_result) {
+        //         if (q.front() == __world.getPlaceBlock()) below_result = false;
+        //         q.pop();
+        //     }
+        // }
+        // if (below_result) {
+        //     q = rasterize(package->shape[0]+package->shape[3], package->shape[0]+package->shape[1]+package->shape[3]);
+        //     while (q.size() && above_result) {
+        //         if (q.front() == __world.getPlaceBlock()) above_result = false;
+        //         q.pop();
+        //     }
+        //     if (above_result) {
+        //         q = rasterize(package->shape[0]+package->shape[2] + package->shape[3], package->shape[0]+package->shape[1]+ package->shape[2] + package->shape[3]);
+        //         while (q.size() && above_result) {
+        //             if (q.front() == __world.getPlaceBlock()) above_result = false;
+        //             q.pop();
+        //         }
+        //     }
+        // }
+        if (__world.__worldRender.isHover()) {            
+            BlockCatogary hoverType = __world.__worldRender.getHoverType();
+            if (isInteractive(hoverType)) {
+                mine.send(new PrepareOpenInventoryMessage(__world.__worldRender.getHoverBlock(), hoverType));
             }
-        }
-        else {
-            if (!__blockTypes[x][y][z]) {
-                __blockTypes[x][y][z] = type;
-                __enableBit(x, y, z);
-                if (x>0 && __bits[x-1][y][z]) __disableBit(x-1, y, z);
-                if (x<world_side*16-1 && __bits[x+1][y][z]) __disableBit(x+1, y, z);
-
-                if (y>0 && __bits[x][y-1][z]) __disableBit(x, y-1, z);
-                if (y<world_side*16-1 && __bits[x][y+1][z]) __disableBit(x, y+1, z);
-                
-                if (z>0 && __bits[x][y][z-1]) __disableBit(x, y, z-1);
-                if (z<world_side*16-1 && __bits[x][y][z+1]) __disableBit(x, y, z+1);
-            }
-            else {
-                glm::vec4 pos(x+__position.x, y+__position.y, z+__position.z ,1);
-                auto& tmp = __list[__blockTypes[x][y][z]];
-                int i = __tableIndexes[x][y][z];
-                if (i!=-1) {
-                    //Swap
-                    tmp[i] = tmp.back();
-                    __tableIndexes[tmp.back().x-__position.x][tmp.back().y - __position.y][tmp.back().z - __position.z] = i;
-                    tmp.pop_back();
-                    //Change type and push again
-                    __blockTypes[x][y][z] = type;
-                    auto& vecs = __list[type];
-                    __tableIndexes[x][y][z] = vecs.size();
-                    vecs.push_back(pos);
+            else if (!__world.isBusyBlock(__world.__worldRender.getPlaceBlock())) {
+                if (isBlock(package->rightItem)) {
+                    BlockCatogary type = BlockCatogary(package->rightItem);
+                    __world.__worldRender.place(type);
+                    mine.send(new AcceptPlaceMessage(type));
                 }
             }
         }
     }
-    
-    void World::__enableBit(const int& x, const int& y, const int& z) {
-        if (!__bits[x][y][z]) {
-            auto& vecs = __list[__blockTypes[x][y][z]];
-            __tableIndexes[x][y][z] = vecs.size();
-            vecs.push_back({x+__position.x,y+__position.y,z+__position.z,1});
-            __bits[x][y][z] = 1;
-        }
-    }
-    void World::__disableBit(const int& x, const int& y, const int& z) {
-        if (!__bits[x][y][z]) return;
-        if (x>0 && !__blockTypes[x-1][y][z]) ;
-        else if (x<world_side*16-2 && !__blockTypes[x+1][y][z]) ;
-        else if (y>0 && !__blockTypes[x][y-1][z]) ;
-        else if (y<world_side*16-2 && !__blockTypes[x][y+1][z]) ;
-        else if (z>0 && !__blockTypes[x][y][z-1]) ;
-        else if (z<world_side*16-2 && !__blockTypes[x][y][z+1]) ;
-        else if (z<world_side*16-1 && z>0 && x<world_side*16-1 && x>0 && y<world_side*16-1 && y>0) {
-            __bits[x][y][z] = 0;
-            auto& tmp = __list[__blockTypes[x][y][z]];
-            int i = __tableIndexes[x][y][z];
-            __tableIndexes[x][y][z] = -1;
-            //Swap
-            tmp[i] = tmp.back();
-            __tableIndexes[tmp.back().x-__position.x][tmp.back().y - __position.y][tmp.back().z - __position.z] = i;
-            tmp.pop_back();
-        }
-    }
 
-    void World::set(const glm::vec3& pos, const BlockCatogary::Catogary& type) {
-        set(std::floor(pos.x), std::floor(pos.y), std::floor(pos.z), type);
+    AttackWorldCommand::AttackWorldCommand(World& w): __world(w) {}
+    AttackWorldCommand::~AttackWorldCommand() {}
+    MyBase::MessageType AttackWorldCommand::getType() const {
+        return MyBase::Attack;
     }
-    void World::setHoverBlock(const glm::vec3& pos, const glm::vec3& placePosition) {
-        __hoverBlock = pos;
-        __placePosition = placePosition;
-        __isHoverBlock = true;
-    }
-    void World::unHoverBlock() {
-        __isHoverBlock = false;
-    }
-    void World::glDraw() const {
-        DrawingCenter::getInstance().BindChunk();
-        DrawingCenter::getInstance().DrawChunks((void*)__chunkPositions.data(), __chunkPositions.size());
-        if (__isHoverBlock) {
-            DrawingCenter::getInstance().BindMargin();
-            glm::vec4 vec = glm::vec4(__hoverBlock,1);
-            DrawingCenter::getInstance().DrawMargin((void*)&vec, 1, 2);
-        }
-        DrawingCenter::getInstance().BindCube();
-        for (const auto& item: __list) {
-            DrawingCenter::getInstance().DrawCubes(item.first, (void*)item.second.data(), item.second.size());
-        }
-    }
-    CheckEmptyCommand::CheckEmptyCommand(World* world): __world(world) {}
-    CheckEmptyCommand::~CheckEmptyCommand() {Command::~Command();}
-    
-    void CheckEmptyCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
-        RequestGotoMessage* request = (RequestGotoMessage*)message;
-        bool below_result = true, above_result = true;
-        auto shape = request->rectangleBox;
-        glm::vec3 dir = glm::vec3(request->direction, 0);
-        //Below check
-        glm::vec3 npos = shape[0] + dir, epos = npos + shape[1];
-        std::queue<glm::vec3> q = rasterize(npos, epos);
-        while (q.size() && below_result) {
-            if (__world->at(q.front()) != BlockCatogary::Air) below_result = false;
-            q.pop();
-        }
-        //Above block check
-        npos.z += 1;
-        epos.z += 1;
-        q = rasterize(npos, epos);
-        while (q.size() && above_result) {
-            if (__world->at(q.front()) != BlockCatogary::Air) above_result = false;
-            q.pop();
-        }
-        if (!below_result || !above_result) {
-            //Check auto jump
-            if (above_result) {
-                below_result = above_result = true;
-                q = rasterize(shape[0]-glm::vec3(0,0,1), shape[0]+shape[1]-glm::vec3(0,0,1));
-                while (q.size() && above_result) {
-                    if (__world->at(q.front()) == BlockCatogary::Air) below_result = false;
-                    q.pop();
-                }
-                q = rasterize(shape[0]+shape[2]-glm::vec3(0,0,1), shape[0]+shape[1]+shape[2]-glm::vec3(0,0,1));
-                while (q.size() && above_result) {
-                    if (__world->at(q.front()) == BlockCatogary::Air) below_result = false;
-                    q.pop();
-                }
-                npos.z += 1;
-                epos.z += 1;
-                q = rasterize(npos, epos);
-                while (q.size() && above_result) {
-                    if (__world->at(q.front()) != BlockCatogary::Air) above_result = false;
-                    q.pop();
-                }
-            }
-            if (below_result && above_result) dir.z=1;
-            else {
-                //Check parallel Ox
-                npos = shape[0] + glm::vec3(dir.x, 0, 0); epos = npos + shape[1];
-                below_result = above_result = true;
-                q = rasterize(npos, epos);
-                while (q.size() && below_result) {
-                    if (__world->at(q.front()) != BlockCatogary::Air) below_result = false;
-                    q.pop();
-                }
-                npos.z++; epos.z++;
-                q = rasterize(npos, epos);
-                while (q.size() && below_result) {
-                    if (__world->at(q.front()) != BlockCatogary::Air) above_result = false;
-                    q.pop();
-                }
-
-                if (above_result && below_result) dir.y = 0;
-                else {
-                    //Check paralel Oy
-                    npos = shape[0] + glm::vec3(0, dir.y, 0); epos = npos + shape[1];
-                    below_result = above_result = true;
-                    q = rasterize(npos, epos);
-                    while (q.size() && below_result) {
-                        if (__world->at(q.front()) != BlockCatogary::Air) below_result = false;
-                        q.pop();
-                    }
-                    npos.z++; epos.z++;
-                    q = rasterize(npos, epos);
-                    while (q.size() && below_result) {
-                        if (__world->at(q.front()) != BlockCatogary::Air) below_result = false;
-                        q.pop();
-                    }
-                    if (below_result) dir.x = 0;
-                }
+    void AttackWorldCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
+        AttackMessage* package = (AttackMessage*)message;
+        if (__world.__worldRender.isHover()) {
+            BlockCatogary type =__world.__worldRender.getHoverType();
+            __world.__crackingManage.setCrackBlock(__world.__worldRender.getHoverBlock(), type);
+            float percent = getPowerness(package->rightItem)/getHardness(type);
+            if (!isAdaptive(package->rightItem, type)) percent /= 1.5;
+            __world.__crackingManage.crack(percent);
+            if (!__world.__crackingManage.getPercent()) {
+                glm::vec3 position = __world.__crackingManage.getCrackingBlock();
+                position += glm::vec3(0.5);
+                __world.__worldRender.unplace();
+                __world.__crackingManage.uncrack();
+                if (isAdaptive(package->rightItem, type)) __world.__dropItemManage.add(getBrokenResult(type), 1, position);
+                mine.send(des, new AcceptDestroyMessage(1/percent, type, position));
             }
         }
-        if (below_result) {
-            shape[3] = shape[0] + shape[2];
-            shape[3][2]--;
-            shape[2] += shape[0] + shape[1];
-            shape[2][2]--;
-            shape[1] += shape[0];
-            shape[1][2]--;
-            shape[0][2]--;
-
-            if (__world->at(shape[0])==BlockCatogary::Air && 
-                __world->at(shape[1])==BlockCatogary::Air && 
-                __world->at(shape[2])==BlockCatogary::Air && 
-                __world->at(shape[3])==BlockCatogary::Air) {
-                    dir.z = -0.01;
-            }
-
-            mine.send(source, new MoveMessage(dir));
+        else if (__world.__hitbox.isHover()) {
+            __world.__hitbox.attackEntity(getSharpness(package->rightItem), package->direction);
         }
     }
-    MyBase::MessageType CheckEmptyCommand::getType() const {
-        return MyBase::MessageType::RequestGoto;
-    }
-    
-    CheckFallCommand::CheckFallCommand(World* world): __world(world) {}
-    CheckFallCommand::~CheckFallCommand() {}
-        
-    void CheckFallCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
-        RequestFallMessage* request = (RequestFallMessage*)message;
-        float z = request->zVelocity;
-        auto shape = request->rectangleBox;
-        if (z<=0) {
-            z -= 0.06;
-            bool isFall = true;
-            shape[3] = shape[0] + shape[2];
-            isFall = isFall && (__world->at(shape[3]+glm::vec3(0,0,z))==BlockCatogary::Air || 
-                                __world->at(shape[3])!=BlockCatogary::Air); 
-            shape[2] += shape[0] + shape[1];
-            isFall = isFall && (__world->at(shape[2]+glm::vec3(0,0,z))==BlockCatogary::Air || 
-                                __world->at(shape[2])!=BlockCatogary::Air); 
-            shape[1] += shape[0];
-            isFall = isFall && (__world->at(shape[1]+glm::vec3(0,0,z))==BlockCatogary::Air || 
-                                __world->at(shape[1])!=BlockCatogary::Air); 
 
-            isFall = isFall && (__world->at(shape[0]+glm::vec3(0,0,z))==BlockCatogary::Air || 
-                                __world->at(shape[0])!=BlockCatogary::Air); 
-            if (isFall) mine.send(source, new FallMessage(z));
-            else {
-                float delta = shape[0][2] - floor(shape[0][2]);
-                mine.send(source, new FallMessage(-delta));
-                mine.send(source, new StopFallMessage());
-            }
-        }
-        else if (z>0) {
-            shape[0] += shape[3];
 
-            shape[3] = shape[0] + shape[2];
-            shape[3][2]+=0.1;
-            shape[2] += shape[0] + shape[1];
-            shape[2][2]+=0.1;
-            shape[1] += shape[0];
-            shape[1][2]+=0.1;
-            shape[0][2]+=0.1;
-            if (__world->at(shape[0])==BlockCatogary::Air && 
-                __world->at(shape[1])==BlockCatogary::Air && 
-                __world->at(shape[2])==BlockCatogary::Air && 
-                __world->at(shape[3])==BlockCatogary::Air) {
-                    mine.send(source, new FallMessage(z-0.035));
-            }
-            else {
-                float delta = floor(shape[0][2]) - shape[0][2];
-                if (delta>=0.01) delta -= 0.01;
-                mine.send(source, new FallMessage(delta));
-            }
-        }
-    }
-    MyBase::MessageType CheckFallCommand::getType() const {
-        return MyBase::MessageType::RequestFall;
+    CheckHoverMessage::CheckHoverMessage(const glm::vec3& pos, const glm::vec3& dir): position(pos), direction(dir) {}
+    CheckHoverMessage::~CheckHoverMessage() {}
+    MyBase::MessageType CheckHoverMessage::getType() const {
+        return MyBase::MessageType::CheckHover;
     }
 
-    CheckHoverCommand::CheckHoverCommand(World* world): __world(world) {}
+    CheckHoverCommand::CheckHoverCommand(World& world): __world(world) {}
     CheckHoverCommand::~CheckHoverCommand() {}
     MyBase::MessageType CheckHoverCommand::getType() const {
         return MyBase::MessageType::CheckHover;
     };
     void CheckHoverCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
         CheckHoverMessage* package = (CheckHoverMessage*)message;
-        __world->__cameraPosition = package->position + glm::vec3(0,0,1.8);
-        __world->__cameraDir = package->direction;
-        auto q = rasterize(__world->__cameraPosition, __world->__cameraPosition+package->direction*4.f);
-        bool hover = false;
-        glm::vec3 placePosition;
-        while (q.size() && !hover) {
-            if (__world->at(q.front())!=BlockCatogary::Air) {
-                hover = true;
+        glm::vec3 position = package->position;
+        glm::vec3 direction = package->direction;
+
+        auto* model = __world.__hitbox.isColistion(position+direction, direction*4.f);
+        if (model) {
+            __world.__hitbox.setHoverEntity(model);
+            __world.__worldRender.unHover();
+        }
+        else {
+            __world.__hitbox.setHoverEntity(0);
+            glm::vec3 delta = direction*4.f/20.f;
+            glm::ivec3 hoverPosition, placePosition;
+            bool hover = false;
+            
+            for (int i = 0; i<=20 && !hover; i++) {
+                glm::vec3 cur = position+i*1.0f*delta;
+                if (__world.__worldRender.isHover(cur)) {
+                    hover = true;
+                    hoverPosition = glm::ivec3(floor(cur.x), floor(cur.y), floor(cur.z));
+                }
+                else {
+                    placePosition = glm::ivec3(floor(cur.x), floor(cur.y), floor(cur.z));
+                }
             }
-            else {
-                placePosition = q.front();
-                q.pop();
+            if (hover) {
+                __world.__worldRender.setHoverBlock(hoverPosition, placePosition);
             }
-        }
-        if (hover) {
-            __world->setHoverBlock(q.front(), placePosition);
-        }
-        else __world->unHoverBlock();
-    }
-    PlaceblockCommand::PlaceblockCommand(World* world): __world(world) {}
-    PlaceblockCommand::~PlaceblockCommand() {}
-    MyBase::MessageType PlaceblockCommand::getType() const {
-        return MyBase::MessageType::RightAttack;
-    }
-    void PlaceblockCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
-        RightAttackMessage* package = (RightAttackMessage*)message;
-        glm::vec3 fpos(floor(package->posistion.x), floor(package->posistion.y), floor(package->posistion.z));
-        if (__world->__isHoverBlock && __world->__placePosition!=fpos) {
-            fpos.z += 1;
-            if (__world->__placePosition != fpos)
-                __world->set(__world->__placePosition, BlockCatogary::Grass);
+            else __world.__worldRender.unHover();
         }
     }
+
+
 }

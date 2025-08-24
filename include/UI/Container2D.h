@@ -9,25 +9,24 @@ class Container2D: public Controller2D {
         Container2D();
         ~Container2D();
         virtual bool    setHover(const glm::vec2& position)      override,
-                        setHover(const bool& hover)                 override;
+                        setHover(const bool& hover)              override;
         Controller2D*   getCurrentFocus() const;
         const int&      getCurrentFocusIndex() const;
         std::size_t     size()                                      const;
         virtual void    setFocus(const bool& focus)                 override;
-        virtual void    clear();
-        const glm::vec2&       getChildrenPosition() const;
+        const glm::vec2& getChildrenPosition() const;
         Controller2D* operator[](const std::size_t& index);
     protected:
+        void            clear();
         virtual void    insert(Controller2D* controller, const int& layer = 0),
                         erase(Controller2D* controller),
                         insertPermanent(Controller2D* controller),
-                        erasePermanent(Controller2D* controller),
                         update()                                    override;
-        virtual bool    sensitiveHandle(GLFWwindow* window)         override;
         virtual bool    catchEvent(GLFWwindow* window)              override;
         virtual bool    handle(GLFWwindow* window)                  override;
         virtual void    reset()                                     override;
         virtual void    glDraw()                            const   override;
+        virtual void    glDrawTransparent()                 const   override;
         const int&      __getCurrentFocus() const;
         const int&      __getCurrentHover() const;
         bool            __setCurrentHover(const unsigned int& index);
