@@ -54,7 +54,7 @@ namespace MyCraft {
         __exitButton.setClickColor(GRAY);
         __exitButton.setText("Exit");
         __exitButton.setSize({0.6, 0.12}, 0.01);
-        __exitButton.setPosition({-0.3,-0.51});
+        __exitButton.setPosition({-0.3,-0.17});
         __exitButton.setScale({0.06, 0.06});
 
 
@@ -69,8 +69,8 @@ namespace MyCraft {
         // insert(&__programmeName);
         
         insert(&__startButton);
-        insert(&__settingButton);
-        insert(&__aboutusButton);
+        // insert(&__settingButton);
+        // insert(&__aboutusButton);
         insert(&__exitButton);
         insert(&__background);
     }

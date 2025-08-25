@@ -78,10 +78,10 @@ namespace MyCraft {
     }
     void HitBoxCenter::glDraw() const {
         MyBase3D::Container3D::glDraw();
-        glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDefaultShader());
-        for (auto model: __tree) {
-            glm::mat4x3 mat = model->getShape();
-            DrawMargin(mat, __colors);
-        }
+        // glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDefaultShader());
+        // for (auto model: __tree) {
+        //     glm::mat4x3 mat = model->getShape();
+        //     DrawMargin(mat, __colors);
+        // }
     }
 }
