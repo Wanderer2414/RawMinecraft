@@ -170,7 +170,7 @@ namespace MyCraft {
     void MapCreator::createZone(const Zone& zone, const double& total, const glm::vec2& yBound, const int& z) {
         srand(clock());
         unsigned char count = rand()%2+1;
-        int xMax = 500, xPart = xMax/count;
+        int xMax = 200, xPart = xMax/count;
         //By area tectonic
         for (int k = 0; k<count; k++) {
             float p = 1.0f*(rand()%100 + 50)/100;
@@ -186,11 +186,11 @@ namespace MyCraft {
                 xPart = xMax/(count-k);
             }
             HeightMap map(xSize*16, (yBound.y-yBound.x)*16, z*16-1);
-            glm::ivec3 origin(250-xMax-xSize, yBound.x, z);
+            glm::ivec3 origin(100-xMax-xSize, yBound.x, z);
             map.setPosition(origin*16);
             //Create height map and biome map
             {
-                Area area(p*zone.getTectonicPerArea(), glm::ivec2(origin.x*16+100,origin.y*16 + 100), map.getSize() - glm::ivec2(200, 200));
+                Area area(p*zone.getTectonicPerArea(), glm::ivec2(origin.x*16+50,origin.y*16 + 50), map.getSize() - glm::ivec2(200, 200));
                 area.applyRounds(map);
             }
             Biomes biome = map;
@@ -210,11 +210,12 @@ namespace MyCraft {
 
     void MapCreator::create(double* percent, const std::string& src) {
         MapCreator mapCreator(percent, src);
-        mapCreator.image = new MyBase::Image(1000, 500, BLUE);
-        mapCreator.image->setPosition({-500, -250});
-        mapCreator.createBedrockLayer(0.2, -5);
-        mapCreator.createZone(Temperate(), 0.4, {-100,0}, -6);
-        mapCreator.createZone(Tropical(), 0.4, {0,100}, -6);
+        mapCreator.image = new MyBase::Image(300, 500, BLUE);
+        mapCreator.image->setPosition({-150, -250});
+        mapCreator.createBedrockLayer(0.1, -8);
+        mapCreator.createTopSoilLayer(0.1, {-7, -6});
+        mapCreator.createZone(Temperate(), 0.4, {-250,0}, -6);
+        mapCreator.createZone(Tropical(), 0.4, {0,250}, -6);
         mapCreator.image->save(src+"overal.png");
         delete mapCreator.image;
 

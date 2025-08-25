@@ -23,9 +23,9 @@ namespace MyCraft {
             round.setPosition(spawn*16);
             round.applyLake(&biome, map);
             spawn*=16;
-            spawn.x += size.x;
-            spawn.y += size.y;
-            spawn.z = map[spawn];
+            spawn.x += size.x/2.f;
+            spawn.y += size.y/2.f;
+            spawn.z = map[spawn]+3;
             spawner.push_back(spawn);
         }
         int maxX = biome.getPosition().x + biome.getSize().x, maxY = biome.getPosition().y + biome.getSize().y;

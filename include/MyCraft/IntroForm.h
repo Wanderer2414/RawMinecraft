@@ -16,7 +16,7 @@ namespace MyCraft {
     private:
         bool __mouseClicked(GLFWwindow*) override;
         bool catchEvent(GLFWwindow*) override;
-        MyBase::Label                   __programmeName;
+        // MyBase::Label                   __programmeName;
         MyBase::TextureViewer           __background;
         MyBase::Texture                 __bgtexture;
         MyBase::RoundedRectangleButton  __startButton, __settingButton, __aboutusButton, __exitButton;

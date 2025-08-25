@@ -6,10 +6,9 @@ namespace MyCraft{
         WalkAnimation::~WalkAnimation() {}
 
         void WalkAnimation::apply(GLTFStaticMesh::SetNode& node, const float& percent) {
-            node[3] = __animation.get(3, percent);
-            node[5] = __animation.get(5, percent);
-            node[7] = __animation.get(7, percent);
-            node[9] = __animation.get(9, percent);
+            node[61] = __animation.get(61, percent);
+            node[54] = __animation.get(54, percent);
+            node[84] = __animation.get(84, percent);
         }
     }
 }

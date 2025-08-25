@@ -16,6 +16,9 @@ namespace MyCraft {
         MyBase::ShapeManager::getInstance().removeColor(__baseColor);
     }
 
+    int GLTFModel::getNodeCount() const {
+        return ((GLTFStaticMesh*)getCore())->getNodeSize();
+    }
     void GLTFModel::setBaseColor(const MyBase::Color& color) {
         if (color != __baseColor) {
             MyBase::ShapeManager::getInstance().removeColor(__baseColor);

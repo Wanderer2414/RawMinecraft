@@ -11,7 +11,7 @@ namespace MyCraft {
     MediateForm::MediateForm(GLFWwindow* window, const int& index): 
         Form(index), __font("assets/fonts/SyneMono-Regular.ttf"),
         __createWorldForm(__font), __waitingCreateMap(__font),
-        __bgTexture("assets/images/backgroundInter.png")
+        __bgTexture("assets/images/BackgroundInter.png")
         {
         setBackgroundColor(BLACK);
         
@@ -90,10 +90,11 @@ namespace MyCraft {
         __returnButton.setTextureImportSize({1.0/3,1});
         insert(&__returnButton);
 
-        __mapTexture.setTextureExportPosition({-0.9,-0.3});
-        __mapTexture.setTextureExportSize({2.0/MyBase::ControlCenter::getInstance().GetWindowRatio(), 1});
+        __mapTexture.setTextureExportSize({1.5f/MyBase::ControlCenter::getInstance().GetWindowRatio()*0.8, 0.8});
+        __mapTexture.setTextureExportPosition({-__mapTexture.getSize().x/2.f,0});
         __mapTexture.setTextureImportSize({1, 1});
         insert(&__mapTexture);
+
         __background.setTexture(__bgTexture);
         __background.setTextureExportPosition({-1,-1});
         __background.setTextureExportSize({2, 2});

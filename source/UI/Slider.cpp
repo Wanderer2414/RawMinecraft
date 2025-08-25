@@ -19,11 +19,6 @@ namespace MyBase  {
         // nút trượt chiếm 10% chiều ngang
         __scrollButton.setSize({width * 0.1f, height * 0.9f});
         insert(&__scrollButton);
-
-        Text::setScale({0.03f, 0.05f});
-        Text::setTextColor(BLACK);
-
-        update();
     }
 
     Slider::~Slider(){

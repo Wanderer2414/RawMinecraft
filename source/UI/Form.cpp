@@ -5,9 +5,15 @@
 #include "Global.h"
 #include "Shape.h"
 #include "ShapeManager.h"
+#include "Slider.h"
 
 namespace MyBase {
-    Form::Form(const int& index): __formIndex(index), __returnValue(-1) {}
+    Form::Form(const int& index): __formIndex(index), __returnValue(-1) {
+        __volumeBar.setFont(Font("assets/fonts/SyneMono-Regular.ttf"));
+        __volumeBar.setScale({0.03f, 0.05f});
+        __volumeBar.setTextColor(BLACK);
+
+    }
     Form::~Form() {}
     bool Form::contains(const glm::vec2& position) const {
         return true;

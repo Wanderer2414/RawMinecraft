@@ -81,8 +81,15 @@ namespace MyCraft {
             float I = getLightIndensity(position);
             if (position.z - __position.z <= world_side*16 && !isInWater(position)) {
                 if (__time<0.25 || __time>0.75) {
-                    if (I<50) {
-                        ModelController* controller = new Zombie::Controller();
+                    if (rand()%4) {
+                        if (I<50) {
+                            ModelController* controller = new Zombie::Controller();
+                            controller->setPosition(position);
+                            send(new SpawnMobMessage(controller));
+                        }
+                    }
+                    else if (I<50) {
+                        ModelController* controller = new SkeletonBoss::Controller();
                         controller->setPosition(position);
                         send(new SpawnMobMessage(controller));
                     }

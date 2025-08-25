@@ -12,11 +12,11 @@ namespace MyCraft {
         setBackgroundMusic("assets/sounds/BackgroundSound.mp3");
         __background.setTexture(__bgtexture);
 
-        __programmeName.setFont(font);
-        __programmeName.setText("My Craft");
-        __programmeName.setScale({0.2,0.3});
-        __programmeName.setPosition({-__programmeName.getSize().x/2, 0.5});
-        __programmeName.setTextColor(WHITE);
+        // __programmeName.setFont(font);
+        // __programmeName.setText("My Craft");
+        // __programmeName.setScale({0.2,0.3});
+        // __programmeName.setPosition({-__programmeName.getSize().x/2, 0.5});
+        // __programmeName.setTextColor(WHITE);
 
         __startButton.setFont(font);
         __startButton.setTextColor(WHITE);
@@ -67,7 +67,7 @@ namespace MyCraft {
 
 
         
-        insert(&__programmeName);
+        // insert(&__programmeName);
         
         insert(&__startButton);
         insert(&__settingButton);

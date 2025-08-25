@@ -12,6 +12,7 @@ namespace MyCraft {
         GLTFModel(const std::string& modelPath = "");
         ~GLTFModel();
 
+        int getNodeCount() const;
         virtual glm::mat4x3 getShape()              const   = 0;
         virtual glm::vec3   getPosition()           const   = 0;
         virtual void look(const glm::vec3& position)        = 0;
