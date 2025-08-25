@@ -16,6 +16,7 @@ class Sound{
         void setVolume(const float & volume);
         //static void setGlobalVolume(const int & vol) { volume = std::clamp(vol, 0, 100); }
         static int volume;
+        static Sound* __backgroundMusic;
     private:
         unsigned int channel;
         static bool audio_device;

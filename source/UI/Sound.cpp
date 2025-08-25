@@ -3,7 +3,7 @@
 
 bool Sound::audio_device = false;
 int Sound::volume = 70;
-
+Sound* Sound::__backgroundMusic;
 Sound::Sound(const std::string & filename) : isPlaying(false) {
     isAvailable = true;
     if(!audio_device){
@@ -22,6 +22,7 @@ Sound::Sound(const std::string & filename) : isPlaying(false) {
     setVolume(volume);
     std::cout << "Loaded sound: " << filename << "\n";
     std::cout<<"isAvailable cons: "<<isAvailable<<"\n";
+    play();
 }
 
 Sound::Sound() : isPlaying(false){

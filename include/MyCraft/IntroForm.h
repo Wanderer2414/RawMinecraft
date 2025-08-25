@@ -21,6 +21,8 @@ namespace MyCraft {
         MyBase::Texture                 __bgtexture;
         MyBase::RoundedRectangleButton  __startButton, __settingButton, __aboutusButton, __exitButton;
         MyBase::Font font;
+
     };
+
 }
 #endif

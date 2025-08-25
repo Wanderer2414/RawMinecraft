@@ -9,7 +9,6 @@ namespace MyCraft {
                     {
         
         setBackgroundColor(BLACK);
-        setBackgroundMusic("assets/sounds/BackgroundSound.mp3");
         __background.setTexture(__bgtexture);
 
         // __programmeName.setFont(font);

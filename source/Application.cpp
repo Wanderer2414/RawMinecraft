@@ -8,6 +8,7 @@
 #include "PointSet.h"
 #include "ShaderStorage.h"
 #include "ShapeManager.h"
+#include "Sound.h"
 
 namespace MyCraft {
     Application::Application(const float& width, const float& height) {
@@ -18,6 +19,7 @@ namespace MyCraft {
         __window = MyBase::ControlCenter::getInstance().InitWindow(width, height, "MyCraft");
         MyBase::ControlCenter::getInstance().EnableTransparent();
 
+        Sound::__backgroundMusic = new Sound("assets/sounds/BackgroundSound.mp3");
     }
     Application::~Application() {
         MyBase::ShapeManager::close();
@@ -27,6 +29,7 @@ namespace MyCraft {
         MyBase::FlyweightStorage::close();
         MyBase::ControlCenter::getInstance().CloseWindow();
         MyBase::ControlCenter::close();
+        delete Sound::__backgroundMusic;
     }
 
     void Application::run() {

@@ -9,9 +9,6 @@
 
 namespace MyBase {
     Form::Form(const int& index): __formIndex(index), __returnValue(-1) {
-        __volumeBar.setFont(Font("assets/fonts/SyneMono-Regular.ttf"));
-        __volumeBar.setScale({0.03f, 0.05f});
-        __volumeBar.setTextColor(BLACK);
 
     }
     Form::~Form() {}
@@ -36,10 +33,7 @@ namespace MyBase {
                 glDraw();
                 glDrawTransparent();
                 glfwSwapBuffers(window);
-                __backgroundMusic->setVolume(Sound::volume);
-            }
-            __backgroundMusic->play();
-            
+            }            
             is_changed = 0;
         }
         return __returnValue;
@@ -66,8 +60,5 @@ namespace MyBase {
     }
     void Form::setBackgroundColor(const Color& color) {
         __backgroundColor = color;
-    }
-    void Form::setBackgroundMusic(const std::string& filename) {
-        __backgroundMusic = new Sound(filename);
     }
 }

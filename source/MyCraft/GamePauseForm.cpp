@@ -1,6 +1,7 @@
 #include "GamePauseForm.h"
 #include "ControlCenter.h"
 #include "Font.h"
+#include "MessageBox.h"
 namespace MyCraft {
     GamePauseForm::GamePauseForm(const MyBase::Font& font) {
         setSize({0.6, 0.4}, 0.01);
@@ -8,6 +9,14 @@ namespace MyCraft {
         setFillColor(WHITE);
         setReturnValue(0);
 
+        __volumeBar.setFont(font);
+        __volumeBar.setWidth(0.3);
+        __volumeBar.setScale({0.03f, 0.05f});
+        __volumeBar.setTextColor(BLACK);
+        
+        __volumeBar.setPosition(-__volumeBar.getSize()/2.f);
+        insert(&__volumeBar);
+        
         __exitButton.setFont(font);
         __exitButton.setText("Save and exit");
         __exitButton.setScale({0.05, 0.06});
@@ -17,7 +26,7 @@ namespace MyCraft {
         __exitButton.setNormalColor({200, 200, 200, 255});
         __exitButton.setHoverColor({100, 100, 100, 255});
         __exitButton.setClickColor({50, 50, 50, 255});
-
+        
         insert(&__exitButton);
     }
     GamePauseForm::~GamePauseForm() {}
@@ -27,6 +36,11 @@ namespace MyCraft {
             close();
         }
         return false;
+    }
+    bool GamePauseForm::handle(GLFWwindow* window) {
+        bool is_changed = MyBase::MessageBox::handle(window);
+        Sound::__backgroundMusic->setVolume(__volumeBar.getValue());
+        return is_changed;
     }
     
     void GamePauseForm::__open(GLFWwindow* window) {

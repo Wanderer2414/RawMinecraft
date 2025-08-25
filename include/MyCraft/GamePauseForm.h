@@ -3,6 +3,7 @@
 #include "Button.h"
 #include "Font.h"
 #include "MessageBox.h"
+#include "Slider.h"
 namespace MyCraft {
     class GamePauseForm: public MyBase::MessageBox {
     public:
@@ -15,8 +16,10 @@ namespace MyCraft {
         void __open(GLFWwindow*) override;
         void __close(GLFWwindow*) override;
     private:
+        bool handle(GLFWwindow*) override;
         MyBase::RoundedRectangleButton  __exitButton;
-        
+        MyBase::Slider          __volumeBar; 
+         
     };
 }
 #endif
