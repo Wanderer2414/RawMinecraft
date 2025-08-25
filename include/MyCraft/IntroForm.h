@@ -21,8 +21,6 @@ namespace MyCraft {
         MyBase::Texture                 __bgtexture;
         MyBase::RoundedRectangleButton  __startButton, __settingButton, __aboutusButton, __exitButton;
         MyBase::Font font;
-        MyBase::VerticalBar __volumeBar1;
-        MyBase::Slider __volumeBar;
     };
 }
 #endif

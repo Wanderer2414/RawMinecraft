@@ -5,7 +5,7 @@
 
 
 namespace MyCraft {
-    IntroForm::IntroForm(GLFWwindow* window, const int& index): MyBase::Form(index), font("assets/fonts/SyneMono-Regular.ttf"), __bgtexture("assets/images/Background.jpg", false)
+    IntroForm::IntroForm(GLFWwindow* window, const int& index): MyBase::Form(index), font("assets/fonts/SyneMono-Regular.ttf"), __bgtexture("assets/images/Background.jpg")
                     {
         
         setBackgroundColor(BLACK);
@@ -58,25 +58,22 @@ namespace MyCraft {
         __exitButton.setPosition({-0.3,-0.51});
         __exitButton.setScale({0.06, 0.06});
 
-        __volumeBar.setPosition({0.4, -0.51});
-        __volumeBar.setWidth(0.4);
-        __volumeBar.setMaxValue(100);
-        __volumeBar.setMinValue(0);
-        __volumeBar.setFont(font);
-
-        __volumeBar1.setPosition({-0.85, 0.0});
-        __volumeBar1.setHeight(0.8);
-        __volumeBar1.setMaxValue(100);
 
 
-        insert(&__background);
+        __background.setTextureExportPosition({-1, -1});
+        __background.setTextureExportSize({2, 2});
+        __background.setTextureImportPosition({0, 0});
+        __background.setTextureImportSize({1, 1});
+
+
+        
         insert(&__programmeName);
+        
         insert(&__startButton);
         insert(&__settingButton);
         insert(&__aboutusButton);
         insert(&__exitButton);
-        insert(&__volumeBar);
-        insert(&__volumeBar1);
+        insert(&__background);
     }
     IntroForm::~IntroForm() {
 
@@ -98,10 +95,6 @@ namespace MyCraft {
             is_changed = false;
             setReturnValue(-1);
             close();
-        }
-        if(__volumeBar.getValue() != Sound::volume){
-            Sound::volume = __volumeBar.getValue();
-            is_changed = true;
         }
         return is_changed;
     }

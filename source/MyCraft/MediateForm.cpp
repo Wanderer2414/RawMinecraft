@@ -10,9 +10,11 @@
 namespace MyCraft {
     MediateForm::MediateForm(GLFWwindow* window, const int& index): 
         Form(index), __font("assets/fonts/SyneMono-Regular.ttf"),
-        __createWorldForm(__font), __waitingCreateMap(__font)
+        __createWorldForm(__font), __waitingCreateMap(__font),
+        __bgTexture("assets/images/backgroundInter.png")
         {
         setBackgroundColor(BLACK);
+        
 
         __planeWorldButton.setFont(__font);
         __planeWorldButton.setTextColor(WHITE);
@@ -21,7 +23,7 @@ namespace MyCraft {
         __planeWorldButton.setClickColor(GRAY);
         __planeWorldButton.setText("Test");
         __planeWorldButton.setSize({0.3, 0.12}, 0.01);
-        __planeWorldButton.setPosition({0.6, -0.34});
+        __planeWorldButton.setPosition({0.55, -0.14});
         __planeWorldButton.setScale({0.06, 0.06});
         insert(&__planeWorldButton);
 
@@ -32,7 +34,7 @@ namespace MyCraft {
         __createWorldButton.setClickColor(GRAY);
         __createWorldButton.setText("Create");
         __createWorldButton.setSize({0.3, 0.12}, 0.01);
-        __createWorldButton.setPosition({0.6, -0.48});
+        __createWorldButton.setPosition({0.55, -0.28});
         __createWorldButton.setScale({0.06, 0.06});
         insert(&__createWorldButton);
 
@@ -43,7 +45,7 @@ namespace MyCraft {
         __clearWorldButton.setClickColor(GRAY);
         __clearWorldButton.setText("Clear");
         __clearWorldButton.setSize({0.3, 0.12}, 0.01);
-        __clearWorldButton.setPosition({0.6, -0.62});
+        __clearWorldButton.setPosition({0.55, -0.42});
         __clearWorldButton.setScale({0.06, 0.06});
         insert(&__clearWorldButton);
 
@@ -54,7 +56,7 @@ namespace MyCraft {
         __connectWorldButton.setClickColor(GRAY);
         __connectWorldButton.setText("Connect");
         __connectWorldButton.setSize({0.3, 0.12}, 0.01);
-        __connectWorldButton.setPosition({0.6, -0.76});
+        __connectWorldButton.setPosition({0.55, -0.56});
         __connectWorldButton.setScale({0.06, 0.06});
         insert(&__connectWorldButton);
 
@@ -65,13 +67,13 @@ namespace MyCraft {
         __joinWorldButton.setClickColor(GRAY);
         __joinWorldButton.setText("Join");
         __joinWorldButton.setSize({0.3, 0.12}, 0.01);
-        __joinWorldButton.setPosition({0.6, -0.9});
+        __joinWorldButton.setPosition({0.55, -0.7});
         __joinWorldButton.setScale({0.06, 0.06});
         insert(&__joinWorldButton);
 
         __menu.setFont(__font);
-        __menu.setPosition({-0.9, -0.9});
-        __menu.setSize({1.48, 0.68});
+        __menu.setPosition({-0.85, -0.7});
+        __menu.setSize({1.38, 0.68});
         __menu.setFillColor(TRANSPARENCY);
         __menu.setMarginWidth(2);
         __menu.setMarginColor(WHITE);
@@ -92,6 +94,13 @@ namespace MyCraft {
         __mapTexture.setTextureExportSize({2.0/MyBase::ControlCenter::getInstance().GetWindowRatio(), 1});
         __mapTexture.setTextureImportSize({1, 1});
         insert(&__mapTexture);
+        __background.setTexture(__bgTexture);
+        __background.setTextureExportPosition({-1,-1});
+        __background.setTextureExportSize({2, 2});
+        __background.setTextureImportPosition({0,0});
+        __background.setTextureImportSize({1,1});
+        insert(&__background);
+
         auto& list = __worldsManage.getWorld();
         for (const auto& info: list) {
             __menu.add(info->getWorldName(), info->getCreatedDate());

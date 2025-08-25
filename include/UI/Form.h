@@ -8,6 +8,7 @@
 #include "Rectangle.h"
 #include "Shape.h"
 #include "Sound.h"
+#include "Slider.h"
 
 namespace MyBase {
 
@@ -32,7 +33,8 @@ namespace MyBase {
         int             __formIndex,
                         __returnValue;
         Color           __backgroundColor;
-        Sound*           __backgroundMusic;
+        Sound*          __backgroundMusic;
+        Slider          __volumeBar;
     };
     
 };

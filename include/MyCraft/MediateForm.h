@@ -18,7 +18,8 @@ namespace MyCraft {
         MediateForm& operator=(const MediateForm&) const = delete; 
     protected:
     private:
-        MyBase::TextureViewer           __mapTexture;
+        MyBase::TextureViewer           __mapTexture, __background;
+        MyBase::Texture                 __bgTexture;
         MyBase::TextureButton           __returnButton;
         WorldsManage                    __worldsManage;
         MapMenu                         __menu;
