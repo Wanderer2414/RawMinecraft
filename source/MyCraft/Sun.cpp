@@ -8,7 +8,7 @@
 #include "Texture.h"
 
 namespace MyCraft {
-    Sun::Sun(): __time(0), __offset(0,0), __isDive(false) {
+    Sun::Sun(): __time(0.25), __offset(0,0), __isDive(false) {
         glGenBuffers(1,&__lightBuffer);
         glBindBuffer(GL_UNIFORM_BUFFER, __lightBuffer);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(Buffer), 0, GL_DYNAMIC_DRAW);
