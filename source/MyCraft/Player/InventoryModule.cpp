@@ -12,11 +12,6 @@ namespace MyCraft {
             __items.package.texture = MyBase::Texture("assets/images/blockItem.png");
             __items.package.size = glm::vec2(102.f/940*1.2f/MyBase::ControlCenter::getInstance().GetWindowRatio(), 102.f/940*1.2)*0.8f;
             __items.package.font = MyBase::Font("assets/fonts/SyneMono-Regular.ttf");
-
-            __items.placeToolbar(0, Item::create(__items.package, 1, ItemType::Torch));
-            __items.placeToolbar(1, Item::create(__items.package, 32, ItemType::OakPlank));
-            __items.placeToolbar(2, Item::create(__items.package, 32, ItemType::StrippedAcaciaLog));
-            __items.placeToolbar(3, Item::create(__items.package, 32, ItemType::Water));
         }
 
         InventoryModule::~InventoryModule() {}

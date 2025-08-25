@@ -4,21 +4,18 @@
 #include "General.h"
 #include "Global.h"
 #include "Message.h"
+#include "ModelController.h"
+#include "ShaderStorage.h"
 #include "SkeletonBoss/ModelController.h"
 #include "Pig/ModelController.h"
-#include "ShaderStorage.h"
 #include "Zombie/ModelController.h"
+#include <limits>
 
 namespace MyCraft {
-    
     HitBoxCenter::HitBoxCenter() {
         __colors = glm::vec3(1,0,0);
-        insert(new Zombie::Controller());
-        insert(new SkeletonBoss::ModelController());
     }
-    HitBoxCenter::~HitBoxCenter() {
-        for (int i = 0; i<__models.size(); i++) delete __models[i];
-    }
+    HitBoxCenter::~HitBoxCenter() {}
     bool HitBoxCenter::isHover() const {
         return __hoverEntity;
     }
@@ -30,7 +27,12 @@ namespace MyCraft {
     }
 
     ModelController* HitBoxCenter::isColistion(const glm::vec3& position, const glm::vec3& direction) const {
-        return (ModelController*)__tree.get(position, direction);
+        std::pair<ModelController*, float> ans = {0, std::numeric_limits<float>::max()};
+        for (auto* i:__tree) {
+            float distance = i->isCollistion(position, direction);
+            if (distance<ans.second) ans = {i, distance};
+        }
+        return ans.first;
     }
     void HitBoxCenter::setHoverEntity(ModelController* controller) {
         __hoverEntity = controller;
@@ -47,88 +49,38 @@ namespace MyCraft {
         }
     }
     void HitBoxCenter::feedEntity(const unsigned int& health, const glm::vec3& direction) {
-        if (__hoverEntity) ;
+        // if (__hoverEntity) ;
     }
-    static glm::vec3 position = {0,0,0};
-    static float angle = 0;
+
     bool HitBoxCenter::handle(GLFWwindow* window) {
         bool is_changed = MyBase3D::Container3D::handle(window);
-        {
-            angle+=0.002;
-            __models[0]->move(glm::vec3(2*cos(angle), 2*sin(angle),0)-position);
-            position = glm::vec3(2*cos(angle), 2*sin(angle),0);
-        }
-        return true;
+        return is_changed;
+    }
+
+    void HitBoxCenter::pushPlayerModel(ModelController* model) {
+        MyBase::Network::match(model);
+        Container3D::insert(model);
+        __tree.push_back(model);
     }
 
     void HitBoxCenter::insert(ModelController* model) {
-        __models.push_back(model);
         MyBase::Network::match(model);
-        Container3D::insert(model);
-        __tree.insert(model);
+        __tree.push_back(model);
     }
     void HitBoxCenter::erase(ModelController* model) {
+        MyBase::Network::unmatch(model);
+        for (int i = __tree.size()-1; i>=0; i--) {
+            if (__tree[i] == model) {
+                __tree.erase(__tree.begin()+i);
+            }
+        }
     }
     void HitBoxCenter::glDraw() const {
         MyBase3D::Container3D::glDraw();
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDefaultShader());
-        for (auto& model: __models) {
+        for (auto model: __tree) {
             glm::mat4x3 mat = model->getShape();
             DrawMargin(mat, __colors);
         }
-
-        
-
-        
-
-        // // Lấy shader program từ ShaderStorage
-        // GLuint shaderProgram = MyBase3D::ShaderStorage::getInstance().GetDefaultShader();
-        // glUseProgram(shaderProgram);
-
-        // // ===== THÊM PHẦN DEBUG TẠI ĐÂY ===== //
-        // // Thiết lập ma trận model/view/projection 
-        // glm::mat4 modelMatrix = glm::mat4(1.0f);
-        // modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
-        // modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f));
-
-        // // 1. Debug camera - đảm bảo camera nhìn thấy model
-        // glm::mat4 view = glm::lookAt(
-        //     glm::vec3(0.0f, 0.0f, 3.0f),  // Camera ở (0,0,3)
-        //     glm::vec3(0.0f, 0.0f, 0.0f),   // Nhìn vào gốc tọa độ
-        //     glm::vec3(0.0f, 1.0f, 0.0f)    // Hướng lên trên
-        // );
-
-        // // 2. Debug projection - đảm bảo không cắt model
-        // float aspectRatio = 16.0f/9.0f;  // Thay bằng tỉ lệ màn hình thực tế
-        // glm::mat4 projection = glm::perspective(
-        //     glm::radians(45.0f),         // Góc nhìn 45 độ
-        //     aspectRatio, 
-        //     0.1f,                        // Near plane
-        //     100.0f                       // Far plane
-        // );
-
-        // // 3. In giá trị ma trận ra console
-        // std::cout << "\n=== DEBUG MATRICES ===" << std::endl;
-        // // std::cout << "Model Matrix:\n" << glm::to_string(modelMatrix) << std::endl;
-        // // std::cout << "View Matrix:\n" << glm::to_string(view) << std::endl;
-        // // std::cout << "Projection Matrix:\n" << glm::to_string(projection) << std::endl;
-
-        // // 4. Truyền ma trận vào shader
-        // GLuint modelLoc = glGetUniformLocation(shaderProgram, "model");
-        // GLuint viewLoc = glGetUniformLocation(shaderProgram, "view"); 
-        // GLuint projLoc = glGetUniformLocation(shaderProgram, "projection");
-
-        // if (modelLoc == -1 || viewLoc == -1 || projLoc == -1) {
-        //     std::cerr << "ERROR: Missing required uniforms!" << std::endl;
-        // }
-
-        // glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-        // glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        // glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        // // ===== KẾT THÚC PHẦN DEBUG ===== //
-
-        // // Vẽ model GLTF
-        // float scale = modelTest->prepareForDrawing();
-        // modelTest->draw();
     }
 }

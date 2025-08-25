@@ -5,6 +5,7 @@
 #include "Controller3D.h"
 #include "ChunkManage.h"
 #include "Message.h"
+#include "ModelController.h"
 #include "WaterManage.h"
 namespace MyCraft {
     class WorldRender: public MyBase3D::Container3D, public MyBase::Port {
@@ -12,11 +13,13 @@ namespace MyCraft {
         WorldRender(const std::string& src);
         ~WorldRender();
         bool contains(const glm::ivec3& pos) const;
+        bool isDangerous(const glm::vec3& pos) const;
         bool isHover() const;
         BlockCatogary getHoverType() const;
         glm::ivec3 getHoverBlock() const;
         glm::ivec3 getPlaceBlock() const;
         bool isInWater(const glm::vec3& position) const;
+        int getZHeight(const glm::vec3& position) const;
         float getWaterHeight(const glm::vec3& position) const;
         glm::vec3 getWaterDirection(const glm::vec3& position) const;
         void place(const BlockCatogary& type);
@@ -28,6 +31,9 @@ namespace MyCraft {
         bool isBusy(const glm::vec3& position) const;
         bool isHover(const glm::vec3& position) const;
         BlockCatogary getType(const glm::vec3& position) const;
+
+        void pushMob(ModelController* model);
+        void eraseMob(ModelController* model);
     protected:
         void glDraw() const override;
         void glDrawTransparent() const override;
@@ -122,6 +128,27 @@ namespace MyCraft {
         const float zVelocity;
 
         MyBase::MessageType getType() const override;
+    };
+    class RequestRotateMessage: public MyBase::Message {
+    public:
+        RequestRotateMessage(const glm::mat4x3& shape, const float& angle, const glm::vec3& direction);
+        ~RequestRotateMessage();
+
+        const glm::mat4x3 shape;
+        const float angle;
+        const glm::vec3 direction;
+
+        MyBase::MessageType getType() const override;
+    };
+    class RequestRotateCommand: public MyBase::Command {
+    public:
+        RequestRotateCommand(WorldRender& render);
+        ~RequestRotateCommand();
+
+        MyBase::MessageType getType() const override;
+        virtual void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) override;
+    private: 
+        WorldRender &__render;
     };
 }
 #endif

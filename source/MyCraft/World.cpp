@@ -2,14 +2,16 @@
 #include "Block.h"
 #include "BlockItem.h"
 #include "InteractiveForm.h"
-#include "Inventory.h"
-#include "InventoryForm.h"
 #include "Item.h"
 #include "Message.h"
+#include "ModelController.h"
+#include "Zombie/ModelController.h"
 #include "Player/ModelController.h"
 
 namespace MyCraft {
-    World::World(const int& x, const int& y, const int& z, const std::string& src): __worldRender(src) {
+    World::World(const int& x, const int& y, const int& z, const std::string& src): 
+        __worldRender(src), __pathCreator(__worldRender) 
+    {
         insert(&__worldRender);
         insert(&__dropItemManage);
         insert(&__crackingManage);
@@ -17,20 +19,33 @@ namespace MyCraft {
         MyBase::Network::match(&__crackingManage);
         MyBase::Network::match(&__worldRender);
         MyBase::Network::match(&__dropItemManage);
+        MyBase::Network::match(&__pathCreator);
         add(new HealthWorldCommand(*this));
         add(new AttackWorldCommand(*this));
         add(new CheckHoverCommand(*this));
+        add(new TeleportCommand(*this));
+        add(new EraseMobCommand(*this));
+        add(new SpawnMobCommand(*this));
     }
     World::~World() {}
 
     bool World::isBusyBlock(const glm::ivec3& position) {
         return false;
     }
-    void World::addModel(ModelController* controller) {
-        return __hitbox.insert(controller);
+    void World::addPlayerModel(ModelController* controller) {
+        return __hitbox.pushPlayerModel(controller);
     }
     void World::teleport(const glm::ivec3& position) {
         __worldRender.playerAt(position);
+    }
+
+    void World::pushMob(ModelController* model) {
+        __hitbox.insert(model);
+        __worldRender.pushMob(model);
+    }
+    void World::eraseMob(ModelController* model) {
+        __hitbox.erase(model);
+        __worldRender.eraseMob(model);
     }
 
 
@@ -155,5 +170,55 @@ namespace MyCraft {
         }
     }
 
+    TeleportMessage::TeleportMessage(const glm::vec3& pos): position(pos) {}
+    TeleportMessage::~TeleportMessage() {}
+    MyBase::MessageType TeleportMessage::getType() const {
+        return MyBase::Teleport;
+    }
+
+    TeleportCommand::TeleportCommand(MyCraft::World& world): __world(world) {}
+    TeleportCommand::~TeleportCommand() {}
+    MyBase::MessageType TeleportCommand::getType() const {
+        return MyBase::Teleport;
+    };
+    void TeleportCommand::execute(MyBase::Port& mine, MyBase::Port& des, MyBase::Message* message) {
+        TeleportMessage* package = (TeleportMessage*)message;
+        __world.teleport(package->position);
+    }
+
+
+    SpawnMobMessage::SpawnMobMessage(ModelController* controller): model(controller) {}
+    SpawnMobMessage::~SpawnMobMessage() {}
+
+    MyBase::MessageType SpawnMobMessage::getType() const {
+        return MyBase::SpawnMob;
+    }
+    SpawnMobCommand::SpawnMobCommand(World& world): __world(world) {}
+    SpawnMobCommand::~SpawnMobCommand() {}
+    MyBase::MessageType SpawnMobCommand::getType() const {
+        return MyBase::SpawnMob;
+    }
+    void SpawnMobCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        SpawnMobMessage* package = (SpawnMobMessage*)message;
+        __world.pushMob(package->model);
+    }
+
+
+
+    EraseMobMessage::EraseMobMessage(ModelController* controller): model(controller) {}
+    EraseMobMessage::~EraseMobMessage() {}
+
+    MyBase::MessageType EraseMobMessage::getType() const {
+        return MyBase::EraseMob;
+    }
+    EraseMobCommand::EraseMobCommand(World& world): __world(world) {}
+    EraseMobCommand::~EraseMobCommand() {}
+    MyBase::MessageType EraseMobCommand::getType() const {
+        return MyBase::EraseMob;
+    }
+    void EraseMobCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message) {
+        SpawnMobMessage* package = (SpawnMobMessage*)message;
+        __world.eraseMob(package->model);
+    }
 
 }

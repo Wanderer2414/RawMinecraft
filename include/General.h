@@ -20,6 +20,7 @@ namespace MyCraft {
 }
 namespace MyBase {
     bool isFolder(const std::string& src);
+    bool isFile(const std::string& src);
     void CreateFolder(const std::string& src);
     void DeleteFile(const std::string& src);
     void DeleteFolder(const std::string& src);

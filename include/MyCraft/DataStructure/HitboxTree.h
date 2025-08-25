@@ -39,6 +39,18 @@ namespace MyCraft {
         void update(HitboxNode* node);
         void print() const;
         
+        class Iterator {
+        public:
+            Iterator(HitboxNode*);
+            HitboxNode* operator*();
+            Iterator& operator++();
+            bool operator==(const Iterator& iter) const;
+            bool operator!=(const Iterator& iter) const;
+        private:
+            HitboxNode* __node;
+        };
+
+        Iterator begin() const, end() const;
     protected:
     private:
         HitboxNode* __root;

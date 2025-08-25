@@ -27,6 +27,7 @@ namespace MyCraft {
         GLTFStaticMesh::SetNode& States();
         GLTFAnimation& Animations(const std::string& name);
     private:
+        GLTFStaticMesh::SetNode *__states;
         MyBase::Color   __baseColor;
         GLuint          __baseColorBuffer;
         MyBase::FlyWeightCore* create(const std::string& src) const override;

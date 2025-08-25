@@ -60,6 +60,11 @@ namespace MyCraft {
                     int rate = std::min(rand()%5 + 3, mod);
                     for (glm::ivec3 position(ceiling.x,ceiling.y, ceiling.z-rate); position.z<=ceiling.z; position.z++)
                         chunk.setType(position, Sand);
+                    int height = std::min(biome.height, chunk.getPosition().z+16);
+                    for (glm::ivec3 position(ceiling.x, ceiling.y, ceiling.z+1); position.z<height; position.z++) {
+                        chunk.setType(position, Water);
+                        chunk.pourWater(position, glm::vec4(1));
+                    }
                 }
                 else {
                     int mod = ceiling.z%16;
@@ -79,6 +84,11 @@ namespace MyCraft {
                     int rate = std::min(rand()%5 + 3, mod);
                     for (glm::ivec3 position(ceiling.x,ceiling.y, ceiling.z-rate); position.z<=ceiling.z; position.z++)
                         chunk.setType(position, Sand);
+                    int height = std::min(biome.height, chunk.getPosition().z+16);
+                    for (glm::ivec3 position(ceiling.x, ceiling.y, ceiling.z+1); position.z<height; position.z++) {
+                        chunk.setType(position, Water);
+                        chunk.pourWater(position, glm::vec4(1));
+                    }
                 }
                 else {
                     int mod = ceiling.z%16;
@@ -87,6 +97,11 @@ namespace MyCraft {
                     for (glm::ivec3 position(ceiling.x,ceiling.y, ceiling.z-rate); position.z<=ceiling.z; position.z++)
                         chunk.setType(position, Dirt);
                     chunk.setType(ceiling, Grass);
+                    int height = std::min(biome.height, chunk.getPosition().z+16);
+                    for (glm::ivec3 position(ceiling.x, ceiling.y, ceiling.z+1); position.z<height; position.z++) {
+                        chunk.setType(position, Water);
+                        chunk.pourWater(position, glm::vec4(1));
+                    }
                 }
             }
                 break;

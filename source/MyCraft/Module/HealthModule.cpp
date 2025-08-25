@@ -11,11 +11,14 @@ namespace MyCraft {
     bool HealthModule::isFullHealth() const {
         return (__maxHealth == __health);
     }
-    unsigned char HealthModule::getHealth() const {
+    unsigned int HealthModule::getHealth() const {
         return __health;
     }
     float HealthModule::getHealthPercent() const {
         return __health*1.0f/__maxHealth;
+    }
+    void HealthModule::setHealth(const unsigned int& h) {
+        __health = h;
     }
     void HealthModule::damage(const unsigned int& h) {
         if (h>__health) {

@@ -7,10 +7,12 @@
 namespace MyCraft {
     GLTFModel::GLTFModel(const std::string& modelPath): __baseColor(TRANSPARENCY) {
         if (modelPath.size()) load(modelPath);
+        __states = new GLTFStaticMesh::SetNode(((GLTFStaticMesh*)getCore())->getNodeSize());
         __baseColorBuffer = MyBase::ShapeManager::getInstance().createColor(TRANSPARENCY);
     }
 
     GLTFModel::~GLTFModel() {
+        delete __states;
         MyBase::ShapeManager::getInstance().removeColor(__baseColor);
     }
 
@@ -24,21 +26,23 @@ namespace MyCraft {
 
     void GLTFModel::draw() const {
         glBindBufferBase(GL_UNIFORM_BUFFER, 2, __baseColorBuffer);
-        ((GLTFStaticMesh*)getCore())->Draw();
+        ((GLTFStaticMesh*)getCore())->Draw(*__states);
     }
 
     GLTFStaticMesh::SetNode& GLTFModel::States() {
-        return ((GLTFStaticMesh*)getCore())->States();
+        return *__states;;
     }
     GLTFAnimation& GLTFModel::Animations(const std::string& name) {
         return ((GLTFStaticMesh*)getCore())->Animations(name);
     }
 
     MyBase::FlyWeightCore* GLTFModel::create(const std::string& src) const {
-
+        static int count = 0;
         tinygltf::TinyGLTF loader;
         std::string error, warning;
         tinygltf::Model model;
+        count++;
+        std::cout << count << std::endl;
         loader.LoadASCIIFromFile(&model, &error, & warning, src);
 
         if(!warning.empty())std::cout<<"Warning: "<< warning << std::endl;

@@ -14,6 +14,7 @@ namespace MyCraft {
 
             glm::mat4x3 getShape()              const   override;
             glm::vec3   getPosition()           const   override;
+            glm::vec3   getDirection()          const;
             void look(const glm::vec3& position)        override;
             bool attack()                               override;
             void see(const glm::vec3& direction)        override;

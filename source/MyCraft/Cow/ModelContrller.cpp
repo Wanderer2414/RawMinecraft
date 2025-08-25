@@ -1,7 +1,10 @@
 #include "Cow/ModelController.h"
 #include "Color.h"
+#include "HealthModule.h"
+#include "HitboxTree.h"
 #include "ModelController.h"
 #include "Cow/Model.h"
+#include "World.h"
 #include "WorldRender.h"
 namespace MyCraft {
     namespace Cow {
@@ -10,6 +13,7 @@ namespace MyCraft {
             add(new FallCommand(this));
             add(new JumpCommand(this));
             add( new FocusCommand(this));
+            add(new TimeLightnessCommand(*this));
             update();
             __damageDuration.setDuration(200);
             __fallCheckClock.setDuration(30);
@@ -36,6 +40,7 @@ namespace MyCraft {
             __isDamage = true;
             __isChanged = true;
             setBaseColor({255, 0, 0, 100});
+            HealthModule::damage(damage);
         }
         void Controller::heal(const unsigned int& health) {
             
@@ -43,6 +48,7 @@ namespace MyCraft {
 
         void Controller::update() {
             setShape(Model::getShape());
+            HitboxNode::update();
         }
         void Controller::see(const glm::vec3& dir) {
 
@@ -85,13 +91,19 @@ namespace MyCraft {
         }
 
         void Controller::__dead() {
-
+            send(new EraseMobMessage(this));
         }
         void Controller::__damage() {
-
         }
         void Controller::__heal() {
 
         }
+
+        void Controller::setPosition(const glm::vec3& position) {
+            Model::setPosition(position);
+            update();
+        }
+        void Controller::save(std::ostream& cout) {}
+        void Controller::__load(std::istream& cin) {}
     }
 }

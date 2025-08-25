@@ -8,7 +8,7 @@
 #include "Texture.h"
 
 namespace MyCraft {
-    Sun::Sun(): __time(0), __offset(0,0), __isDive(false) {
+    Sun::Sun(): __time(0.25), __offset(0,0), __isDive(false) {
         glGenBuffers(1,&__lightBuffer);
         glBindBuffer(GL_UNIFORM_BUFFER, __lightBuffer);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(Buffer), 0, GL_DYNAMIC_DRAW);
@@ -72,7 +72,8 @@ namespace MyCraft {
     bool Sun::handle(GLFWwindow* window) {
         if (__clock.get()) {
             __clock.restart();
-            __time+=0.001;
+            __time+=0.005;
+            send(new TimeMessage(__time));
             if (__time>1) __time-=1;
             update();
             return true;
@@ -83,6 +84,12 @@ namespace MyCraft {
         MyBase::TextureContainer::draw();
         __skyContainer.draw(__coverSky);
         __sunContainer.draw(__sun);
+    }
+
+    TimeMessage::TimeMessage(const float& t): time(t) {}
+    TimeMessage::~TimeMessage() {}
+    MyBase::MessageType TimeMessage::getType() const {
+        return MyBase::TimeNotice;
     }
 
     SunMoveCommand::SunMoveCommand(Sun& sun): __sun(sun) {}

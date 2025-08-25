@@ -34,6 +34,10 @@ namespace MyCraft {
         glm::vec3   Model::getPosition()           const {
             return __position;
         }
+
+        glm::vec3   Model::getDirection()          const {
+            return __direction;
+        }
         void Model::look(const glm::vec3& position) {
             glm::vec3 direction = position - getPosition();
             if (glm::length(direction)<10 && glm::length(direction)>0.1) {
@@ -64,10 +68,14 @@ namespace MyCraft {
             }
         }
         void Model::setPosition(const glm::vec3& position) {
-
+            __position = position;
+            __isChanged = true;
         }
         bool Model::apply() {
-            if (__moveClock.get()) __isChanged = true;
+            if (__moveClock.get() && __moveTime) {
+                __isChanged = true;
+                __moveTime = 0;
+            }
 
             if (__isChanged) {
                 States().reset();

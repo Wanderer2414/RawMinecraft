@@ -6,6 +6,7 @@
 #include "InventoryModule.h"
 #include "Model/ModelController.h"
 #include "Player/Model.h"
+#include "World.h"
 
 namespace MyCraft {
     namespace Player {
@@ -15,6 +16,7 @@ namespace MyCraft {
             ~ModelController();
             glm::vec3   getPosition() const    override,
                         getDirection() const;
+            void        setPosition(const glm::vec3& position) override;
             void        see(const glm::vec3& dir) override,
                         move(const glm::vec3& dir) override,
                         look(const glm::vec3& dir) override,
@@ -29,12 +31,14 @@ namespace MyCraft {
                         
                         setHoverBlock(const glm::vec3& hover, const glm::vec3& place, const BlockCatogary& type);
             glm::mat4x3 getShape() const override;
+            void        save(std::ostream& cout) override;
+            void        load(std::istream& cin);
             friend class MoveCommand;
         private:
-            bool            __isDrawable, __isChanged;
+            bool            __isDrawable, __isChanged, __isDamage;
             float           __speed;
             glm::vec3       __direction, __eye_direction;
-            MyBase::Clock   __speedControl;
+            MyBase::Clock   __speedControl, __damageDuration;
             BlockCatogary   __type;
             glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;
             bool            __moveManage(GLFWwindow* window);
@@ -50,6 +54,7 @@ namespace MyCraft {
             bool            catchEvent(GLFWwindow* window) override;
             void            reset() override;
             void            update() override;
+            void            __load(std::istream& cin) override;
         };
 
         class ResetCameraCommand: public MyBase::Command {
@@ -87,6 +92,15 @@ namespace MyCraft {
         public:
             OnGroundCommand(Player::ModelController& model);
             ~OnGroundCommand();
+            MyBase::MessageType getType()                               const override;
+            void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
+        private:
+            Player::ModelController& __model;
+        };
+        class TeleportCommand: public MyBase::Command {
+        public:
+            TeleportCommand(Player::ModelController& model);
+            ~TeleportCommand();
             MyBase::MessageType getType()                               const override;
             void execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)   override;
         private:

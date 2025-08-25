@@ -11,6 +11,9 @@ namespace MyCraft {
     glm::mat4& GLTFStaticMesh::SetNode::operator[](const int& index) {
         return __states[index];
     }
+    int GLTFStaticMesh::getNodeSize() const {
+        return __nodeSize;
+    }
     const glm::mat4& GLTFStaticMesh::SetNode::operator[](const int& index) const {
         return __states[index];
     }
@@ -23,9 +26,6 @@ namespace MyCraft {
     }
     GLTFStaticMesh::SetNode::~SetNode() {
         delete[] __states;
-    }
-    GLTFStaticMesh::SetNode& GLTFStaticMesh::States() {
-        return *__nodes;
     }
     GLTFAnimation& GLTFStaticMesh::Animations(const std::string& name) {
         return *__animation.at(name);
@@ -46,7 +46,6 @@ namespace MyCraft {
         glDeleteVertexArrays(__VAO.size(), __VAO.data());
         glDeleteBuffers(1, &__state);
         glDeleteBuffers(__ebos.size(), __ebos.data());
-        delete __nodes;
         delete __root;
         for (auto& i:__animation) delete i.second;
     }
@@ -56,7 +55,7 @@ namespace MyCraft {
         BindBuffer(model);
         for (int i = 0; i<model.meshes.size(); i++) BindMesh(model, i);
         //Get state count
-        __nodes = new SetNode(model.nodes.size());
+        __nodeSize = model.nodes.size();
         BindNodes(model.nodes.size()-1, __root, model);
         //Bind parent state
         glBindVertexArray(0);
@@ -125,19 +124,19 @@ namespace MyCraft {
     }
 
 
-    void GLTFStaticMesh::Draw() const {
+    void GLTFStaticMesh::Draw(const SetNode& node) const {
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetModelShader());
-        DrawModelNodes(__root, glm::mat4(1));
+        DrawModelNodes(__root, glm::mat4(1), node);
     }
 
-    void GLTFStaticMesh::DrawModelNodes(Node* root, const glm::mat4& state) const {
+    void GLTFStaticMesh::DrawModelNodes(Node* root, const glm::mat4& state, const SetNode& nodes) const {
         glm::mat4 new_state = state;
         if (root->children.size()) {
             new_state = new_state*glm::translate(glm::mat4(1), root->translation);
-            new_state *= (*__nodes)[root->node];
+            new_state *= nodes[root->node];
         }
         for(size_t i = 0; i < root->children.size(); ++i) {
-            DrawModelNodes(root->children[i], new_state);
+            DrawModelNodes(root->children[i], new_state, nodes);
         }
         if (root->children.empty()) {
             new_state *= glm::translate(glm::mat4(1), root->translation);

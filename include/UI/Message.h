@@ -7,21 +7,23 @@ namespace MyBase {
     class Network;
     class World;
     class Command;
-    #define MessageTypeSize 29
+    #define MessageTypeSize 37
     enum MessageType: unsigned char {
-        RequestGoto, RequestFall, RequestJump,
-        Move, Fall,  StopFall, Jump,
+        RequestGoto, RequestFall, RequestJump, RequestRotate,
+        Move, Fall,  StopFall, Jump, Rotate,
         SetCamera, ResetCamera,
         Attack, Place,
         AcceptPlace, AcceptDestroy,
         CheckHover,
-        WorldMove,
+        WorldMove, Teleport,
         PrepareOpenInventory, OpenInventoryBlock,
         DropItem, ReceiveItem, AddItem,
-        HoldItem,
+        HoldItem, 
         DiveView, Dive, OngroundView, OnGround,
         Damage, Health, UpdateHealth,
-        Focus
+        Focus, CreatePatrolPath, CreateFollowPath,
+        SpawnMob, EraseMob,
+        TimeNotice,
     };
     class Port {
     public:
@@ -46,6 +48,7 @@ namespace MyBase {
     class Network {
     public:
         static void match(Port* port);
+        static void unmatch(Port* port);
         virtual void receive(Port& source, Message* Message);
         virtual void receive(Port& source, Port& destination, Message* Message);
         static void close();

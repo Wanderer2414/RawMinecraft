@@ -37,6 +37,15 @@ namespace MyCraft {
         MyBase::ShapeContainer      __skyContainer, __sunContainer;
     };
 
+    class TimeMessage: public MyBase::Message {
+    public:
+        TimeMessage(const float& time);
+        ~TimeMessage();
+        const float time;
+        MyBase::MessageType getType() const override;
+    private:
+    };
+
     class SunMoveCommand: public MyBase::Command {
     public:
         SunMoveCommand(Sun& sun);

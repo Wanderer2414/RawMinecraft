@@ -9,7 +9,7 @@ namespace MyCraft {
         public:
             Controller();
             ~Controller();
-
+            void    setPosition(const glm::vec3& position) override;
             void    see(const glm::vec3& dir) override,
                     move(const glm::vec3& dir) override,
                     look(const glm::vec3& position) override,
@@ -20,6 +20,7 @@ namespace MyCraft {
             void    update() override;
             glm::vec3 getPosition() const override;
             glm::mat4x3 getShape() const override;
+            void save(std::ostream& cout) override;
         private:
             bool    __isChanged, __isDamage;
             float   __speed;
@@ -34,6 +35,7 @@ namespace MyCraft {
             void    __dead()                        override;
             void    __damage()                      override;
             void    __heal()                        override;
+            void __load(std::istream& cin)      override;
         };
     }
 }

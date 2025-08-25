@@ -3,6 +3,7 @@
 #include "DrawingCenter.h"
 #include "General.h"
 #include "MapCreator.h"
+#include "World.h"
 #include <unordered_set>
 
 namespace MyCraft {
@@ -23,6 +24,9 @@ namespace MyCraft {
             __container->removeLight(position);
         }
         save();
+        for (int i = 0; i<__saveableModel.size(); i++) {
+            delete __saveableModel[i];
+        }
     }
     Chunk* Chunk::Load(ChunkLoader* loader, const std::string& src, const glm::ivec3& position) {
         Chunk* new_chunk = new Chunk();
@@ -462,6 +466,15 @@ namespace MyCraft {
         DrawingCenter::DrawWater(__water);
     }
 
+
+    void Chunk::pushMob(ModelController* controller) {
+        __saveableModel.push_back(controller);
+    }
+    void Chunk::eraseMob(ModelController* controller) {
+        int i = 0;
+        while (__saveableModel[i]!=controller) i++;
+        __saveableModel.erase(__saveableModel.begin() + i);
+    }
 
     DynamicChunk::DynamicChunk(const std::string& src): __chunk(0), __source(src) {}
     DynamicChunk::~DynamicChunk() {

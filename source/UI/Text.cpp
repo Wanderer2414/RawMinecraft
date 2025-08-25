@@ -72,10 +72,8 @@ namespace MyBase {
     }
     void Text::update() {
         if (!__font) return ;
-        glDeleteVertexArrays(1, &__VAO);
         glDeleteBuffers(1, &__VBO);
 
-        glGenVertexArrays(1, &__VAO);
         glBindVertexArray(__VAO);
 
         glGenBuffers(1, &__VBO);
@@ -97,7 +95,6 @@ namespace MyBase {
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetFontShader());
         glBindVertexArray(__VAO);
         __font->Bind();
-        glBindBuffer(GL_ARRAY_BUFFER, __VBO);
         glBindBufferBase(GL_UNIFORM_BUFFER, 1, __COLOR);
         glBindBufferBase(GL_UNIFORM_BUFFER, 2, __POSITION);
         glBindBufferBase(GL_UNIFORM_BUFFER, 3, __SCALE);

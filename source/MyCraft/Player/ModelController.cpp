@@ -1,4 +1,5 @@
 #include "Player/ModelController.h"
+#include "Item.h"
 #include "Player/InventoryModule.h"
 #include "Camera.h"
 #include "ControlCenter.h"
@@ -10,15 +11,18 @@
 #include "Player/Model.h"
 #include "Sun.h"
 #include "World.h"
+#include "WorldRender.h"
+#include "glm/geometric.hpp"
 
 namespace MyCraft {
     namespace Player {
-        ModelController::ModelController(): MyCraft::ModelController(100), __direction(0, -1, 0), __isChanged(false),
+        ModelController::ModelController(): MyCraft::ModelController(100), 
+            __direction(0, -1, 0), __isChanged(false), __isDamage(false),
             __eye_direction(0, -1, 0),
             __isDrawable(true) {
             __speed = 0.2;
             __speedControl.setDuration(30);
-
+            __damageDuration.setDuration(50);
 
             add(new MoveCommand(this));
             add(new FallCommand(this));
@@ -31,9 +35,16 @@ namespace MyCraft {
             add(new DiveCommand(*this));
             add(new OnGroundCommand(*this));
             add(new DamageCommand(*this));
+            add(new RotateCommand(this));
+            add(new TeleportCommand(*this));
             update();
         }
         ModelController::~ModelController() {}
+
+        void ModelController::setPosition(const glm::vec3& position) {
+            Model::setPosition(position);
+            update();
+        }
         bool ModelController::catchEvent(GLFWwindow* window) {
             __isChanged = MyCraft::ModelController::catchEvent(window) || __isChanged;
 
@@ -70,7 +81,10 @@ namespace MyCraft {
                     dir = __toAbsoluteCoordinate(dir);
                     if (isSwim() && dir.z) send(new RequestJumpMessage(getShape(), __speed*(dir.z)/abs(dir.z)/2));
                     else dir.z = 0;
+                    
+                    dir = glm::normalize(dir)*__speed;
                     move(dir);
+                    rotate(dir);
                 }
 
                 if (glfwGetKey(window, GLFW_KEY_SPACE)) {
@@ -109,6 +123,13 @@ namespace MyCraft {
             __isChanged = __moveManage(window) || __isChanged;
             __isChanged = Player::Model::reset() || __isChanged;
             __isChanged = Player::Model::apply() || __isChanged;
+
+            if (__damageDuration.get() && __isDamage) {
+                __isDamage = false;
+                __isChanged = true;
+                setBaseColor(TRANSPARENCY);
+            }
+
             return __isChanged;
         }
 
@@ -119,12 +140,17 @@ namespace MyCraft {
             __look(position);
         }
         void ModelController::rotate(const glm::vec3& dir) {
-            __rotate(dir);
+            if (glm::length(dir)>0.001) {
+                float angle = glm::angle(glm::normalize(dir), glm::vec3(0,1,0));
+                if (dir.x>0) angle   = -angle;
+                float __angle = glm::angle(__direction, glm::vec3(0,1,0));
+                if (dir.x>0) __angle = -__angle;
+                send(new RequestRotateMessage(getShape(), angle-__angle, dir));
+            }
         }
         void ModelController::move(const glm::vec3& dir) {
-            glm::vec3 direction = glm::normalize(dir)*__speed;
-            rotate(direction);
-            send(new RequestGotoMessage(getShape(), direction));        
+            if (dir.z) send(new RequestJumpMessage(getShape(), dir.z));
+            send(new RequestGotoMessage(getShape(), dir));  
         }
         glm::vec3 ModelController::getPosition() const {
             return Player::Model::getPosition();
@@ -143,6 +169,10 @@ namespace MyCraft {
         }
 
         void ModelController::__damage() {
+            __damageDuration.restart();
+            __isDamage = true;
+            __isChanged = true;
+            setBaseColor({255, 0, 0, 100});
             send(new UpdateHealthBarMessage(getHealthPercent()));
         }
         void ModelController::__dead() {
@@ -178,7 +208,7 @@ namespace MyCraft {
             update();
             send(new MyBase::SetCameraMessage(getEyePosition(), __eye_direction));
             send(new CheckHoverMessage(getEyePosition(), __eye_direction));
-            send(new FocusMessage(getPosition()));
+            send(new FocusMessage(this));
             send( new WorldMoveMessage(getPosition()));
         }
         void ModelController::__rotate(const glm::vec3& dir) {
@@ -188,9 +218,15 @@ namespace MyCraft {
         }
         void ModelController::__see(const glm::vec3& dir) {
             Player::Model::see(dir);
+            __eye_direction = glm::normalize(dir);
+            send(new MyBase::SetCameraMessage(getEyePosition(), __eye_direction));
+            send(new CheckHoverMessage(getEyePosition(), __eye_direction));
         }
         void ModelController::__look(const glm::vec3& position) {
             Player::Model::look(position);
+            __eye_direction = glm::normalize(position - getEyePosition());
+            send(new MyBase::SetCameraMessage(getEyePosition(), __eye_direction));
+            send(new CheckHoverMessage(getEyePosition(), __eye_direction));
         }
         void ModelController::seeRotate(const float& horizontal, const float& vertical) {
             __eye_direction = glm::rotate(__eye_direction, horizontal, glm::vec3(0, 0, 1));
@@ -214,6 +250,62 @@ namespace MyCraft {
         }
         void ModelController::update() {
             setShape(Model::getShape());
+        }
+
+        void ModelController::save(std::ostream& cout) {
+            glm::vec3 position = getPosition();
+            cout.write((char*)&position, sizeof(glm::vec3));
+            glm::vec3 direction = getDirection();
+            cout.write((char*)&direction, sizeof(glm::vec3));
+            direction = getEyeDirection();
+            cout.write((char*)&direction, sizeof(glm::vec3));
+            auto& table = getItems();
+            for (int i = 0; i<=3; i++) {
+                for (int j = 0; j<10; j++) {
+                    auto item = table.getBags({i,j});
+                    ItemType type = ItemType::Air;
+                    unsigned char count = 0;
+                    if (item) {
+                        type = *item;
+                        count = item->getCount();
+                    }
+                    cout.write((char*)&type, sizeof(ItemType));
+                    cout.write((char*)&count, sizeof(char));
+                }
+            }
+            unsigned int health = getHealth();
+            cout.write((char*)&health, sizeof(int));
+        }
+        void ModelController::load(std::istream& cin) {
+            __load(cin);
+        }
+        void ModelController::__load(std::istream& cin) {
+            glm::vec3 position = getPosition();
+            cin.read((char*)&position, sizeof(glm::vec3));
+            send(new TeleportMessage(position));
+            
+            glm::vec3 direction = getDirection();
+            cin.read((char*)&direction, sizeof(glm::vec3));
+            __rotate(direction);
+
+            direction = getEyeDirection();
+            cin.read((char*)&direction, sizeof(glm::vec3));
+            __see(direction);
+
+            auto& table = getItems();
+            for (int i = 0; i<=3; i++) {
+                for (int j = 0; j<10; j++) {
+                    ItemType type;
+                    unsigned char count;
+                    cin.read((char*)&type, sizeof(ItemType));
+                    cin.read((char*)&count, sizeof(char));
+                    if (count)
+                        table.placeBags({i,j}, Item::create(table.package, count, type));
+                }
+            }
+            unsigned int health = getHealth();
+            cin.read((char*)&health, sizeof(int));
+            setHealth(health);
         }
 
 
@@ -268,6 +360,16 @@ namespace MyCraft {
         void OnGroundCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)  {
             __model.walk();
             mine.send(new OnGroundLightMessage());
+        }
+
+        TeleportCommand::TeleportCommand(ModelController& model): __model(model) {}
+        TeleportCommand::~TeleportCommand() {}
+        MyBase::MessageType TeleportCommand::getType() const {
+            return MyBase::Teleport;
+        }
+        void TeleportCommand::execute(MyBase::Port& mine, MyBase::Port& source, MyBase::Message* message)  {
+            TeleportMessage* package = (TeleportMessage*)message;
+            __model.teleport(package->position);
         }
     }
 }
