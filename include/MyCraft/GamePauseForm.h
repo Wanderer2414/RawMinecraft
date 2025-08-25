@@ -2,6 +2,7 @@
 #define GAME_PAUSE_H
 #include "Button.h"
 #include "Font.h"
+#include "Label.h"
 #include "MessageBox.h"
 #include "Slider.h"
 namespace MyCraft {
@@ -19,6 +20,7 @@ namespace MyCraft {
         bool handle(GLFWwindow*) override;
         MyBase::RoundedRectangleButton  __exitButton;
         MyBase::Slider          __volumeBar; 
+        MyBase::Label           __volumnLabel;
          
     };
 }

@@ -9,12 +9,18 @@ namespace MyCraft {
         setFillColor(WHITE);
         setReturnValue(0);
 
+        __volumnLabel.setFont(font);
+        __volumnLabel.setText("Volume:");
+        __volumnLabel.setScale({0.05, 0.07});
+        __volumnLabel.setPosition({-0.25, 0.035});
+        insert(&__volumnLabel);
+
         __volumeBar.setFont(font);
         __volumeBar.setWidth(0.3);
         __volumeBar.setScale({0.03f, 0.05f});
         __volumeBar.setTextColor(BLACK);
         
-        __volumeBar.setPosition(-__volumeBar.getSize()/2.f);
+        __volumeBar.setPosition(-__volumeBar.getSize()/2.f + glm::vec2(0.1, 0.05));
         insert(&__volumeBar);
         
         __exitButton.setFont(font);
