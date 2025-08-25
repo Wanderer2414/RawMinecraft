@@ -1,7 +1,9 @@
 #include "ControlCenter.h" 
 #include "General.h"
 #include "Global.h"
+
 namespace MyBase {
+
     ControlCenter* ControlCenter::Default = 0;
     ControlCenter::ControlCenter(): __homeScreen(0),
          __fpsInterval(100), __majorVerson(3), __minorVerson(3), __clickCount(0),
@@ -102,15 +104,15 @@ namespace MyBase {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, __minorVerson);
         glfwWindowHint(GLFW_MAXIMIZED, __isMaximize);
         glfwWindowHint(GLFW_DECORATED, !__isFullScreen);
-        GLFWwindow* window = glfwCreateWindow(__windowSize.x, __windowSize.y, __programName.c_str(), nullptr, nullptr);
+        GLFWwindow* window = glfwCreateWindow(__windowSize.x, __windowSize.y, __programName.c_str(), glfwGetPrimaryMonitor(), nullptr);
         if (!__homeScreen) __homeScreen = window;
         glfwMakeContextCurrent(window);
         glfwSwapInterval(__fpsInterval);
         if (!window) throw std::runtime_error("Failed to create GLFW window");
-
+        std::cout << width << " " << height << std::endl;
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) throw std::runtime_error("Failed to initialize GLAD");
         else std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-        
+
         glfwSetScrollCallback(window, scroll_callback);
         glfwSetKeyCallback(window, key_callback);
         glfwSetMouseButtonCallback(window, mouse_callback);

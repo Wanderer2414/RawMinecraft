@@ -34,6 +34,7 @@ namespace MyCraft {
 
             virtual void    glDrawTransparent() const override;
             void __load(std::istream& cin)      override;
+            MyBase::Clock __damageDuration, __fallCheckClock, __freeTime;
         };
     }
 }

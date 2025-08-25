@@ -7,6 +7,7 @@
 #include "Message.h"
 #include "Sun.h"
 #include "Zombie/ModelController.h"
+#include "SkeletonBoss/ModelController.h"
 #include "Pig/ModelController.h"
 #include "ModelController.h"
 #include "World.h"

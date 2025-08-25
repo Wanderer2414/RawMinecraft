@@ -4,8 +4,6 @@
 #include "ShaderStorage.h"
 #include <filesystem>
 #include <stdexcept>
-
-
 std::size_t GetTime() {
     auto now = std::chrono::system_clock::now();
     return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
@@ -30,7 +28,6 @@ std::queue<glm::ivec3> rasterize(const glm::vec3& a, const glm::vec3& b, const f
     }
     return ans;
 }
-
 std::tuple<int,int,int> to_tuple(const glm::ivec3& vec) {
     return {vec.x, vec.y, vec.z};
 }

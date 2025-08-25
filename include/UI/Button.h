@@ -6,6 +6,7 @@
 #include "RoundedRectangle.h"
 #include "Text.h"
 #include "Texture.h"
+#include "Sound.h"
 
 namespace MyBase  {
     template<typename T>
@@ -23,6 +24,7 @@ namespace MyBase  {
         void setClickColor(const Color& color);
         void setText(const std::string& text);
         void setScale(const glm::vec2& scale);
+        void setClickSound(std::string src);
     protected:
         virtual void update() override;
         virtual bool    __mouseClicked(GLFWwindow*) override,
@@ -35,6 +37,7 @@ namespace MyBase  {
         virtual const T&    getShape() const = 0;
         bool                contains(const glm::vec2& position) const override;
         Color   __hoverColor, __clickColor, __normalColor;
+        //Sound   __clickSound;
     };
     template class Button<Ellipse>;
     template class Button<Rectangle>;

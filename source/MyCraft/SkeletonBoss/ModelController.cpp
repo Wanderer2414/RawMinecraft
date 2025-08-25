@@ -1,10 +1,14 @@
 #include "SkeletonBoss/ModelController.h"
 #include "HitboxTree.h"
 #include "Model/ModelController.h"
+#include "WorldRender.h"
 namespace MyCraft {
     namespace SkeletonBoss {
         Controller::Controller(): MyCraft::ModelController(500) {
             update();
+            __fallCheckClock.setDuration(30);
+            __damageDuration.setDuration(200);
+
         }
         Controller::~Controller() {}
 

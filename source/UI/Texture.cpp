@@ -154,6 +154,7 @@ namespace MyBase {
 
     
     TextureViewer::TextureViewer() {}
+    
     TextureViewer::~TextureViewer() {}
     void TextureViewer::glDraw() const {
         TextureContainer::draw();
