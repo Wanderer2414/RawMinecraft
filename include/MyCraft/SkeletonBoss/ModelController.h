@@ -18,6 +18,9 @@ namespace MyCraft {
                             rotate(const glm::vec3& angle) override;
             void            update() override;
             glm::vec3       getPosition() const override;
+            glm::mat4x3     getShape() const override;
+            void            damage(const unsigned int& damage) override;
+            void            heal(const unsigned int& health) override;
         protected:
         private:
             virtual void    __see(const glm::vec3& dir) override,
@@ -30,6 +33,12 @@ namespace MyCraft {
             void            __heal() override;
 
             virtual void    glDrawTransparent() const override;
+
+            bool __isChanged, __isDamage;
+            float __speed;
+            MyBase::Clock __damageDuration, __fallCheckClock;
+            bool handle(GLFWwindow* window) override;
+            void glDraw() const override;
         };
     }
 }

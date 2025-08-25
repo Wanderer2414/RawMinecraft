@@ -2,6 +2,8 @@
 #define SKELETON_BOSS_H
 #include "GLTFModel.h"
 #include "Texture.h"
+#include "Clock.h"
+#include "MyCraft/SkeletonBoss/WalkAnimation.h"
 namespace MyCraft {
     namespace SkeletonBoss {
         class Model: public GLTFModel {
@@ -25,7 +27,12 @@ namespace MyCraft {
         private:
             MyBase::Texture   __texture;
             const glm::vec3 __diagonal;
-            glm::vec3       __position, __direction;
+            glm::vec3       __position, __direction, __eye_focus;
+            bool            __isChanged, __isFocus;
+            float          __moveTime;
+            MyBase::Clock   __moveClock;
+            WalkAnimation  __walk;
+
         };
     };
 }

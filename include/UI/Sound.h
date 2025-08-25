@@ -8,6 +8,7 @@
 class Sound{
     public:
         Sound(const std::string & filename);
+        Sound();
         ~Sound();
         void play();
         void pause();
@@ -19,5 +20,6 @@ class Sound{
         unsigned int channel;
         static bool audio_device;
         bool isPlaying;
+        bool isAvailable;
         
 };

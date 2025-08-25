@@ -7,6 +7,7 @@
 #include "../UI/Slider.h"
 #include "../UI/VerticalBar.h"
 #include "UI/Sound.h"
+#include "UI/Texture.h"
 namespace MyCraft {
     class IntroForm: public MyBase::Form {
     public:
@@ -16,6 +17,8 @@ namespace MyCraft {
         bool __mouseClicked(GLFWwindow*) override;
         bool catchEvent(GLFWwindow*) override;
         MyBase::Label                   __programmeName;
+        MyBase::TextureViewer           __background;
+        MyBase::Texture                 __bgtexture;
         MyBase::RoundedRectangleButton  __startButton, __settingButton, __aboutusButton, __exitButton;
         MyBase::Font font;
         MyBase::VerticalBar __volumeBar1;

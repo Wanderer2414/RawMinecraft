@@ -3,11 +3,14 @@
 #include "ControlCenter.h"
 #include "Form.h"
 
+
 namespace MyCraft {
-    IntroForm::IntroForm(GLFWwindow* window, const int& index): MyBase::Form(index), font("assets/fonts/SyneMono-Regular.ttf")
+    IntroForm::IntroForm(GLFWwindow* window, const int& index): MyBase::Form(index), font("assets/fonts/SyneMono-Regular.ttf"), __bgtexture("assets/images/Background.jpg", false)
                     {
         
         setBackgroundColor(BLACK);
+        setBackgroundMusic("assets/sounds/BackgroundSound.mp3");
+        __background.setTexture(__bgtexture);
 
         __programmeName.setFont(font);
         __programmeName.setText("My Craft");
@@ -66,7 +69,7 @@ namespace MyCraft {
         __volumeBar1.setMaxValue(100);
 
 
-
+        insert(&__background);
         insert(&__programmeName);
         insert(&__startButton);
         insert(&__settingButton);

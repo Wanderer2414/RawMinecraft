@@ -20,7 +20,7 @@ namespace MyBase  {
         __scrollButton.setSize({width * 0.1f, height * 0.9f});
         insert(&__scrollButton);
 
-        Text::setScale({0.05f, 0.05f});
+        Text::setScale({0.03f, 0.05f});
         Text::setTextColor(BLACK);
 
         update();
@@ -62,8 +62,8 @@ namespace MyBase  {
     void Slider::setText(const std::string& text){
         Text::setText(text);
         Text::setPosition({
-            getPosition().x + width/2 - Text::getSize().x/2,
-            getPosition().y - height
+            __scrollButton.getPosition().x + __scrollButton.getSize().x / 2 - Text::getSize().x / 2,
+            __scrollButton.getPosition().y + height/2 - Text::getSize().y / 2
         });
     }
 
@@ -113,6 +113,7 @@ namespace MyBase  {
     }
 
     void Slider::glDraw() const {
+        
         ShapeContainer::draw(__rectangle);
         Container2D::glDraw();
         Text::draw();
@@ -133,14 +134,13 @@ namespace MyBase  {
         });
 
         Text::setPosition({
-            __scrollButton.getPosition().x + width/2 - Text::getSize().x/2,
-            __scrollButton.getPosition().y - height
+            __scrollButton.getPosition().x + __scrollButton.getSize().x / 2 - Text::getSize().x / 2,
+            __scrollButton.getPosition().y + height/2 - Text::getSize().y / 2
         });
 
         Text::setText(std::to_string(value));
 
-        std::cout<<"Button pos: "<<__scrollButton.getPosition().x<<", "<<__scrollButton.getPosition().y<<"\n";
-        std::cout<<"Slider val: "<<value<<"\n";
+        
     }
 
 }

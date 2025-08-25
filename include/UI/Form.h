@@ -32,7 +32,7 @@ namespace MyBase {
         int             __formIndex,
                         __returnValue;
         Color           __backgroundColor;
-        Sound           __backgroundMusic;
+        Sound*           __backgroundMusic;
     };
     
 };

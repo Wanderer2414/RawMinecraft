@@ -7,7 +7,7 @@
 #include "ShapeManager.h"
 
 namespace MyBase {
-    Form::Form(const int& index): __formIndex(index), __returnValue(-1), __backgroundColor(WHITE), __isOpen(false), __backgroundMusic("assets/sounds/BackgroundSound.mp3") {}
+    Form::Form(const int& index): __formIndex(index), __returnValue(-1) {}
     Form::~Form() {}
     bool Form::contains(const glm::vec2& position) const {
         return true;
@@ -30,9 +30,9 @@ namespace MyBase {
                 glDraw();
                 glDrawTransparent();
                 glfwSwapBuffers(window);
-                __backgroundMusic.setVolume(Sound::volume);
+                __backgroundMusic->setVolume(Sound::volume);
             }
-            __backgroundMusic.play();
+            __backgroundMusic->play();
             
             is_changed = 0;
         }
@@ -62,6 +62,6 @@ namespace MyBase {
         __backgroundColor = color;
     }
     void Form::setBackgroundMusic(const std::string& filename) {
-        __backgroundMusic = Sound(filename);
+        __backgroundMusic = new Sound(filename);
     }
 }

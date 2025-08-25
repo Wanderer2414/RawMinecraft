@@ -5,19 +5,27 @@ bool Sound::audio_device = false;
 int Sound::volume = 70;
 
 Sound::Sound(const std::string & filename) : isPlaying(false) {
+    isAvailable = true;
     if(!audio_device){
         if(!BASS_Init(-1, 44100, 0, nullptr, nullptr)){
             throw std::runtime_error("Failed to initialize audio device");
         }
         audio_device = true;
+        isAvailable = true;
     }
 
     channel = BASS_StreamCreateFile(FALSE, filename.c_str(), 0, 0, BASS_SAMPLE_LOOP);
     if(!channel){
         throw std::runtime_error("Failed to create sound stream: " + filename);
-
+        isAvailable = false;
     }
     setVolume(volume);
+    std::cout << "Loaded sound: " << filename << "\n";
+    std::cout<<"isAvailable cons: "<<isAvailable<<"\n";
+}
+
+Sound::Sound() : isPlaying(false){
+    isAvailable = false;
 }
 
 Sound::~Sound(){
@@ -25,9 +33,14 @@ Sound::~Sound(){
 }
 
 void Sound::play(){
-    if(!isPlaying){
+    //std::cout<<"isPlaying: "<<isPlaying<<", isAvailable: "<<isAvailable<<"\n";
+    if(!isPlaying && isAvailable){
         BASS_ChannelPlay(channel, FALSE);
         isPlaying = true;
+    }
+    else{
+        if(!isAvailable) std::cout<<"Sound not available\n";
+        
     }
 }
 

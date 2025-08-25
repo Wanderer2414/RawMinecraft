@@ -83,6 +83,7 @@ namespace MyBase {
     template <typename T>
     bool Button<T>::__mouseClicked(GLFWwindow*) {
         setFillColor(__clickColor);
+        //__clickSound.play();
         return true;
     }
 
@@ -96,6 +97,11 @@ namespace MyBase {
     void Button<T>::glDraw() const {
         ShapeContainer::draw(getShape());;
         Text::draw();
+    }
+
+    template <typename T>
+    void Button<T>::setClickSound(std::string src) {
+        //__clickSound = Sound(src);
     }
 
     RectangleButton::RectangleButton(): __size(0,0) {
