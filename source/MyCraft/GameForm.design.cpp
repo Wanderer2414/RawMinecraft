@@ -138,11 +138,11 @@ namespace MyCraft {
         __positionLabel.setText(std::format("Position: {}, {}, {}", floor(__playerModel.getPosition().x), floor(__playerModel.getPosition().y), floor(__playerModel.getPosition().z)));
         if (__fpsClock.get()) {
             __fpsClock.restart();
-            // glm::vec3 position = __model.getPosition();
-            // position.x = floor(position.x/16);
-            // position.y = floor(position.y/16);
-            // position.z = floor(position.z/16);
-            // __biomeLabel.setText(to_string(__biomeManage.getBiome(position).type));
+            glm::vec3 position = __playerModel.getPosition();
+            position.x = floor(position.x/16);
+            position.y = floor(position.y/16);
+            position.z = floor(position.z/16);
+            __biomeLabel.setText(to_string(__biomeManage.getBiome(position).type) + " " + std::to_string(__biomeManage.getBiome(position).height));
             is_changed = true;
         }
     

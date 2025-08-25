@@ -1,4 +1,5 @@
 #include "ChunkManage.h"
+#include "Block.h"
 #include "ChunkBase.h"
 #include "Chunk.h"
 #include "Container3D.h"
@@ -9,6 +10,7 @@
 #include "Pig/ModelController.h"
 #include "ModelController.h"
 #include "World.h"
+#include <limits>
 namespace MyCraft {
     ChunkManage::ChunkManage(const std::string& src): __isLoaded(false), __sourceFolder(src), __waterManage(*this), __time(0) {
         insert(&__waterManage);
@@ -50,6 +52,8 @@ namespace MyCraft {
         int z = floor(position.z);
         while (contains({position.x, position.y, z}) && !isPlaceable(getType({position.x, position.y, z}))) z++;
         if (!contains({position.x, position.y, z})) z = std::numeric_limits<int>::max();
+        if (!contains({position.x, position.z, z-1}) || isPlaceable(getType({position.x, position.y, z-1}))) 
+            z = std::numeric_limits<int>::max();
         return z;
     }
     bool ChunkManage::handle(GLFWwindow* window) {
@@ -68,29 +72,26 @@ namespace MyCraft {
             }
         }
         if (__spawnClock.get() && __models.size() + __dangerousModel.size()<10) {
-            if (__time<0.25 || __time>0.75) {
-                glm::vec3 position(rand()%((world_side-2)*16)+16, rand()%((world_side-2)*16)+16, 2*16);
-                position += getPosition();
-                position.z = getZHeight(position);
-                float I = getLightIndensity(position);
-                if (I<50) {
-                    ModelController* controller = new Zombie::Controller();
+            glm::vec3 position(rand()%((world_side-2)*16)+16, rand()%((world_side-2)*16)+16, 2*16);
+            position += getPosition();
+            position.z = getZHeight(position);
+            float I = getLightIndensity(position);
+            if (position.z - __position.z <= world_side*16 && !isInWater(position)) {
+                if (__time<0.25 || __time>0.75) {
+                    if (I<50) {
+                        ModelController* controller = new Zombie::Controller();
+                        controller->setPosition(position);
+                        send(new SpawnMobMessage(controller));
+                    }
+                }
+                else {
+                    ModelController* controller;
+                    if (rand()%2) controller = new Pig::Controller();
+                    else controller = new Cow::Controller();
+
                     controller->setPosition(position);
                     send(new SpawnMobMessage(controller));
                 }
-            }
-            else {
-                glm::vec3 position(rand()%((world_side-2)*16)+16, rand()%((world_side-2)*16)+16, 2*16);
-                position += getPosition();
-                position.z = getZHeight(position);
-                float I = getLightIndensity(position);
-
-                ModelController* controller;
-                if (rand()%2) controller = new Pig::Controller();
-                else controller = new Cow::Controller();
-
-                controller->setPosition(position);
-                send(new SpawnMobMessage(controller));
             }
         }
         return is_changed;
@@ -146,11 +147,13 @@ namespace MyCraft {
         for (int i = 0; i<__dangerousModel.size() && isErased; i++) 
             if (__dangerousModel[i] == controller) {
                 __dangerousModel.erase(__dangerousModel.begin() + i);
-                break;
+                isErased = false;
             }
     }
     void ChunkManage::__cleanSafe() {
-        for (int i = __models.size()-1; i>=0; i--) {
+        int size = __models.size();
+        size--;
+        for (int i = size; i>=0; i--) {
             if (isDangerous(__models[i]->getPosition())) {
                 __dangerousModel.push_back(__models[i]);
                 __models.erase(__models.begin()+i);
@@ -159,7 +162,7 @@ namespace MyCraft {
     }
     void ChunkManage::__cleanDangerous() {
         int size = __dangerousModel.size();
-        size--; 
+        size-=1; 
         for (int i = size; i>=0; i--) {
             if (!isDangerous(__dangerousModel[i]->getPosition())) {
                 __models.push_back(__dangerousModel[i]);
@@ -172,12 +175,12 @@ namespace MyCraft {
         size-=1;
         for (int i = size; i>=0; i--) {
             if (!contains(__dangerousModel[i]->getPosition())) {
+                ModelController* tmp = __dangerousModel[i];
                 send(new EraseMobMessage(__dangerousModel[i]));
-                if (__dangerousModel[i]->canSaved()) {
-                    getChunk(__dangerousModel[i]->getPosition()).pushMob(__dangerousModel[i]);
+                if (tmp->canSaved()) {
+                    getChunk(tmp->getPosition()).pushMob(__dangerousModel[i]);
                 }
-                else delete __dangerousModel[i];
-                __dangerousModel.erase(__dangerousModel.begin()+i);
+                else delete tmp;
             }
         }
     }

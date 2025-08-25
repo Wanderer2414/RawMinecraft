@@ -9,7 +9,6 @@
 #include "Image.h"
 #include "SurfaceRound.h"
 #include "ZoneCreator.h"
-#include "General.h"
 
 namespace MyCraft {
     std::string MapCreator::getFileName(const std::string& src, const glm::ivec3& position) {
@@ -18,10 +17,10 @@ namespace MyCraft {
     }
     MapCreator::MapCreator(double* p, const std::string& src): percent(p), source(src) {}
     void MapCreator::createBedrockLayer(const double& total, const int& heightBound) {
-        glm::ivec2 xBound(- 500, 0), yBound(-250, 250);
+        glm::ivec2 xBound(- 100, 0), yBound(-250, 250);
         std::thread thread(createSubBedrockLayer, percent, total/2, source, xBound, yBound, heightBound);
 
-        xBound= {0, 500};
+        xBound= {0, 100};
         std::thread threadA(createSubBedrockLayer, percent, total/2, source, xBound, yBound, heightBound);
 
         thread.join();
@@ -49,9 +48,9 @@ namespace MyCraft {
     }
 
     void MapCreator::createMagmaLayer(const double& total, const int& heightBound) {
-        glm::ivec2 xBound(- 500, 0), yBound(-250, 250);
+        glm::ivec2 xBound(- 100, 0), yBound(-250, 250);
         std::thread thread(createSubMagmaLayer,percent, total/2, source, xBound, yBound, heightBound);
-        xBound = {0, 500};
+        xBound = {0, 100};
         std::thread threadA(createSubMagmaLayer, percent, total/2, source, xBound, yBound, heightBound);
         thread.join();
         threadA.join();
@@ -87,10 +86,10 @@ namespace MyCraft {
     }
 
     void MapCreator::createTopSoilLayer(const double& total, const glm::ivec2& zBound) {
-        glm::ivec2 xBound(- 500, 0), yBound(-250, 250);
+        glm::ivec2 xBound(- 100, 0), yBound(-250, 250);
         std::thread thread(createSubTopSoilLayer, percent, total/2, source, xBound, yBound, zBound);
 
-        xBound = {0, 500};
+        xBound = {0, 100};
         std::thread threadA(createSubTopSoilLayer, percent, total/2, source, xBound, yBound, zBound);
         thread.join();
         threadA.join();
@@ -170,8 +169,8 @@ namespace MyCraft {
     }
     void MapCreator::createZone(const Zone& zone, const double& total, const glm::vec2& yBound, const int& z) {
         srand(clock());
-        unsigned char count = rand()%3+2;
-        int xMax = 1000, xPart = xMax/count;
+        unsigned char count = rand()%2+1;
+        int xMax = 500, xPart = xMax/count;
         //By area tectonic
         for (int k = 0; k<count; k++) {
             float p = 1.0f*(rand()%100 + 50)/100;
@@ -187,7 +186,7 @@ namespace MyCraft {
                 xPart = xMax/(count-k);
             }
             HeightMap map(xSize*16, (yBound.y-yBound.x)*16, z*16-1);
-            glm::ivec3 origin(500-xMax-xSize, yBound.x, z);
+            glm::ivec3 origin(250-xMax-xSize, yBound.x, z);
             map.setPosition(origin*16);
             //Create height map and biome map
             {
@@ -213,12 +212,11 @@ namespace MyCraft {
         MapCreator mapCreator(percent, src);
         mapCreator.image = new MyBase::Image(1000, 500, BLUE);
         mapCreator.image->setPosition({-500, -250});
-        mapCreator.createBedrockLayer(0.2, -10);
-        mapCreator.createMagmaLayer(0.2, -9);
-        mapCreator.createTopSoilLayer(0.2, {-8, -6});
-        mapCreator.createZone(Temperate(), 0.1, {-250,-100}, -6);
-        mapCreator.createZone(Tropical(), 0.2, {-100,100}, -6);
-        mapCreator.createZone(Temperate(), 0.1, {100,250}, -6);
+        mapCreator.createBedrockLayer(0.2, -9);
+        mapCreator.createMagmaLayer(0.2, -8);
+        mapCreator.createTopSoilLayer(0.2, {-7, -6});
+        mapCreator.createZone(Temperate(), 0.1, {-100,0}, -6);
+        mapCreator.createZone(Tropical(), 0.2, {0,100}, -6);
         mapCreator.image->save(src+"overal.png");
         delete mapCreator.image;
 
@@ -228,5 +226,6 @@ namespace MyCraft {
             file << spawn.x << spawn.y << spawn.z;
             file.close();
         }
+        *percent = 1;
     }
 }

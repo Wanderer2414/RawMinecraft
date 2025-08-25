@@ -4,10 +4,12 @@
 #include "General.h"
 #include "Global.h"
 #include "Message.h"
+#include "ModelController.h"
 #include "ShaderStorage.h"
 #include "SkeletonBoss/ModelController.h"
 #include "Pig/ModelController.h"
 #include "Zombie/ModelController.h"
+#include <limits>
 
 namespace MyCraft {
     HitBoxCenter::HitBoxCenter() {
@@ -25,7 +27,12 @@ namespace MyCraft {
     }
 
     ModelController* HitBoxCenter::isColistion(const glm::vec3& position, const glm::vec3& direction) const {
-        return (ModelController*)__tree.get(position, direction);
+        std::pair<ModelController*, float> ans = {0, std::numeric_limits<float>::max()};
+        for (auto* i:__tree) {
+            float distance = i->isCollistion(position, direction);
+            if (distance<ans.second) ans = {i, distance};
+        }
+        return ans.first;
     }
     void HitBoxCenter::setHoverEntity(ModelController* controller) {
         __hoverEntity = controller;
@@ -53,24 +60,25 @@ namespace MyCraft {
     void HitBoxCenter::pushPlayerModel(ModelController* model) {
         MyBase::Network::match(model);
         Container3D::insert(model);
-        __tree.insert(model);
+        __tree.push_back(model);
     }
 
     void HitBoxCenter::insert(ModelController* model) {
         MyBase::Network::match(model);
-        __tree.insert(model);
+        __tree.push_back(model);
     }
     void HitBoxCenter::erase(ModelController* model) {
         MyBase::Network::unmatch(model);
-        __tree.remove(model);
+        for (int i = __tree.size()-1; i>=0; i--) {
+            if (__tree[i] == model) {
+                __tree.erase(__tree.begin()+i);
+            }
+        }
     }
     void HitBoxCenter::glDraw() const {
         MyBase3D::Container3D::glDraw();
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetDefaultShader());
         for (auto model: __tree) {
-            if (model->parent && model->parent->left == model->parent->right && model->parent->left) {
-                throw "Error";
-            }
             glm::mat4x3 mat = model->getShape();
             DrawMargin(mat, __colors);
         }

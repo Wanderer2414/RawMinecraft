@@ -10,7 +10,9 @@ namespace MyCraft {
         __zVelocity(0), __path(0), __folowController(0) {
         __attackCooldown.setDuration(500);
     }
-    ModelController::~ModelController() {};
+    ModelController::~ModelController() {
+        if (__path) delete __path;
+    };
     bool ModelController::canSaved() const {
         return false;
     }

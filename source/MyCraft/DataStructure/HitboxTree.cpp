@@ -177,82 +177,96 @@ namespace MyCraft {
     void HitboxTree::insert(HitboxNode* model) {
         model->tree = this;
         __insert(__root, model);
-        if (model->parent && model->parent->left == model->parent->right) {
-            std::cout << "Error" << std::endl;
-        }
+        print();
+        std::cout << " ==================== INSERT ==============" << std::endl;
     }
     void HitboxTree::print() const {
         __print(__root);
     }
     void HitboxTree::remove(HitboxNode* model) {
         __remove(__root, model);
-    }
-    bool HitboxTree::__remove(HitboxNode*& root, HitboxNode* node) {
-        if (!root) return false;
-        else if (!root->height) {
-            if (root == node) {
-                root = 0;
-                return true;
-            }
-            return false;
-        }
-        else {
-            if ((*root->right- *node)<0.001) {
-                bool isRemove = __remove(root->right, node);
-                if (!root->right) {
-                    HitboxNode* tmp = root->left;
-                    tmp->parent = root->parent;
-                    root->left = 0;
-                    delete root;
-                    root = tmp;
-                    return true;
-                }
-                else if (isRemove) {
-                    HitboxNode tmp = *root->left + *root->right;
-                    tmp.left = root->left;
-                    tmp.right = root->right;
-                    tmp.parent = root->parent;
-                    tmp.height = std::max(root->left->height, root->right->height)+1;
-                    *root = tmp;
-                    tmp.right = tmp.left = 0;
-                    
-                    if (root->left->height - root->right->height >= 2) {
-                        if (root->left->right && root->left->right->height>root->left->left->height) __rotateLeft(root->left);
-                        __rotateRight(root);
-                    }
-                    root->height = std::max(root->left->height, root->right->height)+1;
-                    return true;
-                }
-            }
-            if ((*root->left - *node) < 0.001) {
-                bool isRemove = __remove(root->left, node);
-                if (!root->left) {
-                    HitboxNode* tmp = root->right;
-                    tmp->parent = root->parent;
-                    root->right = 0;
-                    delete root;
-                    root = tmp;
-                    return true;
-                }
-                else if (isRemove) {
-                    HitboxNode tmp = *root->right + *root->left;
-                    tmp.left = root->left;
-                    tmp.right = root->right;
-                    tmp.parent = root->parent;
-                    tmp.height = std::max(root->left->height, root->right->height)+1;
-                    *root = tmp;
-                    tmp.right = tmp.left = 0;
 
-                    if (root->right->height - root->left->height >= 2) {
-                        if (root->right->left && root->right->left->height > root->right->right->height) __rotateRight(root->right);
-                        __rotateLeft(root);
+        print();
+        std::cout << std::endl;
+    }
+    bool HitboxTree::__remove(HitboxNode*& r, HitboxNode* node) {
+        if (node->parent) {
+            if (node->parent->left == node) {
+                node->parent->left  = 0;
+                node->parent->right->parent = node->parent->parent;
+                if (node->parent->parent) {
+                    if (node->parent->parent->left == node->parent) node->parent->parent->left = node->parent->right;
+                    else node->parent->parent->right = node->parent->right;
+                }
+                else __root = node->parent->right;
+            }
+            else {
+                node->parent->right = 0;
+                node->parent->left->parent = node->parent->parent;
+                if (node->parent->parent) {
+                    if (node->parent->parent->left == node->parent) node->parent->parent->left = node->parent->left;
+                    else node->parent->parent->right = node->parent->left;
+                }
+                else __root = node->parent->left;
+            }
+        }
+        else return false;
+        HitboxNode* root = node->parent->parent;
+        node->parent->right = node->parent->left = 0;
+        delete node->parent;
+        node->parent = 0;
+        while (root) {
+            {
+                HitboxNode node = *root->left + *root->right;
+                node.left = root->left;
+                node.right = root->right;
+                node.parent = root->parent;
+                node.height = std::max(node.left->height, node.right->height) + 1;
+                *root = node;
+                node.left = node.right = 0;
+            }
+            if (root->left->height - root->right->height >= 2) {
+                if (root->left->right && root->left->right->height>root->left->left->height) __rotateLeft(root->left);
+                if (root->parent) {
+                    HitboxNode* parent = root->parent;
+                    if (root->parent->right == root) {
+                        __rotateRight(parent->right);
+                        root = parent->right;
                     }
-                    root->height = std::max(root->left->height, root->right->height)+1;
-                    return true;
+                    else {
+                        __rotateRight(parent->left);
+                        root = parent->left;
+                    }
+                }
+                else {
+                    __rotateRight(__root);
+                    root = __root;
                 }
             }
-            return false;
+            root->height = std::max(root->left->height, root->right->height)+1;
+                
+            if (root->right->height - root->left->height >= 2) {
+                if (root->right->left && root->right->left->height > root->right->right->height) __rotateRight(root->right);
+                if (root->parent) {
+                    HitboxNode* parent = root->parent;
+                    if (root->parent->right == root) {
+                        __rotateLeft(parent->right);
+                        root = parent->right;
+                    }
+                    else {
+                        __rotateLeft(parent->left);
+                        root = parent->left;
+                    }
+                }
+                else {
+                    __rotateLeft(__root);
+                    root = __root;
+                }
+            }
+            root->height = std::max(root->left->height, root->right->height)+1;
+            root = root->parent;
         }
+        return true;
     }
     void HitboxTree::__insert(HitboxNode*& root, HitboxNode* node) {
         if (!root) root = node;
@@ -368,6 +382,7 @@ namespace MyCraft {
                 root = root->parent;
             }
         }
+        print();
     }
     void HitboxTree::__print(HitboxNode* root) const {
         if (!root) return ;

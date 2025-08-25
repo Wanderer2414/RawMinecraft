@@ -115,6 +115,7 @@ namespace MyCraft {
         glm::mat4x3 mat = package->controller->getShape();
         glm::vec3 size = {glm::length(mat[1]), glm::length(mat[2]), glm::length(mat[3])};
         Path* path = __creator.FollowPath(size, package->controller->getPosition(), package->destination);
+        if (package->controller->hasPath()) package->controller->clearPath();
         package->controller->setPath(path);
         path->setSpeed(0.13);
     }

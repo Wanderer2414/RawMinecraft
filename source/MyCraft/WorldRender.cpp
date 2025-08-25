@@ -6,6 +6,7 @@
 #include "HealthModule.h"
 #include "Message.h"
 #include "ModelController.h"
+#include "World.h"
 #include "glm/ext/matrix_transform.hpp"
 #include <limits>
 
@@ -316,6 +317,10 @@ namespace MyCraft {
         auto shape = request->rectangleBox;
         glm::vec3 center = shape[0] + shape[1]/2.f + shape[2]/2.f;
         float minHeight = 0;
+        if (!__world.contains(center)) {
+            if (ModelController* controller = dynamic_cast<ModelController*>(&source)) mine.send(new EraseMobMessage(controller));
+            return ;
+        }
         if (__world.isInWater(center)) {
             zVelocity += __world.getWaterDirection(center).z;
         }

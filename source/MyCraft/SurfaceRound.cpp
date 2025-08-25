@@ -263,7 +263,7 @@ namespace MyCraft {
                         height = std::min(height, map[position]);
                 }
             }
-            height = floor(height);
+            height = floor((height-16)/16.f)*16;
             for (int i = 0; i<xSz; i++) {
                 if (bounds[i].x < bounds[i].y) {
                     int x = floor((i-xSz/2.f+ origin.x)/16);
