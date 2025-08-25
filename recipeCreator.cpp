@@ -367,6 +367,14 @@ void Stick(std::ofstream& file) {
             {1, ItemType::AcaciaPlank}, };
         write(file, items, {4, ItemType::Stick});
     }
+
+    // Torch Stick
+    {
+        std::vector<std::pair<unsigned char, ItemType>> items = {
+            {1, ItemType::Stick}, {0, ItemType::Air}, {0, ItemType::Air},      
+            {1, ItemType::Stick}, };
+        write(file, items, {4, ItemType::Torch});
+    }
 }
 void Plank(std::ofstream& file) {
     // Oak Planks (from Oak Log)
@@ -395,7 +403,7 @@ void Plank(std::ofstream& file) {
 }
 int main() {
     std::ofstream file("bin/recipe.bin");
-    unsigned int size = 37;
+    unsigned int size = 38;
     file.write((char*)&size, sizeof(int));
     CraftingTable(file); // 4
     Furnace(file); // 1

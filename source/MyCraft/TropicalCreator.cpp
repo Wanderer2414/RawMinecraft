@@ -34,10 +34,12 @@ namespace MyCraft {
                 if (biome.isValid(cPosition)) biome[cPosition].type = Biome::MixOasis;
             }
             glm::ivec3 spawn((bound[0].y+bound[0].x)/2, (bound[1].y+bound[1].x)/2, 0);
-            Round round(3, 16.f*0.8f*glm::vec2(bound[0].y-bound[0].x, bound[1].y-bound[1].x));
+            glm::vec2 size = 16.f*0.8f*glm::vec2(bound[0].y-bound[0].x, bound[1].y-bound[1].x);
+            Round round(3, size);
             round.setPosition(spawn*16);
             round.applyLake(&biome, map);
             spawn*=16;
+            spawn.x += size.x; spawn.y += size.y;
             spawn.z = map[spawn];
             spawner.push_back(spawn);
         }

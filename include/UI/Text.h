@@ -29,7 +29,7 @@ namespace MyBase {
         Color       __color;
         std::string __text;
         glm::vec2   __position, __scale, __size;
-        Font*       __font;
+        Font        __font;
     };
 }
 #endif

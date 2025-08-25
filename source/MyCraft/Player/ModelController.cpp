@@ -1,4 +1,6 @@
 #include "Player/ModelController.h"
+#include "DeadForm.h"
+#include "Font.h"
 #include "Item.h"
 #include "Player/InventoryModule.h"
 #include "Camera.h"
@@ -44,6 +46,9 @@ namespace MyCraft {
         void ModelController::setPosition(const glm::vec3& position) {
             Model::setPosition(position);
             update();
+        }
+        void ModelController::setSpawnPoint(const glm::vec3& position) {
+            __spawnPoint = position;
         }
         bool ModelController::catchEvent(GLFWwindow* window) {
             __isChanged = MyCraft::ModelController::catchEvent(window) || __isChanged;
@@ -176,7 +181,17 @@ namespace MyCraft {
             send(new UpdateHealthBarMessage(getHealthPercent()));
         }
         void ModelController::__dead() {
-            
+            for (int i = 0; i<=3; i++) {
+                for (int j = 0; j<10; j++) {
+                    delete getItems().getBags({i,j});
+                    getItems().placeBags({i, j}, 0);
+                }
+            }
+            setHealth(100);
+            send(new UpdateHealthBarMessage(1));
+            send(new TeleportMessage(__spawnPoint));
+            DeadForm form(MyBase::Font("assets/fonts/SyneMono-Regular.ttf"));
+            form.open(MyBase::ControlCenter::getInstance().getHomeScreeen());
         }
         void ModelController::__heal() {
             
@@ -255,10 +270,13 @@ namespace MyCraft {
         void ModelController::save(std::ostream& cout) {
             glm::vec3 position = getPosition();
             cout.write((char*)&position, sizeof(glm::vec3));
+
             glm::vec3 direction = getDirection();
             cout.write((char*)&direction, sizeof(glm::vec3));
+
             direction = getEyeDirection();
             cout.write((char*)&direction, sizeof(glm::vec3));
+            
             auto& table = getItems();
             for (int i = 0; i<=3; i++) {
                 for (int j = 0; j<10; j++) {
@@ -303,9 +321,10 @@ namespace MyCraft {
                         table.placeBags({i,j}, Item::create(table.package, count, type));
                 }
             }
-            unsigned int health = getHealth();
+            unsigned int health = 0;
             cin.read((char*)&health, sizeof(int));
             setHealth(health);
+            send(new UpdateHealthBarMessage(getHealthPercent()));
         }
 
 

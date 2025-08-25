@@ -22,7 +22,6 @@ namespace MyCraft {
         __size = getTextureExportSize();
         __size.y = 1.0f*__size.y*getCount()/255;
         MyBase::ShapeManager::getInstance().createShape(__durabilityBackground, __size);
-        std::cout << __durabilityBackground.getSize().x << std::endl;
     }
     ToolItem::~ToolItem() {
         MyBase::ShapeManager::getInstance().removeShape(__durabilityBackground, __size);

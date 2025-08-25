@@ -15,7 +15,8 @@ namespace MyCraft {
     HitBoxCenter::HitBoxCenter() {
         __colors = glm::vec3(1,0,0);
     }
-    HitBoxCenter::~HitBoxCenter() {}
+    HitBoxCenter::~HitBoxCenter() {
+    }
     bool HitBoxCenter::isHover() const {
         return __hoverEntity;
     }

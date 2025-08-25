@@ -4,7 +4,7 @@
 #include "ShaderStorage.h"
 #include "ShapeManager.h"
 namespace MyBase {
-    Text::Text(): __font(0), __color(BLACK), __position(0, 0), __scale(1,1) {
+    Text::Text(): __color(BLACK), __position(0, 0), __scale(1,1) {
         glGenVertexArrays(1, &__VAO);
         glGenBuffers(1, &__VBO);
         
@@ -49,7 +49,7 @@ namespace MyBase {
         }
     }
     void Text::setFont(const Font& font) {
-        __font = (Font*)&font;
+        __font = font;
         update();
     }
     void Text::setText(const std::string& text) {
@@ -57,7 +57,7 @@ namespace MyBase {
         update();
     }
     const Font& Text::getFont() const {
-        return *__font;
+        return __font;
     }
     void Text::move(const glm::vec2& offset) {
         setPosition(__position + offset);
@@ -71,14 +71,13 @@ namespace MyBase {
         }
     }
     void Text::update() {
-        if (!__font) return ;
         glDeleteBuffers(1, &__VBO);
 
         glBindVertexArray(__VAO);
 
         glGenBuffers(1, &__VBO);
         glBindBuffer(GL_ARRAY_BUFFER, __VBO);
-        char* buffer = __font->getBuffer(__text, __size);
+        char* buffer = __font.getBuffer(__text, __size);
         glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2)*2*6*__text.size(), buffer, GL_STATIC_DRAW);
         glEnableVertexArrayAttrib(__VAO, 0);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
@@ -91,10 +90,9 @@ namespace MyBase {
         delete[] buffer;
     }
     void Text::draw() const {
-        if (!__font) return ;
         glUseProgram(MyBase3D::ShaderStorage::getInstance().GetFontShader());
         glBindVertexArray(__VAO);
-        __font->Bind();
+        __font.Bind();
         glBindBufferBase(GL_UNIFORM_BUFFER, 1, __COLOR);
         glBindBufferBase(GL_UNIFORM_BUFFER, 2, __POSITION);
         glBindBufferBase(GL_UNIFORM_BUFFER, 3, __SCALE);

@@ -41,7 +41,7 @@ namespace MyBase {
     };
     Font::~Font() {};
     void Font::Bind() const {
-        return ((FontCore*)getCore())->Bind();
+        if (getCore()) ((FontCore*)getCore())->Bind();
     }
     char* Font::getBuffer(const std::string& text, glm::vec2& size) const {
         return ((FontCore*)getCore())->getBuffer(text, size);

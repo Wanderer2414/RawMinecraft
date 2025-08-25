@@ -5,7 +5,6 @@
 #include "Message.h"
 #include "ModelController.h"
 #include "PathCreator.h"
-#include "Sun.h"
 #include "World.h"
 #include "Zombie/Model.h"
 #include "WorldRender.h"
@@ -24,9 +23,13 @@ namespace MyCraft {
             __damageDuration.setDuration(200);
             __fallCheckClock.setDuration(30);
             __freeTime.setDuration(3000);
+            __updateFollowClock.setDuration(100);
         }
         Controller::~Controller() {}
 
+        float Controller::Powerness() const {
+            return 20;
+        }
         bool Controller::handle(GLFWwindow* window) {
             __isChanged = apply() || __isChanged;
             if (__damageDuration.get() && __isDamage) {
@@ -37,6 +40,10 @@ namespace MyCraft {
             if (__fallCheckClock.get()) {
                 __fallCheckClock.restart();
                 send(new RequestFallMessage(getShape(), getZVelocity()));
+            }
+            if (__folowController && __updateFollowClock.get()) {
+                clearPath();
+                __updateFollowClock.restart();
             }
             if (__folowController && !__path) {
                 glm::vec3 direction = glm::normalize(__folowController->getPosition() - getPosition());

@@ -212,11 +212,9 @@ namespace MyCraft {
         MapCreator mapCreator(percent, src);
         mapCreator.image = new MyBase::Image(1000, 500, BLUE);
         mapCreator.image->setPosition({-500, -250});
-        mapCreator.createBedrockLayer(0.2, -9);
-        mapCreator.createMagmaLayer(0.2, -8);
-        mapCreator.createTopSoilLayer(0.2, {-7, -6});
-        mapCreator.createZone(Temperate(), 0.1, {-100,0}, -6);
-        mapCreator.createZone(Tropical(), 0.2, {0,100}, -6);
+        mapCreator.createBedrockLayer(0.2, -5);
+        mapCreator.createZone(Temperate(), 0.4, {-100,0}, -6);
+        mapCreator.createZone(Tropical(), 0.4, {0,100}, -6);
         mapCreator.image->save(src+"overal.png");
         delete mapCreator.image;
 

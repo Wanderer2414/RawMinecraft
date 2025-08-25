@@ -8,14 +8,16 @@ namespace MyCraft {
     NonuseItem::NonuseItem(const ItemPacked& package, const ItemType& type, const unsigned char& count): Item(type, count), __package(package) {
         MyBase::TextureContainer::setTexture(package.texture);
         int index= int(type);
-        setTextureImportPosition(glm::vec2(160.f*(index%3)/getTexture().getSize().x, 1-160.f*int(index/3+1)/getTexture().getSize().y));
-        setTextureImportSize(glm::vec2(160.f, 160.f)/(glm::vec2)getTexture().getSize());
-        setTextureExportSize(package.size);
+
 
         Text::setFont(package.font);
         Text::setScale({package.size.x/2, package.size.y/2});
         Text::setTextColor(WHITE);
         Text::setText(std::to_string(getCount()));
+        
+        setTextureImportPosition(glm::vec2(160.f*(index%3)/getTexture().getSize().x, 1-160.f*int(index/3+1)/getTexture().getSize().y));
+        setTextureImportSize(glm::vec2(160.f, 160.f)/(glm::vec2)getTexture().getSize());
+        setTextureExportSize(package.size);
     }
     NonuseItem::~NonuseItem() {}
 

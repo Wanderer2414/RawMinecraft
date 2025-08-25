@@ -15,7 +15,7 @@
 
 namespace MyCraft {
     GameForm::GameForm(GLFWwindow* window, const int& index, const std::string& src):
-        Form3D(index), __world(0, 0, 0, src), __pauseForm(__font),
+        Form3D(index), __world(src), __pauseForm(__font),
         __font("assets/fonts/SyneMono-Regular.ttf"), __biomeManage(src), __fileSource(src),
         __inventoryForm(__inventory, __playerModel.getItems()) 
     {
@@ -73,7 +73,7 @@ namespace MyCraft {
             __spawnPoint = pos;
             file << pos.x << pos.y << pos.z;
         }
-        
+        __playerModel.setSpawnPoint(__spawnPoint);
         file.close();
     }
     GameForm::~GameForm() {   

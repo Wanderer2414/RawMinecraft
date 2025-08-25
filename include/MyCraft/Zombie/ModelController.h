@@ -12,7 +12,7 @@ namespace MyCraft {
             Controller();
             ~Controller();
 
-
+            float   Powerness() const override;
             void    setPosition(const glm::vec3& position) override;
             void    see(const glm::vec3& dir) override,
                     move(const glm::vec3& dir) override,
@@ -28,7 +28,7 @@ namespace MyCraft {
         private:
             bool    __isChanged, __isDamage;
             float   __speed;
-            MyBase::Clock __damageDuration, __fallCheckClock, __freeTime;
+            MyBase::Clock __damageDuration, __fallCheckClock, __freeTime, __updateFollowClock;
             bool handle(GLFWwindow* window) override;
             void glDraw() const override;
 

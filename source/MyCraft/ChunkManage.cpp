@@ -31,6 +31,8 @@ namespace MyCraft {
             chunk->save();
             delete chunk;
         }
+        for (auto* i:__models) delete i;
+        for (auto* i: __dangerousModel) delete i;
     }
     void ChunkManage::setTime(const float& time) {
         __time = time;
@@ -44,15 +46,15 @@ namespace MyCraft {
     bool ChunkManage::isDangerous(const glm::vec3& position) const {
         glm::ivec3 offset(floor(position.x/16.f), floor(position.y/16.f), floor(position.z/16.f));
         offset -= getPosition()/16;
-        return (offset.x == 0 || offset.x == world_side-1 ||
-                offset.y == 0 || offset.y == world_side-1 || 
-                offset.z == 0 || offset.z == world_side-1);
+        return (offset.x <= 0 || offset.x >= world_side-1 ||
+                offset.y <= 0 || offset.y >= world_side-1 || 
+                offset.z <= 0 || offset.z >= world_side-1);
     }
     int ChunkManage::getZHeight(const glm::vec3& position) const {
         int z = floor(position.z);
         while (contains({position.x, position.y, z}) && !isPlaceable(getType({position.x, position.y, z}))) z++;
         if (!contains({position.x, position.y, z})) z = std::numeric_limits<int>::max();
-        if (!contains({position.x, position.z, z-1}) || isPlaceable(getType({position.x, position.y, z-1}))) 
+        if (!contains({position.x, position.y, z-1}) || isPlaceable(getType({position.x, position.y, z-1}))) 
             z = std::numeric_limits<int>::max();
         return z;
     }
@@ -65,7 +67,7 @@ namespace MyCraft {
             is_changed = true;
         }
         for (int i = __models.size()-1; i>=0; i--) {
-            is_changed = __models[i]->handle(window) || is_changed;
+            if (!isDangerous(__models[i]->getPosition())) is_changed = __models[i]->handle(window) || is_changed;
             if (isDangerous(__models[i]->getPosition())) {
                 __dangerousModel.push_back(__models[i]);
                 __models.erase(__models.begin()+i);

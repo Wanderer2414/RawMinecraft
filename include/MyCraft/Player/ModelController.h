@@ -21,6 +21,7 @@ namespace MyCraft {
                         move(const glm::vec3& dir) override,
                         look(const glm::vec3& dir) override,
                         rotate(const glm::vec3& angle) override;
+            void        setSpawnPoint(const glm::vec3& position);
                                 
             void        teleport(const glm::vec3& position),
                         rightAttack(),
@@ -37,7 +38,7 @@ namespace MyCraft {
         private:
             bool            __isDrawable, __isChanged, __isDamage;
             float           __speed;
-            glm::vec3       __direction, __eye_direction;
+            glm::vec3       __direction, __eye_direction, __spawnPoint;
             MyBase::Clock   __speedControl, __damageDuration;
             BlockCatogary   __type;
             glm::vec3       __toAbsoluteCoordinate(const glm::vec3& dir) const;

@@ -66,7 +66,6 @@ namespace MyBase {
             std::cout << __root->size << std::endl; 
             __free(__root);
         }
-        else std::cout << 0 << std::endl;
     }
     void FlyweightStorage::getObject(FlyWeightObject& obj, const std::string& name) {
         create();

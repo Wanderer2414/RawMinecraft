@@ -9,7 +9,7 @@
 #include "Player/ModelController.h"
 
 namespace MyCraft {
-    World::World(const int& x, const int& y, const int& z, const std::string& src): 
+    World::World(const std::string& src): 
         __worldRender(src), __pathCreator(__worldRender) 
     {
         insert(&__worldRender);

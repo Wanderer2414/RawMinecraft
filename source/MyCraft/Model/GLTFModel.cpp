@@ -37,12 +37,9 @@ namespace MyCraft {
     }
 
     MyBase::FlyWeightCore* GLTFModel::create(const std::string& src) const {
-        static int count = 0;
         tinygltf::TinyGLTF loader;
         std::string error, warning;
         tinygltf::Model model;
-        count++;
-        std::cout << count << std::endl;
         loader.LoadASCIIFromFile(&model, &error, & warning, src);
 
         if(!warning.empty())std::cout<<"Warning: "<< warning << std::endl;

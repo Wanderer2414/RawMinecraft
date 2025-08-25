@@ -17,11 +17,10 @@
 namespace MyCraft {
 class World: public MyBase3D::Container3D, public MyBase::Port {
     public:
-        World(const int& x, const int& y, const int& z, const std::string& src);
+        World(const std::string& src);
         ~World();
         
         bool isBusyBlock(const glm::ivec3& position);
-        
         void teleport(const glm::ivec3& position);
         void addPlayerModel(ModelController* controller);
         void pushMob(ModelController* model);

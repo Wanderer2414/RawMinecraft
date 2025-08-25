@@ -21,7 +21,7 @@ namespace MyCraft {
         __health = h;
     }
     void HealthModule::damage(const unsigned int& h) {
-        if (h>__health) {
+        if (h>=__health) {
             __health = 0;
             __damage();
             __dead();
