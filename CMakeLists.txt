@@ -18,7 +18,7 @@ endforeach()
 
 include_directories(
     ${HEADERS}
-    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include/MyCraft
     ${CMAKE_SOURCE_DIR}/glad/include
     ${CMAKE_SOURCE_DIR}/glm-master
 )

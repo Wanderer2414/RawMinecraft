@@ -1,4 +1,4 @@
-#include "UI/Sound.h"
+#include "Sound.h"
 #include "Global.h"
 
 bool Sound::audio_device = false;

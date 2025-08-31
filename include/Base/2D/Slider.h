@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SLIDER_H
+#define SLIDER_H
 
 #include "Container2D.h"
 #include "Ellipse.h"
@@ -13,7 +14,6 @@ namespace MyBase  {
     public:
         Slider();
         ~Slider();
-        static constexpr float height = 0.1;
         
         void setPosition(const glm::vec2& position);
         void setWidth(const float& width);
@@ -26,6 +26,7 @@ namespace MyBase  {
         int getValue() const;
 
     private:
+        const double height = 0.1f;
         bool            isScroll;
         float           width;
         int             value, minVal, maxVal;
@@ -38,3 +39,5 @@ namespace MyBase  {
         void            update() override;
     };
 }
+
+#endif

@@ -126,6 +126,7 @@ namespace MyCraft {
 
         void Controller::__dead() {
             send(new EraseMobMessage(this));
+            delete this;
         }
         void Controller::__damage() {
 

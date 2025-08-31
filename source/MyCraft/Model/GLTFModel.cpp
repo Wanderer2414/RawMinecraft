@@ -8,7 +8,7 @@ namespace MyCraft {
     GLTFModel::GLTFModel(const std::string& modelPath): __baseColor(TRANSPARENCY) {
         if (modelPath.size()) load(modelPath);
         __states = new GLTFStaticMesh::SetNode(((GLTFStaticMesh*)getCore())->getNodeSize());
-        __baseColorBuffer = MyBase::ShapeManager::getInstance().createColor(TRANSPARENCY);
+        __baseColorBuffer = MyBase::ShapeManager::getInstance().createColor(__baseColor);
     }
 
     GLTFModel::~GLTFModel() {

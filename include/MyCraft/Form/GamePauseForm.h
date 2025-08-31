@@ -21,7 +21,6 @@ namespace MyCraft {
         MyBase::RoundedRectangleButton  __exitButton;
         MyBase::Slider          __volumeBar; 
         MyBase::Label           __volumnLabel;
-         
     };
 }
 #endif

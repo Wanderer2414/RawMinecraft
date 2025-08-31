@@ -17,7 +17,6 @@ namespace MyCraft {
 
         __volumeBar.setFont(font);
         __volumeBar.setWidth(0.3);
-        __volumeBar.setScale({0.03f, 0.05f});
         __volumeBar.setTextColor(BLACK);
         
         __volumeBar.setPosition(-__volumeBar.getSize()/2.f + glm::vec2(0.1, 0.05));

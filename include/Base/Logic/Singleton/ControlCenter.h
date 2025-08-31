@@ -1,7 +1,6 @@
 #ifndef CONTROL_CENTER_H
 #define CONTROL_CENTER_H
 #include "Global.h"
-#include "Rectangle.h"
 namespace MyBase {
     class ControlCenter {
         public:

@@ -1,10 +1,9 @@
-#include "Slider.h"
 #include "ControlCenter.h"
+#include "Slider.h"
 #include "Shape.h"
 #include "Global.h"
 #include "Rectangle.h"
 #include "ShapeManager.h"
-#include <iostream>
 
 namespace MyBase  {
 
@@ -16,7 +15,6 @@ namespace MyBase  {
         __scrollButton.setHoverColor({100,100,100,255});
         __scrollButton.setClickColor({50,50,50,255});
 
-        // nút trượt chiếm 10% chiều ngang
         __scrollButton.setSize({width * 0.1f, height * 0.9f});
         insert(&__scrollButton);
     }
@@ -35,7 +33,8 @@ namespace MyBase  {
             ShapeManager::getInstance().removeShape(__rectangle, {width, height});
             this->width = w;
             ShapeManager::getInstance().createShape(__rectangle, {width, height});
-            __scrollButton.setSize({width * 0.1f, height * 0.9f}); // cập nhật size nút trượt
+            __scrollButton.setSize({width * 0.1f, height * 0.9f}); 
+            Text::setScale({w/10.f, 0.05f});
             update();
         }
     }
@@ -77,7 +76,6 @@ namespace MyBase  {
     bool Slider::catchEvent(GLFWwindow * window) {
         bool is_changed = Container2D::catchEvent(window);
 
-        // xử lý cuộn chuột
         float xScroll = ControlCenter::getInstance().getScroll().x / 2.f;
         if(xScroll){
             xScroll *= (maxVal - minVal) / 10.f;
@@ -87,7 +85,6 @@ namespace MyBase  {
             is_changed = true;
         }
 
-        // xử lý drag
         if(__scrollButton.isPressed()){
             isScroll = true;
             mouseStartDrag = ControlCenter::getInstance().getCursorPos(window).x - __scrollButton.getPosition().x;
@@ -115,14 +112,12 @@ namespace MyBase  {
     }
 
     bool Slider::contains(const glm::vec2& position) const {
-        // dùng top-left nên không cần chỉnh sửa
         return __rectangle.contains(position - getPosition());
     }
 
     void Slider::update(){
         float usableWidth = width - __scrollButton.getSize().x;
 
-        // canh NÚT theo top-left, đặt Y ở giữa slider
         __scrollButton.setPosition({
             getPosition().x + usableWidth * (float)(value - minVal) / (float)(maxVal - minVal),
             getPosition().y + (height - __scrollButton.getSize().y) / 2.0f

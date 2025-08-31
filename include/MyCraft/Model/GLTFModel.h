@@ -10,7 +10,7 @@ namespace MyCraft {
     class GLTFModel: public MyBase::FlyWeightObject {
     public:
         GLTFModel(const std::string& modelPath = "");
-        ~GLTFModel();
+        virtual ~GLTFModel();
 
         int getNodeCount() const;
         virtual glm::mat4x3 getShape()              const   = 0;
